@@ -1,4 +1,4 @@
-package co.yishun.onemoment.onemoment;
+package co.yishun.onemoment.app;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.0 rc3"
 
     defaultConfig {
-        applicationId "co.yishun.onemoment.onemoment"
+        applicationId "co.yishun.onemoment.app"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
