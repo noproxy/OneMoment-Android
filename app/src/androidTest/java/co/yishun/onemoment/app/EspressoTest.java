@@ -22,8 +22,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  * Created by yyz on 7/12/15.
  */
 @RunWith(AndroidJUnit4.class)
-public class EspressoTest extends ActivityInstrumentationTestCase2<MainActivity> {
-    private MainActivity mActivity;
+public class EspressoTest extends ActivityInstrumentationTestCase2<EspressoTestActivity> {
+    private EspressoTestActivity mActivity;
 
 //    public EspressoTest(String pkg, Class<MainActivity> activityClass, MainActivity mActivity) {
 //        super(pkg, activityClass);
@@ -35,7 +35,7 @@ public class EspressoTest extends ActivityInstrumentationTestCase2<MainActivity>
 //    }
 //
     public EspressoTest() {
-        super("co.yishun.onemoment.app", MainActivity.class);
+        super("co.yishun.onemoment.app", EspressoTestActivity.class);
 
     }
 
