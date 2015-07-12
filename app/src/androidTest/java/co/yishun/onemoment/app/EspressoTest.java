@@ -23,20 +23,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  */
 @RunWith(AndroidJUnit4.class)
 public class EspressoTest extends ActivityInstrumentationTestCase2<EspressoTestActivity> {
+    public static final String TEXT_CHANGE_TO = "Text changed!";
     private EspressoTestActivity mActivity;
 
-//    public EspressoTest(String pkg, Class<MainActivity> activityClass, MainActivity mActivity) {
-//        super(pkg, activityClass);
-//        this.mActivity = mActivity;
-//    }
-
-    //    public EspressoTest(Class<MainActivity> activityClass) {
-//        super(activityClass);
-//    }
-//
     public EspressoTest() {
-        super("co.yishun.onemoment.app", EspressoTestActivity.class);
-
+        super(EspressoTestActivity.class);
     }
 
     @Override @Before public void setUp() throws Exception {
@@ -47,11 +38,9 @@ public class EspressoTest extends ActivityInstrumentationTestCase2<EspressoTestA
 
     @Test
     public void testChangeText() {
-        onView(withId(R.id.nameEditText)).perform(typeText("Test"), ViewActions
-                .closeSoftKeyboard
-                        ());
+        onView(withId(R.id.editText)).perform(typeText(TEXT_CHANGE_TO), ViewActions.closeSoftKeyboard());
         onView(withId(R.id.changeTextBtn)).perform(click());
-        onView(withId(R.id.nameEditText)).check(matches(withText(EspressoTestActivity.TEXT_CHANGE_TO)));
+        onView(withId(R.id.showTextView)).check(matches(withText(TEXT_CHANGE_TO)));
 //        onView(allOf(withId(R.id.nameEditText), not(instanceOf(EditText.class)))).perform(click());
 
     }

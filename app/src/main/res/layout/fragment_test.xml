@@ -10,10 +10,19 @@
               tools:context=".MainActivityFragment">
 
     <Button
+        android:id="@+id/espressoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onBtnClick"
+        android:onClick="onEspressoBtnClick"
         android:text="Espresso Test"
+        />
+
+    <Button
+        android:id="@+id/uiAutomatorBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onUIAutomatorBtnClick"
+        android:text="UIAutomator Test"
         />
 
 </LinearLayout>

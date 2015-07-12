@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import co.yishun.onemoment.app.ui.EspressoTestActivity;
+import co.yishun.onemoment.app.ui.UIAutomatorTestActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,8 +41,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onBtnClick(View view) {
+    public void onEspressoBtnClick(View view) {
         startActivity(new Intent(this, EspressoTestActivity.class));
+    }
+
+    public void onUIAutomatorBtnClick(View view) {
+        startActivity(UIAutomatorTestActivity.newStartIntent(this, "UI!"));
     }
 
 }
