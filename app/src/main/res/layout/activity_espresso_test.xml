@@ -7,13 +7,26 @@
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
-              tools:context=".MainActivityFragment">
+              tools:context="co.yishun.onemoment.app.ui.EspressoTestActivity"
+    >
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onBtnClick"
-        android:text="Espresso Test"
-        />
+        android:text="@string/hello_world"/>
+
+
+    <EditText
+        android:id="@+id/nameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="origin"/>
+
+    <Button
+        android:id="@+id/changeTextBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onChangeText"
+        android:text="change text"/>
 
 </LinearLayout>
