@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import co.yishun.onemoment.app.ui.EspressoTestActivity;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -38,6 +39,7 @@ public class EspressoTest extends ActivityInstrumentationTestCase2<EspressoTestA
 
     @Test
     public void testChangeText() {
+        onView(withId(R.id.editText)).perform(clearText());
         onView(withId(R.id.editText)).perform(typeText(TEXT_CHANGE_TO), ViewActions.closeSoftKeyboard());
         onView(withId(R.id.changeTextBtn)).perform(click());
         onView(withId(R.id.showTextView)).check(matches(withText(TEXT_CHANGE_TO)));
