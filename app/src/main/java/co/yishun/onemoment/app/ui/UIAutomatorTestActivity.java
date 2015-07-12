@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
+
 import co.yishun.onemoment.app.R;
 
 /**
