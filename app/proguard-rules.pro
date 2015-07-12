@@ -98,3 +98,28 @@
     public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
+
+-dontwarn com.sina.weibo.**
+-keep class com.sina.weibo.** { *; }
+-keepnames class com.sina.weibo.** { *; }
+
+-dontwarn umeng.sdk.**
+-keep class umeng.sdk.** { *;}
+
+
+# for transitions everywhere
+-keep class android.transitions.everywhere.** { *; }
+-keep class android.transitions.everywhere.**.** { *; }
+
+# support-v7-appcompat
+-keep public class android.support.v7.widget.** { *; }
+-keep public class android.support.v7.internal.widget.** { *; }
+-keep public class android.support.v7.internal.view.menu.** { *; }
+
+-keep public class * extends android.support.v4.view.ActionProvider {
+    public <init>(android.content.Context);
+}
+
+# support-v7-cardview
+-keep class android.support.v7.widget.RoundRectDrawable { *; }
+
