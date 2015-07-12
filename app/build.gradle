@@ -119,6 +119,9 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
     androidTestUiAutomatorCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
 
+    compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
+    compile 'com.umeng.analytics:analytics:5.5.3'
+    compile 'com.qiniu:qiniu-android-sdk:7.0.6.1'
 }
 
 apply plugin: 'aar-link-sources'
