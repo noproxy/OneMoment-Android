@@ -81,3 +81,14 @@
 #-keep class co.yishun.onemoment.app.net.request.sync.** { *; }
 
 ##---------------End: proguard configuration for Gson  ----------
+
+# eventbus
+# https://github.com/greenrobot/EventBus/blob/master/HOWTO.md#proguard-configuration
+-keepclassmembers class ** {
+    public void onEvent*(**);
+}
+
+# Only required if you use AsyncExecutor
+#-keepclassmembers class * extends de.greenrobot.event.util.ThrowableFailureEvent {
+#    <init>(java.lang.Throwable);
+#}
