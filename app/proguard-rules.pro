@@ -57,3 +57,27 @@
 -dontwarn sun.misc.Unsafe
 # http://stackoverflow.com/questions/9120338/proguard-configuration-for-guava-with-obfuscation-and-optimization
 ##---------------End: proguard configuration for Guava  ----------
+
+# picasso
+-dontwarn com.squareup.picasso.*
+
+# from gson http://google-gson.googlecode.com/svn/trunk/examples/android-proguard-example/proguard.cfg
+
+##---------------Begin: proguard configuration for Gson  ----------
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+#-keep class com.google.gson.stream.** { *; }
+
+# Application classes that will be serialized/deserialized over Gson
+#-keep class co.yishun.onemoment.app.net.result.** { *; }
+#-keep class co.yishun.onemoment.app.net.request.sync.** { *; }
+
+##---------------End: proguard configuration for Gson  ----------
