@@ -92,3 +92,9 @@
 #-keepclassmembers class * extends de.greenrobot.event.util.ThrowableFailureEvent {
 #    <init>(java.lang.Throwable);
 #}
+
+# greenDAO
+-keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
+    public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
