@@ -31,6 +31,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    aaptOptions {
+        ignoreAssetsPattern 'x86:fonts:armeabi-v7a-neon'
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
