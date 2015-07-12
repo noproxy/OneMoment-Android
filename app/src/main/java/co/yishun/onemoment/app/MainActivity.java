@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onUIAutomatorBtnClick(View view) {
-        startActivity(UIAutomatorTestActivity.newStartIntent(this, "UI!"));
+        startActivity(new Intent(this, UIAutomatorTestActivity.class));
     }
 
 }
