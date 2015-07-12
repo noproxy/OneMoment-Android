@@ -1,6 +1,23 @@
 apply plugin: 'com.android.application'
 
+apply from: '/home/yyz/OneMoment/private.gradle'
+
 android {
+    signingConfigs {
+        debugSignature {
+            keyAlias SIGNATURE.KEY_ALIAS_DEBUG
+            keyPassword SIGNATURE.KEY_PASSWORD
+            storeFile file(SIGNATURE.KEYSTORE_PATH)
+            storePassword SIGNATURE.STORE_PASSWORD
+        }
+        releaseSignature {
+            keyAlias SIGNATURE.KEY_ALIAS_RELEASE
+            keyPassword SIGNATURE.KEY_PASSWORD
+            storeFile file(SIGNATURE.KEYSTORE_PATH)
+            storePassword SIGNATURE.STORE_PASSWORD
+        }
+    }
+
     compileSdkVersion 22
     buildToolsVersion "23.0.0 rc3"
 
