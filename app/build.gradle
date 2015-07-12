@@ -111,3 +111,11 @@ dependencies {
     androidTestUiAutomatorCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
 
 }
+
+apply plugin: 'aar-link-sources'
+
+dependencies {
+    aarLinkSources 'com.android.support.test.espresso:espresso-core:2.2:sources@jar'
+    aarLinkSources 'com.android.support:recyclerview-v7:22.2.0:sources@jar'
+    // not available    aarLinkSources 'com.android.support:design:22.2.0:sources@jar'
+}
