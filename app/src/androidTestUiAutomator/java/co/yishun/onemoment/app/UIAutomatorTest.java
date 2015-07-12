@@ -26,7 +26,6 @@ import static org.hamcrest.core.IsNull.notNullValue;
 @RunWith(AndroidJUnit4.class)
 public class UIAutomatorTest {
     private static final String APP_PACKAGE = "co.yishun.onemoment.app";
-    private static final String TEST_PACKAGE = "co.yishun.onemoment.app.ui";
 
 
     private static final int LAUNCH_TIMEOUT = 5000;
@@ -77,18 +76,18 @@ public class UIAutomatorTest {
     public void testChangeText_sameActivity() {
         mDevice.findObject(By.res(APP_PACKAGE, "espressoBtn")).click();
 
-        UiObject2 editText = mDevice.wait(Until.findObject(By.res(TEST_PACKAGE, "editText")), 500);
+        UiObject2 editText = mDevice.wait(Until.findObject(By.res(APP_PACKAGE, "editText")), 500);
         editText.setText(STRING_TO_BE_TYPED);
-        mDevice.findObject(By.res(TEST_PACKAGE, "changeTextBtn")).click();
+        mDevice.findObject(By.res(APP_PACKAGE, "changeTextBtn")).click();
 
 
         // Verify the test is displayed in the Ui
-        UiObject2 changedText = mDevice.wait(Until.findObject(By.res(APP_PACKAGE, "textToBeChanged")), 500 /* wait 500ms */);
+        UiObject2 changedText = mDevice.wait(Until.findObject(By.res(APP_PACKAGE, "showTextView")), 500 /* wait 500ms */);
         assertThat(changedText.getText(), is(equalTo(STRING_TO_BE_TYPED)));
     }
 
 
-    @Test
+    @Test// fail
     public void testChangeText_newActivity() {
         // Type text and then press the button.
         mDevice.findObject(By.res(APP_PACKAGE, "editTextUserInput")).setText(STRING_TO_BE_TYPED);
