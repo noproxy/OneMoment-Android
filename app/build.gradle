@@ -51,6 +51,27 @@ android {
             signingConfig signingConfigs.debugSignature
         }
     }
+
+    productFlavors {
+        uiAutomator { // for UIAutomation test, api > 18
+            minSdkVersion 18
+            targetSdkVersion 22
+        }
+        noFFmpeg {
+            aaptOptions.ignoreAssetsPattern 'x86:fonts:armeabi-v7a-neon:armeabi:armeabi-v7a'
+        }
+        preview {} // for universal and test volunteers preview
+        // for release
+        market360 {}
+        marketWandoujia {}
+        marketBaidu {}
+        marketCoolapk {}
+        marketGooglePlay {}
+        marketHuawei {}
+        marketXiaomi {}
+        marketYingyongbao {}
+        marketUniversal {}// for other market
+    }
 }
 
 dependencies {
