@@ -142,3 +142,7 @@
 -keepclasseswithmembers class * {
     @retrofit.http.* <methods>;
 }
+
+# for steamsupport
+-dontwarn java8.**
+#-keep class java8.**

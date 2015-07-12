@@ -76,6 +76,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'net.sourceforge.streamsupport:streamsupport:1.2.2'
     // https://developer.android.com/reference/android/support/annotation/package-summary.html
     compile 'com.android.support:support-annotations:22.2.0'
     /**
