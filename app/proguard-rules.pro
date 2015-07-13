@@ -146,3 +146,8 @@
 # for steamsupport
 -dontwarn java8.**
 #-keep class java8.**
+
+# for realm
+-keep @io.realm.annotations.RealmModule class *
+-dontwarn javax.**
+-dontwarn io.realm.**
