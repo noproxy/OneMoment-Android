@@ -18,6 +18,7 @@ import co.yishun.onemoment.app.R;
 public class WorldFragment extends Fragment {
 
     AppCompatActivity mActivity;
+    Toolbar mToolbar;
 
     public WorldFragment() {
     }
@@ -29,8 +30,7 @@ public class WorldFragment extends Fragment {
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        setupToolbar(view);
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
     }
 
     @Override public void onAttach(Activity activity) {
@@ -38,14 +38,15 @@ public class WorldFragment extends Fragment {
         mActivity = (AppCompatActivity) activity;
     }
 
-    protected void setupToolbar(View view) {
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-//        mActivity.setSupportActionBar(null);
-        mActivity.setSupportActionBar(toolbar);
+    @Override public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setupToolbar();
+    }
 
+    protected void setupToolbar() {
+        mActivity.setSupportActionBar(mToolbar);
         final ActionBar ab = mActivity.getSupportActionBar();
         assert ab != null;
-        ab.setHomeAsUpIndicator(android.R.drawable.ic_btn_speak_now);
         ab.setDisplayHomeAsUpEnabled(true);
     }
 }
