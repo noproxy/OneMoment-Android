@@ -15,9 +15,10 @@ import android.view.View;
 
 import co.yishun.onemoment.app.R;
 
-public class MainActivity extends AppCompatActivity {
+public final class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private ActionBarDrawerToggle mDrawerToggle;
+    private int currentItemId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
+        navigationTo(R.id.navigation_item_0);
     }
 
     private void setupNavigationView() {
@@ -34,40 +36,34 @@ public class MainActivity extends AppCompatActivity {
                 .setNavigationItemSelectedListener(menuItem -> {
                     menuItem.setChecked(true);
                     drawerLayout.closeDrawers();
-                    navigationTo(menuItem.getItemId());
-                    return true;
+                    return navigationTo(menuItem.getItemId());
                 });
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                R.string.app_name, R.string.app_name);
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     private void display(Fragment fragment) {
-        fragmentManager.beginTransaction().replace(R.id.fragment, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 
     private boolean navigationTo(int itemId) {
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment);
+        if (itemId == currentItemId) return true;
         switch (itemId) {
             case R.id.navigation_item_0:
-                if (fragment instanceof WorldFragment)
-                    return false;
-                else display(new WorldFragment());
+                display(new WorldFragment());
+                currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
-                if (fragment instanceof TestFragment)
-                    return false;
-                else display(new TestFragment());
+                display(new TestFragment());
+                currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:
-                if (fragment instanceof WorldFragment)
-                    return false;
-                else display(new WorldFragment());
+                display(new WorldFragment());
+                currentItemId = itemId;
                 break;
             case R.id.navigation_item_3:
-                fragmentManager.beginTransaction().replace(R.id.fragment, new WorldFragment())
-                        .commit();
+                display(new TestFragment());
+                currentItemId = itemId;
                 break;
             case R.id.navigation_item_4:
                 Intent intent = new Intent("to setting");//TODO add intent to setting

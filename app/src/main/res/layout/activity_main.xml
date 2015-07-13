@@ -6,13 +6,12 @@
     android:fitsSystemWindows="true">
 
 
-    <fragment
-        android:id="@+id/fragment"
-        android:name="co.yishun.onemoment.app.ui.WorldFragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        />
+        android:fitsSystemWindows="true">
+    </FrameLayout>
 
     <include
         layout="@layout/layout_navigation"
