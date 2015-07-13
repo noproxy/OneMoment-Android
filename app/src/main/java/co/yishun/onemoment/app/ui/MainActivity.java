@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,7 +17,7 @@ import co.yishun.onemoment.app.R;
 public final class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private ActionBarDrawerToggle mDrawerToggle;
-    private int currentItemId = 0;
+    private int currentItemId = R.id.navigation_item_0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,7 @@ public final class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
-        navigationTo(R.id.navigation_item_0);
+
     }
 
     private void setupNavigationView() {
@@ -42,27 +41,24 @@ public final class MainActivity extends AppCompatActivity {
         drawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private void display(Fragment fragment) {
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
-    }
-
     private boolean navigationTo(int itemId) {
         if (itemId == currentItemId) return true;
         switch (itemId) {
             case R.id.navigation_item_0:
-                display(new WorldFragment());
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, new
+                        WorldFragment()).commit();
+                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
-                display(new TestFragment());
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, new
+                        TestFragment()).addToBackStack(null).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:
-                display(new WorldFragment());
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_3:
-                display(new TestFragment());
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_4:
