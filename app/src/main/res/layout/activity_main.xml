@@ -1,8 +1,22 @@
-<fragment
-    android:id="@+id/fragment"
-    android:name="co.yishun.onemoment.app.TestFragment"
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawerLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout="@layout/fragment_test"/>
+    android:fitsSystemWindows="true">
+
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="co.yishun.onemoment.app.ui.WorldFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        />
+
+    <include
+        layout="@layout/layout_navigation"
+        android:fitsSystemWindows="true"
+        />
+
+</android.support.v4.widget.DrawerLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="@color/background_material_dark"
+                android:fitsSystemWindows="true"
+                android:gravity="bottom"
+                android:padding="16dp"
+                tools:showIn="@layout/layout_navigation"
+    >
+
+    <ImageView
+        android:id="@+id/profile_image_view"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/content_des_profile_image"
+        android:minHeight="56dp"
+        android:minWidth="56dp"
+        android:padding="16dp"
+        android:src="@drawable/abc_btn_radio_to_on_mtrl_000"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/profile_image_view"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_header_user_name_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_header_location_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>
