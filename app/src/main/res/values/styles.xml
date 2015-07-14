@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorPrimary</item>
@@ -10,6 +10,9 @@
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:windowBackground">@drawable/bg_window</item>
         <item name="android:windowActionBar">false</item>
-        <!--<item name="android:windowTranslucentStatus">true</item>-->
+    </style>
+
+    <style name="AppTheme" parent="Base">
+
     </style>
 </resources>
