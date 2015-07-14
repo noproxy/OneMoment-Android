@@ -10,7 +10,9 @@
     android:background="?android:colorBackground"
     android:fitsSystemWindows="true"
     app:headerLayout="@layout/layout_nav_header"
-    app:itemTextColor="?android:textColorPrimary"
+    app:itemBackground="@drawable/bg_nav_item"
+    app:itemIconTint="@color/nav_item_color_selector"
+    app:itemTextColor="@color/nav_item_color_selector"
     app:menu="@menu/menu_nav"
     tools:showIn="@layout/activity_main"
     />

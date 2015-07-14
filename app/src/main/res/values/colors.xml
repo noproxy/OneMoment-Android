@@ -2,7 +2,11 @@
 <resources>
     <color name="colorPrimary">#f7f7f7</color>
     <color name="colorAccent">#ffa84a</color>
+
     <color name="textColorPrimary">#8b8b8b</color>
     <color name="textColorPrimaryInverse">#ffffff</color>
+
     <color name="colorBackground">#f7f7f7</color>
+
+    <color name="colorPressed">#22b5b5b5</color>
 </resources>
