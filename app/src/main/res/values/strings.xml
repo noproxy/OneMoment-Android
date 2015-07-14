@@ -13,4 +13,6 @@
     <string name="nav_header_user_name_text">Username</string>
     <string name="nav_header_location_text">Hubei Wuhan</string>
     <string name="content_des_profile_image">Profile Image</string>
+
+    <string name="world_title">World</string>
 </resources>

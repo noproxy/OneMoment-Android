@@ -1,12 +1,10 @@
 package co.yishun.onemoment.app.ui;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +14,6 @@ import co.yishun.onemoment.app.R;
 
 public final class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
-    private ActionBarDrawerToggle mDrawerToggle;
     private int currentItemId = 0;
 
     @Override
@@ -37,8 +34,6 @@ public final class MainActivity extends AppCompatActivity {
                     drawerLayout.closeDrawers();
                     return navigationTo(menuItem.getItemId());
                 });
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
-        drawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     private boolean navigationTo(int itemId) {
@@ -83,7 +78,6 @@ public final class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (mDrawerToggle.onOptionsItemSelected(item)) return true;
         switch (item.getItemId()) {
             case R.id.action_settings:
                 return true;
@@ -97,17 +91,5 @@ public final class MainActivity extends AppCompatActivity {
 
     public void onUIAutomatorBtnClick(View view) {
         startActivity(new Intent(this, UIAutomatorTestActivity.class));
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 }

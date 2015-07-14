@@ -7,7 +7,10 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,8 @@ import co.yishun.onemoment.app.R;
  * Created by yyz on 7/13/15.
  */
 public final class WorldFragment extends BaseFragment {
+
+    Toolbar toolbar;
 
     public WorldFragment() {
     }
@@ -37,7 +42,27 @@ public final class WorldFragment extends BaseFragment {
         return rootView;
     }
 
+    protected void setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
+        if (toolbar == null)
+            throw new UnsupportedOperationException("You need bind Toolbar instance to" +
+                    " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
+        activity.setSupportActionBar(toolbar);
+
+        final ActionBar ab = activity.getSupportActionBar();
+        assert ab != null;
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setHomeAsUpIndicator(R.drawable.ic_world_menu);
+        Log.i("setupToolbar", "set home as up true");
+
+        ab.setTitle(R.string.world_title);
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        setupToolbar((AppCompatActivity) getActivity(), toolbar);
+    }
 }
+
 
 class WorldViewPagerAdapter extends PagerAdapter {
     private final Context context;
