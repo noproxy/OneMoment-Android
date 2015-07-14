@@ -17,7 +17,7 @@ import co.yishun.onemoment.app.R;
 public final class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private ActionBarDrawerToggle mDrawerToggle;
-    private int currentItemId = R.id.navigation_item_0;
+    private int currentItemId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public final class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
-
+        navigationTo(R.id.navigation_item_0);
     }
 
     private void setupNavigationView() {
@@ -45,14 +45,14 @@ public final class MainActivity extends AppCompatActivity {
         if (itemId == currentItemId) return true;
         switch (itemId) {
             case R.id.navigation_item_0:
+//                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, new
                         WorldFragment()).commit();
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, new
-                        TestFragment()).addToBackStack(null).commit();
+                        TestFragment()).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:
