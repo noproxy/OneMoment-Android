@@ -51,15 +51,15 @@ public final class WorldFragment extends BaseFragment {
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setHomeAsUpIndicator(R.drawable.ic_world_menu);
-        Log.i("setupToolbar", "set home as up true");
-
         ab.setTitle(R.string.world_title);
+        Log.i("setupToolbar", "set home as up true");
     }
 
     @Override public void onResume() {
         super.onResume();
-        setupToolbar((AppCompatActivity) getActivity(), toolbar);
+        MainActivity activity = (MainActivity) getActivity();
+        setupToolbar(activity, toolbar);
+        activity.syncToggle();
     }
 }
 

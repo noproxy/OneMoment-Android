@@ -36,12 +36,14 @@ public class TestFragment extends BaseFragment {
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setHomeAsUpIndicator(R.drawable.ic_world_menu);
+        ab.setTitle(R.string.title_activity_espresso_test);
         Log.i("setupToolbar", "set home as up true");
     }
 
     @Override public void onResume() {
         super.onResume();
-        setupToolbar((AppCompatActivity) getActivity(), toolbar);
+        MainActivity activity = (MainActivity) getActivity();
+        setupToolbar(activity, toolbar);
+        activity.syncToggle();
     }
 }
