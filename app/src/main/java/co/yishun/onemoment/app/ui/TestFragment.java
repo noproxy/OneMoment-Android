@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ public class TestFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_test, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_test, container, false);
+        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        return rootView;
     }
 }

@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public final class WorldFragment extends BaseFragment {
         AppBarLayout appBar = (AppBarLayout) rootView.findViewById(R.id.appBar);
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
+        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
         WorldViewPagerAdapter viewPagerAdapter = new WorldViewPagerAdapter(inflater.getContext());
         viewPager.setAdapter(viewPagerAdapter);

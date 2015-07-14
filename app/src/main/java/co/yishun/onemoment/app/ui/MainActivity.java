@@ -45,14 +45,15 @@ public final class MainActivity extends AppCompatActivity {
         if (itemId == currentItemId) return true;
         switch (itemId) {
             case R.id.navigation_item_0:
-//                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, new
                         WorldFragment()).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, new
-                        TestFragment()).commit();
+                TestFragment fragment = new TestFragment();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:
