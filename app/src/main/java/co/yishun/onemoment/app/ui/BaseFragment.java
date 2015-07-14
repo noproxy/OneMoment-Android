@@ -16,7 +16,8 @@ import co.yishun.onemoment.app.R;
 public abstract class BaseFragment extends Fragment {
     protected void setupToolbar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar((Toolbar) activity.findViewById(R.id.toolbar));
+        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+        activity.setSupportActionBar(toolbar);
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
@@ -40,7 +41,6 @@ public abstract class BaseFragment extends Fragment {
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.i("fragment lifecycle", "on act created called!");
-        setupToolbar();
     }
 
     @Override public void onStart() {
