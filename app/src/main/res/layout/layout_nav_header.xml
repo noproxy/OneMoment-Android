@@ -27,8 +27,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@id/profile_image_view"
+        android:layout_toRightOf="@+id/profile_image_view"
         android:orientation="vertical"
         android:paddingEnd="0dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="0dp"
         android:paddingStart="16dp"
         >
 
