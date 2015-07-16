@@ -10,15 +10,21 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import co.yishun.onemoment.app.R;
 
@@ -82,20 +88,35 @@ class WorldViewPagerAdapter extends PagerAdapter {
         this.context = inflater.getContext();
     }
 
+    public static BaseSliderView generateSimpleSliderView(Context context, @DrawableRes int
+            imageRes) {
+        return new BaseSliderView(context) {
+            @Override public View getView() {
+                ImageView imageView = (ImageView) View.inflate(context, R.layout.layout_slider_image, null);
+                imageView.setImageResource(imageRes);
+                return imageView;
+            }
+        };
+    }
+
     @Override public Object instantiateItem(ViewGroup container, int position) {
         boolean isRecommend = position == 0;
         View rootView = inflater.inflate(R.layout.page_world, container,
                 false);
-        SliderLayout worldSlider = (SliderLayout) rootView.findViewById(R.id.worldSlider);
-        worldSlider.addSlider(generateSimpleSliderView(R.drawable.ic_diary));
-        worldSlider.addSlider(generateSimpleSliderView(R.drawable.ic_explore));
-        worldSlider.addSlider(generateSimpleSliderView(R.drawable.ic_me));
 
-        if (isRecommend) {
-            worldSlider.setVisibility(View.VISIBLE);
-        } else {
-            worldSlider.setVisibility(View.GONE);
-        }
+
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setHasFixedSize(true);
+
+        final List<String> content = new ArrayList<>();
+        for (int i = 0; i < 30; i++)
+            content.add("text" + i);
+        RecyclerView.Adapter adapter = new WorldAdapter(context, content, isRecommend);
+
+        recyclerView.setAdapter(adapter);
         container.addView(rootView);
         return rootView;
     }
@@ -113,21 +134,10 @@ class WorldViewPagerAdapter extends PagerAdapter {
     }
 
     @Override public boolean isViewFromObject(View view, Object object) {
-
         return view == object;
     }
 
-    public BaseSliderView generateSimpleSliderView(@DrawableRes int imageRes) {
-        return new BaseSliderView(context) {
-            @Override public View getView() {
-                ImageView imageView = new ImageView(context);
-                imageView.setImageResource(imageRes);
-                return imageView;
-            }
-        };
-    }
-
-    public BaseSliderView generateSimpleSliderView(String url) {
+    private BaseSliderView generateSimpleSliderView(String url) {
         return new BaseSliderView(context) {
             @Override public View getView() {
                 ImageView imageView = new ImageView(context);
@@ -135,5 +145,62 @@ class WorldViewPagerAdapter extends PagerAdapter {
                 return imageView;
             }
         };
+    }
+
+    static class SimpleViewHolder extends RecyclerView.ViewHolder {
+        public SimpleViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    static class WorldAdapter extends RecyclerView.Adapter<SimpleViewHolder> {
+        private final int TYPE_HEADER = -1;
+        private final int TYPE_ITEM = -2;
+        private final Context context;
+        private final List<String> items;
+        private final boolean hasHeader;
+
+        public WorldAdapter(Context context, List<String> items, boolean hasHeader) {
+            super();
+            this.context = context;
+            this.items = items;
+            this.hasHeader = hasHeader;
+        }
+
+        @Override public int getItemViewType(int position) {
+            return position == 0 ? TYPE_HEADER : TYPE_ITEM;
+        }
+
+        @Override
+        public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new SimpleViewHolder(LayoutInflater.from(context).inflate(
+                    hasHeader ?
+                            (viewType == TYPE_HEADER ? R.layout.layout_world_header_slider : android.R.layout.simple_list_item_1)
+                            : android.R.layout.simple_list_item_1,
+                    parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(SimpleViewHolder holder, int position) {
+            if (hasHeader) {
+                if (getItemViewType(position) == TYPE_HEADER) {
+                    SliderLayout worldSlider = (SliderLayout) holder.itemView.findViewById
+                            (R.id.worldSlider);
+                    worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.ic_diary));
+                    worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.ic_explore));
+                    worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.ic_me));
+                } else {
+                    ((TextView) holder.itemView).setText(items.get(position - 1));
+                }
+            } else {
+                ((TextView) holder.itemView).setText(items.get(position));
+            }
+
+
+        }
+
+        @Override public int getItemCount() {
+            return items.size() + (hasHeader ? 1 : 0);
+        }
     }
 }

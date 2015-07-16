@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
-apply from: '/home/yyz/OneMoment/private.gradle'
+apply from: '/home/yyz/AndroidStudioProjects/OneMoment/private.gradle'
 
 android {
     signingConfigs {
@@ -140,6 +140,7 @@ dependencies {
     compile 'com.daimajia.androidviewhover:library:1.0.4@aar'
     compile 'nl.codesoup.cubicbezier:cubicbezier:1.0.0'
     compile 'de.hdodenhof:circleimageview:1.3.0'
+    compile 'com.marshalchen.ultimaterecyclerview:library:0.3.10'
 }
 
 apply plugin: 'aar-link-sources'
@@ -147,5 +148,6 @@ apply plugin: 'aar-link-sources'
 dependencies {
     aarLinkSources 'com.android.support.test.espresso:espresso-core:2.2:sources@jar'
     aarLinkSources 'com.android.support:recyclerview-v7:22.2.0:sources@jar'
+    aarLinkSources 'com.daimajia.slider:library:1.1.5:sources@jar'
     // not available    aarLinkSources 'com.android.support:design:22.2.0:sources@jar'
 }

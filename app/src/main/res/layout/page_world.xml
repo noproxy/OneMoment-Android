@@ -1,21 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-    >
-
-    <com.daimajia.slider.library.SliderLayout
-        android:id="@+id/worldSlider"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_gravity="end"
-        />
-
-    <Button
-        android:id="@+id/stub"
-        android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:text="stub"
-        />
-</LinearLayout>
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/recyclerView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    />
