@@ -1,6 +1,8 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -13,6 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 
 import co.yishun.onemoment.app.R;
 
@@ -68,23 +74,27 @@ class WorldViewPagerAdapter extends PagerAdapter {
             R.string.world_page_recommend_title,
             R.string.world_page_latest_title
     };
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
+    private final Context context;
 
     public WorldViewPagerAdapter(LayoutInflater inflater) {
         this.inflater = inflater;
+        this.context = inflater.getContext();
     }
 
     @Override public Object instantiateItem(ViewGroup container, int position) {
         boolean isRecommend = position == 0;
         View rootView = inflater.inflate(R.layout.page_world, container,
                 false);
-        View worldSlider = rootView.findViewById(R.id.worldSlider);
-
+        SliderLayout worldSlider = (SliderLayout) rootView.findViewById(R.id.worldSlider);
+        worldSlider.addSlider(generateSimpleSliderView(R.drawable.ic_diary));
+        worldSlider.addSlider(generateSimpleSliderView(R.drawable.ic_explore));
+        worldSlider.addSlider(generateSimpleSliderView(R.drawable.ic_me));
 
         if (isRecommend) {
             worldSlider.setVisibility(View.VISIBLE);
         } else {
-            worldSlider.setVisibility(View.INVISIBLE);
+            worldSlider.setVisibility(View.GONE);
         }
         container.addView(rootView);
         return rootView;
@@ -95,7 +105,7 @@ class WorldViewPagerAdapter extends PagerAdapter {
     }
 
     @Override public CharSequence getPageTitle(int position) {
-        return inflater.getContext().getString(TITLE_RES[position]);
+        return context.getString(TITLE_RES[position]);
     }
 
     @Override public int getCount() {
@@ -105,5 +115,25 @@ class WorldViewPagerAdapter extends PagerAdapter {
     @Override public boolean isViewFromObject(View view, Object object) {
 
         return view == object;
+    }
+
+    public BaseSliderView generateSimpleSliderView(@DrawableRes int imageRes) {
+        return new BaseSliderView(context) {
+            @Override public View getView() {
+                ImageView imageView = new ImageView(context);
+                imageView.setImageResource(imageRes);
+                return imageView;
+            }
+        };
+    }
+
+    public BaseSliderView generateSimpleSliderView(String url) {
+        return new BaseSliderView(context) {
+            @Override public View getView() {
+                ImageView imageView = new ImageView(context);
+                //TODO load image from url
+                return imageView;
+            }
+        };
     }
 }
