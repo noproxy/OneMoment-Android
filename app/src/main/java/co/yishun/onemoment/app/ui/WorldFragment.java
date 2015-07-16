@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -36,7 +35,7 @@ public final class WorldFragment extends BaseFragment {
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
-        WorldViewPagerAdapter viewPagerAdapter = new WorldViewPagerAdapter(inflater.getContext());
+        WorldViewPagerAdapter viewPagerAdapter = new WorldViewPagerAdapter(inflater);
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         return rootView;
@@ -65,19 +64,19 @@ public final class WorldFragment extends BaseFragment {
 
 
 class WorldViewPagerAdapter extends PagerAdapter {
-    private final Context context;
     private final int TITLE_RES[] = new int[]{
             R.string.world_page_recommend_title,
             R.string.world_page_latest_title
     };
+    private LayoutInflater inflater;
 
-    public WorldViewPagerAdapter(Context context) {
-        this.context = context;
+    public WorldViewPagerAdapter(LayoutInflater inflater) {
+        this.inflater = inflater;
     }
 
     @Override public Object instantiateItem(ViewGroup container, int position) {
         boolean isRecommend = position == 0;
-        View rootView = LayoutInflater.from(context).inflate(R.layout.page_world, container,
+        View rootView = inflater.inflate(R.layout.page_world, container,
                 false);
         View worldSlider = rootView.findViewById(R.id.worldSlider);
 
@@ -87,11 +86,16 @@ class WorldViewPagerAdapter extends PagerAdapter {
         } else {
             worldSlider.setVisibility(View.INVISIBLE);
         }
+        container.addView(rootView);
         return rootView;
     }
 
+    @Override public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
+    }
+
     @Override public CharSequence getPageTitle(int position) {
-        return context.getString(TITLE_RES[position]);
+        return inflater.getContext().getString(TITLE_RES[position]);
     }
 
     @Override public int getCount() {
@@ -99,6 +103,7 @@ class WorldViewPagerAdapter extends PagerAdapter {
     }
 
     @Override public boolean isViewFromObject(View view, Object object) {
-        return false;
+
+        return view == object;
     }
 }

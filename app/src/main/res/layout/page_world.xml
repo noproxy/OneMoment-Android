@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+    >
 
     <View
         android:id="@+id/worldSlider"
@@ -13,7 +14,7 @@
     <Button
         android:id="@+id/stub"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="280dp"
         android:text="stub"
         />
 </LinearLayout>
