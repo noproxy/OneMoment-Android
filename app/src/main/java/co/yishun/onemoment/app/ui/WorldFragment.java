@@ -66,6 +66,10 @@ public final class WorldFragment extends BaseFragment {
 
 class WorldViewPagerAdapter extends PagerAdapter {
     private final Context context;
+    private final int TITLE_RES[] = new int[]{
+            R.string.world_page_recommend_title,
+            R.string.world_page_latest_title
+    };
 
     public WorldViewPagerAdapter(Context context) {
         this.context = context;
@@ -84,6 +88,10 @@ class WorldViewPagerAdapter extends PagerAdapter {
             worldSlider.setVisibility(View.INVISIBLE);
         }
         return rootView;
+    }
+
+    @Override public CharSequence getPageTitle(int position) {
+        return context.getString(TITLE_RES[position]);
     }
 
     @Override public int getCount() {

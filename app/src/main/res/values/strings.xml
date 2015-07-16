@@ -15,4 +15,6 @@
     <string name="content_des_profile_image">Profile Image</string>
 
     <string name="world_title">World</string>
+    <string name="world_page_recommend_title">Recommend</string>
+    <string name="world_page_latest_title">Latest</string>
 </resources>
