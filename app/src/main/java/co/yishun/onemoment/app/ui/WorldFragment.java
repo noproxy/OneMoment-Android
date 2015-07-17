@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -18,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -93,7 +93,10 @@ class WorldViewPagerAdapter extends PagerAdapter {
         return new BaseSliderView(context) {
             @Override public View getView() {
                 ImageView imageView = (ImageView) View.inflate(context, R.layout.layout_slider_image, null);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setImageResource(imageRes);
+                imageView.setOnClickListener(v -> Snackbar.make(MainActivity.withView(v), "slider " +
+                        "clicked!", Snackbar.LENGTH_SHORT).show());
                 return imageView;
             }
         };
@@ -153,7 +156,7 @@ class WorldViewPagerAdapter extends PagerAdapter {
         }
     }
 
-    static class WorldAdapter extends RecyclerView.Adapter<SimpleViewHolder> {
+    static class WorldAdapter extends RecyclerView.Adapter<SimpleViewHolder> implements View.OnClickListener {
         private final int TYPE_HEADER = -1;
         private final int TYPE_ITEM = -2;
         private final Context context;
@@ -173,34 +176,36 @@ class WorldViewPagerAdapter extends PagerAdapter {
 
         @Override
         public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new SimpleViewHolder(LayoutInflater.from(context).inflate(
-                    hasHeader ?
-                            (viewType == TYPE_HEADER ? R.layout.layout_world_header_slider : android.R.layout.simple_list_item_1)
-                            : android.R.layout.simple_list_item_1,
-                    parent, false));
+            final SimpleViewHolder holder;
+            if (hasHeader && viewType == TYPE_HEADER) {
+                holder = new SimpleViewHolder(LayoutInflater.from(context).inflate(R.layout
+                        .layout_world_header_slider, parent, false));
+                SliderLayout worldSlider = (SliderLayout) holder.itemView.findViewById
+                        (R.id.worldSlider);
+                worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.pic_slider_loading));
+                worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.pic_slider_loading));
+                worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.pic_slider_loading));
+            } else {
+                holder = new SimpleViewHolder(LayoutInflater.from(context).inflate(R.layout
+                        .layout_world_item, parent, false));
+                holder.itemView.setOnClickListener(this);
+            }
+            return holder;
         }
 
         @Override
         public void onBindViewHolder(SimpleViewHolder holder, int position) {
-            if (hasHeader) {
-                if (getItemViewType(position) == TYPE_HEADER) {
-                    SliderLayout worldSlider = (SliderLayout) holder.itemView.findViewById
-                            (R.id.worldSlider);
-                    worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.ic_diary));
-                    worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.ic_explore));
-                    worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.ic_me));
-                } else {
-                    ((TextView) holder.itemView).setText(items.get(position - 1));
-                }
-            } else {
-                ((TextView) holder.itemView).setText(items.get(position));
+            if (!hasHeader || getItemViewType(position) != TYPE_HEADER) {
+
             }
-
-
         }
 
         @Override public int getItemCount() {
             return items.size() + (hasHeader ? 1 : 0);
+        }
+
+        @Override public void onClick(View v) {
+            Snackbar.make(MainActivity.withView(v), "test", Snackbar.LENGTH_SHORT).show();
         }
     }
 }
