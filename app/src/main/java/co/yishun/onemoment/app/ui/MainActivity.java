@@ -3,6 +3,8 @@ package co.yishun.onemoment.app.ui;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -13,13 +15,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+
 import co.yishun.onemoment.app.R;
 
 public final class MainActivity extends AppCompatActivity {
-    public static ActionBarDrawerToggle mDrawerToggle;
+    private static WeakReference<FloatingActionButton> floatingActionButton;
+    public ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawerLayout;
     private FragmentManager fragmentManager;
     private int currentItemId = 0;
+
+    /**
+     * get fab to display SnackBar
+     *
+     * @param view where SnackBar called
+     * @return FloatingActionBar view if exists, the origin param view if not exists.
+     */
+    public static @NonNull View withView(@NonNull View view) {
+        FloatingActionButton fab = floatingActionButton.get();
+        if (fab != null) {
+            return fab;
+        } else return view;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +57,7 @@ public final class MainActivity extends AppCompatActivity {
                     drawerLayout.closeDrawers();
                     return navigationTo(menuItem.getItemId());
                 });
+        floatingActionButton = new WeakReference<>((FloatingActionButton) findViewById(R.id.fab));
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
     }
