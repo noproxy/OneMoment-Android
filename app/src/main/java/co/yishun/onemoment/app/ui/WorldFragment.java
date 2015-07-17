@@ -23,9 +23,6 @@ import android.widget.ImageView;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import co.yishun.onemoment.app.R;
 
 /**
@@ -76,12 +73,48 @@ public final class WorldFragment extends BaseFragment {
 
 
 class WorldViewPagerAdapter extends PagerAdapter {
+    public static final int res[] = new int[]{
+            R.drawable.pic_world_item_test_0,
+            R.drawable.pic_world_item_test_1,
+            R.drawable.pic_world_item_test_2,
+            R.drawable.pic_world_item_test_3,
+            R.drawable.pic_world_item_test_4,
+            R.drawable.pic_world_item_test_5,
+            R.drawable.pic_world_item_test_6,
+            R.drawable.pic_world_item_test_7,
+            R.drawable.pic_world_item_test_8,
+            R.drawable.pic_world_item_test_9,
+            R.drawable.pic_world_item_test_10,
+            R.drawable.pic_world_item_test_11,
+            R.drawable.pic_world_item_test_12,
+            R.drawable.pic_world_item_test_13,
+            R.drawable.pic_world_item_test_14,
+            R.drawable.pic_world_item_test_15,
+            R.drawable.pic_world_item_test_16,
+            R.drawable.pic_world_item_test_17,
+            R.drawable.pic_world_item_test_18,
+            R.drawable.pic_world_item_test_19,
+            R.drawable.pic_world_item_test_20,
+            R.drawable.pic_world_item_test_21,
+            R.drawable.pic_world_item_test_22,
+            R.drawable.pic_world_item_test_23,
+            R.drawable.pic_world_item_test_24,
+            R.drawable.pic_world_item_test_25,
+            R.drawable.pic_world_item_test_26,
+            R.drawable.pic_world_item_test_27,
+            R.drawable.pic_world_item_test_28,
+            R.drawable.pic_world_item_test_29,
+            R.drawable.pic_world_item_test_30,
+            R.drawable.pic_world_item_test_31,
+            R.drawable.pic_world_item_test_32
+    };
     private final int TITLE_RES[] = new int[]{
             R.string.world_page_recommend_title,
             R.string.world_page_latest_title
     };
     private final LayoutInflater inflater;
     private final Context context;
+
 
     public WorldViewPagerAdapter(LayoutInflater inflater) {
         this.inflater = inflater;
@@ -114,10 +147,7 @@ class WorldViewPagerAdapter extends PagerAdapter {
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
 
-        final List<String> content = new ArrayList<>();
-        for (int i = 0; i < 30; i++)
-            content.add("text" + i);
-        RecyclerView.Adapter adapter = new WorldAdapter(context, content, isRecommend);
+        RecyclerView.Adapter adapter = new WorldAdapter(context, res, isRecommend);
 
         recyclerView.setAdapter(adapter);
         container.addView(rootView);
@@ -151,19 +181,25 @@ class WorldViewPagerAdapter extends PagerAdapter {
     }
 
     static class SimpleViewHolder extends RecyclerView.ViewHolder {
+        final View itemDraweeView;
+
         public SimpleViewHolder(View itemView) {
             super(itemView);
+            this.itemDraweeView = itemView.findViewById(R.id.itemDraweeView);
         }
+
     }
 
-    static class WorldAdapter extends RecyclerView.Adapter<SimpleViewHolder> implements View.OnClickListener {
+    static class WorldAdapter extends RecyclerView.Adapter<SimpleViewHolder> implements
+            View
+                    .OnClickListener {
         private final int TYPE_HEADER = -1;
         private final int TYPE_ITEM = -2;
         private final Context context;
-        private final List<String> items;
+        private final int items[];
         private final boolean hasHeader;
 
-        public WorldAdapter(Context context, List<String> items, boolean hasHeader) {
+        public WorldAdapter(Context context, int items[], boolean hasHeader) {
             super();
             this.context = context;
             this.items = items;
@@ -183,11 +219,10 @@ class WorldViewPagerAdapter extends PagerAdapter {
                 SliderLayout worldSlider = (SliderLayout) holder.itemView.findViewById
                         (R.id.worldSlider);
                 worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.pic_slider_loading));
-                worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.pic_slider_loading));
-                worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.pic_slider_loading));
+                worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.pic_slider_header_test_0));
+                worldSlider.addSlider(generateSimpleSliderView(context, R.drawable.pic_slider_header_test_1));
             } else {
-                holder = new SimpleViewHolder(LayoutInflater.from(context).inflate(R.layout
-                        .layout_world_item, parent, false));
+                holder = new SimpleViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_world_item, parent, false));
                 holder.itemView.setOnClickListener(this);
             }
             return holder;
@@ -200,8 +235,13 @@ class WorldViewPagerAdapter extends PagerAdapter {
             }
         }
 
+        @Override public long getItemId(int position) {
+            if (hasHeader) return position - 1;
+            else return position;
+        }
+
         @Override public int getItemCount() {
-            return items.size() + (hasHeader ? 1 : 0);
+            return items.length + (hasHeader ? 1 : 0);
         }
 
         @Override public void onClick(View v) {
