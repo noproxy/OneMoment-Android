@@ -26,6 +26,8 @@
         <entry key="property.minPriorityToReport" value="Medium" />
         <entry key="property.runAnalysisInBackground" value="false" />
         <entry key="property.showHiddenDetectors" value="false" />
+        <entry key="property.toolWindowEditorPreview" value="true" />
+        <entry key="property.toolWindowGroupBy" value="Class" />
         <entry key="property.toolWindowToFront" value="true" />
       </map>
     </option>
@@ -212,6 +214,12 @@
         <entry key="SECURITY" value="true" />
         <entry key="STYLE" value="true" />
       </map>
+    </option>
+    <option name="_excludeFilters">
+      <list>
+        <option value="$PROJECT_DIR$/app/build/generated" />
+        <option value="$PROJECT_DIR$/app/build/generated/source/r" />
+      </list>
     </option>
     <option name="_annotationTypeSettings">
       <map>
