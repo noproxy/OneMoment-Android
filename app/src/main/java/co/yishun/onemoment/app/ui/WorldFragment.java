@@ -233,8 +233,7 @@ class WorldViewPagerAdapter extends PagerAdapter {
         @Override
         public void onBindViewHolder(SimpleViewHolder holder, int position) {
             if (!hasHeader || getItemViewType(position) != TYPE_HEADER) {
-                Picasso.with(context).load(res[((int) getItemId(position))]).centerCrop().into
-                        (holder.itemImageView());
+                Picasso.with(context).load(res[((int) getItemId(position))]).into(holder.itemImageView());
             }
         }
 

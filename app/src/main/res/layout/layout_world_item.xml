@@ -4,12 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="12dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="4dp"
     app:cardCornerRadius="4dp"
+    app:cardElevation="8dp"
     app:contentPadding="0dp"
     >
 
@@ -26,10 +28,10 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_world_card_text"
         android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingStart="8dp"
         >
 
         <TextView
@@ -40,10 +42,12 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"
             android:drawablePadding="8dp"
             android:gravity="center"
-            android:text="56 people"
+            android:text="56 People"
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
+            android:textColor="@color/textColorPrimaryInverse"
             />
 
         <TextView
@@ -57,6 +61,7 @@
             android:gravity="center"
             android:text="Happy Hongkong"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+            android:textColor="@color/textColorPrimaryInverse"
             />
 
 
@@ -73,6 +78,7 @@
             android:gravity="center"
             android:text="23"
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
+            android:textColor="@color/textColorPrimaryInverse"
             />
 
     </RelativeLayout>
