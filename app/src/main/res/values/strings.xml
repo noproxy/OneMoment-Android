@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">One Moment</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world" translatable="false">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_espresso_test">EspressoTestActivity</string>
+    <string name="title_activity_espresso_test" translatable="false">EspressoTestActivity</string>
 
     <string name="navigation_item_text_0">World</string>
     <string name="navigation_item_text_1">Diary</string>
@@ -14,7 +14,7 @@
     <string name="nav_header_location_text">Hubei Wuhan</string>
     <string name="content_des_profile_image">Profile Image</string>
 
-    <string name="world_title">World</string>
+    <string name="world_title" translatable="false">World</string>
     <string name="world_page_recommend_title">Recommend</string>
     <string name="world_page_latest_title">Latest</string>
 </resources>

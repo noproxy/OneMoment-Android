@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">一瞬</string>
+    <string name="action_settings">设置</string>
+    <string name="content_des_profile_image">头像</string>
+    <string name="nav_header_location_text">湖北 武汉</string>
+    <string name="nav_header_user_name_text">用户名</string>
+    <string name="navigation_item_text_0">世界</string>
+    <string name="navigation_item_text_1">日记</string>
+    <string name="navigation_item_text_2">发现</string>
+    <string name="navigation_item_text_3">我</string>
+    <string name="navigation_item_text_4">设置</string>
+    <string name="world_page_latest_title">最新</string>
+    <string name="world_page_recommend_title">推荐</string>
+</resources>
