@@ -3,8 +3,6 @@ package co.yishun.onemoment.app.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -22,6 +20,7 @@ import android.widget.ImageView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.squareup.picasso.Picasso;
 
 import co.yishun.onemoment.app.R;
 
@@ -38,8 +37,8 @@ public final class WorldFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_world, container, false);
-        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
-        AppBarLayout appBar = (AppBarLayout) rootView.findViewById(R.id.appBar);
+//        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
+//        AppBarLayout appBar = (AppBarLayout) rootView.findViewById(R.id.appBar);
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
@@ -118,16 +117,17 @@ class WorldViewPagerAdapter extends PagerAdapter {
 
     public WorldViewPagerAdapter(LayoutInflater inflater) {
         this.inflater = inflater;
-        this.context = inflater.getContext();
+        this.context = inflater.getContext().getApplicationContext();
     }
 
     public static BaseSliderView generateSimpleSliderView(Context context, @DrawableRes int
             imageRes) {
-        return new BaseSliderView(context) {
+        return new BaseSliderView(context.getApplicationContext()) {
             @Override public View getView() {
                 ImageView imageView = (ImageView) View.inflate(context, R.layout.layout_slider_image, null);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setImageResource(imageRes);
+//                imageView.setImageResource(imageRes);
+                Picasso.with(context).load(imageRes).into(imageView);
                 imageView.setOnClickListener(v -> Snackbar.make(MainActivity.withView(v), "slider " +
                         "clicked!", Snackbar.LENGTH_SHORT).show());
                 return imageView;
@@ -181,11 +181,12 @@ class WorldViewPagerAdapter extends PagerAdapter {
     }
 
     static class SimpleViewHolder extends RecyclerView.ViewHolder {
-        final View itemDraweeView;
-
         public SimpleViewHolder(View itemView) {
             super(itemView);
-            this.itemDraweeView = itemView.findViewById(R.id.itemDraweeView);
+        }
+
+        public ImageView itemImageView() {
+            return (ImageView) itemView.findViewById(R.id.itemImageView);
         }
 
     }
@@ -193,15 +194,15 @@ class WorldViewPagerAdapter extends PagerAdapter {
     static class WorldAdapter extends RecyclerView.Adapter<SimpleViewHolder> implements
             View
                     .OnClickListener {
-        private final int TYPE_HEADER = -1;
-        private final int TYPE_ITEM = -2;
+        private final static int TYPE_HEADER = -1;
+        private final static int TYPE_ITEM = -2;
         private final Context context;
         private final int items[];
         private final boolean hasHeader;
 
         public WorldAdapter(Context context, int items[], boolean hasHeader) {
             super();
-            this.context = context;
+            this.context = context.getApplicationContext();
             this.items = items;
             this.hasHeader = hasHeader;
         }
@@ -214,6 +215,7 @@ class WorldViewPagerAdapter extends PagerAdapter {
         public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             final SimpleViewHolder holder;
             if (hasHeader && viewType == TYPE_HEADER) {
+                Log.i("recycler view", "create header");
                 holder = new SimpleViewHolder(LayoutInflater.from(context).inflate(R.layout
                         .layout_world_header_slider, parent, false));
                 SliderLayout worldSlider = (SliderLayout) holder.itemView.findViewById
@@ -231,8 +233,14 @@ class WorldViewPagerAdapter extends PagerAdapter {
         @Override
         public void onBindViewHolder(SimpleViewHolder holder, int position) {
             if (!hasHeader || getItemViewType(position) != TYPE_HEADER) {
-
+                Picasso.with(context).load(res[((int) getItemId(position))]).centerCrop().into
+                        (holder.itemImageView());
             }
+        }
+
+        @Override public void onViewRecycled(SimpleViewHolder holder) {
+            super.onViewRecycled(holder);
+            Picasso.with(context).cancelRequest(holder.itemImageView());
         }
 
         @Override public long getItemId(int position) {
