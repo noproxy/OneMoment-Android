@@ -1,10 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +13,6 @@ import co.yishun.onemoment.app.R;
  */
 public class TestFragment extends BaseFragment {
 
-    Toolbar toolbar;
 
     public TestFragment() {
     }
@@ -28,22 +24,7 @@ public class TestFragment extends BaseFragment {
         return rootView;
     }
 
-    protected void setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
-        if (toolbar == null)
-            throw new UnsupportedOperationException("You need bind Toolbar instance to" +
-                    " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
-        activity.setSupportActionBar(toolbar);
-        final ActionBar ab = activity.getSupportActionBar();
-        assert ab != null;
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.title_activity_espresso_test);
-        Log.i("setupToolbar", "set home as up true");
-    }
-
-    @Override public void onResume() {
-        super.onResume();
-        MainActivity activity = (MainActivity) getActivity();
-        setupToolbar(activity, toolbar);
-        activity.syncToggle();
+    @Override protected int getTitle() {
+        return R.string.title_activity_espresso_test;
     }
 }

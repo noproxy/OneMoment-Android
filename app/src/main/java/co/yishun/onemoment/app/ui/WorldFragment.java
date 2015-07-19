@@ -7,8 +7,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,8 +27,6 @@ import co.yishun.onemoment.app.R;
  */
 public final class WorldFragment extends BaseFragment {
 
-    Toolbar toolbar;
-
     public WorldFragment() {
     }
 
@@ -49,24 +45,8 @@ public final class WorldFragment extends BaseFragment {
         return rootView;
     }
 
-    protected void setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
-        if (toolbar == null)
-            throw new UnsupportedOperationException("You need bind Toolbar instance to" +
-                    " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
-        activity.setSupportActionBar(toolbar);
-
-        final ActionBar ab = activity.getSupportActionBar();
-        assert ab != null;
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.world_title);
-        Log.i("setupToolbar", "set home as up true");
-    }
-
-    @Override public void onResume() {
-        super.onResume();
-        MainActivity activity = (MainActivity) getActivity();
-        setupToolbar(activity, toolbar);
-        activity.syncToggle();
+    @Override protected int getTitle() {
+        return R.string.world_title;
     }
 }
 
