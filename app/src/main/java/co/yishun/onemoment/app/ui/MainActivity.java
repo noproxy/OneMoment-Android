@@ -73,30 +73,37 @@ public final class MainActivity extends AppCompatActivity {
         //TODO add delay to let drawer close
         switch (itemId) {
             case R.id.navigation_item_0:
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, new
-                        WorldFragment()).commit();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, new WorldFragment()).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
-                TestFragment fragment = new TestFragment();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
-                        .addToBackStack(null).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:
+                DiscoveryFragment_ fragment2 = new DiscoveryFragment_();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment2).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_3:
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_4:
+                TestFragment fragment4 = new TestFragment();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment4).commit();
+                currentItemId = itemId;
                 Toast.makeText(this, "Not now!", Toast.LENGTH_SHORT).show();
 //                Intent intent = new Intent("to setting");//TODO add intent to setting
 //                startActivity(intent);
                 return false;
         }
         return true;
+    }
+
+    @Override public void onBackPressed() {
+        if (currentItemId != R.id.navigation_item_0) {
+            navigationTo(R.id.navigation_item_0);
+        } else
+            supportFinishAfterTransition();
     }
 
     @Override
