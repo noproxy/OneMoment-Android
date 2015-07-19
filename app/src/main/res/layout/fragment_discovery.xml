@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.DiscoveryFragment"
+    >
+
+    <include layout="@layout/layout_toolbar"/>
+
+    <Button
+        android:id="@+id/btnVideoLike"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_btn"
+        android:drawableLeft="@drawable/ic_fab"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_fab"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:padding="16dp"
+        android:text="@string/discovery_like_video"
+        />
+
+    <include layout="@layout/layout_divider"/>
+
+    <Button
+        android:id="@+id/btnAlarmEveryday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_btn"
+        android:drawableLeft="@drawable/ic_fab"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_fab"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:padding="16dp"
+        android:text="@string/discovery_alarm"
+        />
+</LinearLayout>
