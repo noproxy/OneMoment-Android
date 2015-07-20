@@ -25,6 +25,7 @@ public final class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     private FragmentManager fragmentManager;
     private int currentItemId = 0;
+    private WorldFragment worldFragment;
 
     /**
      * get fab to display SnackBar
@@ -73,7 +74,10 @@ public final class MainActivity extends AppCompatActivity {
         //TODO add delay to let drawer close
         switch (itemId) {
             case R.id.navigation_item_0:
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, new WorldFragment()).commit();
+                if (worldFragment == null) {
+                    worldFragment = new WorldFragment();
+                }
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, worldFragment).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
