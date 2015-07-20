@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.ppamorim.dragger.DraggerActivity;
+import com.github.ppamorim.dragger.DraggerView;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
@@ -32,8 +34,10 @@ import co.yishun.onemoment.app.R;
  */
 @EActivity(R.layout.activity_video_like)
 public class VideoLikeActivity extends DraggerActivity implements ItemClickSupport.OnItemClickListener, ItemClickSupport.OnItemLongClickListener {
+    private static final String CAN_ANIMATE = "can_animate";
     @ViewById Toolbar toolbar;
     @ViewById TwoWayView twoWayView;
+    @ViewById DraggerView draggerView;
 
     @AfterViews void setupToolbar() {
         setSupportActionBar(toolbar);
@@ -63,6 +67,11 @@ public class VideoLikeActivity extends DraggerActivity implements ItemClickSuppo
         twoWayView.addItemDecoration(new DividerItemDecoration(divider));
 
         twoWayView.setAdapter(new VideoLikeAdapter(this, twoWayView));
+    }
+
+    @Override protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(CAN_ANIMATE, draggerView.getCanAnimate());
     }
 
     @Override public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {

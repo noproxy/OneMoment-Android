@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.github.ppamorim.dragger.DraggerView
+    android:id="@+id/draggerView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dragger_layout="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     dragger_layout:drag_position="right"
-    dragger_layout:drag_view_id="@+id/drag_view"
+    dragger_layout:drag_view_id="@+id/dragView"
     dragger_layout:shadow_view_id="@+id/shadow_view">
 
     <FrameLayout
@@ -18,7 +19,7 @@
 
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/drag_view"
+        android:id="@+id/dragView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_window"
@@ -43,6 +44,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="8dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:twowayview_layoutManager="SpannableGridLayoutManager"
             app:twowayview_numColumns="3"
