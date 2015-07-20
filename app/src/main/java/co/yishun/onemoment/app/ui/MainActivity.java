@@ -91,7 +91,7 @@ public final class MainActivity extends AppCompatActivity {
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_4:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                Intent intent = new Intent(this, SettingsActivity_.class);
                 startActivity(intent);
                 return false;
         }

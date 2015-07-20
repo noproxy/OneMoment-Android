@@ -1,0 +1,48 @@
+<resources>
+    <string name="title_settings">Settings</string>
+
+    <!-- settings for Data & Sync -->
+    <string name="pref_title_sync">Data &amp; sync</string>
+    <string name="pref_title_sync_auto">Auto sync</string>
+    <string name="pref_summary_sync_auto">Backing up to server</string>
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+    </string-array>
+    <string name="pref_title_sync_wifi_only">Wifi only</string>
+    <string name="pref_summary_sync_wifi_only">Backup up Moment only when wifi is available</string>
+    <string name="pref_title_sync_at_once">Sync at once</string>
+    <string name="pref_summary_sync_at_once">Ignore any sync settings</string>
+
+    <string name="pref_title_remind">Remind</string>
+    <string name="pref_title_remind_everyday">Remind everyday</string>
+    <string name="pref_summary_remind_everyday">Shoot your moment everyday</string>
+
+    <string name="pref_title_remind_ringtone">Ringtone</string>
+    <string name="pref_remind_ringtone_silent">Silent</string>
+    <string name="pref_title_remind_vibrate">Vibrate</string>
+
+    <string name="pref_title_about">About</string>
+    <string name="pref_title_about_tour">Product Tour</string>
+    <string name="pref_title_about_follow">\@一瞬App</string>
+    <string name="pref_summary_about_follow">Follow us on sina weibo</string>
+    <string name="pref_data_about_follow">http://www.weibo.com/u/5319756895</string>
+    <string name="pref_title_about_remark">Remark us</string>
+    <string name="pref_summary_about_remark">Give us a remark on App Market</string>
+    <string name="pref_data_about_remark">market://details?id=co.yishun.onemoment.app</string>
+    <string name="pref_title_about_app_name">@string/app_name</string>
+    <string name="pref_title_about_app_version">@string/app_version</string>
+
+    <string name="pref_key_remind_ringtone">remind_everyday_ringtone</string>
+</resources>

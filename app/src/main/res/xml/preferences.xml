@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_title_sync"
+        >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="sync"
+            android:summary="@string/pref_summary_sync_auto"
+            android:title="@string/pref_title_sync_auto"
+            />
+        <ListPreference
+            android:defaultValue="180"
+            android:dependency="sync"
+            android:entries="@array/pref_sync_frequency_titles"
+            android:entryValues="@array/pref_sync_frequency_values"
+            android:key="sync_frequency"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="Auto Sync every %s"
+            android:title="@string/pref_title_sync_frequency"
+            />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="sync"
+            android:key="sync_wifi_only"
+            android:summary="@string/pref_summary_sync_wifi_only"
+            android:title="@string/pref_title_sync_wifi_only"
+            />
+        <Preference
+            android:summary="@string/pref_summary_sync_at_once"
+            android:title="@string/pref_title_sync_at_once"
+            >
+            <intent android:action="android.intent.action.SYNC"/>
+        </Preference>
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        android:title="@string/pref_title_remind"
+        >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remind_everyday"
+            android:summary="@string/pref_summary_remind_everyday"
+            android:title="@string/pref_title_remind_everyday"
+            />
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="remind_everyday"
+            android:key="@string/pref_key_remind_ringtone"
+            android:ringtoneType="notification"
+            android:title="@string/pref_title_remind_ringtone"
+            />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="remind_everyday"
+            android:key="remind_everyday_vibrate"
+            android:title="@string/pref_title_remind_vibrate"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_title_about">
+        <Preference android:title="@string/pref_title_about_tour">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="co.yishun.onemoment.app.ui.GuideActivity"
+                android:targetPackage="co.yishun.onemoment.app"
+                />
+        </Preference>
+        <Preference
+            android:summary="@string/pref_summary_about_follow"
+            android:title="@string/pref_title_about_follow"
+            >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/pref_data_about_follow"
+                />
+        </Preference>
+        <Preference
+            android:summary="@string/pref_summary_about_remark"
+            android:title="@string/pref_title_about_remark"
+            >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/pref_data_about_remark"
+                />
+        </Preference>
+        <Preference
+            android:summary="@string/app_version"
+            android:title="@string/app_name"
+            />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
