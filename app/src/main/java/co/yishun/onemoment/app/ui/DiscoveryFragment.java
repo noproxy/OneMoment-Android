@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +29,11 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     @Override public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnVideoLike:
-                //TODO handle click
                 Intent intent = new Intent(v.getContext(), VideoLikeActivity_.class);
                 startActivity(intent);
-                Snackbar.make(MainActivity.withView(v), "TODO", Snackbar.LENGTH_SHORT).show();
                 break;
             case R.id.btnAlarmEveryday:
+                //TODO handle click
                 break;
         }
     }
