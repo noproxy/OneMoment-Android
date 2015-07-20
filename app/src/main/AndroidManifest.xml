@@ -29,6 +29,7 @@
         <activity
             android:name=".ui.VideoLikeActivity_"
             android:label="@string/discovery_title"
+            android:theme="@style/AppTheme.Dragger"
             />
         <activity android:name=".ui.UIAutomatorTestActivity"/>
     </application>
