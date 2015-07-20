@@ -174,3 +174,13 @@ apt {
         // logFile '/var/log/aa.log'
     }
 }
+
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
+dependencies {
+    compile 'com.github.ppamorim:dragger:1.1'
+}

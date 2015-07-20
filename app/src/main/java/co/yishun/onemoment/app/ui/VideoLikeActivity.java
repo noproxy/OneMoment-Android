@@ -12,3 +12,4 @@ import co.yishun.onemoment.app.R;
 @EActivity(R.layout.activity_video_like)
 public class VideoLikeActivity extends AppCompatActivity {
 }
+
