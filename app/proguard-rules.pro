@@ -170,3 +170,6 @@
 
 -dontwarn okio.**
 -dontwarn javax.annotation.**
+
+# for twowayview
+-keep class org.lucasr.twowayview.** { *; }
