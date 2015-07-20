@@ -31,8 +31,8 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btnVideoLike:
                 //TODO handle click
-                Intent intent = new Intent();
-//                startActivity(intent);
+                Intent intent = new Intent(v.getContext(), VideoLikeActivity_.class);
+                startActivity(intent);
                 Snackbar.make(MainActivity.withView(v), "TODO", Snackbar.LENGTH_SHORT).show();
                 break;
             case R.id.btnAlarmEveryday:
