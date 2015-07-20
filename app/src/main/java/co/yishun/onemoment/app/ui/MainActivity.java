@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
@@ -92,12 +91,8 @@ public final class MainActivity extends AppCompatActivity {
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_4:
-                TestFragment fragment4 = new TestFragment();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment4).commit();
-                currentItemId = itemId;
-                Toast.makeText(this, "Not now!", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent("to setting");//TODO add intent to setting
-//                startActivity(intent);
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return false;
         }
         return true;

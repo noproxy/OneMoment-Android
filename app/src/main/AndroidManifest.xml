@@ -6,6 +6,7 @@
     >
 
     <uses-sdk tools:overrideLibrary="com.github.hiteshsondhi88.libffmpeg"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,6 +38,16 @@
                 />
         </activity>
         <activity android:name=".ui.UIAutomatorTestActivity"/>
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/title_settings"
+            android:parentActivityName=".ui.MainActivity"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="co.yishun.onemoment.app.ui.MainActivity"
+                />
+        </activity>
     </application>
 
 </manifest>
