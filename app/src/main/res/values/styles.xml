@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Base" parent="Theme.AppCompat.Light.DarkActionBar"/>
+    <style name="Base" parent="Theme.AppCompat.Light.NoActionBar"/>
 
     <style name="AppTheme" parent="Base">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -25,5 +25,9 @@
 
     <style name="AppTheme.Settings">
         <item name="android:windowBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Discovery">
+        <item name="android:windowBackground">@drawable/bg_discovery</item>
     </style>
 </resources>
