@@ -24,7 +24,7 @@
         android:text="@string/discovery_like_video"
         />
 
-    <include layout="@layout/layout_divider"/>
+    <!--<include layout="@layout/layout_divider"/>-->
 
     <Button
         android:id="@+id/btnAlarmEveryday"
@@ -38,5 +38,6 @@
         android:minHeight="48dp"
         android:padding="16dp"
         android:text="@string/discovery_alarm"
+        android:visibility="gone"
         />
 </LinearLayout>

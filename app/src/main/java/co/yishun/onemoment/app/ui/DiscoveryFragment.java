@@ -32,9 +32,6 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
                 Intent intent = new Intent(v.getContext(), VideoLikeActivity_.class);
                 startActivity(intent);
                 break;
-            case R.id.btnAlarmEveryday:
-                //TODO handle click
-                break;
         }
     }
 
