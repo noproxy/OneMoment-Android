@@ -1,12 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<com.github.ppamorim.dragger.DraggerView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dragger_layout="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    >
+    dragger_layout:drag_position="right"
+    dragger_layout:drag_view_id="@+id/drag_view"
+    dragger_layout:shadow_view_id="@+id/shadow_view">
 
-    <include layout="@layout/layout_toolbar"/>
+    <FrameLayout
+        android:id="@+id/shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="invisible"/>
 
 
-</android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/drag_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_window"
+        >
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/app_bar_elevation"
+            android:fitsSystemWindows="true"
+            >
+
+            <include layout="@layout/layout_toolbar"/>
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <org.lucasr.twowayview.widget.TwoWayView
+            android:id="@+id/twoWayView"
+            style="@style/TwoWayView"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:twowayview_layoutManager="SpannableGridLayoutManager"
+            app:twowayview_numColumns="3"
+            app:twowayview_numRows="2"
+            tools:listitem="@layout/layout_world_item"
+            />
+
+    </android.support.design.widget.CoordinatorLayout>
+</com.github.ppamorim.dragger.DraggerView>
+
