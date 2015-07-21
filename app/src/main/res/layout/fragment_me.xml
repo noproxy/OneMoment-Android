@@ -23,14 +23,7 @@
             app:layout_scrollFlags="scroll|enterAlways"
             >
 
-            <!--Not include because don't need elevation here-->
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                android:minHeight="?attr/actionBarSize"
-                />
+            <include layout="@layout/layout_toolbar_no_elevation"/>
 
             <include layout="@layout/layout_me_header"/>
 
