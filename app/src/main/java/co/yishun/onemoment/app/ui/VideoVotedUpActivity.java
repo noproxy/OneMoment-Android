@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -76,6 +77,17 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
         twoWayView.addItemDecoration(new DividerItemDecoration(divider));
 
         twoWayView.setAdapter(new VideoLikeAdapter(this, twoWayView));
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // android:launchMode="singleTop" solve navigationUp to a new Activity issue http://stackoverflow.com/questions/13293772/how-to-navigate-up-to-the-same-parent-state
+            // but there is no dragger animation, so we should close manually
+            // but draggerView.closeActivity(); has bug: https://github.com/ppamorim/Dragger/issues/27
+            onBackPressed();//TODO handle back stack
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
