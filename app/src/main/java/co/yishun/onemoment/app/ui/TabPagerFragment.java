@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -19,9 +20,37 @@ import co.yishun.onemoment.app.R;
  */
 public abstract class TabPagerFragment extends ToolbarFragment {
 
-    abstract @LayoutRes int getContentViewId(Bundle savedInstanceState);
+    abstract @StringRes CharSequence[] getTabTitleResources();
 
-    @NonNull abstract PagerAdapter getPagerAdapter(LayoutInflater inflater, Bundle savedInstanceState);
+    private PagerAdapter getViewPager(LayoutInflater inflater) {
+        return new PagerAdapter() {
+            @Override public int getCount() {
+                return getTabTitleResources().length;
+            }
+
+            @Override public boolean isViewFromObject(View view, Object object) {
+                return view == object;
+            }
+
+            @Override public CharSequence getPageTitle(int position) {
+                return getTabTitleResources()[position];
+            }
+
+            @Override public Object instantiateItem(ViewGroup container, int position) {
+                View rootView = onCreatePagerView(inflater, container, position);
+                container.addView(rootView);
+                return rootView;
+            }
+
+            @Override public void destroyItem(ViewGroup container, int position, Object object) {
+                container.removeView(((View) object));
+            }
+        };
+    }
+
+    abstract View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
+
+    abstract @LayoutRes int getContentViewId(Bundle savedInstanceState);
 
     @NonNull @CallSuper @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(getContentViewId(savedInstanceState), container, false);
@@ -34,7 +63,7 @@ public abstract class TabPagerFragment extends ToolbarFragment {
         if (toolbar == null || viewPager == null || tabLayout == null)
             throw new AssertionError("You must ensure your layout contain TabLayout, ViewPager and Toolbar with R.id.tabLayout, R.id.viewPager, R.id.toolbar");
 
-        PagerAdapter viewPagerAdapter = getPagerAdapter(inflater, savedInstanceState);
+        PagerAdapter viewPagerAdapter = getViewPager(inflater);
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
