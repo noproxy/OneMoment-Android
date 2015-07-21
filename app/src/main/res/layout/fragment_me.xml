@@ -17,20 +17,25 @@
         android:fitsSystemWindows="true"
         >
 
-        <!--Not include because don't need elevation here-->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|enterAlways"
             >
 
+            <!--Not include because don't need elevation here-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                />
+
             <include layout="@layout/layout_me_header"/>
 
-        </android.support.v7.widget.Toolbar>
+        </FrameLayout>
+
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
