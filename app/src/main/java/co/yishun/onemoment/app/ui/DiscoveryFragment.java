@@ -38,6 +38,6 @@ public class DiscoveryFragment extends ToolbarFragment implements View.OnClickLi
 
 
     @Override protected int getTitleDrawableRes() {
-        return R.drawable.pic_world_title;//TODO not this pic
+        return R.drawable.pic_explore_tittle;
     }
 }
