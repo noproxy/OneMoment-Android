@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/OneMoment.iml" filepath="$PROJECT_DIR$/OneMoment.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dragger/dragger.iml" filepath="$PROJECT_DIR$/dragger/dragger.iml" />
     </modules>
   </component>
 </project>
