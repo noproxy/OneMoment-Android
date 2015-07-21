@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="12dp"
-            android:text="@string/discovery_like_video"
+            android:text="@string/discovery_video_voted_up"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             />
 

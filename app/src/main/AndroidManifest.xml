@@ -28,7 +28,7 @@
             android:label="@string/title_activity_espresso_test"
             />
         <activity
-            android:name=".ui.VideoLikeActivity_"
+            android:name=".ui.VideoVotedUpActivity_"
             android:label="@string/discovery_title"
             android:theme="@style/AppTheme.Dragger"
             >
