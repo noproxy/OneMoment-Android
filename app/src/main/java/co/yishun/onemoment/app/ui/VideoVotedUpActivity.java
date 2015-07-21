@@ -101,7 +101,7 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
     private static class VideoLikeAdapter extends RecyclerView.Adapter<VideoVH> {
         private final Context context;
         private final LayoutInflater inflater;
-        private final int[] res = WorldViewPagerAdapter.res;
+        private final int[] res = Test.res;
         private final TwoWayView twoWayView;
 
         public VideoLikeAdapter(Context context, TwoWayView twoWayView) {

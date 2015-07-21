@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +24,8 @@ import co.yishun.onemoment.app.R;
  */
 public final class WorldFragment extends TabPagerFragment {
 
+    private static final int res[] = Test.res;
+
     public WorldFragment() {
     }
 
@@ -32,150 +33,76 @@ public final class WorldFragment extends TabPagerFragment {
         return R.drawable.pic_world_title;
     }
 
-    @Override int getContentViewId(Bundle savedInstanceState) {
-        return R.layout.fragment_world;
+    @Override int getTabTitleArrayResources() {
+        return R.array.world_page_title;
     }
 
-    @NonNull @Override PagerAdapter getPagerAdapter(LayoutInflater inflater, Bundle savedInstanceState) {
-        return new WorldViewPagerAdapter(inflater);
-    }
-}
-
-
-class WorldViewPagerAdapter extends PagerAdapter {
-    public static final int res[] = new int[]{
-            R.drawable.pic_world_item_test_0,
-            R.drawable.pic_world_item_test_1,
-            R.drawable.pic_world_item_test_2,
-            R.drawable.pic_world_item_test_3,
-            R.drawable.pic_world_item_test_4,
-            R.drawable.pic_world_item_test_5,
-            R.drawable.pic_world_item_test_6,
-            R.drawable.pic_world_item_test_7,
-            R.drawable.pic_world_item_test_8,
-            R.drawable.pic_world_item_test_9,
-            R.drawable.pic_world_item_test_10,
-            R.drawable.pic_world_item_test_11,
-            R.drawable.pic_world_item_test_12,
-            R.drawable.pic_world_item_test_13,
-            R.drawable.pic_world_item_test_14,
-            R.drawable.pic_world_item_test_15,
-            R.drawable.pic_world_item_test_16,
-            R.drawable.pic_world_item_test_17,
-            R.drawable.pic_world_item_test_18,
-            R.drawable.pic_world_item_test_19,
-            R.drawable.pic_world_item_test_20,
-            R.drawable.pic_world_item_test_21,
-            R.drawable.pic_world_item_test_22,
-            R.drawable.pic_world_item_test_23,
-            R.drawable.pic_world_item_test_24,
-            R.drawable.pic_world_item_test_25,
-            R.drawable.pic_world_item_test_26,
-            R.drawable.pic_world_item_test_27,
-            R.drawable.pic_world_item_test_28,
-            R.drawable.pic_world_item_test_29,
-            R.drawable.pic_world_item_test_30,
-            R.drawable.pic_world_item_test_31,
-            R.drawable.pic_world_item_test_32
-    };
-    private final int TITLE_RES[] = new int[]{
-            R.string.world_page_recommend_title,
-            R.string.world_page_latest_title
-    };
-    private final LayoutInflater inflater;
-    private final Context context;
-
-
-    public WorldViewPagerAdapter(LayoutInflater inflater) {
-        this.inflater = inflater;
-        this.context = inflater.getContext().getApplicationContext();
-    }
-
-    public static BaseSliderView generateSimpleSliderView(Context context, @DrawableRes int
-            imageRes) {
-        return new BaseSliderView(context.getApplicationContext()) {
-            @Override public View getView() {
-                ImageView imageView = (ImageView) View.inflate(context, R.layout.layout_slider_image, null);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                imageView.setImageResource(imageRes);
-                Picasso.with(context).load(imageRes).into(imageView);
-                imageView.setOnClickListener(v -> Snackbar.make(MainActivity.withView(v), "slider " +
-                        "clicked!", Snackbar.LENGTH_SHORT).show());
-                return imageView;
-            }
-        };
-    }
-
-    @Override public Object instantiateItem(ViewGroup container, int position) {
+    @NonNull @Override View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
         boolean isRecommend = position == 0;
-        View rootView = inflater.inflate(R.layout.page_world, container,
-                false);
-
+        View rootView = inflater.inflate(R.layout.page_world, container, false);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-        LinearLayoutManager manager = new LinearLayoutManager(context);
+        LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
 
-        RecyclerView.Adapter adapter = new WorldAdapter(context, res, isRecommend);
+        RecyclerView.Adapter adapter = new WorldAdapter(inflater.getContext(), res, isRecommend);
 
         recyclerView.setAdapter(adapter);
         container.addView(rootView);
         return rootView;
     }
 
-    @Override public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
-    }
-
-    @Override public CharSequence getPageTitle(int position) {
-        return context.getString(TITLE_RES[position]);
-    }
-
-    @Override public int getCount() {
-        return 2;
-    }
-
-    @Override public boolean isViewFromObject(View view, Object object) {
-        return view == object;
-    }
-
-    private BaseSliderView generateSimpleSliderView(String url) {
-        return new BaseSliderView(context) {
-            @Override public View getView() {
-                ImageView imageView = new ImageView(context);
-                //TODO load image from url
-                return imageView;
-            }
-        };
+    @Override int getContentViewId(Bundle savedInstanceState) {
+        return R.layout.fragment_world;
     }
 
     static class SimpleViewHolder extends RecyclerView.ViewHolder {
+        final ImageView itemImageView;
+
         public SimpleViewHolder(View itemView) {
             super(itemView);
-        }
-
-        public ImageView itemImageView() {
-            return (ImageView) itemView.findViewById(R.id.itemImageView);
+            itemImageView = (ImageView) itemView.findViewById(R.id.itemImageView);
         }
 
     }
 
-    static class WorldAdapter extends RecyclerView.Adapter<SimpleViewHolder> implements
-            View
-                    .OnClickListener {
+    public static class WorldAdapter extends RecyclerView.Adapter<SimpleViewHolder> implements View.OnClickListener {
         private final static int TYPE_HEADER = -1;
         private final static int TYPE_ITEM = -2;
         private final Context context;
         private final int items[];
         private final boolean hasHeader;
 
+
         public WorldAdapter(Context context, int items[], boolean hasHeader) {
             super();
             this.context = context.getApplicationContext();
             this.items = items;
             this.hasHeader = hasHeader;
+        }
+
+        private BaseSliderView generateSimpleSliderView(Context context, @DrawableRes int imageRes) {
+            return new BaseSliderView(context.getApplicationContext()) {
+                @Override public View getView() {
+                    ImageView imageView = (ImageView) View.inflate(context, R.layout.layout_slider_image, null);
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    Picasso.with(context).load(imageRes).into(imageView);
+                    imageView.setOnClickListener(v -> Snackbar.make(MainActivity.withView(v), "slider clicked!", Snackbar.LENGTH_SHORT).show());
+                    return imageView;
+                }
+            };
+        }
+
+        private BaseSliderView generateSimpleSliderView(String url) {
+            return new BaseSliderView(context) {
+                @Override public View getView() {
+                    ImageView imageView = new ImageView(context);
+                    //TODO load image from url
+                    return imageView;
+                }
+            };
         }
 
         @Override public int getItemViewType(int position) {
@@ -204,13 +131,13 @@ class WorldViewPagerAdapter extends PagerAdapter {
         @Override
         public void onBindViewHolder(SimpleViewHolder holder, int position) {
             if (!hasHeader || getItemViewType(position) != TYPE_HEADER) {
-                Picasso.with(context).load(res[((int) getItemId(position))]).into(holder.itemImageView());
+                Picasso.with(context).load(res[((int) getItemId(position))]).into(holder.itemImageView);
             }
         }
 
         @Override public void onViewRecycled(SimpleViewHolder holder) {
             super.onViewRecycled(holder);
-            Picasso.with(context).cancelRequest(holder.itemImageView());
+            Picasso.with(context).cancelRequest(holder.itemImageView);
         }
 
         @Override public long getItemId(int position) {

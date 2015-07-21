@@ -19,6 +19,10 @@
     <string name="world_title" translatable="false">World</string>
     <string name="world_page_recommend_title">Recommend</string>
     <string name="world_page_latest_title">Latest</string>
+    <string-array name="world_page_title">
+        <item>Public</item>
+        <item>Private</item>
+    </string-array>
 
     <string name="discovery_video_voted_up">Videos Voted Up</string>
     <string name="video_vote_up_title">Voted Up</string>
@@ -30,4 +34,8 @@
     <string name="me_tab_title_1">Private</string>
     <string name="me_header_vote">Vote</string>
     <string name="me_header_voted">Voted</string>
+    <string-array name="me_page_title">
+        <item>Public</item>
+        <item>Private</item>
+    </string-array>
 </resources>
