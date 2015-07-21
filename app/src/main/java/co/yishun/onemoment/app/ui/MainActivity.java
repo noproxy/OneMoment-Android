@@ -80,8 +80,7 @@ public final class MainActivity extends AppCompatActivity {
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
-                MeFragment_ fragment1 = new MeFragment_();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment1).commit();
+
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:
@@ -90,6 +89,8 @@ public final class MainActivity extends AppCompatActivity {
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_3:
+                MeFragment_ fragment3 = new MeFragment_();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment3).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_4:
