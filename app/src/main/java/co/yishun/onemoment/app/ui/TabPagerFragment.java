@@ -17,7 +17,7 @@ import co.yishun.onemoment.app.R;
 /**
  * Created by yyz on 7/21/15.
  */
-public abstract class TabPagerFragment extends BaseFragment {
+public abstract class TabPagerFragment extends ToolbarFragment {
 
     abstract @LayoutRes int getContentViewId(Bundle savedInstanceState);
 

@@ -28,8 +28,8 @@ public final class WorldFragment extends TabPagerFragment {
     public WorldFragment() {
     }
 
-    @Override protected int getTitle() {
-        return R.string.world_title;
+    @Override protected int getTitleDrawableRes() {
+        return R.drawable.pic_world_title;
     }
 
     @Override int getContentViewId(Bundle savedInstanceState) {

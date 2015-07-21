@@ -11,7 +11,7 @@ import co.yishun.onemoment.app.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class TestFragment extends BaseFragment {
+public class TestFragment extends ToolbarFragment {
 
 
     public TestFragment() {
@@ -24,7 +24,7 @@ public class TestFragment extends BaseFragment {
         return rootView;
     }
 
-    @Override protected int getTitle() {
-        return R.string.title_activity_espresso_test;
+    @Override protected int getTitleDrawableRes() {
+        return R.drawable.pic_fab_menu_world;
     }
 }

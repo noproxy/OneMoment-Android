@@ -14,8 +14,8 @@ import co.yishun.onemoment.app.R;
  */
 @EFragment(R.layout.fragment_me)
 public class MeFragment extends TabPagerFragment {
-    @Override protected int getTitle() {
-        return R.string.me_title;
+    @Override protected int getTitleDrawableRes() {
+        return R.drawable.pic_world_title;//TODO not this pic
     }
 
 

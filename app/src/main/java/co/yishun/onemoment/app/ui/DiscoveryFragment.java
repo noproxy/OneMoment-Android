@@ -17,7 +17,7 @@ import co.yishun.onemoment.app.R;
  * Created by yyz on 7/20/15.
  */
 @EFragment
-public class DiscoveryFragment extends BaseFragment implements View.OnClickListener {
+public class DiscoveryFragment extends ToolbarFragment implements View.OnClickListener {
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_discovery, container, false);
@@ -37,7 +37,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     }
 
 
-    @Override protected int getTitle() {
-        return R.string.discovery_title;
+    @Override protected int getTitleDrawableRes() {
+        return R.drawable.pic_world_title;//TODO not this pic
     }
 }
