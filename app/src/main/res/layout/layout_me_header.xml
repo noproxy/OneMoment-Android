@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/me_header_height"
     tools:showIn="@layout/fragment_me"
-
     >
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -26,6 +25,7 @@
         android:layout_below="@+id/profileImageView"
         android:layout_centerHorizontal="true"
         android:lines="1"
+        android:text="CC Juice"
         android:textAppearance="@style/TextAppearance.NickName"
         tools:text="CC Juice"
         />
@@ -34,25 +34,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/nickNameTextView"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:paddingBottom="6dp"
+        android:paddingTop="8dp"
+        >
 
         <TextView
             android:id="@+id/votedCountTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
             android:paddingRight="8dp"
+            android:text="Voted 21"
             tools:text="Voted 21"
             />
 
         <TextView
             android:id="@+id/voteCountTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
             android:paddingLeft="8dp"
+            android:text="Vote 3"
             tools:text="Vote 3"
             />
 

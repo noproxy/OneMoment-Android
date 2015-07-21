@@ -23,7 +23,24 @@
             app:layout_scrollFlags="scroll|enterAlways"
             >
 
-            <include layout="@layout/layout_toolbar_no_elevation"/>
+            <!-- background background not support centerCrop-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/me_header_height"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_me_header"
+                />
+
+            <!-- not include because of background-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:contentInsetStart="72dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                />
 
             <include layout="@layout/layout_me_header"/>
 
@@ -34,11 +51,12 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabContentStart="64dp"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
             app:tabIndicatorColor="@color/colorAccent"
             app:tabIndicatorHeight="2dp"
-            app:tabMinWidth="48dp"
-            app:tabMode="scrollable"
+            app:tabMinWidth="32dp"
+            app:tabMode="fixed"
             app:tabSelectedTextColor="@color/colorAccent"
             app:tabTextColor="@color/textColorPrimary"
             />
