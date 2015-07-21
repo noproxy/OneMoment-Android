@@ -1,10 +1,10 @@
 package co.yishun.onemoment.app.ui;
 
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,12 +20,13 @@ import co.yishun.onemoment.app.R;
  */
 public abstract class TabPagerFragment extends ToolbarFragment {
 
-    abstract @StringRes CharSequence[] getTabTitleResources();
+    abstract @ArrayRes int getTabTitleArrayResources();
 
     private PagerAdapter getViewPager(LayoutInflater inflater) {
+        String titles[] = getResources().getStringArray(getTabTitleArrayResources());
         return new PagerAdapter() {
             @Override public int getCount() {
-                return getTabTitleResources().length;
+                return titles.length;
             }
 
             @Override public boolean isViewFromObject(View view, Object object) {
@@ -33,7 +34,7 @@ public abstract class TabPagerFragment extends ToolbarFragment {
             }
 
             @Override public CharSequence getPageTitle(int position) {
-                return getTabTitleResources()[position];
+                return titles[position];
             }
 
             @Override public Object instantiateItem(ViewGroup container, int position) {
@@ -48,7 +49,7 @@ public abstract class TabPagerFragment extends ToolbarFragment {
         };
     }
 
-    abstract View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
+    abstract @NonNull View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
 
     abstract @LayoutRes int getContentViewId(Bundle savedInstanceState);
 
