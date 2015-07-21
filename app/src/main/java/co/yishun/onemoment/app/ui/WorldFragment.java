@@ -3,13 +3,11 @@ package co.yishun.onemoment.app.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,28 +23,21 @@ import co.yishun.onemoment.app.R;
 /**
  * Created by yyz on 7/13/15.
  */
-public final class WorldFragment extends BaseFragment {
+public final class WorldFragment extends TabPagerFragment {
 
     public WorldFragment() {
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_world, container, false);
-//        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinatorLayout);
-//        AppBarLayout appBar = (AppBarLayout) rootView.findViewById(R.id.appBar);
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
-        ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
-        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-
-        WorldViewPagerAdapter viewPagerAdapter = new WorldViewPagerAdapter(inflater);
-        viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-        return rootView;
-    }
-
     @Override protected int getTitle() {
         return R.string.world_title;
+    }
+
+    @Override int getContentViewId(Bundle savedInstanceState) {
+        return R.layout.fragment_world;
+    }
+
+    @NonNull @Override PagerAdapter getPagerAdapter(LayoutInflater inflater, Bundle savedInstanceState) {
+        return new WorldViewPagerAdapter(inflater);
     }
 }
 
