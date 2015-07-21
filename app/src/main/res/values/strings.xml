@@ -20,8 +20,8 @@
     <string name="world_page_recommend_title">Recommend</string>
     <string name="world_page_latest_title">Latest</string>
 
-    <string name="discovery_video_voted_up">Videos voted up</string>
-    <string name="video_vote_up_title">Voted up</string>
+    <string name="discovery_video_voted_up">Videos Voted Up</string>
+    <string name="video_vote_up_title">Voted Up</string>
     <string name="discovery_alarm">alarm everyday</string>
     <string name="discovery_title">Discovery</string>
 </resources>

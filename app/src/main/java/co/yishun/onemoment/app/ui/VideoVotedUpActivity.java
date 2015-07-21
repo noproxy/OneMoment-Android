@@ -49,7 +49,7 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.discovery_video_voted_up);
+        ab.setTitle(R.string.video_vote_up_title);
         Log.i("setupToolbar", "set home as up true");
     }
 
@@ -110,8 +110,18 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
 
             final SpannableGridLayoutManager.LayoutParams lp = (SpannableGridLayoutManager.LayoutParams) itemView.getLayoutParams();
 
-            final int span1 = (position == 0 || position == 3 ? 2 : 1);
-            final int span2 = (position == 0 ? 2 : (position == 3 ? 3 : 1));
+            int id = position % 13;
+            int span1 = 1;
+            int span2 = 1;
+            if (id == 4 || id == 11) {
+                span1 = 2;
+                span2 = 2;
+            }
+            if (id == 0) {
+                span1 = 2;
+                span2 = 3;
+            }
+
 
             final int colSpan = (isVertical ? span2 : span1);
             final int rowSpan = (isVertical ? span1 : span2);
