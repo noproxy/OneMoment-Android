@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    dragger_layout:drag_position="right"
+    android:fitsSystemWindows="true"
+    dragger_layout:drag_position="top"
     dragger_layout:drag_view_id="@+id/dragView"
     dragger_layout:shadow_view_id="@+id/shadow_view">
 
@@ -37,20 +38,29 @@
 
         </android.support.design.widget.AppBarLayout>
 
-
-        <org.lucasr.twowayview.widget.TwoWayView
-            android:id="@+id/twoWayView"
-            style="@style/TwoWayView"
+        <!-- TwoWayView has bug with paddingTop and marginTop, so add parent-->
+        <FrameLayout
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:twowayview_layoutManager="SpannableGridLayoutManager"
-            app:twowayview_numColumns="3"
-            app:twowayview_numRows="2"
-            tools:listitem="@layout/layout_world_item"
-            />
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <org.lucasr.twowayview.widget.TwoWayView
+                android:id="@+id/twoWayView"
+                style="@style/TwoWayView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                app:twowayview_layoutManager="SpannableGridLayoutManager"
+                app:twowayview_numColumns="3"
+                app:twowayview_numRows="2"
+                tools:listitem="@layout/layout_world_item"
+                />
+        </FrameLayout>
+
 
     </android.support.design.widget.CoordinatorLayout>
 </com.github.ppamorim.dragger.DraggerView>

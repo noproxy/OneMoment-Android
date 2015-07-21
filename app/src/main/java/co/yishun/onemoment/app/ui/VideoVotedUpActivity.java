@@ -32,12 +32,16 @@ import co.yishun.onemoment.app.R;
 /**
  * Created by yyz on 7/20/15.
  */
-@EActivity(R.layout.activity_video_like)
-public class VideoLikeActivity extends DraggerActivity implements ItemClickSupport.OnItemClickListener, ItemClickSupport.OnItemLongClickListener {
-    private static final String CAN_ANIMATE = "can_animate";
+@EActivity(R.layout.activity_video_voted_up)
+public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSupport.OnItemClickListener, ItemClickSupport.OnItemLongClickListener {
     @ViewById Toolbar toolbar;
     @ViewById TwoWayView twoWayView;
     @ViewById DraggerView draggerView;
+
+    @Override protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(0, 0);
+        super.onCreate(savedInstanceState);
+    }
 
     @AfterViews void setupToolbar() {
         setSupportActionBar(toolbar);
@@ -45,8 +49,13 @@ public class VideoLikeActivity extends DraggerActivity implements ItemClickSuppo
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(getTitle());
+        ab.setTitle(R.string.discovery_video_voted_up);
         Log.i("setupToolbar", "set home as up true");
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
     }
 
     @SuppressLint("NewApi") @AfterViews void setupTwoWayView() {
@@ -67,11 +76,6 @@ public class VideoLikeActivity extends DraggerActivity implements ItemClickSuppo
         twoWayView.addItemDecoration(new DividerItemDecoration(divider));
 
         twoWayView.setAdapter(new VideoLikeAdapter(this, twoWayView));
-    }
-
-    @Override protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(CAN_ANIMATE, draggerView.getCanAnimate());
     }
 
     @Override public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
