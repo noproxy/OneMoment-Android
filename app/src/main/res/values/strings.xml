@@ -24,4 +24,10 @@
     <string name="video_vote_up_title">Voted Up</string>
     <string name="discovery_alarm">alarm everyday</string>
     <string name="discovery_title">Discovery</string>
+
+    <string name="me_title">Me</string>
+    <string name="me_tab_title_0">Public</string>
+    <string name="me_tab_title_1">Private</string>
+    <string name="me_header_vote">Vote</string>
+    <string name="me_header_voted">Voted</string>
 </resources>
