@@ -13,6 +13,31 @@
         android:src="@drawable/pic_profile_tmp"
         />
 
+
+
+
+    <TextView
+        android:id="@+id/likeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:drawableLeft="@drawable/ic_me_world_like"
+        android:drawablePadding="4dp"
+        android:paddingRight="8dp"
+        android:text="56"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        />
+
+    <include
+        layout="@layout/layout_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/itemImageView"
+        android:paddingRight="8dp"
+        />
+
     <TextView
         android:id="@+id/tagTextView"
         android:layout_width="match_parent"
@@ -37,28 +62,6 @@
         android:paddingLeft="32dp"
         android:text="56 People"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        />
-
-    <TextView
-        android:id="@+id/likeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:drawableLeft="@drawable/ic_me_world_like"
-        android:drawablePadding="4dp"
-        android:paddingRight="8dp"
-        android:text="56"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        />
-
-    <include
-        layout="@layout/layout_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/itemImageView"
-        android:paddingRight="8dp"
         />
 
 </RelativeLayout>
