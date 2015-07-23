@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bg_window"/>
+    <item>
+        <bitmap
+            android:gravity="top|right"
+            android:src="@drawable/pic_splash_background"
+            />
+    </item>
+    <item>
+        <bitmap
+            android:gravity="bottom|center_horizontal"
+            android:src="@drawable/pic_splash_copyright"
+            />
+    </item>
+    <item android:bottom="64dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/pic_splash_foreground"
+            />
+    </item>
+</layer-list>

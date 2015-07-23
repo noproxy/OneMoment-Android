@@ -40,4 +40,8 @@
     <style name="AppTheme.MainActivity">
         <item name="android:textColorSecondary">@color/colorAccent</item>
     </style>
+
+    <style name="AppTheme.SplashActivity">
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>
