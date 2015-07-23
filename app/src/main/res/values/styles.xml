@@ -25,6 +25,7 @@
 
     <style name="AppTheme.Settings">
         <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="mp_colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.Discovery">

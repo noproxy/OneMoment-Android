@@ -20,8 +20,9 @@
         <item>180</item>
         <item>360</item>
     </string-array>
-    <string name="pref_title_sync_wifi_only">Wifi only</string>
-    <string name="pref_summary_sync_wifi_only">Backup up Moment only when wifi is available</string>
+    <string name="pref_title_sync_cellular_data">Use cellular data</string>
+    <string name="pref_summary_sync_cellular_data_on">Backup up Moment over Wifi&amp; cellular data</string>
+    <string name="pref_summary_sync_cellular_data_off">Backup up Moment only when wifi is available</string>
     <string name="pref_title_sync_at_once">Sync at once</string>
     <string name="pref_summary_sync_at_once">Ignore any sync settings</string>
 
