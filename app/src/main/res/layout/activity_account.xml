@@ -46,6 +46,7 @@
             />
 
         <!--TODO visible password view -->
+        <!--TODO auto count down view -->
         <TextView
             android:id="@+id/passwordTextView"
             android:layout_width="wrap_content"
