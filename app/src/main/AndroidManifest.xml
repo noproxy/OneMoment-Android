@@ -48,6 +48,10 @@
                 android:value=".ui.MainActivity"
                 />
         </activity>
+        <activity
+            android:name="ui.LoginActivity"
+            android:theme="@style/AppTheme.LoginActivity"
+            />
 
         <activity
             android:name=".ui.EspressoTestActivity"

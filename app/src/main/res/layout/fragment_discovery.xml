@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:background="@drawable/bg_btn"
+        android:background="@drawable/bg_btn_white"
         android:orientation="horizontal"
         android:padding="8dp"
         android:stateListAnimator="@anim/btn_elevation">
@@ -45,7 +45,7 @@
         android:id="@+id/btnAlarmEveryday"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_btn"
+        android:background="@drawable/bg_btn_white"
         android:drawableLeft="@drawable/ic_fab"
         android:drawablePadding="16dp"
         android:drawableStart="@drawable/ic_fab"

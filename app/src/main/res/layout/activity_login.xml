@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/pic_login_one"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorAccent"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:padding="32dp"
+        android:paddingTop="32dp"
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/loginByWechatBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_btn_transparent"
+                android:drawablePadding="4dp"
+                android:drawableTop="@drawable/pic_login_wechat"
+                android:text="WeChat"
+                />
+
+            <Button
+                android:id="@+id/loginByQQBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_btn_transparent"
+                android:drawablePadding="4dp"
+                android:drawableTop="@drawable/pic_login_qq"
+                android:text="WeChat"
+                />
+
+            <Button
+                android:id="@+id/loginByWeiboBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_btn_transparent"
+                android:drawablePadding="4dp"
+                android:drawableTop="@drawable/pic_login_weibo"
+                android:text="WeChat"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="Login By Phone >>"
+            android:textColor="@color/colorAccent"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

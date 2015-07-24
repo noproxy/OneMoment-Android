@@ -44,4 +44,9 @@
     <style name="AppTheme.SplashActivity">
         <item name="android:windowFullscreen">true</item>
     </style>
+
+    <style name="AppTheme.LoginActivity">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/bg_window_login</item>
+    </style>
 </resources>
