@@ -49,7 +49,7 @@
                 />
         </activity>
         <activity
-            android:name="ui.LoginActivity"
+            android:name="ui.LoginActivity_"
             android:theme="@style/AppTheme.LoginActivity"
             />
 
