@@ -80,7 +80,7 @@ public final class MainActivity extends AppCompatActivity {
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
-
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, new VerifyFragment_()).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:
