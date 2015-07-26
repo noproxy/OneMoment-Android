@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal">
+              android:orientation="vertical">
 
     <TextView
         android:id="@+id/passwordTextView"
@@ -25,5 +25,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Count Down"/>
+
+    <co.yishun.onemoment.app.ui.view.VisiblePasswordView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Test Password View"
+        />
 
 </LinearLayout>
