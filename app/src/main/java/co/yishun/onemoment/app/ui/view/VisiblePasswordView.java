@@ -9,8 +9,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import co.yishun.onemoment.app.R;
 
@@ -26,10 +26,8 @@ public class VisiblePasswordView extends EditText {
     private int right;
     private int top;
     private int bottom;
-    //    private int mRight;
-    private int mLeft;
-    private int mTop;
-    private int mBottom;
+    private int mInputTypeVisible;
+    private int mInputTypeInvisible;
 
     public VisiblePasswordView(Context context) {
         super(context);
@@ -45,7 +43,6 @@ public class VisiblePasswordView extends EditText {
         super(context, attrs, defStyleAttr);
         init(attrs, defStyleAttr);
     }
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP) public VisiblePasswordView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs, defStyleAttr);
@@ -71,6 +68,10 @@ public class VisiblePasswordView extends EditText {
                 mDrawableInvisible = getContext().getResources().getDrawable(R.drawable.ic_alarm);
         }
 
+
+        mInputTypeVisible = a.getInt(R.styleable.VisiblePasswordView_inputTypeVisible, EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        mInputTypeInvisible = a.getInt(R.styleable.VisiblePasswordView_inputTypeInvisible, EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+        this.setInputType(mInputTypeInvisible);
         a.recycle();
     }
 
@@ -134,7 +135,8 @@ public class VisiblePasswordView extends EditText {
                 break;
             case MotionEvent.ACTION_UP:
                 if (touched) {
-                    Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+                    // clicked
+                    onSwitchVisible();
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -147,6 +149,15 @@ public class VisiblePasswordView extends EditText {
                 break;
         }
         return true;
+    }
+
+    private void onSwitchVisible() {
+        if (visible) {
+            setInputType(mInputTypeInvisible);
+        } else {
+            setInputType(mInputTypeVisible);
+        }
+        visible = !visible;
     }
 
     private boolean isInVisibleIcon(float x, float y) {

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="VisiblePasswordView">
-        <attr name="visibleDrawable" format="reference|color"/>
-        <attr name="inVisibleDrawable" format="reference|color"/>
-    </declare-styleable>
-</resources>
