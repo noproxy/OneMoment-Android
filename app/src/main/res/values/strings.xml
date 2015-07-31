@@ -36,4 +36,9 @@
         <item>Public</item>
         <item>Private</item>
     </string-array>
+
+    <string name="login_by_wechat">WECHAT</string>
+    <string name="login_by_qq">QQ</string>
+    <string name="login_by_weibo">WEIBO</string>
+    <string name="login_by_phone">Login By Phone >></string>
 </resources>

@@ -49,9 +49,20 @@
                 />
         </activity>
         <activity
-            android:name="ui.LoginActivity_"
+            android:name=".ui.LoginActivity_"
+            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.LoginActivity"
-            />
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity"
+                />
+        </activity>
 
         <activity
             android:name=".ui.EspressoTestActivity"

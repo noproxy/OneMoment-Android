@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".ui.LoginActivity"
+    >
+
+    <include layout="@layout/layout_toolbar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,35 +47,26 @@
             android:orientation="horizontal"
             >
 
-            <Button
-                android:id="@+id/loginByWechatBtn"
+            <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_btn_transparent"
-                android:drawablePadding="4dp"
-                android:drawableTop="@drawable/pic_login_wechat"
-                android:text="WeChat"
-                />
+                android:padding="4dp"
+                android:src="@drawable/pic_login_wechat"
+                android:text="@string/login_by_wechat"/>
 
-            <Button
-                android:id="@+id/loginByQQBtn"
+            <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_btn_transparent"
-                android:drawablePadding="4dp"
-                android:drawableTop="@drawable/pic_login_qq"
-                android:text="WeChat"
-                />
+                android:padding="4dp"
+                android:src="@drawable/pic_login_qq"
+                android:text="@string/login_by_qq"/>
 
-            <Button
-                android:id="@+id/loginByWeiboBtn"
+            <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_btn_transparent"
-                android:drawablePadding="4dp"
-                android:drawableTop="@drawable/pic_login_weibo"
-                android:text="WeChat"
-                />
+                android:padding="4dp"
+                android:src="@drawable/pic_login_weibo"
+                android:text="@string/login_by_weibo"/>
 
         </LinearLayout>
 
@@ -78,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:text="Login By Phone >>"
+            android:text="@string/login_by_phone"
             android:textColor="@color/colorAccent"
             />
 

@@ -3,11 +3,15 @@
         android:color="?android:colorControlHighlight"
     >
     <item>
-        <selector>
+        <selector xmlns:android="http://schemas.android.com/apk/res/android">
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/colorPrimary"/>
+                </shape>
+            </item>
             <item android:state_pressed="true">
-                <shape android:shape="rectangle">
+                <shape android:shape="oval">
                     <solid android:color="@color/colorPressed"/>
-                    <corners android:radius="2dp"/>
                 </shape>
             </item>
         </selector>

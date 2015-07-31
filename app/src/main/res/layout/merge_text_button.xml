@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parent=""
+    >
+
+    <ImageView
+        android:id="@+id/buttonImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_circular_btn_white"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
+        android:padding="4dp"
+        android:stateListAnimator="@anim/btn_elevation"
+        tools:src="@drawable/pic_login_qq"
+        />
+
+    <TextView
+        android:id="@+id/buttonTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="4dp"
+        android:stateListAnimator="@anim/btn_elevation"
+        tools:text="Test"
+        />
+</merge>
