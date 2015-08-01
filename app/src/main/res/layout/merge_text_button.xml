@@ -2,7 +2,6 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parent=""
     >
 
     <ImageView
@@ -12,7 +11,7 @@
         android:background="@drawable/bg_circular_btn_white"
         android:minHeight="48dp"
         android:minWidth="48dp"
-        android:padding="4dp"
+        android:padding="12dp"
         android:stateListAnimator="@anim/btn_elevation"
         tools:src="@drawable/pic_login_qq"
         />
@@ -22,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingTop="4dp"
+        android:paddingTop="8dp"
         android:stateListAnimator="@anim/btn_elevation"
         tools:text="Test"
         />
