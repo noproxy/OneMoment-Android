@@ -31,9 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Test Password View"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         android:text="2333"
         app:inputTypeInvisible="textPassword"
         app:inputTypeVisible="textVisiblePassword"
+        app:minTouchHeight="48dp"
+        app:minTouchWidth="48dp"
         />
 
 </LinearLayout>

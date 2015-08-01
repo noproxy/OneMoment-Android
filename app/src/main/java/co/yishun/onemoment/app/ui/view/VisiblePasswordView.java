@@ -26,8 +26,14 @@ public class VisiblePasswordView extends EditText {
     private int right;
     private int top;
     private int bottom;
+    private float mTouchLeft;
+    private float mTouchRight;
+    private float mTouchTop;
+    private float mTouchBottom;
     private int mInputTypeVisible;
     private int mInputTypeInvisible;
+    private float mMinTouchHeight;
+    private float mMinTouchWidth;
 
     public VisiblePasswordView(Context context) {
         super(context);
@@ -50,6 +56,9 @@ public class VisiblePasswordView extends EditText {
 
     @SuppressWarnings("deprecation")
     private void init(AttributeSet attrs, int defStyleAttr) {
+        mMinTouchHeight = getResources().getDimension(R.dimen.default_drawable_touch_height);
+        mMinTouchWidth = getResources().getDimension(R.dimen.default_drawable_touch_width);
+
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.VisiblePasswordView, defStyleAttr, 0);
         if (a.hasValue(R.styleable.VisiblePasswordView_visibleDrawable)) {
             mDrawableVisible = a.getDrawable(R.styleable.VisiblePasswordView_visibleDrawable);
@@ -67,6 +76,9 @@ public class VisiblePasswordView extends EditText {
             else
                 mDrawableInvisible = getContext().getResources().getDrawable(R.drawable.ic_login_eye_off);
         }
+
+        mMinTouchHeight = a.getDimension(R.styleable.VisiblePasswordView_minTouchHeight, mMinTouchHeight);
+        mMinTouchWidth = a.getDimension(R.styleable.VisiblePasswordView_minTouchWidth, mMinTouchWidth);
 
 
         mInputTypeVisible = a.getInt(R.styleable.VisiblePasswordView_inputTypeVisible, EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -87,29 +99,27 @@ public class VisiblePasswordView extends EditText {
         final int drawableWidth = Math.max(mDrawableInvisible.getIntrinsicWidth(), mDrawableVisible.getIntrinsicWidth());
         final int drawableHeight = Math.max(mDrawableInvisible.getIntrinsicHeight(), mDrawableVisible.getIntrinsicHeight());
 
-        left = getMeasuredWidth() - getPaddingRight() - drawableWidth;
-        right = getMeasuredWidth() - getPaddingRight();
-        top = (getMeasuredHeight() - drawableHeight) / 2;
-        bottom = getMeasuredHeight() - ((getMeasuredHeight() - drawableHeight) / 2);
+
+        mTouchRight = right = getMeasuredWidth() - getPaddingRight();
+        mTouchLeft = left = right - drawableWidth;
+        mTouchTop = top = (getMeasuredHeight() - drawableHeight) / 2;
+        mTouchBottom = bottom = getMeasuredHeight() - ((getMeasuredHeight() - drawableHeight) / 2);
+
+        float widthPlus = mMinTouchWidth - (left - right);
+        float heightPlus = mMinTouchHeight - (bottom - top);
+
+        if (widthPlus > 0) {
+            mTouchRight += widthPlus / 2;
+            mTouchLeft -= widthPlus / 2;
+        }
+        if (heightPlus > 0) {
+            mTouchTop -= heightPlus / 2;
+            mTouchBottom += heightPlus / 2;
+        }
     }
 
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        Log.i("onDraw",
-                "left: " + getLeft() + " right: " + getRight() + " top: " + getTop() + " bottom: " + getBottom()
-                        + " width: " + getWidth() + " height: " + getHeight() +
-                        " measuredWidth: " + getMeasuredWidth() + " measuredHeight: " + getMeasuredHeight()
-
-        );
-
-
-        Log.i("onDraw", " left: " + left +
-                        " right: " + right +
-                        " top: " + top +
-                        " bottom: " + bottom
-        );
-
         final Drawable toDraw;
         if (visible)
             toDraw = mDrawableVisible;
@@ -162,15 +172,17 @@ public class VisiblePasswordView extends EditText {
 
     private boolean isInVisibleIcon(float x, float y) {
         Log.i("onTouch", "x: " + x + " y: " + y);
-        Log.i("1", "" + (getLeft() + left));
-        Log.i("2", "" + (getLeft() + right));
-        Log.i("3", "" + (getTop() + top));
-        Log.i("4", "" + (getTop() + bottom));
-        Log.i("result", String.valueOf(x > (getLeft() + left) && x < (getLeft() + right)
-                && y > (getTop() + top) && y < (getTop() + bottom)));
-
-        return x > left && x < +right
-                && y > +top && y < bottom;
+        boolean result = x > mTouchLeft && x < +mTouchRight && y > +mTouchTop && y < mTouchBottom;
+        Log.i("onTouch", "In visibility Area " + result + " {" +
+                "left=" + left +
+                ", right=" + right +
+                ", top=" + top +
+                ", bottom=" + bottom +
+                ", mTouchLeft=" + mTouchLeft +
+                ", mTouchRight=" + mTouchRight +
+                ", mTouchTop=" + mTouchTop +
+                ", mTouchBottom=" + mTouchBottom +
+                '}');
+        return result;
     }
-
 }
