@@ -55,17 +55,17 @@ public class VisiblePasswordView extends EditText {
             mDrawableVisible = a.getDrawable(R.styleable.VisiblePasswordView_visibleDrawable);
         } else {
             if (Build.VERSION.SDK_INT > 21)
-                mDrawableVisible = getContext().getResources().getDrawable(R.drawable.pic_login_eye_open, null);
+                mDrawableVisible = getContext().getResources().getDrawable(R.drawable.ic_login_eye_open, null);
             else
-                mDrawableVisible = getContext().getResources().getDrawable(R.drawable.pic_login_eye_open);
+                mDrawableVisible = getContext().getResources().getDrawable(R.drawable.ic_login_eye_open);
         }
         if (a.hasValue(R.styleable.VisiblePasswordView_inVisibleDrawable)) {
             mDrawableInvisible = a.getDrawable(R.styleable.VisiblePasswordView_inVisibleDrawable);
         } else {
             if (Build.VERSION.SDK_INT > 21)
-                mDrawableInvisible = getContext().getResources().getDrawable(R.drawable.ic_alarm, null);
+                mDrawableInvisible = getContext().getResources().getDrawable(R.drawable.ic_login_eye_off, null);
             else
-                mDrawableInvisible = getContext().getResources().getDrawable(R.drawable.ic_alarm);
+                mDrawableInvisible = getContext().getResources().getDrawable(R.drawable.ic_login_eye_off);
         }
 
 
