@@ -1,24 +1,30 @@
 package co.yishun.onemoment.app.ui.account;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.app.Activity;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EFragment;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.PhoneAccountActivity;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
 
 /**
  * Created by yyz on 8/3/15.
  */
+
+@EFragment(R.layout.fragment_phone_login)
 public class PhoneLoginFragment extends BaseFragment {
 
-    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_phone_login, container, false);
+    private PhoneAccountActivity mActivity;
 
+    @AfterViews void setViews() {
 
-        return rootView;
     }
 
+    @Override public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = (PhoneAccountActivity) activity;
+        mActivity.setTitle(R.string.phone_login_title);
+    }
 }

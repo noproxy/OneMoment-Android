@@ -41,4 +41,8 @@
     <string name="login_by_qq">QQ</string>
     <string name="login_by_weibo">WEIBO</string>
     <string name="login_by_phone">Login By Phone >></string>
+
+    <string name="phone_login_title">Login</string>
+    <string name="phone_verify_title">Verify</string>
+    <string name="phone_integrate_info_title">Integrate Information</string>
 </resources>
