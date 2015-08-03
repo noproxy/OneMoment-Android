@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui;
+package co.yishun.onemoment.app.ui.common;
 
 import android.os.Bundle;
 import android.support.annotation.ArrayRes;
@@ -20,7 +20,7 @@ import co.yishun.onemoment.app.R;
  */
 public abstract class TabPagerFragment extends ToolbarFragment {
 
-    abstract @ArrayRes int getTabTitleArrayResources();
+    protected abstract @ArrayRes int getTabTitleArrayResources();
 
     private PagerAdapter getViewPager(LayoutInflater inflater) {
         String titles[] = getResources().getStringArray(getTabTitleArrayResources());
@@ -49,9 +49,9 @@ public abstract class TabPagerFragment extends ToolbarFragment {
         };
     }
 
-    abstract @NonNull View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
+    protected abstract @NonNull View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
 
-    abstract @LayoutRes int getContentViewId(Bundle savedInstanceState);
+    protected abstract @LayoutRes int getContentViewId(Bundle savedInstanceState);
 
     @NonNull @CallSuper @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(getContentViewId(savedInstanceState), container, false);

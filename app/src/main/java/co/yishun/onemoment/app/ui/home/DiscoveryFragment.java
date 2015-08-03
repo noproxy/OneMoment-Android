@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui;
+package co.yishun.onemoment.app.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.VideoVotedUpActivity_;
+import co.yishun.onemoment.app.ui.common.ToolbarFragment;
 
 /**
  * Created by yyz on 7/20/15.

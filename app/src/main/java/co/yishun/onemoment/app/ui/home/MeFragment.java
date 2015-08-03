@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui;
+package co.yishun.onemoment.app.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import org.androidannotations.annotations.EFragment;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.Test;
+import co.yishun.onemoment.app.ui.common.TabPagerFragment;
 
 /**
  * Created by yyz on 7/21/15.
@@ -23,11 +25,11 @@ public class MeFragment extends TabPagerFragment {
     }
 
 
-    @Override int getTabTitleArrayResources() {
+    @Override protected int getTabTitleArrayResources() {
         return R.array.me_page_title;
     }
 
-    @NonNull @Override View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
+    @NonNull @Override protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
         View rootView = inflater.inflate(R.layout.page_world, container, false);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
@@ -43,7 +45,7 @@ public class MeFragment extends TabPagerFragment {
         return rootView;
     }
 
-    @Override int getContentViewId(Bundle savedInstanceState) {
+    @Override protected int getContentViewId(Bundle savedInstanceState) {
         return R.layout.fragment_me;
     }
 

@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui;
+package co.yishun.onemoment.app.ui.common;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import co.yishun.onemoment.app.ui.common.BaseFragment;
+import co.yishun.onemoment.app.ui.MainActivity;
 
 /**
  * Created by yyz on 7/14/15.

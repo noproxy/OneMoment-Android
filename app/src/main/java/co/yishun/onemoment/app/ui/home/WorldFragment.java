@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui;
+package co.yishun.onemoment.app.ui.home;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,6 +18,9 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.squareup.picasso.Picasso;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.MainActivity;
+import co.yishun.onemoment.app.ui.Test;
+import co.yishun.onemoment.app.ui.common.TabPagerFragment;
 
 /**
  * Created by yyz on 7/13/15.
@@ -33,11 +36,11 @@ public final class WorldFragment extends TabPagerFragment {
         return R.drawable.pic_world_title;
     }
 
-    @Override int getTabTitleArrayResources() {
+    @Override protected int getTabTitleArrayResources() {
         return R.array.world_page_title;
     }
 
-    @NonNull @Override View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
+    @NonNull @Override protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
         boolean isRecommend = position == 0;
         View rootView = inflater.inflate(R.layout.page_world, container, false);
 
@@ -54,7 +57,7 @@ public final class WorldFragment extends TabPagerFragment {
         return rootView;
     }
 
-    @Override int getContentViewId(Bundle savedInstanceState) {
+    @Override protected int getContentViewId(Bundle savedInstanceState) {
         return R.layout.fragment_world;
     }
 

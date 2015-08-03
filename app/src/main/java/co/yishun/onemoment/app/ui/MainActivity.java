@@ -17,6 +17,10 @@ import android.view.View;
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
+import co.yishun.onemoment.app.ui.home.MeFragment_;
+import co.yishun.onemoment.app.ui.home.VerifyFragment_;
+import co.yishun.onemoment.app.ui.home.WorldFragment;
 
 public final class MainActivity extends AppCompatActivity {
     private static WeakReference<FloatingActionButton> floatingActionButton;

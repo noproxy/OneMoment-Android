@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui;
+package co.yishun.onemoment.app.ui.home;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.common.ToolbarFragment;
 
 /**
  * A placeholder fragment containing a simple view.

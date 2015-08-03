@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui;
+package co.yishun.onemoment.app.ui.home;
 
 import android.support.v4.app.Fragment;
 import android.view.View;
