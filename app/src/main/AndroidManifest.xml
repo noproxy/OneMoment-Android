@@ -60,7 +60,7 @@
         </activity>
         <activity
             android:name=".ui.PhoneAccountActivity_"
-            android:theme="@style/AppTheme.LoginActivity"
+            android:theme="@style/AppTheme.PhoneAccountActivity"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

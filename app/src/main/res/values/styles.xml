@@ -48,4 +48,8 @@
     <style name="AppTheme.LoginActivity">
         <item name="android:windowBackground">@drawable/bg_window_login</item>
     </style>
+
+    <style name="AppTheme.PhoneAccountActivity">
+        <item name="android:windowBackground">@drawable/bg_window_phone</item>
+    </style>
 </resources>

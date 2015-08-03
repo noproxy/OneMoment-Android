@@ -2,16 +2,17 @@ package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import co.yishun.onemoment.app.ui.common.BaseFragment;
+
 /**
  * Created by yyz on 7/14/15.
  */
-public abstract class ToolbarFragment extends Fragment {
+public abstract class ToolbarFragment extends BaseFragment {
     protected Toolbar toolbar;
 
     protected abstract @DrawableRes int getTitleDrawableRes();
