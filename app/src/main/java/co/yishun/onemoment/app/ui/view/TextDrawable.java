@@ -30,13 +30,15 @@ public class TextDrawable extends Drawable {
         mPaint.setTextSize(textSize);
         mIntrinsicWidth = (int) (mPaint.measureText(mText, 0, mText.length()) + .5);
         mIntrinsicHeight = mPaint.getFontMetricsInt(null);
+
+
     }
 
     @Override
     public void draw(Canvas canvas) {
         Rect bounds = getBounds();
-        canvas.drawText(mText, 0, mText.length(),
-                bounds.centerX(), bounds.centerY(), mPaint);
+        canvas.drawLine(bounds.left, bounds.centerY(), bounds.right, bounds.centerY(), mPaint);
+        canvas.drawText(mText, 0, mText.length(), bounds.centerX(), bounds.centerY() + mIntrinsicHeight / 2, mPaint);
     }
 
     @Override
