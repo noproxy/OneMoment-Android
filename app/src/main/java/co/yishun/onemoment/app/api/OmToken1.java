@@ -22,8 +22,7 @@ class OmToken1 implements Token {
     }
 
 
-    @Override
-    public String value() {
+    @Override public String value() {
         return mValue;
     }
 
@@ -31,8 +30,7 @@ class OmToken1 implements Token {
         return mOrigin;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "OmToken1{" +
                 "mOrigin='" + mOrigin + '\'' +
                 ", mValue='" + mValue + '\'' +

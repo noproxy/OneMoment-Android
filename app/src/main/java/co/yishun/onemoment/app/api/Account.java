@@ -10,8 +10,7 @@ import retrofit.http.Path;
 public interface Account {
 
 
-    @GET("/account/account/{account_id}")
-    User getUserInfo(@Path("account_id") String userId);
+    @GET("/account/account/{account_id}") User getUser(@Path("account_id") String userId);
 
 
 }

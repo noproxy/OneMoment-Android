@@ -2,7 +2,11 @@ package co.yishun.onemoment.app.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+
 /**
+ * Bean contains user info.
+ * <p>
  * Created by Carlos on 2015/8/4.
  */
 public class User {
@@ -17,27 +21,59 @@ public class User {
  */
 
     public boolean available;
-    public String[] created_world;
-    @SerializedName("weibo_nickname")
+    public String[] createdWorld;
     public String weiboNickname;
-    @SerializedName("signin_time")
-    public String SignInTime;
+
+    @SerializedName("signin_name")
+    public String signInTime;
     public String phone;
-    public String phone_verified;
-    public String weixin_nickname;
+    public String phoneVerified;
+    public String weixinNickname;
     public String nickname;
-    public String liked_worlds;
-    public String signin_ip;
-    public String signup_ua;
+    public String likedWorlds;
+    @SerializedName("signin_ip")
+    public String signInIP;
+    @SerializedName("signup_ua")
+    public String signUpUserAgent;
     public String introduction;
     public String gender;
-    public String weibo_uid;
-    public String weixin_uid;
-    public String signin_ua;
-    public String signup_ip;
-    public String signup_time;
-    public String avatar_url;
+    public String weiboUid;
+    public String weixinUid;
+    @SerializedName("signin_ua")
+    public String signInUserAgent;
+    @SerializedName("signup_ip")
+    public String signUpIP;
+    @SerializedName("signup_time")
+    public String signUpTime;
+    public String avatarUrl;
     public String location;
     public String _id;
-    public String joined_world;
+    public String joinedWorld;
+
+    @Override public String toString() {
+        return "User{" +
+                "available=" + available +
+                ", createdWorld=" + Arrays.toString(createdWorld) +
+                ", weiboNickname='" + weiboNickname + '\'' +
+                ", signInTime='" + signInTime + '\'' +
+                ", phone='" + phone + '\'' +
+                ", phoneVerified='" + phoneVerified + '\'' +
+                ", weixinNickname='" + weixinNickname + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", likedWorlds='" + likedWorlds + '\'' +
+                ", signInIP='" + signInIP + '\'' +
+                ", signUpUserAgent='" + signUpUserAgent + '\'' +
+                ", introduction='" + introduction + '\'' +
+                ", gender='" + gender + '\'' +
+                ", weiboUid='" + weiboUid + '\'' +
+                ", weixinUid='" + weixinUid + '\'' +
+                ", signInUserAgent='" + signInUserAgent + '\'' +
+                ", signUpIP='" + signUpIP + '\'' +
+                ", signUpTime='" + signUpTime + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", location='" + location + '\'' +
+                ", _id='" + _id + '\'' +
+                ", joinedWorld='" + joinedWorld + '\'' +
+                '}';
+    }
 }
