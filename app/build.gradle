@@ -1,21 +1,19 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
-apply from: '/home/yyz/AndroidStudioProjects/OneMoment/private.gradle'
-
 android {
     signingConfigs {
         debugSignature {
-            keyAlias SIGNATURE.KEY_ALIAS_DEBUG
-            keyPassword SIGNATURE.KEY_PASSWORD
-            storeFile file(SIGNATURE.KEYSTORE_PATH)
-            storePassword SIGNATURE.STORE_PASSWORD
+            keyAlias = "$System.env.KEY_ALIAS_DEBUG"
+            keyPassword "$System.env.KEY_PASSWORD"
+            storeFile file("$System.env.KEYSTORE_PATH")
+            storePassword "$System.env.STORE_PASSWORD"
         }
         releaseSignature {
-            keyAlias SIGNATURE.KEY_ALIAS_RELEASE
-            keyPassword SIGNATURE.KEY_PASSWORD
-            storeFile file(SIGNATURE.KEYSTORE_PATH)
-            storePassword SIGNATURE.STORE_PASSWORD
+            keyAlias "$System.env.KEY_ALIAS_RELEASE"
+            keyPassword "$System.env.KEY_PASSWORD"
+            storeFile file("$System.env.KEYSTORE_PATH")
+            storePassword "$System.env.STORE_PASSWORD"
         }
     }
 
