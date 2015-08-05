@@ -1,19 +1,23 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     signingConfigs {
         debugSignature {
-            keyAlias = "$System.env.KEY_ALIAS_DEBUG"
-            keyPassword "$System.env.KEY_PASSWORD"
-            storeFile file("$System.env.KEYSTORE_PATH")
-            storePassword "$System.env.STORE_PASSWORD"
+            keyAlias = properties.getProperty("KEY_ALIAS_DEBUG")
+            keyPassword properties.getProperty("KEY_PASSWORD")
+            storeFile file(properties.getProperty("KEYSTORE_PATH"))
+            storePassword properties.getProperty("STORE_PASSWORD")
         }
         releaseSignature {
-            keyAlias "$System.env.KEY_ALIAS_RELEASE"
-            keyPassword "$System.env.KEY_PASSWORD"
-            storeFile file("$System.env.KEYSTORE_PATH")
-            storePassword "$System.env.STORE_PASSWORD"
+            keyAlias properties.getProperty("KEY_ALIAS_RELEASE")
+            keyPassword properties.getProperty("KEY_PASSWORD")
+            storeFile file(properties.getProperty("KEYSTORE_PATH"))
+            storePassword properties.getProperty("STORE_PASSWORD")
         }
     }
 
@@ -101,7 +105,8 @@ dependencies {
     compile "com.android.support:cardview-v7:$SUPPORT_VERSION"
     compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
     compile "com.android.support:palette-v7:$SUPPORT_VERSION"
-    compile "com.android.support:design:22.2.0"//TODO bug https://code.google.com/p/android/issues/detail?id=180462
+    compile "com.android.support:design:22.2.0"
+//TODO bug https://code.google.com/p/android/issues/detail?id=180462
 
     compile 'com.google.guava:guava:18.0'
     compile 'com.google.code.gson:gson:2.3.1'
