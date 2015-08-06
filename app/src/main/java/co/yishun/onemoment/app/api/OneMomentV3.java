@@ -1,9 +1,12 @@
 package co.yishun.onemoment.app.api;
 
+import com.google.common.base.Charsets;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 
 import co.yishun.onemoment.app.BuildConfig;
@@ -11,7 +14,6 @@ import co.yishun.onemoment.app.config.Constants;
 import retrofit.RestAdapter;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
-import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 
@@ -31,23 +33,50 @@ public class OneMomentV3 {
                 .build();
     }
 
-    public static class OneMomentConverter implements Converter {
-        private final GsonConverter mGsonConverter;
+    private static class OneMomentConverter implements Converter {
+        private final Gson mGson;
 
         public OneMomentConverter() {
-            Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-            this.mGsonConverter = new GsonConverter(gson);
+            mGson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         }
 
 
         @Override public Object fromBody(TypedInput body, Type type) throws ConversionException {
-            //TODO encode
-            return mGsonConverter.fromBody(body, type);
+            String json = OneMomentEncoding.decode(body);
+            return mGson.fromJson(json, type);
         }
 
         @Override public TypedOutput toBody(Object object) {
-            //TODO decode
-            return mGsonConverter.toBody(object);
+            // will be encoded in OneMomentClient, so don't encode here
+            return new JsonTypedOutput(mGson.toJson(object).getBytes(Charsets.UTF_8), Charsets.UTF_8.name());
         }
+
+        private static class JsonTypedOutput implements TypedOutput {
+            private final byte[] jsonBytes;
+            private final String mimeType;
+
+            JsonTypedOutput(byte[] jsonBytes, String encode) {
+                this.jsonBytes = jsonBytes;
+                this.mimeType = "application/json; charset=" + encode;
+            }
+
+            @Override public String fileName() {
+                return null;
+            }
+
+            @Override public String mimeType() {
+                return mimeType;
+            }
+
+            @Override public long length() {
+                return jsonBytes.length;
+            }
+
+            @Override public void writeTo(OutputStream out) throws IOException {
+                out.write(jsonBytes);
+            }
+        }
+
+
     }
 }

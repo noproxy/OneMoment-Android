@@ -8,4 +8,5 @@ package co.yishun.onemoment.app.config;
 public class Constants {
     public static final String API_KEY = "";
     public static final String API_V3_URL = "http://api.yishun.co/v3";
+    public static final String AES_KEY = "QJBBNfrwp2oN4ZBwT9qZ4MGObN8y56bEydJj48L8xVs=";
 }

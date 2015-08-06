@@ -1,9 +1,11 @@
 package co.yishun.onemoment.app.api;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.client.Header;
@@ -19,19 +21,18 @@ import retrofit.mime.TypedOutput;
  * Created by Carlos on 2015/8/5.
  */
 class OneMomentClient extends OkClient {
+    public static final String TAG = "OneMomentClient";
     private static final RandomString mStringGenerator = new RandomString(33);
 
     @Override
     public Response execute(Request request) throws IOException {
-        List<Header> headers = request.getHeaders();
+        List<Header> immutableHeaders = request.getHeaders();// this list is immutable
+        ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
         Token token1 = generateOmToken1();
         headers.add(new Header("Om-token1", token1.value()));
+        headers.add(new Header("Om-token2", generateOmToken2(token1, request.getUrl(), request.getBody()).value()));
 
-        TypedOutput body = request.getBody();
-        Log.d("body", String.valueOf(body));
-        headers.add(new Header("Om-token2", generateOmToken2(token1, request.getUrl(), request.getBody().toString()).value()));
-
-        Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, request.getBody());
+        Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, request.getBody());//TODO handle body
         return super.execute(verifiedRequest);
     }
 
@@ -39,8 +40,38 @@ class OneMomentClient extends OkClient {
         return new OmToken1(mStringGenerator.nextString());
     }
 
-    private Token generateOmToken2(Token token1, String url, @Nullable String data) {
-        return new OmToken2(token1, url, null);
+    private Token generateOmToken2(Token token1, String url, @Nullable TypedOutput data) throws IOException {
+        return new OmToken2(token1, url, data);
     }
+
+    private static class OneMomentTypedOut implements TypedOutput {
+        private final TypedOutput mTypedOutput;
+
+        public OneMomentTypedOut(TypedOutput typedOutput) {
+            this.mTypedOutput = typedOutput;
+        }
+
+        @Override public String fileName() {
+            return null;
+        }
+
+        @Override public String mimeType() {
+            return "application/json; charset=UTF-8";
+        }
+
+        @Override public long length() {
+            return mTypedOutput.length();
+        }
+
+        @Override public void writeTo(OutputStream out) throws IOException {
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            mTypedOutput.writeTo(outputStream);
+            ByteArrayOutputStream encodingStream = OneMomentEncoding.encodingStream(outputStream);
+            encodingStream.writeTo(out);
+
+        }
+    }
+
 
 }
