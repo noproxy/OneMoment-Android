@@ -29,6 +29,9 @@ public class OneMomentV3 {
         return new RestAdapter.Builder().setEndpoint(API_BASE_URL)
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .setClient(new OneMomentClient())
+                .setRequestInterceptor(request -> {
+                    request.addHeader("Om-encrypted", "1");
+                })
                 .setConverter(new OneMomentConverter())
                 .build();
     }

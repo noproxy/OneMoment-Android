@@ -1,18 +1,19 @@
 package co.yishun.onemoment.app.api;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.TimeZone;
 
-import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.mime.TypedOutput;
 
@@ -21,7 +22,7 @@ import retrofit.mime.TypedOutput;
  * Created by Carlos on 2015/8/5.
  */
 public class OmToken2 implements Token {
-    public static final int DEFAULT_EXPIRE_TIME = 10;
+    private static final String TAG = "OmToken2";
     final private Token mToken1;
     private final String mValue;
     private final String mOrigin;
@@ -30,7 +31,7 @@ public class OmToken2 implements Token {
     private final String mUrl;
     private final byte[] mData;
 
-    OmToken2(Token token1, String url, @Nullable TypedOutput body) throws IOException {
+    OmToken2(Token token1, String url, @Nullable TypedOutput body, long expiredTime) throws IOException {
         mToken1 = token1;
         mRaw = mToken1.origin();
         mUrl = url;
@@ -43,9 +44,14 @@ public class OmToken2 implements Token {
             out.close();
         }
         mData = data;
-        mOrigin = Joiner.on(":").useForNull("").join(mRaw, mKey, mUrl, mData, Util.unixTimeStamp() + DEFAULT_EXPIRE_TIME, TimeZone.getDefault().getID());
-        mValue = BaseEncoding.base64().encode(Hashing.sha256().hashBytes(mOrigin.getBytes(Charset.forName("UTF-8"))).asBytes());
+//        mOrigin = "AC52T575DCV6UPX7K51HZ6J5S1258NZIZ::http://api.yishun.co/v3/account/account/54c7530f7d40b52e24107956::1438940611:Asia/Shanghai";
+        mOrigin = Joiner.on(":").useForNull("").join(mRaw, mKey, mUrl, mData, expiredTime, TimeZone.getDefault().getID());
+        HashCode hashCode = Hashing.sha256().hashString(mOrigin, Charsets.UTF_8);
+
+        mValue = BaseEncoding.base64().encode(hashCode.asBytes());
+        Log.i(TAG, mValue.toString());
     }
+
 
     @Override
     public String value() {

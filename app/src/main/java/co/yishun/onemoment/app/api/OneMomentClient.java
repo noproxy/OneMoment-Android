@@ -1,13 +1,16 @@
 package co.yishun.onemoment.app.api;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
+import co.yishun.onemoment.app.Util;
 import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Request;
@@ -22,25 +25,37 @@ import retrofit.mime.TypedOutput;
  */
 class OneMomentClient extends OkClient {
     public static final String TAG = "OneMomentClient";
-    private static final RandomString mStringGenerator = new RandomString(33);
+    public static final int DEFAULT_EXPIRE_TIME = 10;
+
 
     @Override
     public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
+
         Token token1 = generateOmToken1();
+        Log.i(TAG, token1.toString());
+
         headers.add(new Header("Om-token1", token1.value()));
-        headers.add(new Header("Om-token2", generateOmToken2(token1, request.getUrl(), request.getBody()).value()));
+        long expiredTime = Util.unixTimeStamp() + DEFAULT_EXPIRE_TIME;
+
+        Token token2 = generateOmToken2(token1, request.getUrl(), request.getBody(), expiredTime);
+        Log.i(TAG, token2.toString());
+
+        headers.add(new Header("Om-token2", token2.value()));
+        headers.add(new Header("Om-et", String.valueOf(expiredTime)));
+        headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
+
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, request.getBody() == null ? null : new OneMomentTypedOut(request.getBody()));// be null if method is GET
         return super.execute(verifiedRequest);
     }
 
     private Token generateOmToken1() {
-        return new OmToken1(mStringGenerator.nextString());
+        return new OmToken1();
     }
 
-    private Token generateOmToken2(Token token1, String url, @Nullable TypedOutput data) throws IOException {
-        return new OmToken2(token1, url, data);
+    private Token generateOmToken2(Token token1, String url, @Nullable TypedOutput data, long expireTime) throws IOException {
+        return new OmToken2(token1, url, data, expireTime);
     }
 
     private static class OneMomentTypedOut implements TypedOutput {
