@@ -31,8 +31,7 @@ class OneMomentClient extends OkClient {
         Token token1 = generateOmToken1();
         headers.add(new Header("Om-token1", token1.value()));
         headers.add(new Header("Om-token2", generateOmToken2(token1, request.getUrl(), request.getBody()).value()));
-
-        Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, request.getBody());//TODO handle body
+        Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, request.getBody() == null ? null : new OneMomentTypedOut(request.getBody()));// be null if method is GET
         return super.execute(verifiedRequest);
     }
 
@@ -52,7 +51,7 @@ class OneMomentClient extends OkClient {
         }
 
         @Override public String fileName() {
-            return null;
+            return mTypedOutput.fileName();
         }
 
         @Override public String mimeType() {
