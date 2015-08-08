@@ -4,6 +4,11 @@ import com.google.common.base.Charsets;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,6 +16,8 @@ import java.lang.reflect.Type;
 
 import co.yishun.onemoment.app.BuildConfig;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.model.ApiModel;
+import co.yishun.onemoment.app.model.User;
 import retrofit.RestAdapter;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
@@ -37,10 +44,12 @@ public class OneMomentV3 {
     }
 
     private static class OneMomentConverter implements Converter {
+        private static final String TAG = "OneMomentConverter";
         private final Gson mGson;
 
         public OneMomentConverter() {
-            mGson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+            mGson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                    .registerTypeAdapter(User.class, new OneMomentDeserializer<User>()).create();
         }
 
 
@@ -79,7 +88,18 @@ public class OneMomentV3 {
                 out.write(jsonBytes);
             }
         }
+    }
 
-
+    private static class OneMomentDeserializer<T extends ApiModel> implements JsonDeserializer<T> {
+        @Override
+        public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            JsonElement data = jsonObject.get("data");
+            JsonElement account = data.getAsJsonObject().get("account");
+            T model = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(account, typeOfT);
+            model.code = jsonObject.get("code").getAsInt();
+            model.msg = jsonObject.get("msg").getAsString();
+            return model;
+        }
     }
 }

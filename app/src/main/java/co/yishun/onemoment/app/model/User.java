@@ -9,17 +9,16 @@ import java.util.Arrays;
  * <p>
  * Created by Carlos on 2015/8/4.
  */
-public class User {
-/*
-{
-    "msg": "get account successfully",
-    "code": 1,
-    "data": {
+public class User extends ApiModel {
+    /*
+    {
+        "msg": "get account successfully",
+        "code": 1,
+        "data": {
 
+        }
     }
-}
- */
-
+     */
     public boolean available;
     public String[] createdWorld;
     public String weiboNickname;
