@@ -3,7 +3,7 @@ package co.yishun.onemoment.app.api;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import co.yishun.onemoment.app.model.User;
+import co.yishun.onemoment.app.api.model.User;
 import retrofit.http.Field;
 import retrofit.http.GET;
 import retrofit.http.POST;
