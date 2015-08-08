@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.model;
+package co.yishun.onemoment.app.api.model;
 
 import com.google.gson.annotations.SerializedName;
 
