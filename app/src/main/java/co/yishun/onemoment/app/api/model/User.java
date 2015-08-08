@@ -24,17 +24,17 @@ public class User extends ApiModel {
     public String weiboNickname;
 
     @SerializedName("signin_name")
-    public String signInTime;
+    public long signInTime;
     public String phone;
-    public String phoneVerified;
+    public boolean phoneVerified;
     public String weixinNickname;
     public String nickname;
-    public String likedWorlds;
+    public String[] likedWorlds;
     @SerializedName("signin_ip")
     public String signInIP;
     @SerializedName("signup_ua")
     public String signUpUserAgent;
-    public String introduction;
+    //    public String introduction; TODO ?
     public String gender;
     public String weiboUid;
     public String weixinUid;
@@ -47,22 +47,22 @@ public class User extends ApiModel {
     public String avatarUrl;
     public String location;
     public String _id;
-    public String joinedWorld;
+    public String[] joinedWorld;
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "User{" +
                 "available=" + available +
                 ", createdWorld=" + Arrays.toString(createdWorld) +
                 ", weiboNickname='" + weiboNickname + '\'' +
-                ", signInTime='" + signInTime + '\'' +
+                ", signInTime=" + signInTime +
                 ", phone='" + phone + '\'' +
-                ", phoneVerified='" + phoneVerified + '\'' +
+                ", phoneVerified=" + phoneVerified +
                 ", weixinNickname='" + weixinNickname + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", likedWorlds='" + likedWorlds + '\'' +
+                ", likedWorlds=" + Arrays.toString(likedWorlds) +
                 ", signInIP='" + signInIP + '\'' +
                 ", signUpUserAgent='" + signUpUserAgent + '\'' +
-                ", introduction='" + introduction + '\'' +
                 ", gender='" + gender + '\'' +
                 ", weiboUid='" + weiboUid + '\'' +
                 ", weixinUid='" + weixinUid + '\'' +
@@ -72,7 +72,7 @@ public class User extends ApiModel {
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", location='" + location + '\'' +
                 ", _id='" + _id + '\'' +
-                ", joinedWorld='" + joinedWorld + '\'' +
+                ", joinedWorld=" + Arrays.toString(joinedWorld) +
                 '}';
     }
 }
