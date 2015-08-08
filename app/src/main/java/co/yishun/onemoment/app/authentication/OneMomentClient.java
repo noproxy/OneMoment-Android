@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.api;
+package co.yishun.onemoment.app.authentication;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -19,11 +19,11 @@ import retrofit.mime.TypedOutput;
 
 
 /**
- * Custom client to replace request with double token verified one.
+ * Custom client to replace request with double token verified one. And encrypted body if have.
  * <p>
  * Created by Carlos on 2015/8/5.
  */
-class OneMomentClient extends OkClient {
+public class OneMomentClient extends OkClient {
     public static final String TAG = "OneMomentClient";
     public static final int DEFAULT_EXPIRE_TIME = 10;
 
@@ -65,19 +65,23 @@ class OneMomentClient extends OkClient {
             this.mTypedOutput = typedOutput;
         }
 
-        @Override public String fileName() {
+        @Override
+        public String fileName() {
             return mTypedOutput.fileName();
         }
 
-        @Override public String mimeType() {
-            return "application/json; charset=UTF-8";
+        @Override
+        public String mimeType() {
+            return "text/plain; charset=UTF-8";
         }
 
-        @Override public long length() {
+        @Override
+        public long length() {
             return mTypedOutput.length();
         }
 
-        @Override public void writeTo(OutputStream out) throws IOException {
+        @Override
+        public void writeTo(OutputStream out) throws IOException {
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             mTypedOutput.writeTo(outputStream);
