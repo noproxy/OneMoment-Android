@@ -27,7 +27,7 @@ public class OneMomentEncoding {
     private static final RandomString mStringGenerator = new RandomString(16);
 
 
-    public static ByteArrayOutputStream encodingStream(ByteArrayOutputStream out) throws IOException {
+    public static byte[] encodingStream(ByteArrayOutputStream out) throws IOException {
         try {
             byte[] ivT = mStringGenerator.nextString().getBytes(Charsets.UTF_8);
 
@@ -37,17 +37,19 @@ public class OneMomentEncoding {
             Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(ivT));
 
-
             byte[] data = out.toByteArray();
-            byte[] encoded = cipher.doFinal(data);
+            int length = data.length / 16 * 16 + 16;
+            byte[] dataPadding = new byte[length];
+            System.arraycopy(data, 0, dataPadding, 0, data.length);
+
+            byte[] encoded = cipher.doFinal(dataPadding);
 
 
             String iv = BaseEncoding.base64().encode(ivT);
             String re = Joiner.on(':').join(iv, encoded);
 
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            stream.write(re.getBytes(Charsets.UTF_8));
-            return stream;
+
+            return re.getBytes(Charsets.UTF_8);
         } catch (Exception e) {
             throw new IOException(e);
         }
