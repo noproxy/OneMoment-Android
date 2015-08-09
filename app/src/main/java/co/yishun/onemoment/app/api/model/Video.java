@@ -9,7 +9,7 @@ public class Video extends ApiModel {
     public String fileName;
     public String accountId;
     public String type;
-    public List<Video> tags;
+    public List<VideoTag> tags;
 
     public static class Type {
         public static final String PUBLIC = "public";
