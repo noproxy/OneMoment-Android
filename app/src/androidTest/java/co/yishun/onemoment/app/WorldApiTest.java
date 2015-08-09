@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import co.yishun.onemoment.app.api.OneMomentV3;
@@ -66,4 +67,17 @@ public class WorldApiTest extends AndroidTestCase {
         assertNotNull(tags);
     }
 
+    @Test
+    public void testAddVideoToWorld() {
+        List<Video.VideoTag> list = new ArrayList<>();
+        Video.VideoTag tag = new Video.VideoTag();
+        tag.name = "test";
+        tag.type = Video.VideoTag.Type.TEXT;
+        tag.x = 0;
+        tag.y = 0;
+        list.add(tag);
+        Video video = mWorld.addVideoToWorld(AccountApiTest.TEST_ACCOUNT_ID, Video.Type.PUBLIC, "temp.mp4", list);
+
+        assertNotNull(video);
+    }
 }
