@@ -12,4 +12,10 @@ public class Video extends ApiModel {
     public long fileSize;
     public String key;
     public long putTime;
+
+    // When be created by Gson into a List, auto set code 1
+    public Video() {
+        this.code = 1;
+        this.msg = "";
+    }
 }

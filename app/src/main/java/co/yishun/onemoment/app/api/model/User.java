@@ -49,6 +49,16 @@ public class User extends ApiModel {
     public String _id;
     public String[] joinedWorld;
 
+    public User() {
+        super(1, "");
+
+    }
+
+    public User(int code, String msg) {
+        super(code, msg);
+    }
+
+
     @Override
     public String toString() {
         return "User{" +
