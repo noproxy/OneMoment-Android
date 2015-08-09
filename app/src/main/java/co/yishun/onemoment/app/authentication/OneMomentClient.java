@@ -35,18 +35,20 @@ public class OneMomentClient extends OkClient {
 
         Token token1 = generateOmToken1();
         Log.i(TAG, token1.toString());
+        TypedOutput body = request.getBody() == null ? null : new OneMomentTypedOut(request.getBody());
+
 
         headers.add(new Header("Om-token1", token1.value()));
         long expiredTime = Util.unixTimeStamp() + DEFAULT_EXPIRE_TIME;
 
-        Token token2 = generateOmToken2(token1, request.getUrl(), request.getBody(), expiredTime);
+        Token token2 = generateOmToken2(token1, request.getUrl(), body, expiredTime);
         Log.i(TAG, token2.toString());
 
         headers.add(new Header("Om-token2", token2.value()));
         headers.add(new Header("Om-et", String.valueOf(expiredTime)));
         headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
 
-        Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, request.getBody() == null ? null : new OneMomentTypedOut(request.getBody()));// be null if method is GET
+        Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
         return super.execute(verifiedRequest);
     }
 
@@ -55,14 +57,28 @@ public class OneMomentClient extends OkClient {
     }
 
     private Token generateOmToken2(Token token1, String url, @Nullable TypedOutput data, long expireTime) throws IOException {
-        return new OmToken2(token1, url, data, expireTime);
+        int urlEndIndex = url.indexOf('?');
+        if (urlEndIndex == -1) urlEndIndex = url.length();
+        return new OmToken2(token1, url.substring(0, urlEndIndex), data, expireTime);
     }
 
     private static class OneMomentTypedOut implements TypedOutput {
         private final TypedOutput mTypedOutput;
+        private byte[] mData;
+        private IOException mException;
 
         public OneMomentTypedOut(TypedOutput typedOutput) {
             this.mTypedOutput = typedOutput;
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            try {
+                mTypedOutput.writeTo(outputStream);
+                mData = OneMomentEncoding.encodingStream(outputStream);
+            } catch (IOException e) {
+                mException = e;
+                e.printStackTrace();
+            }
+
         }
 
         @Override
@@ -77,17 +93,15 @@ public class OneMomentClient extends OkClient {
 
         @Override
         public long length() {
-            return mTypedOutput.length();
+            return mData.length;
         }
 
         @Override
         public void writeTo(OutputStream out) throws IOException {
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            mTypedOutput.writeTo(outputStream);
-            ByteArrayOutputStream encodingStream = OneMomentEncoding.encodingStream(outputStream);
-            encodingStream.writeTo(out);
-
+            if (mData == null) throw new IOException(mException);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            stream.write(mData);
+            stream.writeTo(out);
         }
     }
 
