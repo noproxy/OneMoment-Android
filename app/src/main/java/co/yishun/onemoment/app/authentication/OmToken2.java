@@ -11,7 +11,6 @@ import com.google.common.io.BaseEncoding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.TimeZone;
 
 import co.yishun.onemoment.app.config.Constants;
@@ -29,7 +28,7 @@ public class OmToken2 implements Token {
     private final String mRaw;
     private final String mKey = Constants.API_KEY;
     private final String mUrl;
-    private final byte[] mData;
+    private final String mData;
 
     OmToken2(Token token1, String url, @Nullable TypedOutput body, long expiredTime) throws IOException {
         mToken1 = token1;
@@ -43,13 +42,13 @@ public class OmToken2 implements Token {
             data = out.toByteArray();
             out.close();
         }
-        mData = data;
+        mData = data == null ? "" : new String(data);
 //        mOrigin = "AC52T575DCV6UPX7K51HZ6J5S1258NZIZ::http://api.yishun.co/v3/account/account/54c7530f7d40b52e24107956::1438940611:Asia/Shanghai";
         mOrigin = Joiner.on(":").useForNull("").join(mRaw, mKey, mUrl, mData, expiredTime, TimeZone.getDefault().getID());
         HashCode hashCode = Hashing.sha256().hashString(mOrigin, Charsets.UTF_8);
 
         mValue = BaseEncoding.base64().encode(hashCode.asBytes());
-        Log.i(TAG, mValue.toString());
+        Log.i(TAG, mValue);
     }
 
 
@@ -63,7 +62,8 @@ public class OmToken2 implements Token {
         return mOrigin;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "OmToken2{" +
                 "mToken1=" + mToken1 +
                 ", mValue='" + mValue + '\'' +
@@ -71,7 +71,7 @@ public class OmToken2 implements Token {
                 ", mRaw='" + mRaw + '\'' +
                 ", mKey='" + mKey + '\'' +
                 ", mUrl='" + mUrl + '\'' +
-                ", mData=" + Arrays.toString(mData) +
+                ", mData=" + mData +
                 '}';
     }
 
