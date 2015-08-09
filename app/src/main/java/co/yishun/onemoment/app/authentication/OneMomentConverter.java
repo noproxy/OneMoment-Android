@@ -22,6 +22,8 @@ import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.Moment;
 import co.yishun.onemoment.app.api.model.User;
+import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.model.WorldTag;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
@@ -76,13 +78,16 @@ public class OneMomentConverter implements Converter {
                 JsonObject data = jsonObject.get("data").getAsJsonObject();
                 models = mGson.fromJson(data, type);
             } else if (rawType == List.class) {
-                Type genType = ((ParameterizedType) type).getActualTypeArguments()[0];
-                if (genType == Banner.class) {
+                Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                if (genericType == Banner.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     models = mGson.fromJson(data.get("banners").getAsJsonArray(), type);
-                } else if (genType == Moment.class) {
+                } else if (genericType == Moment.class || genericType == Video.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     models = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
+                } else if (genericType == WorldTag.class) {
+                    JsonObject data = jsonObject.get("data").getAsJsonObject();
+                    models = mGson.fromJson(data.get("tags").getAsJsonArray(), type);
                 } else {
                     models = new ArrayList<>();
                     Log.e(TAG, "unknown generic type, json: " + json);
