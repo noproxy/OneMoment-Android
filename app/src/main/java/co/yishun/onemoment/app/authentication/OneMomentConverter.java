@@ -20,8 +20,8 @@ import java.util.List;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.Link;
+import co.yishun.onemoment.app.api.model.Moment;
 import co.yishun.onemoment.app.api.model.User;
-import co.yishun.onemoment.app.api.model.Video;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
@@ -80,7 +80,7 @@ public class OneMomentConverter implements Converter {
                 if (genType == Banner.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     models = mGson.fromJson(data.get("banners").getAsJsonArray(), type);
-                } else if (genType == Video.class) {
+                } else if (genType == Moment.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     models = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
                 } else {

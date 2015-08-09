@@ -7,8 +7,8 @@ import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Link;
+import co.yishun.onemoment.app.api.model.Moment;
 import co.yishun.onemoment.app.api.model.User;
-import co.yishun.onemoment.app.api.model.Video;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -99,7 +99,7 @@ public interface Account {
     );
 
     @GET("/account/videos/{account_id}")
-    List<Video> getVideoList(
+    List<Moment> getVideoList(
             @Path("account_id") @NonNull String userId
     );
 
