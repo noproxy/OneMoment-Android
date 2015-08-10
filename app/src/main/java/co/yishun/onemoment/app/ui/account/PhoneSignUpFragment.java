@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui.account;
 
-import android.app.Activity;
 import android.view.View;
 
 import org.androidannotations.annotations.EFragment;
@@ -18,10 +17,14 @@ public class PhoneSignUpFragment extends PhonePasswordFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity.setFABBackgroundColor(getResources().getColor(R.color.colorAccent));
+    int getFABBackgroundColorRes() {
+        return R.color.colorAccent;
+    }
+
+    @Override
+    int getFABImageResource() {
         //TODO set image
+        return R.drawable.ic_fab;
     }
 
     private void next() {
