@@ -9,6 +9,7 @@ import android.widget.TextView;
 import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 
@@ -16,6 +17,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.PhoneAccountActivity;
+import co.yishun.onemoment.app.ui.PhoneSignUpFragment_;
 
 /**
  * Created by yyz on 8/3/15.
@@ -117,6 +119,11 @@ public class PhoneLoginFragment extends AccountFragment {
             return false;
         }
         return true;
+    }
+
+    @Click
+    void signUpByPhoneClicked(View view) {
+        mActivity.openFragment(PhoneSignUpFragment_.builder().build());
     }
 
 }

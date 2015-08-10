@@ -58,7 +58,7 @@ public class PhoneAccountActivity extends AppCompatActivity {
 
     private void setCurrentFragment(AccountFragment fragment) {
         mCurrentFragment = fragment;
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, fragment).commit();
     }
 
     @UiThread
@@ -108,5 +108,9 @@ public class PhoneAccountActivity extends AppCompatActivity {
         if (mProgressDialog != null) {
             mProgressDialog.hide();
         }
+    }
+
+    public void openFragment(AccountFragment fragment) {
+        setCurrentFragment(fragment);
     }
 }

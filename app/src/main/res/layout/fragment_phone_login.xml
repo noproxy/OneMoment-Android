@@ -68,12 +68,12 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/loginByPhone"
+        android:id="@+id/signUpByPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:paddingBottom="16dp"
-        android:text="@string/login_by_phone"
+        android:text="@string/fragment_phone_login_layout_sign_up"
         android:textColor="@color/colorAccent"
         />
 </LinearLayout>
