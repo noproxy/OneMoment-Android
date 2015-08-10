@@ -1,8 +1,11 @@
 package co.yishun.onemoment.app.ui;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +37,8 @@ public class PhoneAccountActivity extends AppCompatActivity {
     private static final String TAG = "PhoneAccountActivity";
     protected FragmentManager fragmentManager;
     @ViewById CoordinatorLayout coordinatorLayout;
+    @ViewById(R.id.fab)
+    FloatingActionButton floatingActionButton;
     private MaterialDialog mProgressDialog;
     private Account mAccount;
     private RestAdapter mAdapter;
@@ -112,5 +117,21 @@ public class PhoneAccountActivity extends AppCompatActivity {
 
     public void openFragment(AccountFragment fragment) {
         setCurrentFragment(fragment);
+    }
+
+    public void setFABImageDrawable(Drawable drawable) {
+        floatingActionButton.setImageDrawable(drawable);
+    }
+
+    public void setFABImageResource(@DrawableRes int res) {
+        floatingActionButton.setImageResource(res);
+    }
+
+    public void setFABBackgroundResource(@DrawableRes int drawableRes) {
+        floatingActionButton.setBackgroundResource(drawableRes);
+    }
+
+    public void setFABBackgroundColor(int color) {
+        floatingActionButton.setBackgroundColor(color);
     }
 }
