@@ -45,4 +45,7 @@
     <string name="phone_login_title">Login</string>
     <string name="phone_verify_title">Verify</string>
     <string name="phone_integrate_info_title">Integrate Information</string>
+
+    <string name="progress_loading_msg">Loading…</string>
+    <string name="unknown_error">Unknown Error</string>
 </resources>
