@@ -5,12 +5,14 @@ import android.text.TextUtils;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterTextChange;
+import org.androidannotations.annotations.EFragment;
 
 import co.yishun.onemoment.app.R;
 
 /**
  * Created by Carlos on 2015/8/11.
  */
+@EFragment
 abstract class PhonePasswordFragment extends AccountFragment {
     private String mPhoneNum;
     private String mPassword;
