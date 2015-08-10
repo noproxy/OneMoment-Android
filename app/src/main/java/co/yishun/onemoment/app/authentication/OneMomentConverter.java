@@ -52,10 +52,17 @@ public class OneMomentConverter implements Converter {
         String json = OneMomentEncoding.decode(body);
         int code;
         String msg;
+        int errorCode = 1;
+
         JsonElement jsonElement = mJsonParser.parse(json);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         code = jsonObject.get("code").getAsInt();
         msg = jsonObject.get("msg").getAsString();
+        try {
+            errorCode = jsonObject.get("error_code").getAsInt();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         ApiModel model = null;
@@ -115,6 +122,7 @@ public class OneMomentConverter implements Converter {
         }
         model.msg = msg;
         model.code = code;
+        model.errorCode = errorCode;
         return model;
     }
 
