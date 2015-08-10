@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class ApiModel implements Serializable {
     public int code;
-    public int errorCode;
+    public int errorCode = 1;
     public String msg;
 
     public ApiModel() {
