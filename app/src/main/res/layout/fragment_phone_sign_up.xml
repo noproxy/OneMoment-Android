@@ -4,4 +4,66 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/pic_login_signup"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:padding="32dp"
+        android:paddingTop="32dp"
+        >
+
+        <EditText
+            android:id="@+id/phoneEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:hint="@string/fragment_phone_login_layout_hint_phone"
+            android:inputType="phone"
+            android:padding="8dp"
+            />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:layout_below="@id/phoneEditText"
+            android:background="@color/black"
+            />
+
+        <!--TODO visible password view -->
+        <!--TODO auto count down view -->
+        <co.yishun.onemoment.app.ui.view.VisiblePasswordView
+            android:id="@+id/passwordEditText"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:gravity="center_horizontal"
+            android:hint="@string/fragment_phone_login_layout_hint_password"
+            android:padding="8dp"
+            app:inVisibleDrawable="@drawable/ic_login_eye_off"
+            app:inputTypeInvisible="textPassword"
+            app:inputTypeVisible="text"
+            app:visibleDrawable="@drawable/ic_login_eye_open"
+            />
+    </RelativeLayout>
+
 </LinearLayout>

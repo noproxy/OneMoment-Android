@@ -1,12 +1,8 @@
 package co.yishun.onemoment.app.ui.account;
 
 import android.app.Activity;
-import android.text.Editable;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
-import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
@@ -23,21 +19,8 @@ import co.yishun.onemoment.app.ui.PhoneSignUpFragment_;
  */
 
 @EFragment(R.layout.fragment_phone_login)
-public class PhoneLoginFragment extends AccountFragment {
+public class PhoneLoginFragment extends PhonePasswordFragment {
 
-    private String mPhoneNum;
-    private String mPassword;
-
-
-    @AfterTextChange(R.id.phoneEditText)
-    void onPhoneChange(Editable text, TextView phone) {
-        mPhoneNum = text.toString();
-    }
-
-    @AfterTextChange(R.id.passwordEditText)
-    void onPasswordChange(Editable text, TextView phone) {
-        mPassword = text.toString();
-    }
 
     @AfterViews
     void setViews() {
@@ -61,7 +44,7 @@ public class PhoneLoginFragment extends AccountFragment {
         if (checkPhoneNum() && checkPassword()) {
             //TODO show progress bar
             mActivity.showProgress(R.string.fragment_phone_login_login_progress);
-            User user = mActivity.getAccountService().signInByPhone(mPhoneNum, mPassword);
+            User user = mActivity.getAccountService().signInByPhone(getPhoneNum(), getPassword());
             mActivity.hideProgress();
             if (user.code > 0) {
                 mActivity.showSnackMsg(R.string.fragment_phone_login_success);
@@ -94,30 +77,6 @@ public class PhoneLoginFragment extends AccountFragment {
         mActivity.finish();
     }
 
-    private boolean checkPhoneNum() {
-        if (TextUtils.isEmpty(mPhoneNum)) {
-            mActivity.showSnackMsg(R.string.fragment_phone_login_phone_empty);
-            return false;
-        }
-        if (!TextUtils.isDigitsOnly(mPhoneNum) || mPhoneNum.trim().length() != 11) {
-            mActivity.showSnackMsg(R.string.fragment_phone_login_phone_incorrect);
-            return false;
-        }
-        return true;
-    }
-
-    private boolean checkPassword() {
-        if (TextUtils.isEmpty(mPassword)) {
-            mActivity.showSnackMsg(R.string.fragment_phone_login_password_empty);
-            return false;
-        }
-        if (mPassword.length() <= 5 || mPassword.length() >= 30) {
-            //TODO update password require
-            mActivity.showSnackMsg(R.string.fragment_phone_login_password_incorrect);
-            return false;
-        }
-        return true;
-    }
 
     @Click
     void signUpByPhoneClicked(View view) {
