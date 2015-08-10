@@ -70,7 +70,8 @@ public class AccountApiTest extends AndroidTestCase {
     @Test
     public void testSendVerifySms() {
         ApiModel model = mAccount.sendVerifySms(TEST_PHONE, null);
-        assertEquals(model.code, Constants.CODE_SUCCESS);
+//        exist
+        assertEquals(model.code, Constants.CODE_PARAMETER_INVALID);
     }
 
     @Test
