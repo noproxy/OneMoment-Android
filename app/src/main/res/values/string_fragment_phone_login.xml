@@ -14,4 +14,6 @@
 
     <string name="fragment_phone_login_layout_hint_password">Password</string>
     <string name="fragment_phone_login_layout_hint_phone">Phone number</string>
+
+    <string name="fragment_phone_login_layout_sign_up">Sign Up</string>
 </resources>
