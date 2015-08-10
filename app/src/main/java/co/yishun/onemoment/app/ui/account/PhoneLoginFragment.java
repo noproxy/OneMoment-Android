@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.ui.account;
 
 import android.view.View;
 
-import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -11,7 +10,6 @@ import org.androidannotations.annotations.UiThread;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.ui.PhoneSignUpFragment_;
 
 /**
  * Created by yyz on 8/3/15.
@@ -19,12 +17,6 @@ import co.yishun.onemoment.app.ui.PhoneSignUpFragment_;
 
 @EFragment(R.layout.fragment_phone_login)
 public class PhoneLoginFragment extends PhonePasswordFragment {
-
-
-    @AfterViews
-    void setViews() {
-
-    }
 
     @Override
     int getFABBackgroundColorRes() {
@@ -68,11 +60,6 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
                     break;
             }
         }
-    }
-
-    @Background
-    void startSignUp() {
-
     }
 
     @UiThread(delay = 300)
