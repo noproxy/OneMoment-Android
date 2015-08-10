@@ -10,6 +10,7 @@ import com.google.common.io.CharStreams;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -29,25 +30,47 @@ public class OneMomentEncoding {
 
     public static byte[] encodingStream(ByteArrayOutputStream out) throws IOException {
         try {
-            byte[] ivT = mStringGenerator.nextString().getBytes(Charsets.UTF_8);
-
-
             byte[] key = BaseEncoding.base64().decode(Constants.AES_KEY);
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
             Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(ivT));
 
-            byte[] data = out.toByteArray();
+            byte[] data = out.toString().getBytes(Charsets.UTF_8);
             int length = data.length / 16 * 16 + 16;
             byte[] dataPadding = new byte[length];
+            Arrays.fill(dataPadding, ((byte) 0));
             System.arraycopy(data, 0, dataPadding, 0, data.length);
+            String test = new String(dataPadding);
 
+            byte[] ivT = mStringGenerator.nextString().getBytes(Charsets.UTF_8);
+
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(ivT));
             byte[] encoded = cipher.doFinal(dataPadding);
 
 
-            String iv = BaseEncoding.base64().encode(ivT);
-            String re = Joiner.on(':').join(iv, encoded);
+//            byte[] ivT = mStringGenerator.nextString().getBytes(Charsets.UTF_8);
+//
+//
+//            byte[] key = BaseEncoding.base64().decode(Constants.AES_KEY);
+//            SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+//            Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+//            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(ivT));
+//
 
+//
+//            byte[] encoded = cipher.doFinal(dataPadding);
+
+
+            String iv = BaseEncoding.base64().encode(ivT);
+            String re = Joiner.on(':').join(iv, BaseEncoding.base64().encode(encoded));
+
+            Cipher cipher2 = Cipher.getInstance("AES/CBC/NoPadding");
+            cipher2.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(ivT));
+            String de = new String(cipher2.doFinal(encoded));
+
+
+            Log.i(TAG, "de: " + de);
+            byte[] deA = de.getBytes(Charsets.UTF_8);
+            Log.i(TAG, "deArray: " + deA);
 
             return re.getBytes(Charsets.UTF_8);
         } catch (Exception e) {
