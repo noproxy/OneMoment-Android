@@ -3,6 +3,9 @@ package co.yishun.onemoment.app.api;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
@@ -50,6 +53,14 @@ public interface World {
     @POST("/world/video")
     @FormUrlEncoded
     Video addVideoToWorld(@Field("account_id") @NonNull String userId, @Field("type") @NonNull String type,
-                          @Field("filename") @NonNull String fileName, @Field("tags") @NonNull List<Video.VideoTag> tags
+                          @Field("filename") @NonNull String fileName, @Field("tags") @NonNull String tags
     );
+
+    class Util {
+        public static String getTagsJson(@NonNull List<Video.VideoTag> tags) {
+            return new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().toJson(tags);
+        }
+    }
 }
+
+
