@@ -12,7 +12,7 @@ public class Constants {
     public static final int CODE_SUCCESS = 1;
     public static final int CODE_Fail = 0;
     public static final int CODE_PARAMETER_ABSENT = -1;
-    public static final int CODE_PRARAMETER_INVALID = -2;
+    public static final int CODE_PARAMETER_INVALID = -2;
     public static final int CODE_SERVER_ERROR = -3;
     public static final int CODE_TOO_FEQUENT = -5;
 }
