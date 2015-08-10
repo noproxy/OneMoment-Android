@@ -143,6 +143,7 @@ dependencies {
     compile 'com.daimajia.androidviewhover:library:1.0.4@aar'
     compile 'nl.codesoup.cubicbezier:cubicbezier:1.0.0'
     compile 'de.hdodenhof:circleimageview:1.3.0'
+    compile 'com.afollestad:material-dialogs:0.7.8.1'
 }
 
 apply plugin: 'aar-link-sources'
