@@ -16,7 +16,6 @@ import org.androidannotations.annotations.UiThread;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.ui.PhoneAccountActivity;
 import co.yishun.onemoment.app.ui.PhoneSignUpFragment_;
 
 /**
@@ -26,7 +25,6 @@ import co.yishun.onemoment.app.ui.PhoneSignUpFragment_;
 @EFragment(R.layout.fragment_phone_login)
 public class PhoneLoginFragment extends AccountFragment {
 
-    private PhoneAccountActivity mActivity;
     private String mPhoneNum;
     private String mPassword;
 
@@ -49,8 +47,8 @@ public class PhoneLoginFragment extends AccountFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity = (PhoneAccountActivity) activity;
-        mActivity.setTitle(R.string.phone_login_title);
+        mActivity.setFABBackgroundColor(getResources().getColor(R.color.colorSecondary));
+        //TODO set image
     }
 
     @Override
