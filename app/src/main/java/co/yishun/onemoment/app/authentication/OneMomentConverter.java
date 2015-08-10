@@ -77,6 +77,9 @@ public class OneMomentConverter implements Converter {
             } else if (rawType == Link.class) {
                 JsonObject data = jsonObject.get("data").getAsJsonObject();
                 models = mGson.fromJson(data, type);
+            } else if (rawType == Video.class) {
+                JsonObject data = jsonObject.get("data").getAsJsonObject();
+                model = mGson.fromJson(data.get("video"), type);
             } else if (rawType == List.class) {
                 Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 if (genericType == Banner.class) {
@@ -98,6 +101,8 @@ public class OneMomentConverter implements Converter {
                 model = new User();
             } else if (rawType == Link.class) {
                 model = new Link();
+            } else if (rawType == Video.class) {
+                model = new Video();
             } else if (rawType == List.class) {
                 models = new ArrayList<>(0);
             }
@@ -119,7 +124,9 @@ public class OneMomentConverter implements Converter {
     @Override
     public TypedOutput toBody(Object object) {
         // will be encoded in OneMomentClient, so don't encode here
-        return new JsonTypedOutput(mGson.toJson(object).getBytes(Charsets.UTF_8), Charsets.UTF_8.name());
+        String json = mGson.toJson(object);
+        Log.i(TAG, object + ", " + json);
+        return new JsonTypedOutput(json.getBytes(Charsets.UTF_8), Charsets.UTF_8.name());
     }
 
     /**
