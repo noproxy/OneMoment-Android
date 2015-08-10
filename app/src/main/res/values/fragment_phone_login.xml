@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_phone_login_password_incorrect">Password incorrect!</string>
+    <string name="fragment_phone_login_password_empty">Please input your password!</string>
+    <string name="fragment_phone_login_phone_incorrect">Phone number incorrect!</string>
+    <string name="fragment_phone_login_phone_empty">Please input your phone number!</string>
+    <string name="fragment_phone_login_login_progress">Login, please wait…</string>
+
+    <string name="fragment_phone_login_error_network">Network error, please try later.</string>
+    <string name="fragment_phone_login_error_phone">Phone number is invalid!</string>
+    <string name="fragment_phone_login_error_password">Your account or password is wrong.</string>
+    <string name="fragment_phone_login_error_account_not_exist">"Account doesn't exist!"</string>
+    <string name="fragment_phone_login_success">Login success.</string>
+
+    <string name="fragment_phone_login_layout_hint_password">Password</string>
+    <string name="fragment_phone_login_layout_hint_phone">Phone number</string>
+</resources>
