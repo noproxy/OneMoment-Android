@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:background="@null"
+            android:gravity="center_horizontal"
             android:hint="@string/fragment_phone_login_layout_hint_phone"
             android:inputType="phone"
             android:padding="8dp"
