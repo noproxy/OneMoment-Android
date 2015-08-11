@@ -24,6 +24,7 @@ public abstract class AccountFragment extends BaseFragment implements AccountFAB
         super.onResume();
         mActivity.setFABBackgroundColor(getResources().getColor(getFABBackgroundColorRes()));
         mActivity.setFABImageResource(getFABImageResource());
+        mActivity.setCurrentFragment(this);
     }
 
     @ColorRes

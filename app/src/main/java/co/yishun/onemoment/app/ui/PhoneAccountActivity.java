@@ -64,11 +64,6 @@ public class PhoneAccountActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
-    private void setCurrentFragment(AccountFragment fragment) {
-        mCurrentFragment = fragment;
-        fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, fragment).commit();
-    }
-
     @UiThread
     public void showSnackMsg(String msg) {
         Snackbar.make(coordinatorLayout, msg, Snackbar.LENGTH_SHORT).show();
@@ -119,7 +114,7 @@ public class PhoneAccountActivity extends AppCompatActivity {
     }
 
     public void openFragment(AccountFragment fragment) {
-        setCurrentFragment(fragment);
+        fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.fragment_container, fragment).commit();
     }
 
     public void setFABImageDrawable(Drawable drawable) {
@@ -136,5 +131,9 @@ public class PhoneAccountActivity extends AppCompatActivity {
 
     public void setFABBackgroundColor(int color) {
         floatingActionButton.setBackgroundTintList(ColorStateList.valueOf(color));
+    }
+
+    public void setCurrentFragment(AccountFragment fragment) {
+        mCurrentFragment = fragment;
     }
 }
