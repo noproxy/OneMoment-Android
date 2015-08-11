@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -132,6 +133,6 @@ public class PhoneAccountActivity extends AppCompatActivity {
     }
 
     public void setFABBackgroundColor(int color) {
-        floatingActionButton.setBackgroundColor(color);
+        floatingActionButton.setBackgroundTintList(ColorStateList.valueOf(color));
     }
 }
