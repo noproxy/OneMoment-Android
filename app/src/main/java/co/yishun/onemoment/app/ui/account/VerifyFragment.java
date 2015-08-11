@@ -7,15 +7,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterTextChange;
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.ui.view.CountDownResentView;
 
 /**
  * Created by Carlos on 2015/8/11.
@@ -24,13 +27,11 @@ import co.yishun.onemoment.app.config.Constants;
 public class VerifyFragment extends AccountFragment {
     public static final String EXTRA_TYPE_SIGN_UP = "signup";
     public static final String EXTRA_TYPE_FIND_PASSWORD = "reset_pw";
-
-    @FragmentArg
-    String type = EXTRA_TYPE_SIGN_UP;
-    @FragmentArg
-    String phoneNum;
-    @FragmentArg
-    String password;
+    @ViewById CountDownResentView countDownResentView;
+    @FragmentArg String type = EXTRA_TYPE_SIGN_UP;
+    @FragmentArg String phoneNum;
+    @FragmentArg String password;
+    boolean isSending = false;
     private String mVerificationCode;
 
     @Override
@@ -49,12 +50,31 @@ public class VerifyFragment extends AccountFragment {
         sendSms();
     }
 
+    @AfterViews
+    void setViews() {
+        countDownResentView.setOnClickListenerWhenEnd(view -> {
+            if (isSending)
+                sendSms();
+            mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_sending);//TODO change to sticky
+        });
+    }
+
     @Background
     void sendSms() {
+        isSending = true;
         ApiModel model = mActivity.getAccountService().sendVerifySms(phoneNum, type);
         if (model.code > 0) {
-            //TODO count down
-        } else handleErrorCode(model.errorCode);
+            countDownResentView.countDown();
+            mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_success);
+        } else switch (model.errorCode) {
+            case Constants.ErrorCode.ACCOUNT_EXISTS:
+                mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_fail_account_exist);
+                break;
+            default:
+                mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_fail);
+                break;
+        }
+        isSending = false;
     }
 
     @Override
@@ -64,8 +84,7 @@ public class VerifyFragment extends AccountFragment {
 
     @Override
     int getFABImageResource() {
-        //TODO set Image
-        return type.equals(EXTRA_TYPE_SIGN_UP) ? R.drawable.ic_fab : R.drawable.ic_fab;
+        return type.equals(EXTRA_TYPE_SIGN_UP) ? R.drawable.ic_login_next : R.drawable.ic_login_done;
     }
 
     private boolean checkVerifyCode() {
