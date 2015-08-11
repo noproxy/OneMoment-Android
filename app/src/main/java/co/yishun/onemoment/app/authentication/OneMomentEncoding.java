@@ -16,6 +16,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import co.yishun.onemoment.app.api.OneMomentV3;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.converter.ConversionException;
 import retrofit.mime.TypedInput;
@@ -84,7 +85,8 @@ public class OneMomentEncoding {
             string = CharStreams.toString(new InputStreamReader(body.in(), Charsets.UTF_8));
             return decode(string);
         } catch (Exception e) {
-            throw new ConversionException(e);
+            Log.e(TAG, "decode error", e);
+            return OneMomentV3.FAKE_RESPONSE;
         }
     }
 
