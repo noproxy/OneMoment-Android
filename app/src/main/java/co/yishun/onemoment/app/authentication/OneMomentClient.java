@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import co.yishun.onemoment.app.Util;
+import co.yishun.onemoment.app.api.OneMomentV3;
 import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Request;
@@ -58,7 +59,7 @@ public class OneMomentClient extends OkClient {
         int statusCode = response.getStatus();
         // fake 200 response to log error and store in ApiModel
         if (statusCode < 200 || statusCode >= 300) {// error
-            new Response(response.getUrl(), 200, "OK", response.getHeaders(), new FakeTypeInput());
+            response = new Response(response.getUrl(), 200, "OK", response.getHeaders(), new FakeTypeInput());
             Log.e(TAG, "http error! " + statusCode + " " + response.getReason());
         }
         return response;
@@ -118,7 +119,7 @@ public class OneMomentClient extends OkClient {
     }
 
     private static class FakeTypeInput implements TypedInput {
-        private byte[] mFakeBody = "{\"msg\": \"fake success\",\n    \"code\": -99}".getBytes(Charsets.UTF_8);
+        private byte[] mFakeBody = OneMomentV3.FAKE_RESPONSE.getBytes(Charsets.UTF_8);
 
         @Override
         public String mimeType() {
@@ -132,7 +133,10 @@ public class OneMomentClient extends OkClient {
 
         @Override
         public InputStream in() throws IOException {
-            return new ByteArrayInputStream(mFakeBody);
+            // we should encrypt the fake body
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(mFakeBody);
+            return new ByteArrayInputStream(OneMomentEncoding.encodingStream(outputStream));
         }
     }
 }
