@@ -136,4 +136,6 @@ public class PhoneAccountActivity extends AppCompatActivity {
     public void setCurrentFragment(AccountFragment fragment) {
         mCurrentFragment = fragment;
     }
+
+    //TODO bug: sign up -> verify -> back to sign up, not touch phone num -> verify => not phone num
 }
