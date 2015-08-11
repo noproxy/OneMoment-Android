@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_integrate_info_sign_up_progress">Signing up, please wait…</string>
+    <string name="fragment_integrate_info_sign_up_success">Sign up success. Now login…</string>
+</resources>
