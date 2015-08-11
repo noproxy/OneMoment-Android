@@ -130,6 +130,28 @@ public interface Account {
         @SerializedName("n")
         OTHER;
 
+        public static Gender format(String s) {
+            switch (s) {
+                case "f":
+                    return FEMALE;
+                case "m":
+                    return MALE;
+                default:
+                    return OTHER;
+            }
+        }
+
+        public static Gender format(int i) {
+            switch (i) {
+                case 0:
+                    return FEMALE;
+                case 1:
+                    return MALE;
+                default:
+                    return OTHER;
+            }
+        }
+
         @Override
         public String toString() {
             switch (this) {
@@ -141,6 +163,18 @@ public interface Account {
                     return "n";
             }
         }
+
+        public int toInt() {
+            switch (this) {
+                case FEMALE:
+                    return 0;
+                case MALE:
+                    return 1;
+                default:
+                    return 2;
+            }
+        }
+
     }
 
 //    @FormUrlEncoded
