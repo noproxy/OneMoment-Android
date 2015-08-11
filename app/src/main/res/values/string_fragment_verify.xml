@@ -9,7 +9,8 @@
     <string name="fragment_phone_verify_sign_up_success">Sign up success!</string>
     <string name="fragment_phone_verify_sign_up_error_account_exit">Account exist! Please login directly.</string>
     <string name="fragment_phone_verify_layout_hint_verification_code">Verification Code</string>
-    <string name="fragment_phone_verify_layout_text_send_again">second later, send verification code again</string>
+    <string name="fragment_phone_verify_layout_text_click_send_again">Click to send verification code</string>
+    <string name="fragment_phone_verify_layout_text_send_again_later">second later, send verification code again</string>
 
 
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -18,7 +19,6 @@
             android:src="@drawable/pic_login_check"/>
 
     </RelativeLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -47,33 +47,16 @@
             android:background="@color/black"
             />
 
-        <!--TODO  count down resent view -->
-
-        <LinearLayout
+        <co.yishun.onemoment.app.ui.view.CountDownResentView
+            android:id="@+id/countDownResentView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/divider"
             android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            >
-
-            <co.yishun.onemoment.app.ui.view.CountDownView
-                android:id="@+id/countDownView"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:padding="8dp"
-                android:textColor="@color/colorSecondary"
-                app:startNumber="60"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_phone_verify_layout_text_send_again"
-                />
-        </LinearLayout>
+            app:countDownNumColor="@color/colorSecondary"
+            app:endText="@string/fragment_phone_verify_layout_text_click_send_again"
+            app:suffixText="@string/fragment_phone_verify_layout_text_send_again_later"
+            />
     </RelativeLayout>
+
 </LinearLayout>
