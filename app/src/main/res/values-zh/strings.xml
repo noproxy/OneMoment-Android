@@ -1,15 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">一瞬</string>
+    <string name="app_version">版本:2.0.0 预览版</string>
+
     <string name="action_settings">设置</string>
-    <string name="content_des_profile_image">头像</string>
-    <string name="nav_header_location_text">湖北 武汉</string>
-    <string name="nav_header_user_name_text">用户名</string>
+
     <string name="navigation_item_text_0">世界</string>
     <string name="navigation_item_text_1">日记</string>
     <string name="navigation_item_text_2">发现</string>
     <string name="navigation_item_text_3">我</string>
     <string name="navigation_item_text_4">设置</string>
-    <string name="world_page_latest_title">最新</string>
-    <string name="world_page_recommend_title">推荐</string>
+
+    <string name="nav_header_user_name_text">用户名</string>
+    <string name="nav_header_location_text">湖北 武汉</string>
+    <string name="content_des_profile_image">头像</string>
+
+    <string name="world_title">世界</string>
+    <string-array name="world_page_title">
+        <item>推荐</item>
+        <item>最新</item>
+    </string-array>
+
+    <string name="discovery_video_voted_up">喜欢的视频</string>
+    <string name="video_vote_up_title">喜欢的视频</string>
+    <string name="discovery_alarm">每日提醒</string>
+    <string name="discovery_title">发现</string>
+
+    <string name="me_title">我</string>
+    <string name="me_tab_title_0">公开</string>
+    <string name="me_tab_title_1">私密</string>
+    <string name="me_header_vote">赞</string>
+    <string name="me_header_voted">收到的赞</string>
+    <string-array name="me_page_title">
+        <item>公开</item>
+        <item>私密</item>
+    </string-array>
+
+    <string name="login_by_wechat">微信</string>
+    <string name="login_by_qq">QQ</string>
+    <string name="login_by_weibo">微博</string>
+    <string name="login_by_phone">手机号登陆 >></string>
+
+    <string name="phone_login_title">登陆</string>
+    <string name="phone_verify_title">验证</string>
+    <string name="phone_integrate_info_title">补充信息</string>
+
+    <string name="progress_loading_msg">请稍后…</string>
+    <string name="unknown_error">未知错误</string>
 </resources>
