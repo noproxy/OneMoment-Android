@@ -17,10 +17,14 @@ public abstract class AccountFragment extends BaseFragment implements AccountFAB
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = (PhoneAccountActivity) activity;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         mActivity.setFABBackgroundColor(getResources().getColor(getFABBackgroundColorRes()));
         mActivity.setFABImageResource(getFABImageResource());
     }
-
 
     @ColorRes
     abstract int getFABBackgroundColorRes();
