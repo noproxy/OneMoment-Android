@@ -3,8 +3,12 @@ package co.yishun.onemoment.app.authentication;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.common.base.Charsets;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +19,7 @@ import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Request;
 import retrofit.client.Response;
+import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 
 
@@ -49,7 +54,14 @@ public class OneMomentClient extends OkClient {
         headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
-        return super.execute(verifiedRequest);
+        Response response = super.execute(verifiedRequest);
+        int statusCode = response.getStatus();
+        // fake 200 response to log error and store in ApiModel
+        if (statusCode < 200 || statusCode >= 300) {// error
+            new Response(response.getUrl(), 200, "OK", response.getHeaders(), new FakeTypeInput());
+            Log.e(TAG, "http error! " + statusCode + " " + response.getReason());
+        }
+        return response;
     }
 
     private Token generateOmToken1() {
@@ -105,5 +117,22 @@ public class OneMomentClient extends OkClient {
         }
     }
 
+    private static class FakeTypeInput implements TypedInput {
+        private byte[] mFakeBody = "{\"msg\": \"fake success\",\n    \"code\": -99}".getBytes(Charsets.UTF_8);
 
+        @Override
+        public String mimeType() {
+            return "text/plain charset=UTF-8";
+        }
+
+        @Override
+        public long length() {
+            return mFakeBody.length;
+        }
+
+        @Override
+        public InputStream in() throws IOException {
+            return new ByteArrayInputStream(mFakeBody);
+        }
+    }
 }
