@@ -23,8 +23,7 @@ public class PhoneSignUpFragment extends PhonePasswordFragment {
 
     @Override
     int getFABImageResource() {
-        //TODO set image
-        return R.drawable.ic_fab;
+        return R.drawable.ic_login_next;
     }
 
     private void next() {
