@@ -59,7 +59,9 @@ public class PhoneAccountActivity extends AppCompatActivity {
 
     @AfterViews
     void setViews() {
-        setCurrentFragment(new PhoneLoginFragment_());
+// this cause the first add to back stack       setCurrentFragment(new PhoneLoginFragment_());
+        mCurrentFragment = new PhoneLoginFragment_();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
     private void setCurrentFragment(AccountFragment fragment) {
