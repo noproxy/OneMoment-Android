@@ -54,10 +54,10 @@ public class AccountApiTest extends AndroidTestCase {
 
     @Test
     public void testUpdateInfo() {
-        mAccount.updateInfo(TEST_ACCOUNT_ID, null, "m", null, null);
-        assertEquals(mAccount.getUserInfo(TEST_ACCOUNT_ID).gender, "m");
-        mAccount.updateInfo(TEST_ACCOUNT_ID, null, "f", null, null);
-        assertEquals(mAccount.getUserInfo(TEST_ACCOUNT_ID).gender, "f");
+        mAccount.updateInfo(TEST_ACCOUNT_ID, null, Account.Gender.MALE, null, null);
+        assertEquals(mAccount.getUserInfo(TEST_ACCOUNT_ID).gender, Account.Gender.MALE);
+        mAccount.updateInfo(TEST_ACCOUNT_ID, null, Account.Gender.FEMALE, null, null);
+        assertEquals(mAccount.getUserInfo(TEST_ACCOUNT_ID).gender, Account.Gender.FEMALE);
     }
 
     @Test

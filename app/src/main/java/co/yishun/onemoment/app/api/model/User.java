@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Arrays;
 
+import co.yishun.onemoment.app.api.Account;
+
 /**
  * Bean contains user info.
  * <p>
@@ -35,7 +37,7 @@ public class User extends ApiModel {
     @SerializedName("signup_ua")
     public String signUpUserAgent;
     //    public String introduction; TODO ?
-    public String gender;
+    public Account.Gender gender;
     public String weiboUid;
     public String weixinUid;
     @SerializedName("signin_ua")

@@ -3,6 +3,8 @@ package co.yishun.onemoment.app.api;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
@@ -31,7 +33,7 @@ public interface Account {
             @Field("phone") @NonNull String phone,
             @Field("password") @NonNull String password,
             @Field("nickname") @NonNull String nickname,
-            @Field("gender") @NonNull String gender,
+            @Field("gender") @NonNull Gender gender,
             @Field("avatar_url") @Nullable String avatarUrl,
             @Field("location") @NonNull String location
     );
@@ -41,7 +43,7 @@ public interface Account {
     User signUpByWeibo(
             @Field("uid") @NonNull String weiboUid,
             @Field("weibo_nickname") @NonNull String nickname,
-            @Field("gender") @NonNull String gender,
+            @Field("gender") @NonNull Gender gender,
             @Field("avatar_url") @NonNull String avatarUrl
     );
 
@@ -50,7 +52,7 @@ public interface Account {
     User signUpByWeixin(
             @Field("uid") @NonNull String weixinUid,
             @Field("weixin_nickname") @NonNull String nickname,
-            @Field("gender") @NonNull String gender,
+            @Field("gender") @NonNull Gender gender,
             @Field("avatar_url") @NonNull String avatarUrl
     );
 
@@ -59,7 +61,7 @@ public interface Account {
     User signUpByQQ(
             @Field("qq_number") @NonNull String qqNumber,
             @Field("qq_nickname") @NonNull String nickname,
-            @Field("gender") @NonNull String gender,
+            @Field("gender") @NonNull Gender gender,
             @Field("avatar_url") @NonNull String avatarUrl
     );
 
@@ -74,7 +76,7 @@ public interface Account {
     User updateInfo(
             @Path("account_id") @NonNull String userId,
             @Field("weibo_nickname") @Nullable String nickname,
-            @Field("gender") @Nullable String gender,
+            @Field("gender") @Nullable Gender gender,
             @Field("avatar_url") @Nullable String avatarUrl,
             @Field("location") @Nullable String location
     );
@@ -119,6 +121,27 @@ public interface Account {
             @Field("phone") @NonNull String phone,
             @Field("password") @NonNull String newPassword
     );
+
+    enum Gender {
+        @SerializedName("f")
+        FEMALE,
+        @SerializedName("m")
+        MALE,
+        @SerializedName("n")
+        OTHER;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case FEMALE:
+                    return "f";
+                case MALE:
+                    return "m";
+                default:
+                    return "n";
+            }
+        }
+    }
 
 //    @FormUrlEncoded
 //    @POST("/account/bind_weibo/{account_id}")
