@@ -45,7 +45,6 @@ abstract class PhonePasswordFragment extends AccountFragment {
             return false;
         }
         if (mPassword.length() <= 5 || mPassword.length() >= 30) {
-            //TODO update password require
             mActivity.showSnackMsg(R.string.fragment_phone_login_password_incorrect);
             return false;
         }
