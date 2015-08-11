@@ -115,6 +115,6 @@ public class VerifyFragment extends AccountFragment {
 
     @UiThread(delay = 300)
     void next() {
-        //TODO go to integrate info fragment
+        mActivity.openFragment(IntegrateInfoFragment_.builder().phoneNum(phoneNum).password(password).build());
     }
 }

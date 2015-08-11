@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="view_gender_spinner_title">Gender</string>
+    <string-array name="view_gender_spinner_items">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string name="view_gender_spinner_female">Female</string>
+    <string name="view_gender_spinner_male">Male</string>
+    <string name="view_gender_spinner_other">Gender</string>
+    <string name="view_gender_spinner_positive_btn">OK</string>
+</resources>
