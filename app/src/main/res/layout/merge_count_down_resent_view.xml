@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal"
+        android:visibility="invisible"
         >
 
 
@@ -44,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:padding="8dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         tools:text="Click to seed SMS"
         />
 </merge>
