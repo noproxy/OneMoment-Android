@@ -25,8 +25,7 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
 
     @Override
     int getFABImageResource() {
-        //TODO set image
-        return R.drawable.ic_fab;
+        return R.drawable.ic_login_login;
     }
 
     @Override
