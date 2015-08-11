@@ -28,8 +28,7 @@ public class PhoneSignUpFragment extends PhonePasswordFragment {
     }
 
     private void next() {
-        //TODO open verifyFragment
-
+        mActivity.openFragment(VerifyFragment_.builder().phoneNum(getPhoneNum()).password(getPassword()).type(VerifyFragment.EXTRA_TYPE_SIGN_UP).build());
     }
 
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_phone_verify_sign_up_progress">Sign up, please wait…</string>
+    <string name="fragment_phone_verify_sign_up_verification_code_empty">Please input verification code.</string>
+
+    <string name="fragment_phone_verify_sign_up_error_verify_fail">Sorry, verification code is not incorrect!</string>
+    <string name="fragment_phone_verify_sign_up_error_network">Network error, please try later.</string>
+    <string name="fragment_phone_verify_sign_up_error_password_invalid">Sorry, your password is invalid.</string>
+    <string name="fragment_phone_verify_sign_up_success">Sign up success!</string>
+    <string name="fragment_phone_verify_sign_up_error_account_exit">Account exist! Please login directly.</string>
+    <string name="fragment_phone_verify_layout_hint_verification_code">Verification Code</string>
+    <string name="fragment_phone_verify_layout_text_send_again">second later, send verification code again</string>
+
+
+</resources>
