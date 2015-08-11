@@ -93,7 +93,7 @@ public class VerifyFragment extends AccountFragment {
     @Background
     void verify() {
         mActivity.showProgress(R.string.fragment_phone_verify_verify_progress);
-        ApiModel result = mActivity.getAccountService().verifyPhone(phoneNum, password);
+        ApiModel result = mActivity.getAccountService().verifyPhone(phoneNum, mVerificationCode);
         mActivity.hideProgress();
         if (result.code > 0) {
             mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_success);
