@@ -29,7 +29,12 @@ public interface Account {
     @POST("/account/signup")
     User signUpByPhone(
             @Field("phone") @NonNull String phone,
-            @Field("password") @NonNull String password);
+            @Field("password") @NonNull String password,
+            @Field("nickname") @NonNull String nickname,
+            @Field("gender") @NonNull String gender,
+            @Field("avatar_url") @Nullable String avatarUrl,
+            @Field("location") @NonNull String location
+    );
 
     @FormUrlEncoded
     @POST("/account/weibo_signup")
