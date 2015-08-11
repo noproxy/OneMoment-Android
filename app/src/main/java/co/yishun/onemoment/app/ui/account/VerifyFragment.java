@@ -16,7 +16,6 @@ import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.ApiModel;
-import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.view.CountDownResentView;
 
@@ -36,7 +35,7 @@ public class VerifyFragment extends AccountFragment {
 
     @Override
     public void onFABClick(View view) {
-        if (checkVerifyCode()) signUp();
+        if (checkVerifyCode()) verify();
     }
 
     @AfterTextChange(R.id.verificationCodeEditText)
@@ -64,7 +63,7 @@ public class VerifyFragment extends AccountFragment {
         isSending = true;
         ApiModel model = mActivity.getAccountService().sendVerifySms(phoneNum, type);
         if (model.code > 0) {
-            countDownResentView.countDown();
+            mActivity.runOnUiThread(countDownResentView::countDown);
             mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_success);
         } else switch (model.errorCode) {
             case Constants.ErrorCode.ACCOUNT_EXISTS:
@@ -92,34 +91,30 @@ public class VerifyFragment extends AccountFragment {
     }
 
     @Background
-    void signUp() {
-        mActivity.showProgress(R.string.fragment_phone_verify_sign_up_progress);
-        User user = mActivity.getAccountService().signUpByPhone(phoneNum, password);
+    void verify() {
+        mActivity.showProgress(R.string.fragment_phone_verify_verify_progress);
+        ApiModel result = mActivity.getAccountService().verifyPhone(phoneNum, password);
         mActivity.hideProgress();
-        if (user.code > 0) {
-            mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_success);
-            //TODO save account
-            exit();
-        } else handleErrorCode(user.errorCode);
-    }
-
-    @UiThread(delay = 300)
-    void exit() {
-        mActivity.finish();
-    }
-
-    private void handleErrorCode(int errorCode) {
-        switch (errorCode) {
+        if (result.code > 0) {
+            mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_success);
+            next();
+        } else switch (result.errorCode) {
             case Constants.ErrorCode.PHONE_VERIFY_CODE_WRONG:
-                mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_verify_fail);
+                mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_verify_fail);
                 break;
             case Constants.ErrorCode.ACCOUNT_EXISTS:
                 mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_exit);
                 break;
+            case Constants.ErrorCode.PHONE_VERIFY_CODE_EXPIRES:
+                mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_expire);
             default:
-                mActivity.showSnackMsg(R.string.unknown_error);
+                mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_network);
                 break;
-            //TODO more error
         }
+    }
+
+    @UiThread(delay = 300)
+    void next() {
+        //TODO go to integrate info fragment
     }
 }
