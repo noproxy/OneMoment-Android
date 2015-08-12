@@ -19,6 +19,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Banner;
+import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.Moment;
 import co.yishun.onemoment.app.api.model.UploadToken;
@@ -82,7 +83,7 @@ public class OneMomentConverter implements Converter {
             if (rawType == User.class) {
                 JsonObject data = jsonObject.get("data").getAsJsonObject();
                 model = mGson.fromJson(data.get("account"), type);
-            } else if (rawType == Link.class | rawType == UploadToken.class) {
+            } else if (rawType == Link.class | rawType == UploadToken.class | rawType == Domain.class) {
                 JsonObject data = jsonObject.get("data").getAsJsonObject();
                 model = mGson.fromJson(data, type);
             } else if (rawType == Video.class) {
@@ -111,6 +112,8 @@ public class OneMomentConverter implements Converter {
                 model = new Link();
             } else if (rawType == UploadToken.class) {
                 model = new UploadToken();
+            } else if (rawType == Domain.class) {
+                model = new Domain();
             } else if (rawType == Video.class) {
                 model = new Video();
             } else if (rawType == List.class) {
