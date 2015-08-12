@@ -41,7 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void showProgress(String msg) {
         //TODO show progress
         if (mProgressDialog == null)
-            mProgressDialog = new MaterialDialog.Builder(this).theme(Theme.LIGHT).content(msg).progress(true, 0).build();
+            mProgressDialog = new MaterialDialog.Builder(this).theme(Theme.LIGHT).cancelable(false).content(msg).progress(true, 0).build();
         mProgressDialog.setContent(msg);
         mProgressDialog.show();
     }
