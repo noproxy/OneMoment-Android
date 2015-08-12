@@ -68,6 +68,7 @@ public class GenderSpinner extends LinearLayout implements View.OnClickListener 
 
         mItemTextView.setTextSize(mTextSize);
         mItemTextView.setTextColor(mTextColor);
+        mItemTextView.setText(R.string.view_gender_spinner_default);
         mRightImageView.setImageDrawable(mRightDrawable);
 
         a.recycle();
