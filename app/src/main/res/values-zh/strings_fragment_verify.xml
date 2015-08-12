@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fragment_phone_verify_verify_progress">正在验证,请稍候…</string>
+    <!--<string name="fragment_phone_verify_verify_progress">正在验证,请稍候…</string>-->
     <string name="fragment_phone_verify_verify_verification_code_empty">请输入验证码.</string>
 
     <string name="fragment_phone_verify_verify_error_verify_fail">抱歉,验证码不正确!</string>
