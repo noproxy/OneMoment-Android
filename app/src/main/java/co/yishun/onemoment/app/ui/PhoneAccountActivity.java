@@ -4,22 +4,16 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
@@ -27,6 +21,7 @@ import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.OneMomentV3;
 import co.yishun.onemoment.app.ui.account.AccountFragment;
 import co.yishun.onemoment.app.ui.account.PhoneLoginFragment_;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 import retrofit.RestAdapter;
 
 /**
@@ -34,13 +29,12 @@ import retrofit.RestAdapter;
  */
 
 @EActivity(R.layout.activity_phone)
-public class PhoneAccountActivity extends AppCompatActivity {
+public class PhoneAccountActivity extends BaseActivity {
     private static final String TAG = "PhoneAccountActivity";
     protected FragmentManager fragmentManager;
     @ViewById CoordinatorLayout coordinatorLayout;
     @ViewById(R.id.fab)
     FloatingActionButton floatingActionButton;
-    private MaterialDialog mProgressDialog;
     private Account mAccount;
     private RestAdapter mAdapter;
     private AccountFragment mCurrentFragment;
@@ -64,53 +58,11 @@ public class PhoneAccountActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 
-    @UiThread
-    public void showSnackMsg(String msg) {
-        Snackbar.make(coordinatorLayout, msg, Snackbar.LENGTH_SHORT).show();
-    }
-
-    public void showSnackMsg(@StringRes int msgRes) {
-        showSnackMsg(getString(msgRes));
-    }
-
-    public void showProgress() {
-        showProgress(R.string.progress_loading_msg);
-    }
-
     @Click(R.id.fab)
     void onFABClicked(View view) {
         Log.i(TAG, "fab clicked, currentFragment: " + mCurrentFragment);
         if (mCurrentFragment != null) {
             mCurrentFragment.onFABClick(view);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-    }
-
-    @UiThread
-    public void showProgress(String msg) {
-        //TODO show progress
-        if (mProgressDialog == null)
-            mProgressDialog = new MaterialDialog.Builder(this).theme(Theme.LIGHT).content(msg).progress(true, 0).build();
-        mProgressDialog.setContent(msg);
-        mProgressDialog.show();
-    }
-
-    public void showProgress(@StringRes int msgRes) {
-        showProgress(getString(msgRes));
-    }
-
-    @UiThread
-    public void hideProgress() {
-        if (mProgressDialog != null) {
-            mProgressDialog.hide();
         }
     }
 
@@ -136,6 +88,12 @@ public class PhoneAccountActivity extends AppCompatActivity {
 
     public void setCurrentFragment(AccountFragment fragment) {
         mCurrentFragment = fragment;
+    }
+
+    @Nullable
+    @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
+        return coordinatorLayout;
     }
 
     //TODO bug: sign up -> verify -> back to sign up, not touch phone num -> verify => not phone num
