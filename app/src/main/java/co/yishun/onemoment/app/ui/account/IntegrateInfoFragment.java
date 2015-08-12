@@ -29,6 +29,7 @@ import co.yishun.onemoment.app.api.OneMomentV3;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.ui.PhoneAccountActivity;
 import co.yishun.onemoment.app.ui.view.GenderSpinner;
 import co.yishun.onemoment.app.ui.view.LocationSpinner;
 
@@ -36,7 +37,7 @@ import co.yishun.onemoment.app.ui.view.LocationSpinner;
  * Created by Carlos on 2015/8/11.
  */
 @EFragment(R.layout.fragment_integrate_info)
-public class IntegrateInfoFragment extends AccountFragment {
+public class IntegrateInfoFragment extends AccountFragment implements PhoneAccountActivity.PictureCroppedHandler {
 
     private static final String TAG = "IntegrateInfoFragment";
     @FragmentArg String phoneNum;
@@ -186,4 +187,17 @@ public class IntegrateInfoFragment extends AccountFragment {
     void exit() {
         mActivity.finish();
     }
+
+    @Override
+    public void onPictureSelectedFailed(Exception e) {
+        mActivity.showSnackMsg(R.string.activity_phone_account_fail_select_pic);
+        Log.e(TAG, "select picture fail", e);
+    }
+
+    @Override
+    public void onPictureCropped(Uri uri) {
+        croppedProfileUri = uri;
+    }
+
+
 }
