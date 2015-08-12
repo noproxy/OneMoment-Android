@@ -1,19 +1,20 @@
 package co.yishun.onemoment.app.ui;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
  * Created by yyz on 7/24/15.
  */
 
 @EActivity(R.layout.activity_login)
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     public static final int REQUEST_WEIBO_LOGIN = 0;
 
 //    @ViewById
@@ -30,9 +31,16 @@ public class LoginActivity extends AppCompatActivity {
 //    }
 
 
-    @Click void loginByPhoneClicked(final View view) {
+    @Click
+    void loginByPhoneClicked(final View view) {
         PhoneAccountActivity_.intent(this).start();
     }
 
 
+    @Nullable
+    @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
+        //TODO implement
+        return null;
+    }
 }

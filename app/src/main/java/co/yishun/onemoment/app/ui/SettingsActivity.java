@@ -9,19 +9,21 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 
 /**
@@ -36,7 +38,7 @@ import co.yishun.onemoment.app.R;
  * API Guide</a> for more information on developing a Settings UI.
  */
 @EActivity(R.layout.activity_settings)
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -88,7 +90,8 @@ public class SettingsActivity extends AppCompatActivity {
                         .getString(preference.getKey(), ""));
     }
 
-    @AfterViews void setupToolBar() {
+    @AfterViews
+    void setupToolBar() {
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
@@ -97,7 +100,8 @@ public class SettingsActivity extends AppCompatActivity {
         Log.i("setupToolbar", "set home as up true");
     }
 
-    @AfterViews void setPreference() {
+    @AfterViews
+    void setPreference() {
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
 
     }
@@ -112,12 +116,20 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
     }
 
+    @Nullable
+    @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
+        throw new UnsupportedOperationException("not implement");
+    }
+
     public static class SettingsFragment extends PreferenceFragment {
-        @Override public void onCreate(Bundle savedInstanceState) {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_ringtone)));

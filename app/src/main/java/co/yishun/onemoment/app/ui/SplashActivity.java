@@ -3,7 +3,7 @@ package co.yishun.onemoment.app.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,19 +14,22 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.SdkVersionHelper;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
  * Created by yyz on 7/23/15.
  */
 @EActivity(R.layout.activity_splash)
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
     public static final String RUNTIME_PREFERENCE = "run_preference";
     public static final String PREFERENCE_IS_FIRST_LAUNCH = "is_first_launch";
 
     @ViewById
     ImageView splashImageView;
 
-    @SuppressLint("InlinedApi") @Override protected void onCreate(Bundle savedInstanceState) {
+    @SuppressLint("InlinedApi")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (SdkVersionHelper.getSdkInt() >= 16) {
@@ -41,7 +44,8 @@ public class SplashActivity extends AppCompatActivity {
         startRecording();
     }
 
-    @AfterViews void setResource() {
+    @AfterViews
+    void setResource() {
         // do nothing because don't need different image
 //        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
 //        boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
@@ -60,7 +64,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    @UiThread(delay = 1600) void startRecording() {
+    @UiThread(delay = 1600)
+    void startRecording() {
         this.finish();
 //        if (BuildConfig.DEBUG) new EveryDayNotification().onReceive(this, null);
 //        if (isFirstLaunch()) GuideActivity_.intent(this).start();
@@ -68,4 +73,9 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
     }
 
+    @Nullable
+    @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
+        throw new UnsupportedOperationException("not implement");
+    }
 }

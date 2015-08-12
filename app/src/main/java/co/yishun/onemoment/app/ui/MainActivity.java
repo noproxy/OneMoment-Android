@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,12 +17,13 @@ import android.view.View;
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
 import co.yishun.onemoment.app.ui.home.VerifyFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 
-public final class MainActivity extends AppCompatActivity {
+public final class MainActivity extends BaseActivity {
     private static WeakReference<FloatingActionButton> floatingActionButton;
     public ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawerLayout;
@@ -36,7 +37,9 @@ public final class MainActivity extends AppCompatActivity {
      * @param view where SnackBar called
      * @return FloatingActionBar view if exists, the origin param view if not exists.
      */
-    public static @NonNull View withView(@NonNull View view) {
+    public static
+    @NonNull
+    View withView(@NonNull View view) {
         FloatingActionButton fab = floatingActionButton.get();
         if (fab != null) {
             return fab;
@@ -105,7 +108,8 @@ public final class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override public void onBackPressed() {
+    @Override
+    public void onBackPressed() {
         if (currentItemId != R.id.navigation_item_0) {
             navigationTo(R.id.navigation_item_0);
         } else
@@ -138,13 +142,21 @@ public final class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, UIAutomatorTestActivity.class));
     }
 
-    @Override protected void onPostCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         syncToggle();
     }
 
-    @Override public void onConfigurationChanged(Configuration newConfig) {
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         syncToggle();
+    }
+
+    @Nullable
+    @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
+        return floatingActionButton.get();
     }
 }

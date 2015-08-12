@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.ui;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -21,7 +22,7 @@ import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.OneMomentV3;
 import co.yishun.onemoment.app.ui.account.AccountFragment;
 import co.yishun.onemoment.app.ui.account.PhoneLoginFragment_;
-import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.common.PickCropActivity;
 import retrofit.RestAdapter;
 
 /**
@@ -29,7 +30,7 @@ import retrofit.RestAdapter;
  */
 
 @EActivity(R.layout.activity_phone)
-public class PhoneAccountActivity extends BaseActivity {
+public class PhoneAccountActivity extends PickCropActivity {
     private static final String TAG = "PhoneAccountActivity";
     protected FragmentManager fragmentManager;
     @ViewById CoordinatorLayout coordinatorLayout;
@@ -94,6 +95,22 @@ public class PhoneAccountActivity extends BaseActivity {
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return coordinatorLayout;
+    }
+
+    @Override
+    public void onPictureSelectedFailed(Exception e) {
+        showSnackMsg(R.string.activity_phone_account_fail_select_pic);
+    }
+
+    @Override
+    public void onPictureCropped(Uri uri) {
+        if (mCurrentFragment instanceof PictureCroppedHandler) {
+            ((PictureCroppedHandler) mCurrentFragment).onPictureCropped(uri);
+        }
+    }
+
+    public interface PictureCroppedHandler {
+        void onPictureCropped(Uri uri);
     }
 
     //TODO bug: sign up -> verify -> back to sign up, not touch phone num -> verify => not phone num

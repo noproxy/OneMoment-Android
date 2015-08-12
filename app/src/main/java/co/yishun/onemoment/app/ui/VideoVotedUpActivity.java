@@ -33,18 +33,21 @@ import co.yishun.onemoment.app.R;
 /**
  * Created by yyz on 7/20/15.
  */
+//TODO handle not extend BaseActivity
 @EActivity(R.layout.activity_video_voted_up)
 public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSupport.OnItemClickListener, ItemClickSupport.OnItemLongClickListener {
     @ViewById Toolbar toolbar;
     @ViewById TwoWayView twoWayView;
     @ViewById DraggerView draggerView;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(0, 0);
         super.onCreate(savedInstanceState);
     }
 
-    @AfterViews void setupToolbar() {
+    @AfterViews
+    void setupToolbar() {
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
@@ -54,12 +57,15 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
         Log.i("setupToolbar", "set home as up true");
     }
 
-    @Override protected void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         overridePendingTransition(0, 0);
     }
 
-    @SuppressLint("NewApi") @AfterViews void setupTwoWayView() {
+    @SuppressLint("NewApi")
+    @AfterViews
+    void setupTwoWayView() {
         twoWayView.setHasFixedSize(true);
         twoWayView.setLongClickable(true);// long click to edit
 
@@ -79,7 +85,8 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
         twoWayView.setAdapter(new VideoLikeAdapter(this, twoWayView));
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             // android:launchMode="singleTop" solve navigationUp to a new Activity issue http://stackoverflow.com/questions/13293772/how-to-navigate-up-to-the-same-parent-state
             // but there is no dragger animation, so we should close manually
@@ -90,11 +97,13 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
+    @Override
+    public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
 
     }
 
-    @Override public boolean onItemLongClick(RecyclerView recyclerView, View view, int i, long l) {
+    @Override
+    public boolean onItemLongClick(RecyclerView recyclerView, View view, int i, long l) {
         return false;
     }
 
@@ -110,12 +119,14 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
             this.twoWayView = twoWayView;
         }
 
-        @Override public VideoVH onCreateViewHolder(ViewGroup parent, int viewType) {
+        @Override
+        public VideoVH onCreateViewHolder(ViewGroup parent, int viewType) {
             VideoVH vh = new VideoVH(inflater.inflate(R.layout.layout_video_like_item, parent, false));
             return vh;
         }
 
-        @Override public void onBindViewHolder(VideoVH holder, int position) {
+        @Override
+        public void onBindViewHolder(VideoVH holder, int position) {
             final View itemView = holder.itemView;
             Picasso.with(context).load(res[position]).into(holder.itemImageView);
             boolean isVertical = (twoWayView.getOrientation() == TwoWayLayoutManager.Orientation.VERTICAL);
@@ -147,7 +158,8 @@ public class VideoVotedUpActivity extends DraggerActivity implements ItemClickSu
 
         }
 
-        @Override public int getItemCount() {
+        @Override
+        public int getItemCount() {
             return res.length;
         }
     }
