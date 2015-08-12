@@ -55,11 +55,11 @@ public class GenderSpinner extends LinearLayout implements View.OnClickListener 
 
     private void init(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.GenderSpinner, defStyleAttr, defStyleRes);
-        if (a.hasValue(R.styleable.GenderSpinner_drawableRight)) {
-            mRightDrawable = a.getDrawable(R.styleable.GenderSpinner_drawableRight);
+        if (a.hasValue(R.styleable.GenderSpinner_gs_drawableRight)) {
+            mRightDrawable = a.getDrawable(R.styleable.GenderSpinner_gs_drawableRight);
         }
         mTextColor = a.getColor(R.styleable.GenderSpinner_textColor, mTextColor);
-        mTextSize = a.getDimension(R.styleable.GenderSpinner_textSize, mTextSize);
+        mTextSize = a.getDimension(R.styleable.GenderSpinner_gs_textSize, mTextSize);
 
         this.setOrientation(HORIZONTAL);
         LayoutInflater.from(getContext()).inflate(R.layout.merge_spinner, this, true);
