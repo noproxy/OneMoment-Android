@@ -24,7 +24,7 @@ public abstract class PickCropActivity extends BaseActivity {
 
     @OnActivityResult(Crop.REQUEST_PICK)
     @Background
-    void onPictureSelected(int resultCode, Intent data) {
+    public void onPictureSelected(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null && data.getData() != null) {
             try {
                 Uri selectedImage = data.getData();

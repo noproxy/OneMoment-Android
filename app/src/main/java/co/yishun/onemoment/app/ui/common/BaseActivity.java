@@ -9,6 +9,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 
+import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
@@ -16,6 +17,7 @@ import co.yishun.onemoment.app.R;
 /**
  * Created by Carlos on 2015/8/12.
  */
+@EActivity
 public abstract class BaseActivity extends AppCompatActivity {
     private MaterialDialog mProgressDialog;
 

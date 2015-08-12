@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.qiniu.android.storage.UploadManager;
+import com.soundcloud.android.crop.Crop;
 
 import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.SupposeBackground;
@@ -181,6 +183,11 @@ public class IntegrateInfoFragment extends AccountFragment implements PhoneAccou
         boolean success = updateAvatar(userId);
         mActivity.showSnackMsg(success ? R.string.fragment_integrate_info_sign_up_success : R.string.fragment_integrate_info_sign_up_success_but_avatar_upload_failed);
         exit();
+    }
+
+    @Click
+    void profileImageViewClicked(View view) {
+        Crop.pickImage(mActivity);
     }
 
     @UiThread(delay = 300)

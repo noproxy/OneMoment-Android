@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.androidannotations.annotations.EActivity;
+
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.R;
@@ -23,7 +25,8 @@ import co.yishun.onemoment.app.ui.home.MeFragment_;
 import co.yishun.onemoment.app.ui.home.VerifyFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 
-public final class MainActivity extends BaseActivity {
+@EActivity
+public class MainActivity extends BaseActivity {
     private static WeakReference<FloatingActionButton> floatingActionButton;
     public ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawerLayout;
