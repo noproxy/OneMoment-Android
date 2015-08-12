@@ -73,7 +73,8 @@
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.CropActivity"/>
 
         <activity
             android:name=".ui.EspressoTestActivity"

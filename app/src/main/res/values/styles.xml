@@ -52,4 +52,7 @@
     <style name="AppTheme.PhoneAccountActivity">
         <item name="android:windowBackground">@drawable/bg_window_phone</item>
     </style>
+
+    <style name="AppTheme.CropActivity">
+    </style>
 </resources>

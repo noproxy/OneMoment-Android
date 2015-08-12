@@ -4,4 +4,8 @@
     <style name="Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
+
+    <style name="AppTheme.CropActivity">
+        <item name="android:windowTranslucentStatus">false</item>
+    </style>
 </resources>
