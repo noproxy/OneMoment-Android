@@ -67,7 +67,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.LoginActivity_"
                 />
+            <!-- TODO just for test-->
         </activity>
+
+        <activity
+            android:name="com.soundcloud.android.crop.CropImageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.EspressoTestActivity"
