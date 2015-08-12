@@ -47,6 +47,20 @@
         app:gs_textColor="@color/textColorPrimary"
         />
 
+    <co.yishun.onemoment.app.ui.view.LocationSpinner
+        android:id="@+id/locationSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/bg_square_btn_transparent"
+        android:paddingBottom="12dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="12dp"
+        app:ls_textColor="@color/textColorPrimary"
+        />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
