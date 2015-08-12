@@ -49,6 +49,6 @@ public abstract class PickCropActivity extends BaseActivity {
         }
     }
 
-    abstract void onPictureCropped(Uri uri);
+    public abstract void onPictureCropped(Uri uri);
 
 }
