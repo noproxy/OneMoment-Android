@@ -44,7 +44,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="12dp"
-        app:textColor="@color/textColorPrimary"
+        app:gs_textColor="@color/textColorPrimary"
         />
 
     <View
