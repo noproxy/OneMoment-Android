@@ -99,7 +99,9 @@ public class PhoneAccountActivity extends PickCropActivity {
 
     @Override
     public void onPictureSelectedFailed(Exception e) {
-        showSnackMsg(R.string.activity_phone_account_fail_select_pic);
+        if (mCurrentFragment instanceof PictureCroppedHandler) {
+            ((PictureCroppedHandler) mCurrentFragment).onPictureSelectedFailed(e);
+        }
     }
 
     @Override
@@ -110,6 +112,8 @@ public class PhoneAccountActivity extends PickCropActivity {
     }
 
     public interface PictureCroppedHandler {
+        void onPictureSelectedFailed(Exception e);
+
         void onPictureCropped(Uri uri);
     }
 
