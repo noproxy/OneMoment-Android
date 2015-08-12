@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.api;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import co.yishun.onemoment.app.api.model.UploadToken;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -16,7 +17,7 @@ import retrofit.http.Query;
 public interface Misc {
 
     @GET("/misc/upload_token")
-    void getUploadToken(@Query("filename") @Nullable String filename);
+    UploadToken getUploadToken(@Query("filename") @Nullable String filename);
 
     @GET("/misc/resource_domain")
     void getReourceDomain(@Query("type") @Nullable String type);
