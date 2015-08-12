@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.OneMomentV3;
+import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import retrofit.RestAdapter;
 
@@ -17,6 +18,7 @@ import retrofit.RestAdapter;
  */
 @RunWith(AndroidJUnit4.class)
 public class MiscApiTest extends AndroidTestCase {
+    public static final String DOMAIN_VIDEO_RESOURCE = "http://yishun.qiniudn.com/";
     private Misc mMisc;
 
     @Before
@@ -29,5 +31,11 @@ public class MiscApiTest extends AndroidTestCase {
     public void testGetUploadToken() {
         UploadToken token = mMisc.getUploadToken("test");
         assertNotNull(token.token);
+    }
+
+    @Test
+    public void testGetResourceDomain() {
+        Domain domain = mMisc.getResourceDomain(Domain.Type.VIDEO);
+        assertEquals(domain.domain, DOMAIN_VIDEO_RESOURCE);
     }
 }
