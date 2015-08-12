@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fragment_phone_verify_verify_progress">Sign up, please wait…</string>
+    <string name="fragment_phone_verify_verify_progress">Verifying, please wait…</string>
     <string name="fragment_phone_verify_verify_verification_code_empty">Please input verification code.</string>
 
     <string name="fragment_phone_verify_verify_error_verify_fail">Sorry, verification code is not incorrect!</string>
