@@ -99,6 +99,7 @@ public class PhoneAccountActivity extends AppCompatActivity {
         //TODO show progress
         if (mProgressDialog == null)
             mProgressDialog = new MaterialDialog.Builder(this).theme(Theme.LIGHT).content(msg).progress(true, 0).build();
+        mProgressDialog.setContent(msg);
         mProgressDialog.show();
     }
 
