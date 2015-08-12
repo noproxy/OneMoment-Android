@@ -62,7 +62,7 @@ public class GenderSpinner extends LinearLayout implements View.OnClickListener 
         mTextSize = a.getDimension(R.styleable.GenderSpinner_textSize, mTextSize);
 
         this.setOrientation(HORIZONTAL);
-        LayoutInflater.from(getContext()).inflate(R.layout.merge_gender_spinner, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.merge_spinner, this, true);
         mItemTextView = (TextView) findViewById(R.id.itemTextView);
         mRightImageView = (ImageView) findViewById(R.id.rightImageView);
 
@@ -81,7 +81,11 @@ public class GenderSpinner extends LinearLayout implements View.OnClickListener 
                 .title(R.string.view_gender_spinner_title)
                 .items(R.array.view_gender_spinner_items)
                 .itemsCallbackSingleChoice(mSelectGender.toInt() % 2, (dialog, view1, which, text) -> {
-                    updateGender(Account.Gender.format(which));
+                    Account.Gender gender = Account.Gender.format(which);
+                    updateGender(gender);
+                    if (mListener != null) {
+                        mListener.onGenderSelected(gender);
+                    }
                     return true; // allow selection
                 })
                 .positiveText(R.string.view_gender_spinner_positive_btn)
@@ -91,9 +95,6 @@ public class GenderSpinner extends LinearLayout implements View.OnClickListener 
     private void updateGender(Account.Gender gender) {
         mSelectGender = gender;
         mItemTextView.setText(GENDER_TEXT[gender.toInt()]);
-        if (mListener != null) {
-            mListener.onGenderSelected(gender);
-        }
     }
 
     public void setSelectedGender(Account.Gender gender) {
