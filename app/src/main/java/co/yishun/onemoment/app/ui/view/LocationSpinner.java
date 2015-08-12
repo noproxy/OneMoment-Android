@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -170,7 +172,10 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
         mItemTextView.setText(pro + " " + dis);
     }
 
+    @Nullable
     public String getSelectedLocation() {
+        if (TextUtils.isEmpty(mProvince) || TextUtils.isEmpty(mDistrict))
+            return null;
         return mProvince + " " + mDistrict;
     }
 
@@ -181,7 +186,10 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
         }
     }
 
+    @Nullable
     public Pair<String, String> getSelectedProvinceAndDistrict() {
+        if (TextUtils.isEmpty(mProvince) || TextUtils.isEmpty(mDistrict))
+            return null;
         return new Pair<>(mProvince, mDistrict);
     }
 
