@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.soundcloud.android.crop.Crop;
 
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OnActivityResult;
 
@@ -23,7 +22,6 @@ public abstract class PickCropActivity extends BaseActivity {
     public abstract void onPictureSelectedFailed(Exception e);
 
     @OnActivityResult(Crop.REQUEST_PICK)
-    @Background
     public void onPictureSelected(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null && data.getData() != null) {
             try {
@@ -39,7 +37,6 @@ public abstract class PickCropActivity extends BaseActivity {
     }
 
     @OnActivityResult(Crop.REQUEST_CROP)
-    @Background
     public void onPictureCropped(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             onPictureCropped(mCroppedPictureUri);
