@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.qiniu.android.storage.UploadManager;
 import com.soundcloud.android.crop.Crop;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.Background;
@@ -34,6 +36,7 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.PhoneAccountActivity;
 import co.yishun.onemoment.app.ui.view.GenderSpinner;
 import co.yishun.onemoment.app.ui.view.LocationSpinner;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Carlos on 2015/8/11.
@@ -46,6 +49,8 @@ public class IntegrateInfoFragment extends AccountFragment implements PhoneAccou
     @FragmentArg String password;
     @ViewById GenderSpinner genderSpinner;
     @ViewById LocationSpinner locationSpinner;
+    @ViewById
+    CircleImageView profileImageView;
     private String nickName;
     private Uri croppedProfileUri;
     private boolean avatarUploadOk = false;
@@ -137,7 +142,7 @@ public class IntegrateInfoFragment extends AccountFragment implements PhoneAccou
                 }, null
         );
         try {
-            latch.wait();
+            latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -204,6 +209,7 @@ public class IntegrateInfoFragment extends AccountFragment implements PhoneAccou
     @Override
     public void onPictureCropped(Uri uri) {
         croppedProfileUri = uri;
+        Picasso.with(mActivity).load(uri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
     }
 
 
