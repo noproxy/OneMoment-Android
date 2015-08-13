@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import co.yishun.onemoment.app.api.Account;
-import co.yishun.onemoment.app.api.OneMomentV3;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.Moment;

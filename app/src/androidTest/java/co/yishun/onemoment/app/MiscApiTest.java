@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import co.yishun.onemoment.app.api.Misc;
-import co.yishun.onemoment.app.api.OneMomentV3;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import retrofit.RestAdapter;
