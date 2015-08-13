@@ -56,8 +56,9 @@
         </activity>
 
         <activity
-            android:name=".ui.LoginActivity_"
-            android:theme="@style/AppTheme.LoginActivity"
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.WXEntryActivity"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -100,7 +101,7 @@
         </service>
 
         <service
-            android:name=".sync.SyncService"
+            android:name=".account.sync.SyncService"
             android:exported="true"
             android:process=":sync">
             <intent-filter>

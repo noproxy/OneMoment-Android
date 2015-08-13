@@ -2,7 +2,9 @@ package co.yishun.onemoment.app.account.auth;
 
 import android.support.annotation.NonNull;
 
-public class OAuthToken {
+import java.io.Serializable;
+
+public class OAuthToken implements Serializable {
 
     private final String id;
     private final String token;
@@ -24,5 +26,14 @@ public class OAuthToken {
 
     public long getExpiresIn() {
         return expiresIn;
+    }
+
+    @Override
+    public String toString() {
+        return "OAuthToken{" +
+                "id='" + id + '\'' +
+                ", token='" + token + '\'' +
+                ", expiresIn=" + expiresIn +
+                '}';
     }
 }

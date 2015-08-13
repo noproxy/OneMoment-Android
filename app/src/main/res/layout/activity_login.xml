@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".ui.LoginActivity"
+    tools:context=".wxapi.WXEntryActivity"
     >
 
     <include layout="@layout/layout_toolbar"/>
@@ -48,6 +48,7 @@
             >
 
             <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
+                android:id="@+id/loginByWeChat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="4dp"
@@ -55,15 +56,19 @@
                 android:text="@string/login_by_wechat"/>
 
             <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
+                android:id="@+id/loginByQQ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="loginByQQClicked"
                 android:padding="4dp"
                 android:src="@drawable/pic_login_qq"
                 android:text="@string/login_by_qq"/>
 
             <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
+                android:id="@+id/loginByWeibo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="loginByWeiBoClicked"
                 android:padding="4dp"
                 android:src="@drawable/pic_login_weibo"
                 android:text="@string/login_by_weibo"/>
@@ -76,6 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:onClick="loginByPhoneClicked"
             android:text="@string/login_by_phone"
             android:textColor="@color/colorAccent"
             />

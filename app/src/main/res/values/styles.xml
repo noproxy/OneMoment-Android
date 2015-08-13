@@ -45,7 +45,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="AppTheme.LoginActivity">
+    <style name="AppTheme.WXEntryActivity">
         <item name="android:windowBackground">@drawable/bg_window_login</item>
     </style>
 
