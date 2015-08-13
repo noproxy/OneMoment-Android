@@ -79,6 +79,7 @@ android {
 def SUPPORT_VERSION = '22.2.1'
 
 dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'net.sourceforge.streamsupport:streamsupport:1.2.2'
     // https://developer.android.com/reference/android/support/annotation/package-summary.html
     compile "com.android.support:support-annotations:$SUPPORT_VERSION"
