@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.wxapi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SupposeBackground;
+import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
@@ -22,6 +24,7 @@ import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.PhoneAccountActivity_;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 
@@ -86,7 +89,11 @@ public class WXEntryActivity extends BaseActivity implements LoginListener {
         return null;
     }
 
-
+    @UiThread(delay = 300)
+    void exitWithStartMain() {
+        finish();
+        MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    }
 }
 
 @EBean
@@ -145,7 +152,7 @@ class AsyncHandler {
         if (user.code == 1) {
             AccountHelper.saveAccount(mActivity, user);
             mActivity.showSnackMsg(R.string.activity_login_login_success);
-            mActivity.exit();
+            mActivity.exitWithStartMain();
         } else {
             Log.i(TAG, "sign up failed: " + user.msg);
             mActivity.showSnackMsg(R.string.activity_login_login_fail);
