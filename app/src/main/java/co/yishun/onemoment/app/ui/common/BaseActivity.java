@@ -26,7 +26,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @UiThread
     public void showSnackMsg(String msg) {
-        Snackbar.make(getSnackbarAnchorWithView(null), msg, Snackbar.LENGTH_SHORT).show();
+        View view = getSnackbarAnchorWithView(null);
+        Snackbar.make(view != null ? view : findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT).show();
     }
 
     public void showSnackMsg(@StringRes int msgRes) {
