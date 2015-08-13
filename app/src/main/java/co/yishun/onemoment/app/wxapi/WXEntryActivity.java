@@ -85,14 +85,7 @@ public class WXEntryActivity extends BaseActivity implements LoginListener {
     @Nullable
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        //TODO implement
         return null;
-    }
-
-    @UiThread(delay = 300)
-    void exitWithStartMain() {
-        finish();
-        MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
     }
 }
 
@@ -152,11 +145,18 @@ class AsyncHandler {
         if (user.code == 1) {
             AccountHelper.saveAccount(mActivity, user);
             mActivity.showSnackMsg(R.string.activity_login_login_success);
-            mActivity.exitWithStartMain();
+            exitWithStartMain();
         } else {
             Log.i(TAG, "sign up failed: " + user.msg);
             mActivity.showSnackMsg(R.string.activity_login_login_fail);
         }
+    }
+
+
+    @UiThread(delay = 300)
+    void exitWithStartMain() {
+        mActivity.finish();
+        MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
     }
 }
 

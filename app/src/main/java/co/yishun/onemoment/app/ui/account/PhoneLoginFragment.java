@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.account;
 
+import android.content.Intent;
 import android.view.View;
 
 import org.androidannotations.annotations.Background;
@@ -11,6 +12,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.ui.MainActivity_;
 
 /**
  * Created by yyz on 8/3/15.
@@ -42,7 +44,7 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
         if (user.code > 0) {
             mActivity.showSnackMsg(R.string.fragment_phone_login_success);
             AccountHelper.saveAccount(mActivity, user);
-            exit();
+            exitWithStartMain();
         } else switch (user.errorCode) {
             case Constants.ErrorCode.PHONE_FORMAT_ERROR:
                 mActivity.showSnackMsg(R.string.fragment_phone_login_phone_incorrect);
@@ -60,7 +62,8 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
     }
 
     @UiThread(delay = 300)
-    void exit() {
+    void exitWithStartMain() {
+        MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
         mActivity.finish();
     }
 
