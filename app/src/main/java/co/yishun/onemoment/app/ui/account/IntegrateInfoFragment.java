@@ -26,6 +26,7 @@ import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
+import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.ApiUtil;
 import co.yishun.onemoment.app.api.Misc;
@@ -157,6 +158,7 @@ public class IntegrateInfoFragment extends AccountFragment implements PhoneAccou
             Log.i(TAG, "update info failed: " + user.msg);
             return false;
         }
+        AccountHelper.updateOrCreateUserInfo(mActivity, user);
         return true;
     }
 
@@ -167,7 +169,7 @@ public class IntegrateInfoFragment extends AccountFragment implements PhoneAccou
         assert location != null;
         User user = mActivity.getAccountService().signUpByPhone(phoneNum, password, nickName, genderSpinner.getSelectGender(), null, location);
         if (user.code > 0) {
-            //TODO save account
+            AccountHelper.saveAccount(mActivity, user);
             checkAvatarAndExit(user._id);
         } else switch (user.errorCode) {
             case Constants.ErrorCode.NICKNAME_EXISTS:
