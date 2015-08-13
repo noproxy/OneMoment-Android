@@ -17,6 +17,10 @@ public class Constants {
     public static final String PROFILE_PREFIX = "avatar-";
     public static final String PROFILE_SUFFIX = ".png";
 
+    public static final String IDENTITY_DIR = "identity";
+    public static final String IDENTITY_INFO_FILE_NAME = "info";
+    public static final String TIME_FORMAT = "yyyyMMdd";
+
     public static final int CODE_SUCCESS = 1;
     public static final int CODE_Fail = 0;
     public static final int CODE_PARAMETER_ABSENT = -1;

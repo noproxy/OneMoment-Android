@@ -6,7 +6,12 @@
     >
 
     <uses-sdk tools:overrideLibrary="com.github.hiteshsondhi88.libffmpeg"/>
+
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
 
     <application
         android:allowBackup="true"
