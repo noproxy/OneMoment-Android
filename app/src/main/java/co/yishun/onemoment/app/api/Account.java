@@ -49,7 +49,7 @@ public interface Account {
 
     @FormUrlEncoded
     @POST("/account/weixin_signup")
-    User signUpByWeixin(
+    User signUpByWeChat(
             @Field("uid") @NonNull String weixinUid,
             @Field("weixin_nickname") @NonNull String nickname,
             @Field("gender") @NonNull Gender gender,
@@ -104,6 +104,17 @@ public interface Account {
     User getUserInfoByWeiboUid(
             @Path("weibo_id") @NonNull String weiboId
     );
+
+    @GET("/account/weixin/{weixin_id}")
+    User getUserInfoByWeChatUid(
+            @Path("weixin_id") @NonNull String weChatId
+    );
+
+    @GET("/account/qq/{qq_number}")
+    User getUserInfoByQQUid(
+            @Path("qq_number") @NonNull String qq
+    );
+
 
     @GET("/account/videos/{account_id}")
     List<Moment> getVideoList(

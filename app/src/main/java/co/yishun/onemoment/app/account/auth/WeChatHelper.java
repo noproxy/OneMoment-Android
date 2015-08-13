@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.account.auth;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -87,6 +88,7 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
     }
 
     void handleCode(String code) {
+        final Handler handler = new Handler();
         new Thread(() -> {
             OkHttpClient client = new OkHttpClient();
             String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" +
@@ -97,10 +99,10 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
             try {
                 Response response = client.newCall(new Request.Builder().url(url).build()).execute();
                 TokenResponse tokenResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(response.body().string(), TokenResponse.class);
-                mListener.onSuccess(from(tokenResponse));
+                handler.post(() -> mListener.onSuccess(from(tokenResponse)));
             } catch (Exception e) {
                 e.printStackTrace();
-                mListener.onFail();
+                handler.post(mListener::onFail);
             }
         }).start();
     }

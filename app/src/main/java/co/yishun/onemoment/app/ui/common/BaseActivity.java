@@ -65,4 +65,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @UiThread(delay = 300)
+    public void exit() {
+        finish();
+    }
+
 }

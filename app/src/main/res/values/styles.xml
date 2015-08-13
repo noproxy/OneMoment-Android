@@ -53,6 +53,6 @@
         <item name="android:windowBackground">@drawable/bg_window_phone</item>
     </style>
 
-    <style name="AppTheme.CropActivity">
+    <style name="AppTheme.FitWindowsActivity">
     </style>
 </resources>
