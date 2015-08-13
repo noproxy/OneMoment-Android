@@ -1,8 +1,6 @@
-package co.yishun.onemoment.app.api;
+package co.yishun.onemoment.app.api.authentication;
 
 import co.yishun.onemoment.app.BuildConfig;
-import co.yishun.onemoment.app.authentication.OneMomentClient;
-import co.yishun.onemoment.app.authentication.OneMomentConverter;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.RestAdapter;
 

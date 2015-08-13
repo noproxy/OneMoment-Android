@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.api;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Domain;
 
 /**

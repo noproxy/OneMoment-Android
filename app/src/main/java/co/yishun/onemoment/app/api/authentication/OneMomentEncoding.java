@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.authentication;
+package co.yishun.onemoment.app.api.authentication;
 
 import android.util.Log;
 
@@ -16,7 +16,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import co.yishun.onemoment.app.api.OneMomentV3;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.converter.ConversionException;
 import retrofit.mime.TypedInput;

@@ -19,7 +19,7 @@ import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.Account;
-import co.yishun.onemoment.app.api.OneMomentV3;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.ui.account.AccountFragment;
 import co.yishun.onemoment.app.ui.account.PhoneLoginFragment_;
 import co.yishun.onemoment.app.ui.common.PickCropActivity;

@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.authentication;
+package co.yishun.onemoment.app.api.authentication;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import co.yishun.onemoment.app.Util;
-import co.yishun.onemoment.app.api.OneMomentV3;
 import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Request;
