@@ -44,7 +44,9 @@ public interface Account {
             @Field("uid") @NonNull String weiboUid,
             @Field("weibo_nickname") @NonNull String nickname,
             @Field("gender") @NonNull Gender gender,
-            @Field("avatar_url") @NonNull String avatarUrl
+            @Field("avatar_url") @NonNull String avatarUrl,
+            @Field("location") @NonNull String location,
+            @Field("nickname") @NonNull String momentName
     );
 
     @FormUrlEncoded
@@ -53,7 +55,9 @@ public interface Account {
             @Field("uid") @NonNull String weixinUid,
             @Field("weixin_nickname") @NonNull String nickname,
             @Field("gender") @NonNull Gender gender,
-            @Field("avatar_url") @NonNull String avatarUrl
+            @Field("avatar_url") @NonNull String avatarUrl,
+            @Field("location") @NonNull String location,
+            @Field("nickname") @NonNull String momentName
     );
 
     @FormUrlEncoded
@@ -62,7 +66,9 @@ public interface Account {
             @Field("qq_number") @NonNull String qqNumber,
             @Field("qq_nickname") @NonNull String nickname,
             @Field("gender") @NonNull Gender gender,
-            @Field("avatar_url") @NonNull String avatarUrl
+            @Field("avatar_url") @NonNull String avatarUrl,
+            @Field("location") @NonNull String location,
+            @Field("nickname") @NonNull String momentName
     );
 
     @FormUrlEncoded
