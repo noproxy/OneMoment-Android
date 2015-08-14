@@ -222,8 +222,8 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
 
     @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
     void exitWithStartMain() {
-        MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
-        mActivity.finish();
+        MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
+        //TODO bug not stop the WXEntryAct
     }
 
     @Override
