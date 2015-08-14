@@ -18,6 +18,8 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
+import co.yishun.onemoment.app.api.Account;
+
 
 /**
  * Created by Carlos on 2015/8/13.
@@ -42,6 +44,17 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
 
     @Override
     public UserInfo getUserInfo(@NonNull OAuthToken token) {
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + token.getToken() + "&openid=" + token.getId();
+        Log.i(TAG, "get info: " + url);
+
+        try {
+            Response response = client.newCall(new Request.Builder().url(url).build()).execute();
+            UserInfoResponse infoResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(response.body().string(), UserInfoResponse.class);
+            return from(infoResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -111,11 +124,40 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
         return new OAuthToken(response.openid, response.accessToken, response.expiresIn);
     }
 
+    private UserInfo from(UserInfoResponse response) {
+        UserInfo info = new UserInfo();
+        info.id = response.openid;
+        info.name = response.nickname;
+        info.avatar_large = response.headimgurl;
+        info.location = response.province + " " + response.city;
+        Account.Gender gender = Account.Gender.OTHER;
+        switch (response.sex) {
+            case 1:
+                gender = Account.Gender.MALE;
+                break;
+            case 2:
+                gender = Account.Gender.FEMALE;
+                break;
+        }
+        info.gender = gender.toString();
+        return info;
+    }
+
     private static class TokenResponse {
         String accessToken;
         long expiresIn;
         String refreshToken;
         String openid;
         String scope;
+    }
+
+    private static class UserInfoResponse {
+        String openid;
+        String nickname;
+        int sex;
+        String province;
+        String city;
+        String headimgurl;
+        String unionid;
     }
 }
