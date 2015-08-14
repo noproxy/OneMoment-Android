@@ -32,6 +32,7 @@ import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
 import co.yishun.onemoment.app.ui.home.VerifyFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
+import co.yishun.onemoment.app.ui.home.WorldFragment_;
 
 @EActivity
 public class MainActivity extends BaseActivity implements AccountHelper.OnUserInfoChangeListener {
@@ -106,7 +107,7 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         switch (itemId) {
             case R.id.navigation_item_0:
                 if (worldFragment == null) {
-                    worldFragment = new WorldFragment();
+                    worldFragment = new WorldFragment_();
                 }
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, worldFragment).commit();
                 currentItemId = itemId;
