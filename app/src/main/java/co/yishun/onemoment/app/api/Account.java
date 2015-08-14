@@ -63,7 +63,7 @@ public interface Account {
     @FormUrlEncoded
     @POST("/account/qq_signup")
     User signUpByQQ(
-            @Field("qq_number") @NonNull String qqNumber,
+            @Field("uid") @NonNull String qqUid,
             @Field("qq_nickname") @NonNull String nickname,
             @Field("gender") @NonNull Gender gender,
             @Field("avatar_url") @NonNull String avatarUrl,
