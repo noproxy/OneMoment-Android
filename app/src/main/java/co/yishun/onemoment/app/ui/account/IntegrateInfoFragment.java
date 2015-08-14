@@ -232,10 +232,6 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
     @Override
     public void onPictureCropped(Uri uri) {
         croppedProfileUri = uri;
-        reloadProfileImage();
-    }
-
-    private void reloadProfileImage() {
         Picasso.with(mActivity).load(croppedProfileUri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
     }
 
@@ -245,8 +241,7 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
             nickNameEditText.setText(userInfo.name);
             genderSpinner.setSelectedGender(Account.Gender.format(userInfo.gender));
             locationSpinner.setSelectedLocation(userInfo.location);
-            croppedProfileUri = Uri.parse(userInfo.avatar_large);
-            reloadProfileImage();
+            Picasso.with(mActivity).load(userInfo.avatar_large).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
         }
     }
 }
