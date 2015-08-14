@@ -4,7 +4,7 @@ package co.yishun.onemoment.app.api.model;
  * Created by Carlos on 2015/8/8.
  */
 public class Banner extends ApiModel {
-    public String iamgeUrl;
+    public String imageUrl;
     public String href;
     public String createTime;
     public String title;
