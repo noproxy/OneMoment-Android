@@ -140,7 +140,7 @@ public class QQHelper implements AuthHelper {
                             mInfo.avatar_large = jsonObject.getString("figureurl_2");
                         }
 
-                        mInfo.location = jsonObject.getString("province") + jsonObject.getString("city");
+                        mInfo.location = jsonObject.getString("province") + " " + jsonObject.getString("city");
                         mInfo.description = "";
                     }
                 } catch (JSONException e) {
