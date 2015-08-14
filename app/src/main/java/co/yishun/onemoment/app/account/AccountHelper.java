@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.api.model.User;
@@ -31,6 +32,7 @@ public class AccountHelper {
     public static AccountManager accountManager;
     public static Account account;
     private static User mUser = null;
+    private static WeakReference<OnUserInfoChangeListener> mListener;
 
     private static AccountManager getAccountManager(Context context) {
         if (accountManager == null) {
@@ -52,7 +54,6 @@ public class AccountHelper {
     public static boolean isLogin(Context context) {
         return getAccount(context) != null;
     }
-
 
     public static void saveAccount(Context context, User user) {
         Account newAccount = new Account(user.nickname, ACCOUNT_TYPE);
@@ -92,6 +93,10 @@ public class AccountHelper {
             oos.writeObject(user);
             oos.close();
             mUser = user;
+            OnUserInfoChangeListener listener = mListener.get();
+            if (listener != null) {
+                listener.onUserInfoChange(user);
+            }
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -127,6 +132,14 @@ public class AccountHelper {
             loadUserInfo(con);
         }
         return mUser;
+    }
+
+    public static void setOnUserInfoChangeListener(OnUserInfoChangeListener listener) {
+        mListener = new WeakReference<OnUserInfoChangeListener>(listener);
+    }
+
+    public interface OnUserInfoChangeListener {
+        void onUserInfoChange(User info);
     }
 
     private static class MyFuture implements AccountManagerCallback<Boolean> {
