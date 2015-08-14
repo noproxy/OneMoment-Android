@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.qiniu.android.storage.UploadManager;
@@ -14,6 +15,7 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterTextChange;
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -27,6 +29,8 @@ import java.util.concurrent.CountDownLatch;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.auth.AccessTokenKeeper;
+import co.yishun.onemoment.app.account.auth.UserInfo;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.ApiUtil;
 import co.yishun.onemoment.app.api.Misc;
@@ -48,10 +52,13 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
     private static final String TAG = "IntegrateInfoFragment";
     @FragmentArg String phoneNum;
     @FragmentArg String password;
+    @FragmentArg UserInfo userInfo;
+    @FragmentArg AccessTokenKeeper.KeeperType type;
     @ViewById GenderSpinner genderSpinner;
     @ViewById LocationSpinner locationSpinner;
     @ViewById
     CircleImageView profileImageView;
+    @ViewById EditText nickNameEditText;
     private String nickName;
     private Uri croppedProfileUri;
     private boolean avatarUploadOk = false;
@@ -167,7 +174,21 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
         mActivity.showProgress(R.string.fragment_integrate_info_sign_up_progress);
         String location = locationSpinner.getSelectedLocation();
         assert location != null;
-        User user = mActivity.getAccountService().signUpByPhone(phoneNum, password, nickName, genderSpinner.getSelectGender(), null, location);
+        User user;
+        switch (type) {
+            case WeChat:
+                user = mActivity.getAccountService().signUpByWeChat(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, nickName);
+                break;
+            case Weibo:
+                user = mActivity.getAccountService().signUpByWeibo(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, nickName);
+                break;
+            case QQ:
+                user = mActivity.getAccountService().signUpByQQ(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, nickName);
+                break;
+            default:
+                user = mActivity.getAccountService().signUpByPhone(phoneNum, password, nickName, genderSpinner.getSelectGender(), null, location);
+                break;
+        }
         if (user.code > 0) {
             AccountHelper.saveAccount(mActivity, user);
             checkAvatarAndExit(user._id);
@@ -211,8 +232,21 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
     @Override
     public void onPictureCropped(Uri uri) {
         croppedProfileUri = uri;
-        Picasso.with(mActivity).load(uri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
+        reloadProfileImage();
     }
 
+    private void reloadProfileImage() {
+        Picasso.with(mActivity).load(croppedProfileUri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
+    }
 
+    @AfterViews
+    void setViews() {
+        if (userInfo != null) {
+            nickNameEditText.setText(userInfo.name);
+            genderSpinner.setSelectedGender(Account.Gender.format(userInfo.gender));
+            locationSpinner.setSelectedLocation(userInfo.location);
+            croppedProfileUri = Uri.parse(userInfo.avatar_large);
+            reloadProfileImage();
+        }
+    }
 }

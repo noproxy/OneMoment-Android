@@ -15,12 +15,16 @@ import android.view.View;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.account.auth.AccessTokenKeeper;
+import co.yishun.onemoment.app.account.auth.UserInfo;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.ui.account.AccountFragment;
+import co.yishun.onemoment.app.ui.account.IntegrateInfoFragment_;
 import co.yishun.onemoment.app.ui.account.PhoneLoginFragment_;
 import co.yishun.onemoment.app.ui.common.PickCropActivity;
 import retrofit.RestAdapter;
@@ -36,6 +40,8 @@ public class AccountActivity extends PickCropActivity {
     @ViewById CoordinatorLayout coordinatorLayout;
     @ViewById(R.id.fab)
     FloatingActionButton floatingActionButton;
+    @Extra UserInfo userInfo;
+    @Extra AccessTokenKeeper.KeeperType type;
     private Account mAccount;
     private RestAdapter mAdapter;
     private AccountFragment mCurrentFragment;
@@ -55,7 +61,11 @@ public class AccountActivity extends PickCropActivity {
     @AfterViews
     void setViews() {
 // this cause the first add to back stack       setCurrentFragment(new PhoneLoginFragment_());
-        mCurrentFragment = new PhoneLoginFragment_();
+        if (userInfo == null) {
+            mCurrentFragment = new PhoneLoginFragment_();
+        } else {
+            mCurrentFragment = IntegrateInfoFragment_.builder().userInfo(userInfo).type(type).build();
+        }
         fragmentManager.beginTransaction().replace(R.id.fragment_container, mCurrentFragment).commit();
     }
 

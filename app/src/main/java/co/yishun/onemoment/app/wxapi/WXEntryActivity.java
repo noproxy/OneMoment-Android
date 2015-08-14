@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.wxapi;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,14 +9,15 @@ import android.view.View;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SupposeBackground;
-import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.auth.AccessTokenKeeper;
 import co.yishun.onemoment.app.account.auth.AuthHelper;
 import co.yishun.onemoment.app.account.auth.LoginListener;
 import co.yishun.onemoment.app.account.auth.OAuthToken;
 import co.yishun.onemoment.app.account.auth.QQHelper;
+import co.yishun.onemoment.app.account.auth.UserInfo;
 import co.yishun.onemoment.app.account.auth.WeChatHelper;
 import co.yishun.onemoment.app.account.auth.WeiboHelper;
 import co.yishun.onemoment.app.api.Account;
@@ -25,7 +25,6 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.AccountActivity_;
-import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
@@ -103,60 +102,67 @@ class AsyncHandler {
         mAccountService = WXEntryActivity.mAccountService;
     }
 
+    /**
+     * try to login use token.
+     *
+     * @param token
+     */
     @Background
     void handleToken(OAuthToken token) {
-        if (mAuthHelper instanceof WeChatHelper) {
-            handleUser(mAccountService.getUserInfoByWeChatUid(token.getId()), token);
-        } else if (mAuthHelper instanceof WeiboHelper) {
-            handleUser(mAccountService.getUserInfoByWeiboUid(token.getId()), token);
-        } else if (mAuthHelper instanceof QQHelper) {
-            handleUser(mAccountService.getUserInfoByQQUid(token.getId()), token);
+        switch (getType(mAuthHelper)) {
+            case WeChat:
+                handleUser(mAccountService.getUserInfoByWeChatUid(token.getId()), token);
+                break;
+            case Weibo:
+                handleUser(mAccountService.getUserInfoByWeiboUid(token.getId()), token);
+                break;
+            case QQ:
+                handleUser(mAccountService.getUserInfoByQQUid(token.getId()), token);
+                break;
         }
     }
 
+    /**
+     * handle login result, if success, exit; if not exist, get user info.
+     *
+     * @param user
+     * @param token
+     */
     @SupposeBackground
     void handleUser(User user, OAuthToken token) {
         if (user.code == 1) {
             AccountHelper.saveAccount(mActivity, user);
-            mActivity.showSnackMsg(R.string.activity_login_login_success);
+            mActivity.showSnackMsg(R.string.activity_wx_entry_login_success);
             mActivity.exit();
         } else if (user.errorCode == Constants.ErrorCode.ACCOUNT_DOESNT_EXIST) {
-            Log.i(TAG, "account not exist, start sign up");
-            signUp(token);
+            Log.i(TAG, "account not exist, start getting user info");
+            getUserInfo(token);
         } else {
             Log.i(TAG, "sign in failed: " + user.msg);
-            mActivity.showSnackMsg(R.string.activity_login_login_fail);
+            mActivity.showSnackMsg(R.string.activity_wx_entry_login_fail);
         }
     }
 
+    /**
+     * to get user info.
+     *
+     * @param token
+     */
     @SupposeBackground
-    void signUp(OAuthToken token) {
-        if (mAuthHelper instanceof WeChatHelper) {
-            handleUser(mAccountService.getUserInfoByWeChatUid(token.getId()));
-        } else if (mAuthHelper instanceof WeiboHelper) {
-            handleUser(mAccountService.getUserInfoByWeiboUid(token.getId()));
-        } else if (mAuthHelper instanceof QQHelper) {
-            handleUser(mAccountService.getUserInfoByQQUid(token.getId()));
-        }
+    void getUserInfo(OAuthToken token) {
+        UserInfo info = mAuthHelper.getUserInfo(token);
+        AccountActivity_.intent(mActivity).userInfo(info).type(getType(mAuthHelper)).start();
+        mActivity.showSnackMsg(R.string.activity_wx_entry_auth_success);
     }
 
-    @SupposeBackground
-    void handleUser(User user) {
-        if (user.code == 1) {
-            AccountHelper.saveAccount(mActivity, user);
-            mActivity.showSnackMsg(R.string.activity_login_login_success);
-            exitWithStartMain();
+    private AccessTokenKeeper.KeeperType getType(AuthHelper helper) {
+        if (helper instanceof WeChatHelper) {
+            return AccessTokenKeeper.KeeperType.WeChat;
+        } else if (helper instanceof WeiboHelper) {
+            return AccessTokenKeeper.KeeperType.Weibo;
         } else {
-            Log.i(TAG, "sign up failed: " + user.msg);
-            mActivity.showSnackMsg(R.string.activity_login_login_fail);
+            return AccessTokenKeeper.KeeperType.QQ;
         }
-    }
-
-
-    @UiThread(delay = 300)
-    void exitWithStartMain() {
-        mActivity.finish();
-        MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
     }
 }
 
