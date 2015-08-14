@@ -20,40 +20,56 @@ import co.yishun.onemoment.app.R;
  */
 public abstract class TabPagerFragment extends ToolbarFragment {
 
-    protected abstract @ArrayRes int getTabTitleArrayResources();
+    private ViewPager mViewPager;
+
+    protected abstract
+    @ArrayRes
+    int getTabTitleArrayResources();
 
     private PagerAdapter getViewPager(LayoutInflater inflater) {
         String titles[] = getResources().getStringArray(getTabTitleArrayResources());
         return new PagerAdapter() {
-            @Override public int getCount() {
+            @Override
+            public int getCount() {
                 return titles.length;
             }
 
-            @Override public boolean isViewFromObject(View view, Object object) {
+            @Override
+            public boolean isViewFromObject(View view, Object object) {
                 return view == object;
             }
 
-            @Override public CharSequence getPageTitle(int position) {
+            @Override
+            public CharSequence getPageTitle(int position) {
                 return titles[position];
             }
 
-            @Override public Object instantiateItem(ViewGroup container, int position) {
+            @Override
+            public Object instantiateItem(ViewGroup container, int position) {
                 View rootView = onCreatePagerView(inflater, container, position);
                 container.addView(rootView);
                 return rootView;
             }
 
-            @Override public void destroyItem(ViewGroup container, int position, Object object) {
+            @Override
+            public void destroyItem(ViewGroup container, int position, Object object) {
                 container.removeView(((View) object));
             }
         };
     }
 
-    protected abstract @NonNull View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
+    protected abstract
+    @NonNull
+    View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
 
-    protected abstract @LayoutRes int getContentViewId(Bundle savedInstanceState);
+    protected abstract
+    @LayoutRes
+    int getContentViewId(Bundle savedInstanceState);
 
-    @NonNull @CallSuper @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @NonNull
+    @CallSuper
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(getContentViewId(savedInstanceState), container, false);
         assert rootView != null;
 
@@ -63,7 +79,7 @@ public abstract class TabPagerFragment extends ToolbarFragment {
 
         if (toolbar == null || viewPager == null || tabLayout == null)
             throw new AssertionError("You must ensure your layout contain TabLayout, ViewPager and Toolbar with R.id.tabLayout, R.id.viewPager, R.id.toolbar");
-
+        viewPager.setOffscreenPageLimit(0);
         PagerAdapter viewPagerAdapter = getViewPager(inflater);
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
