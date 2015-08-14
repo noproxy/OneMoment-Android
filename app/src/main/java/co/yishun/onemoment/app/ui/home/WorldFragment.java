@@ -1,6 +1,8 @@
 package co.yishun.onemoment.app.ui.home;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -12,35 +14,50 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.squareup.picasso.Picasso;
 
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
+
+import java.util.List;
+
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.ApiUtil;
+import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.MainActivity;
-import co.yishun.onemoment.app.ui.Test;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
 
 /**
  * Created by yyz on 7/13/15.
  */
-public final class WorldFragment extends TabPagerFragment {
+@EFragment
+public class WorldFragment extends TabPagerFragment {
 
-    private static final int res[] = Test.res;
+    private World mWorld = OneMomentV3.createAdapter().create(World.class);
 
     public WorldFragment() {
     }
 
-    @Override protected int getTitleDrawableRes() {
+    @Override
+    protected int getTitleDrawableRes() {
         return R.drawable.pic_world_title;
     }
 
-    @Override protected int getTabTitleArrayResources() {
+    @Override
+    protected int getTabTitleArrayResources() {
         return R.array.world_page_title;
     }
 
-    @NonNull @Override protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
+    @NonNull
+    @Override
+    protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
         boolean isRecommend = position == 0;
         View rootView = inflater.inflate(R.layout.page_world, container, false);
 
@@ -50,23 +67,50 @@ public final class WorldFragment extends TabPagerFragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
 
-        RecyclerView.Adapter adapter = new WorldAdapter(inflater.getContext(), res, isRecommend);
+        loadAdapter(recyclerView, inflater, isRecommend);
 
-        recyclerView.setAdapter(adapter);
         container.addView(rootView);
         return rootView;
     }
 
-    @Override protected int getContentViewId(Bundle savedInstanceState) {
+    @Background
+    void loadAdapter(RecyclerView recyclerView, LayoutInflater inflater, boolean isRecommend) {
+        String domain = ApiUtil.getVideoResourceDomain();
+        if (domain == null) {
+            //TODO loading error
+            return;
+        }
+        List<WorldTag> list = mWorld.getWorldTagList(5, null, isRecommend ? World.TAG_SORT_TYPE_RECOMMEND : World.TAG_SORT_TYPE_TIME);
+        if (list.size() == 0) {
+            //TODO loading error
+            return;
+        }
+        setAdapter(recyclerView, inflater, isRecommend, domain, list);
+    }
+
+    @UiThread
+    void setAdapter(RecyclerView recyclerView, LayoutInflater inflater, boolean isRecommend, String domain, List<WorldTag> list) {
+        RecyclerView.Adapter adapter = new WorldAdapter(inflater.getContext(), domain, list, isRecommend);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected int getContentViewId(Bundle savedInstanceState) {
         return R.layout.fragment_world;
     }
 
     static class SimpleViewHolder extends RecyclerView.ViewHolder {
         final ImageView itemImageView;
+        final TextView numTextView;
+        final TextView tagTextView;
+        final TextView likeTextView;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
             itemImageView = (ImageView) itemView.findViewById(R.id.itemImageView);
+            numTextView = (TextView) itemView.findViewById(R.id.numTextView);
+            tagTextView = (TextView) itemView.findViewById(R.id.tagTextView);
+            likeTextView = (TextView) itemView.findViewById(R.id.likeTextView);
         }
 
     }
@@ -75,20 +119,42 @@ public final class WorldFragment extends TabPagerFragment {
         private final static int TYPE_HEADER = -1;
         private final static int TYPE_ITEM = -2;
         private final Context context;
-        private final int items[];
+        private final List<WorldTag> items;
         private final boolean hasHeader;
+        private final String domain;
+        private final Drawable[] mTagDrawable;
+        private final String PeopleSuffix;
 
-
-        public WorldAdapter(Context context, int items[], boolean hasHeader) {
+        public WorldAdapter(Context context, String domain, List<WorldTag> items, boolean hasHeader) {
             super();
             this.context = context.getApplicationContext();
             this.items = items;
             this.hasHeader = hasHeader;
+            this.domain = domain;
+            Resources resource = context.getResources();
+            mTagDrawable = new Drawable[]{
+                    resource.getDrawable(R.drawable.ic_world_tag_time),
+                    resource.getDrawable(R.drawable.ic_world_tag_location),
+                    resource.getDrawable(R.drawable.ic_world_tag_msg)
+            };
+            PeopleSuffix = " " + context.getString(R.string.fragment_world_suffix_people_count);
+        }
+
+        private Drawable getDrawableByType(String type) {
+            switch (type) {
+                case "time":
+                    return mTagDrawable[0];
+                case "location":
+                    return mTagDrawable[1];
+                default:
+                    return mTagDrawable[2];
+            }
         }
 
         private BaseSliderView generateSimpleSliderView(Context context, @DrawableRes int imageRes) {
             return new BaseSliderView(context.getApplicationContext()) {
-                @Override public View getView() {
+                @Override
+                public View getView() {
                     ImageView imageView = (ImageView) View.inflate(context, R.layout.layout_slider_image, null);
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     Picasso.with(context).load(imageRes).into(imageView);
@@ -100,7 +166,8 @@ public final class WorldFragment extends TabPagerFragment {
 
         private BaseSliderView generateSimpleSliderView(String url) {
             return new BaseSliderView(context) {
-                @Override public View getView() {
+                @Override
+                public View getView() {
                     ImageView imageView = new ImageView(context);
                     //TODO load image from url
                     return imageView;
@@ -108,7 +175,8 @@ public final class WorldFragment extends TabPagerFragment {
             };
         }
 
-        @Override public int getItemViewType(int position) {
+        @Override
+        public int getItemViewType(int position) {
             return position == 0 ? TYPE_HEADER : TYPE_ITEM;
         }
 
@@ -134,25 +202,34 @@ public final class WorldFragment extends TabPagerFragment {
         @Override
         public void onBindViewHolder(SimpleViewHolder holder, int position) {
             if (!hasHeader || getItemViewType(position) != TYPE_HEADER) {
-                Picasso.with(context).load(res[((int) getItemId(position))]).into(holder.itemImageView);
+                WorldTag tag = items.get((int) getItemId(position));
+                Picasso.with(context).load(domain + tag.thumbnail).into(holder.itemImageView);
+                holder.numTextView.setText(String.valueOf(tag.videosCount) + PeopleSuffix);
+                holder.tagTextView.setText(tag.name);
+                holder.likeTextView.setText(String.valueOf(tag.likeCount));
+                holder.tagTextView.setCompoundDrawables(getDrawableByType(tag.type), null, null, null);
             }
         }
 
-        @Override public void onViewRecycled(SimpleViewHolder holder) {
+        @Override
+        public void onViewRecycled(SimpleViewHolder holder) {
             super.onViewRecycled(holder);
             Picasso.with(context).cancelRequest(holder.itemImageView);
         }
 
-        @Override public long getItemId(int position) {
+        @Override
+        public long getItemId(int position) {
             if (hasHeader) return position - 1;
             else return position;
         }
 
-        @Override public int getItemCount() {
-            return items.length + (hasHeader ? 1 : 0);
+        @Override
+        public int getItemCount() {
+            return items.size() + (hasHeader ? 1 : 0);
         }
 
-        @Override public void onClick(View v) {
+        @Override
+        public void onClick(View v) {
             Snackbar.make(MainActivity.withView(v), "test", Snackbar.LENGTH_SHORT).show();
         }
     }
