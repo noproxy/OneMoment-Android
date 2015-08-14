@@ -34,7 +34,7 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.ui.PhoneAccountActivity;
+import co.yishun.onemoment.app.ui.AccountActivity;
 import co.yishun.onemoment.app.ui.view.GenderSpinner;
 import co.yishun.onemoment.app.ui.view.LocationSpinner;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -43,7 +43,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Carlos on 2015/8/11.
  */
 @EFragment(R.layout.fragment_integrate_info)
-public class IntegrateInfoFragment extends AccountFragment implements PhoneAccountActivity.PictureCroppedHandler {
+public class IntegrateInfoFragment extends AccountFragment implements AccountActivity.PictureCroppedHandler {
 
     private static final String TAG = "IntegrateInfoFragment";
     @FragmentArg String phoneNum;

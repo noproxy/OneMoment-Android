@@ -29,9 +29,9 @@ import retrofit.RestAdapter;
  * Created by yyz on 8/1/15.
  */
 
-@EActivity(R.layout.activity_phone)
-public class PhoneAccountActivity extends PickCropActivity {
-    private static final String TAG = "PhoneAccountActivity";
+@EActivity(R.layout.activity_account)
+public class AccountActivity extends PickCropActivity {
+    private static final String TAG = "AccountActivity";
     protected FragmentManager fragmentManager;
     @ViewById CoordinatorLayout coordinatorLayout;
     @ViewById(R.id.fab)

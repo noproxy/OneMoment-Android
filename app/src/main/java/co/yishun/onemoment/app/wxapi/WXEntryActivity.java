@@ -24,8 +24,8 @@ import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.ui.AccountActivity_;
 import co.yishun.onemoment.app.ui.MainActivity_;
-import co.yishun.onemoment.app.ui.PhoneAccountActivity_;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
@@ -47,7 +47,7 @@ public class WXEntryActivity extends BaseActivity implements LoginListener {
     }
 
     public void loginByPhoneClicked(final View view) {
-        PhoneAccountActivity_.intent(this).start();
+        AccountActivity_.intent(this).start();
     }
 
     public void loginByWeChatClicked(final View view) {
