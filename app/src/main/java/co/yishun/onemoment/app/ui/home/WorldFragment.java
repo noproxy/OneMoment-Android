@@ -207,7 +207,7 @@ public class WorldFragment extends TabPagerFragment {
                 holder.numTextView.setText(String.valueOf(tag.videosCount) + PeopleSuffix);
                 holder.tagTextView.setText(tag.name);
                 holder.likeTextView.setText(String.valueOf(tag.likeCount));
-                holder.tagTextView.setCompoundDrawables(getDrawableByType(tag.type), null, null, null);
+                holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(getDrawableByType(tag.type), null, null, null);
             }
         }
 
