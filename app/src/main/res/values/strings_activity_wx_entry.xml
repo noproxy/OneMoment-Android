@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_wx_entry_login_success">Login Success.</string>
+    <string name="activity_wx_entry_login_fail">Login failed.</string>
+    <string name="activity_wx_entry_auth_success">Auth Success.</string>
+</resources>
