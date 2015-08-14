@@ -14,7 +14,9 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.SdkVersionHelper;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.wxapi.WXEntryActivity;
 
 /**
  * Created by yyz on 7/23/15.
@@ -70,7 +72,10 @@ public class SplashActivity extends BaseActivity {
 //        if (BuildConfig.DEBUG) new EveryDayNotification().onReceive(this, null);
 //        if (isFirstLaunch()) GuideActivity_.intent(this).start();
 //        else
-        startActivity(new Intent(this, MainActivity.class));
+        if (AccountHelper.isLogin(this))
+            MainActivity_.intent(this).start();
+        else
+            startActivity(new Intent(this, WXEntryActivity.class));
     }
 
     @Nullable

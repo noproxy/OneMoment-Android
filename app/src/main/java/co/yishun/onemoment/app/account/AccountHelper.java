@@ -49,6 +49,10 @@ public class AccountHelper {
         return account;
     }
 
+    public static boolean isLogin(Context context) {
+        return getAccount(context) != null;
+    }
+
 
     public static void saveAccount(Context context, User user) {
         Account newAccount = new Account(user.nickname, ACCOUNT_TYPE);
