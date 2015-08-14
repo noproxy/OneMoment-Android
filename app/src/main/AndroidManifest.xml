@@ -66,12 +66,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.PhoneAccountActivity_"
+            android:name=".ui.AccountActivity_"
             android:theme="@style/AppTheme.PhoneAccountActivity"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.LoginActivity_"
+                android:value=".wxapi.WXEntryActivity"
                 />
             <!-- TODO just for test-->
         </activity>
