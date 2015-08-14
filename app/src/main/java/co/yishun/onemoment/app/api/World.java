@@ -23,6 +23,9 @@ import retrofit.http.Query;
  * Created by Carlos on 2015/8/8.
  */
 public interface World {
+    String TAG_SORT_TYPE_RECOMMEND = "recommend";
+    String TAG_SORT_TYPE_TIME = "time";
+
     @GET("/world/banners")
     List<Banner> getBanners(@Query("limit") int bannerNumLimit);
 
@@ -35,7 +38,7 @@ public interface World {
     ApiModel unlikeVideo(@Path("video_like") @NonNull String videoId, @NonNull String userId);
 
     @GET("/world/tags")
-    List<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("ranking") @Nullable String ranking);
+    List<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("ranking") @Nullable String ranking, @Query("sort") @Nullable String sort);
 
     @GET("/world/videos/liked")
     List<Video> getLikedVideos(@Query("account_id") @NonNull String userId, @Query("offset") int offset, @Query("limit") int limit);
