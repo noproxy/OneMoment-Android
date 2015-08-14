@@ -35,7 +35,7 @@ public interface World {
     ApiModel unlikeVideo(@Path("video_like") @NonNull String videoId, @NonNull String userId);
 
     @GET("/world/tags")
-    List<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("type") @Nullable String type, @Query("ranking") @Nullable String ranking);
+    List<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("ranking") @Nullable String ranking);
 
     @GET("/world/videos/liked")
     List<Video> getLikedVideos(@Query("account_id") @NonNull String userId, @Query("offset") int offset, @Query("limit") int limit);
