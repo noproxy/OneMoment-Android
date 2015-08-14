@@ -241,6 +241,8 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
             nickNameEditText.setText(userInfo.name);
             genderSpinner.setSelectedGender(Account.Gender.format(userInfo.gender));
             locationSpinner.setSelectedLocation(userInfo.location);
+            // not set uri, because three party image don't need upload
+            // if uri not null( user set avatar replace image from three-party), it will update after sign up
             Picasso.with(mActivity).load(userInfo.avatar_large).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
         }
     }
