@@ -13,12 +13,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.EActivity;
 
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.api.Account;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
@@ -26,13 +34,15 @@ import co.yishun.onemoment.app.ui.home.VerifyFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 
 @EActivity
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements AccountHelper.OnUserInfoChangeListener {
     private static WeakReference<FloatingActionButton> floatingActionButton;
+    private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawerLayout;
     private FragmentManager fragmentManager;
     private int currentItemId = 0;
     private WorldFragment worldFragment;
+    private Account mAccount = OneMomentV3.createAdapter().create(Account.class);
 
     /**
      * get fab to display SnackBar
@@ -67,9 +77,21 @@ public class MainActivity extends BaseActivity {
                     drawerLayout.closeDrawers();
                     return navigationTo(menuItem.getItemId());
                 });
+        invalidateUserInfo(AccountHelper.getUserInfo(this));
+        AccountHelper.setOnUserInfoChangeListener(this);
         floatingActionButton = new WeakReference<>((FloatingActionButton) findViewById(R.id.fab));
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    private void invalidateUserInfo(User user) {
+        if (user == null) {
+            return;
+        }
+        ImageView imageView = (ImageView) findViewById(R.id.profileImageView);
+        Picasso.with(this).load(user.avatarUrl).into(imageView);
+        ((TextView) findViewById(R.id.usernameTextView)).setText(user.nickname);
+        ((TextView) findViewById(R.id.locationTextView)).setText(user.location);
     }
 
     public void syncToggle() {
@@ -161,5 +183,10 @@ public class MainActivity extends BaseActivity {
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return floatingActionButton.get();
+    }
+
+    @Override
+    public void onUserInfoChange(User info) {
+        invalidateUserInfo(info);
     }
 }
