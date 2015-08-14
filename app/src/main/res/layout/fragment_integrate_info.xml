@@ -20,7 +20,7 @@
         android:layout_height="64dp"
         android:layout_gravity="center"
         android:layout_margin="16dp"
-        android:src="@drawable/pic_profile_tmp"
+        android:src="@drawable/pic_login_profile"
         />
 
     <EditText
