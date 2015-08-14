@@ -218,7 +218,7 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
         Crop.pickImage(mActivity);
     }
 
-    @UiThread(delay = 300)
+    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
     void exit() {
         mActivity.finish();
     }

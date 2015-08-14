@@ -13,6 +13,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.config.Constants;
 
 /**
  * Created by Carlos on 2015/8/12.
@@ -66,7 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    @UiThread(delay = 300)
+    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
     public void exit() {
         finish();
     }

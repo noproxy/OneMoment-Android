@@ -28,6 +28,8 @@ public class Constants {
     public static final int CODE_SERVER_ERROR = -3;
     public static final int CODE_TOO_FEQUENT = -5;
 
+    public static final int INT_EXIT_DELAY_MILLIS = 500;
+
     public static class ErrorCode {
         public static final int INPUT_MISSING = -1;
         public static final int INPUT_ERROR = -2;

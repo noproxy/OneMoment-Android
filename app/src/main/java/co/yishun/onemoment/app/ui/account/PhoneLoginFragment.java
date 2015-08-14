@@ -61,7 +61,7 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
         }
     }
 
-    @UiThread(delay = 300)
+    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
     void exitWithStartMain() {
         MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
         mActivity.finish();
