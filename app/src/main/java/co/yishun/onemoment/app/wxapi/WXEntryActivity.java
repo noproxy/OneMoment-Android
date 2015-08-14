@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.wxapi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SupposeBackground;
+import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
@@ -25,6 +27,7 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.AccountActivity_;
+import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
@@ -133,7 +136,7 @@ class AsyncHandler {
         if (user.code == 1) {
             AccountHelper.saveAccount(mActivity, user);
             mActivity.showSnackMsg(R.string.activity_wx_entry_login_success);
-            mActivity.exit();
+            exitWithStartMain();
         } else if (user.errorCode == Constants.ErrorCode.ACCOUNT_DOESNT_EXIST) {
             Log.i(TAG, "account not exist, start getting user info");
             getUserInfo(token);
@@ -163,6 +166,12 @@ class AsyncHandler {
         } else {
             return AccessTokenKeeper.KeeperType.QQ;
         }
+    }
+
+    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
+    void exitWithStartMain() {
+        MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
+        mActivity.finish();
     }
 }
 
