@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.account;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -39,6 +40,7 @@ import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.AccountActivity;
+import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.view.GenderSpinner;
 import co.yishun.onemoment.app.ui.view.LocationSpinner;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -210,7 +212,7 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
     void checkAvatarAndExit(@NonNull String userId) {
         boolean success = updateAvatar(userId);
         mActivity.showSnackMsg(success ? R.string.fragment_integrate_info_sign_up_success : R.string.fragment_integrate_info_sign_up_success_but_avatar_upload_failed);
-        exit();
+        exitWithStartMain();
     }
 
     @Click
@@ -219,7 +221,8 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
     }
 
     @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
-    void exit() {
+    void exitWithStartMain() {
+        MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
         mActivity.finish();
     }
 
