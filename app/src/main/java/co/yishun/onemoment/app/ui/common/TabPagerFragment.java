@@ -79,7 +79,6 @@ public abstract class TabPagerFragment extends ToolbarFragment {
 
         if (toolbar == null || viewPager == null || tabLayout == null)
             throw new AssertionError("You must ensure your layout contain TabLayout, ViewPager and Toolbar with R.id.tabLayout, R.id.viewPager, R.id.toolbar");
-        viewPager.setOffscreenPageLimit(0);
         PagerAdapter viewPagerAdapter = getViewPager(inflater);
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
