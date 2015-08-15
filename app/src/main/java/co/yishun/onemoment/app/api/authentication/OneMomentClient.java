@@ -54,14 +54,19 @@ public class OneMomentClient extends OkClient {
         headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
-        Response response = super.execute(verifiedRequest);
-        int statusCode = response.getStatus();
-        // fake 200 response to log error and store in ApiModel
-        if (statusCode < 200 || statusCode >= 300) {// error
-            response = new Response(response.getUrl(), 200, "OK", response.getHeaders(), new FakeTypeInput());
-            Log.e(TAG, "http error! " + statusCode + " " + response.getReason());
+        try {
+            Response response = super.execute(verifiedRequest);
+            int statusCode = response.getStatus();
+            // fake 200 response to log error and store in ApiModel
+            if (statusCode < 200 || statusCode >= 300) {// error
+                response = new Response(response.getUrl(), 200, "OK", response.getHeaders(), new FakeTypeInput());
+                Log.e(TAG, "http error! " + statusCode + " " + response.getReason());
+            }
+            return response;
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in network request ! ", e);
+            return new Response(request.getUrl(), 200, "OK", headers, new FakeTypeInput());
         }
-        return response;
     }
 
     private Token generateOmToken1() {
