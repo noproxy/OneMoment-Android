@@ -83,7 +83,7 @@ public interface Account {
             @Path("account_id") @NonNull String userId,
             @Field("weibo_nickname") @Nullable String nickname,
             @Field("gender") @Nullable Gender gender,
-            @Field("avatar_url") @Nullable String avatarUrl,
+            @Field("avatar_url") @Nullable String remoteUrlOrKey,
             @Field("location") @Nullable String location
     );
 

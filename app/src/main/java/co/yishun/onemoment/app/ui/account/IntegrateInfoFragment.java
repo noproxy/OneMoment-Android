@@ -33,7 +33,6 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.account.auth.AccessTokenKeeper;
 import co.yishun.onemoment.app.account.auth.UserInfo;
 import co.yishun.onemoment.app.api.Account;
-import co.yishun.onemoment.app.api.ApiUtil;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.UploadToken;
@@ -132,11 +131,12 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
             Log.e(TAG, "get upload token error: " + token.msg);
             return false;
         }
-        String domain = ApiUtil.getVideoResourceDomain();
-        if (domain == null) {
-            Log.e(TAG, "get domain error");
-            return false;
-        }
+        // don't need
+//        String domain = ApiUtil.getVideoResourceDomain();
+//        if (domain == null) {
+//            Log.e(TAG, "get domain error");
+//            return false;
+//        }
         CountDownLatch latch = new CountDownLatch(1);
         uploadManager.put(path, qiNiuKey, token.token,
                 (s, responseInfo, jsonObject) -> {
@@ -160,9 +160,8 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
             return false;
         }
 
-        String avatarUrl = domain + qiNiuKey;
 
-        User user = mActivity.getAccountService().updateInfo(userId, null, null, avatarUrl, null);
+        User user = mActivity.getAccountService().updateInfo(userId, null, null, qiNiuKey, null);
         if (user.code <= 0) {
             Log.i(TAG, "update info failed: " + user.msg);
             return false;
