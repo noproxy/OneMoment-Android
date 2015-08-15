@@ -64,7 +64,7 @@ public class BannerHeaderProvider implements HeaderRecyclerAdapter.HeaderProvide
             public View getView() {
                 ImageView imageView = (ImageView) View.inflate(context, R.layout.layout_slider_image, null);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Picasso.with(context).load(R.drawable.pic_slider_loading).into(imageView);
+                Picasso.with(context).load(R.drawable.pic_banner_empty).into(imageView);
                 return imageView;
             }
         };
