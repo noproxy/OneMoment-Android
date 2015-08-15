@@ -102,7 +102,7 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.SimpleViewHo
     public void clear() {
         if (mItems.size() == 0) return;
         mItems.clear();
-        notifyItemRangeRemoved(0, mItems.size());
+        notifyDataSetChanged();
     }
 
     @Override
