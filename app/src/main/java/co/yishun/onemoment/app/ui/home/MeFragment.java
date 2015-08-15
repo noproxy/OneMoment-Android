@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import org.androidannotations.annotations.EFragment;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.ui.Test;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
 
 /**
@@ -20,16 +19,20 @@ import co.yishun.onemoment.app.ui.common.TabPagerFragment;
 @EFragment(R.layout.fragment_me)
 public class MeFragment extends TabPagerFragment {
 
-    @Override protected int getTitleDrawableRes() {
+    @Override
+    protected int getTitleDrawableRes() {
         return R.drawable.pic_me_tittle;
     }
 
 
-    @Override protected int getTabTitleArrayResources() {
+    @Override
+    protected int getTabTitleArrayResources() {
         return R.array.me_page_title;
     }
 
-    @NonNull @Override protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
+    @NonNull
+    @Override
+    protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
         View rootView = inflater.inflate(R.layout.page_world, container, false);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
@@ -38,14 +41,16 @@ public class MeFragment extends TabPagerFragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
 
-        RecyclerView.Adapter adapter = new WorldFragment.WorldAdapter(inflater.getContext(), Test.res, false);
+//        TODO
+//        RecyclerView.Adapter adapter = new WorldFragment.WorldAdapter(inflater.getContext(),, Test.res, false);
 
-        recyclerView.setAdapter(adapter);
+//        recyclerView.setAdapter(adapter);
         container.addView(rootView);
         return rootView;
     }
 
-    @Override protected int getContentViewId(Bundle savedInstanceState) {
+    @Override
+    protected int getContentViewId(Bundle savedInstanceState) {
         return R.layout.fragment_me;
     }
 
