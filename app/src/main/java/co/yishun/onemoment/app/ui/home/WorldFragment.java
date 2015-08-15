@@ -1,14 +1,19 @@
 package co.yishun.onemoment.app.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.malinskiy.superrecyclerview.OnMoreListener;
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
+
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 
@@ -31,10 +36,8 @@ import co.yishun.onemoment.app.ui.common.TabPagerFragment;
 @EFragment
 public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTagClickListener {
 
-    BannerHeaderProvider mBannerHeaderProvider;
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
-    private WorldAdapter mAdapters[] = new WorldAdapter[2];
-    private View[] cacheViews = new View[2];
+//    private PagerController[] mControllers = new PagerController[2];
 
     public WorldFragment() {
     }
@@ -52,65 +55,19 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
     @NonNull
     @Override
     protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
-        if (cacheViews[position] != null) return cacheViews[position];
-        View rootView = inflater.inflate(R.layout.page_world, container, false);
-        cacheViews[position] = rootView;
-
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-        LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setHasFixedSize(true);
-
-        if (position == 0) {
-            mAdapters[0] = new WorldAdapter(this, inflater.getContext());
-            mBannerHeaderProvider = new BannerHeaderProvider(inflater.getContext());
-            recyclerView.setAdapter(new HeaderRecyclerAdapter(mAdapters[0], mBannerHeaderProvider));
-            loadBanners();
-        } else {
-            mAdapters[1] = new WorldAdapter(this, inflater.getContext());
-            recyclerView.setAdapter(mAdapters[1]);
-        }
-        loadTags(position);
-        container.addView(rootView);
-        return rootView;
+//        if (mControllers[position] != null) {
+//            View view = mControllers[position].getRecyclerView();
+//            ((ViewGroup) view.getParent()).removeView(view);
+//            container.addView(view);
+//            return view;
+//        }
+        SuperRecyclerView recyclerView = (SuperRecyclerView) inflater.inflate(R.layout.page_world, container, false);
+        PagerController controller = WorldFragment_.PagerController_.getInstance_(inflater.getContext());
+        controller.setUp(inflater.getContext(), recyclerView, position == 0, mWorld, this);
+        container.addView(recyclerView);
+        return recyclerView;
     }
 
-    @Background
-    void loadTags(int position) {
-        String domain = ApiUtil.getVideoResourceDomain();
-        if (domain == null) {
-            //TODO loading error
-            return;
-        }
-        mAdapters[position].setDomain(domain);
-        List<WorldTag> list = mWorld.getWorldTagList(5, null, position == 0 ? World.TAG_SORT_TYPE_RECOMMEND : World.TAG_SORT_TYPE_TIME);
-        if (list.size() == 0) {
-            //TODO loading error
-            return;
-        }
-        onLoadTags(list, mAdapters[position]);
-    }
-
-    @UiThread
-    void onLoadTags(List<WorldTag> list, WorldAdapter adapter) {
-        adapter.addAll(list);
-    }
-
-    @Background
-    void loadBanners() {
-        List<Banner> banners = mWorld.getBanners(3);
-        if (banners.size() == 0) {
-            //TODO loading error
-            return;
-        }
-        onLoadBanners(banners);
-    }
-
-    @UiThread
-    void onLoadBanners(List<Banner> banners) {
-        mBannerHeaderProvider.setupBanners(banners);
-    }
 
     @Override
     protected int getContentViewId(Bundle savedInstanceState) {
@@ -120,5 +77,107 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
     @Override
     public void onClick(WorldTag tag) {
 
+    }
+
+    @EBean
+    public static class PagerController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
+        private WorldAdapter mAdapter;
+        private SuperRecyclerView mRecyclerView;
+        private boolean isRecommend;
+        private WorldAdapter.OnTagClickListener mOnTagClickListener;
+        private World mWorld;
+        private BannerHeaderProvider mBannerHeaderProvider;
+        private String ranking = "";
+
+        public PagerController() {
+        }
+
+        public void setUp(Context context, SuperRecyclerView mRecyclerView, boolean recommend, World world, WorldAdapter.OnTagClickListener listener) {
+            this.mRecyclerView = mRecyclerView;
+            isRecommend = recommend;
+            mOnTagClickListener = listener;
+            mWorld = world;
+            WorldAdapter adapter;
+
+
+            LinearLayoutManager manager = new LinearLayoutManager(context);
+            manager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(manager);
+            mRecyclerView.setRefreshListener(this);
+            mRecyclerView.setOnMoreListener(this);
+
+            if (recommend) {
+                adapter = new WorldAdapter(mOnTagClickListener, context);
+                mBannerHeaderProvider = new BannerHeaderProvider(context);
+                mRecyclerView.setAdapter(new HeaderRecyclerAdapter(adapter, mBannerHeaderProvider));
+                loadBanners();
+            } else {
+                adapter = new WorldAdapter(mOnTagClickListener, context);
+                mRecyclerView.setAdapter(adapter);
+            }
+
+
+            this.mAdapter = adapter;
+
+
+            loadTags();
+        }
+
+        public WorldAdapter getAdapter() {
+            return mAdapter;
+        }
+
+        public SuperRecyclerView getRecyclerView() {
+            return mRecyclerView;
+        }
+
+        @Background
+        void loadBanners() {
+            List<Banner> banners = mWorld.getBanners(3);
+            if (banners.size() == 0) {
+                //TODO loading error
+                return;
+            }
+            onLoadBanners(banners);
+        }
+
+        @UiThread
+        void onLoadBanners(List<Banner> banners) {
+            mBannerHeaderProvider.setupBanners(banners);
+        }
+
+        @Background
+        synchronized void loadTags() {
+            String domain = ApiUtil.getVideoResourceDomain();
+            if (domain == null) {
+                //TODO loading error
+                return;
+            }
+            mAdapter.setDomain(domain);
+            List<WorldTag> list = mWorld.getWorldTagList(5, ranking, isRecommend ? World.TAG_SORT_TYPE_RECOMMEND : World.TAG_SORT_TYPE_TIME);
+            if (list.size() == 0) {
+                //TODO loading error
+                return;
+            }
+            ranking = list.get(list.size() - 1).ranking;
+            onLoadTags(list);
+        }
+
+        @UiThread
+        void onLoadTags(List<WorldTag> list) {
+            mAdapter.addAll(list);
+        }
+
+        @Override
+        public void onRefresh() {
+            mAdapter.clear();
+            ranking = "";
+            loadTags();
+        }
+
+        @Override
+        public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
+            loadTags();
+        }
     }
 }
