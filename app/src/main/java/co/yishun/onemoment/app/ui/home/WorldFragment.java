@@ -147,7 +147,11 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
         }
 
         @Background
-        synchronized void loadTags() {
+        void loadTags() {
+            synchronizedLoadTags();
+        }
+
+        synchronized void synchronizedLoadTags() {
             String domain = ApiUtil.getVideoResourceDomain();
             if (domain == null) {
                 //TODO loading error
@@ -162,6 +166,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
             ranking = list.get(list.size() - 1).ranking;
             onLoadTags(list);
         }
+
 
         @UiThread
         void onLoadTags(List<WorldTag> list) {
