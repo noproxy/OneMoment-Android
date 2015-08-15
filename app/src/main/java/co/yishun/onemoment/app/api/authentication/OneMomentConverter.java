@@ -63,7 +63,7 @@ public class OneMomentConverter implements Converter {
         try {
             errorCode = jsonObject.get("error_code").getAsInt();
         } catch (Exception e) {
-            Log.v(TAG, "no error code, catch. ", e);
+            Log.v(TAG, "no error code, catch. ");
         }
 
 
