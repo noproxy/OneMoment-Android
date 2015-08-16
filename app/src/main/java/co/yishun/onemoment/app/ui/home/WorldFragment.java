@@ -171,6 +171,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
         @UiThread
         void onLoadTags(List<WorldTag> list) {
             mAdapter.addAll(list);
+            mRecyclerView.getSwipeToRefresh().setRefreshing(false);
         }
 
         @Override
