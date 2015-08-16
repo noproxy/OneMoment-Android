@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,11 @@ import org.androidannotations.annotations.UiThread;
 import java.util.List;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.ApiUtil;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.BannerHeaderProvider;
 import co.yishun.onemoment.app.ui.adapter.HeaderRecyclerAdapter;
 import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
@@ -36,13 +37,9 @@ import co.yishun.onemoment.app.ui.common.TabPagerFragment;
  * Created by yyz on 7/13/15.
  */
 @EFragment
-public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTagClickListener {
+public class WorldFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag> {
 
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
-//    private PagerController[] mControllers = new PagerController[2];
-
-    public WorldFragment() {
-    }
 
     @Override
     protected int getTitleDrawableRes() {
@@ -57,12 +54,6 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
     @NonNull
     @Override
     protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
-//        if (mControllers[position] != null) {
-//            View view = mControllers[position].getRecyclerView();
-//            ((ViewGroup) view.getParent()).removeView(view);
-//            container.addView(view);
-//            return view;
-//        }
         HeaderCompatibleSuperRecyclerView recyclerView = (HeaderCompatibleSuperRecyclerView) inflater.inflate(R.layout.page_world, container, false);
         PagerController controller = WorldFragment_.PagerController_.getInstance_(inflater.getContext());
         controller.setUp(inflater.getContext(), recyclerView, position == 0, mWorld, this);
@@ -77,7 +68,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
     }
 
     @Override
-    public void onClick(WorldTag tag) {
+    public void onClick(View view, WorldTag item) {
 
     }
 
@@ -87,7 +78,6 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
         private WorldAdapter mAdapter;
         private HeaderCompatibleSuperRecyclerView mRecyclerView;
         private boolean isRecommend;
-        private WorldAdapter.OnTagClickListener mOnTagClickListener;
         private World mWorld;
         private BannerHeaderProvider mBannerHeaderProvider;
         private String ranking = "";
@@ -95,12 +85,12 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
         public PagerController() {
         }
 
-        public void setUp(Context context, HeaderCompatibleSuperRecyclerView mRecyclerView, boolean recommend, World world, WorldAdapter.OnTagClickListener listener) {
+        public void setUp(Context context, HeaderCompatibleSuperRecyclerView mRecyclerView, boolean recommend, World world, WorldAdapter.OnItemClickListener<WorldTag> listener) {
             this.mRecyclerView = mRecyclerView;
             isRecommend = recommend;
-            mOnTagClickListener = listener;
             mWorld = world;
-            WorldAdapter adapter;
+            this.mAdapter = new WorldAdapter(context, listener);
+            RecyclerView.Adapter trueAdapter = mAdapter;
 
 
             LinearLayoutManager manager = new LinearLayoutManager(context);
@@ -110,18 +100,11 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
             mRecyclerView.setOnMoreListener(this);
 
             if (recommend) {
-                adapter = new WorldAdapter(mOnTagClickListener, context);
                 mBannerHeaderProvider = new BannerHeaderProvider(context);
-                mRecyclerView.setAdapter(new HeaderRecyclerAdapter(adapter, mBannerHeaderProvider));
+                trueAdapter = new HeaderRecyclerAdapter(trueAdapter, mBannerHeaderProvider);
                 loadBanners();
-            } else {
-                adapter = new WorldAdapter(mOnTagClickListener, context);
-                mRecyclerView.setAdapter(adapter);
             }
-
-
-            this.mAdapter = adapter;
-
+            mRecyclerView.setAdapter(trueAdapter);
 
             loadTags();
         }
@@ -155,12 +138,6 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
         }
 
         synchronized void synchronizedLoadTags() {
-            String domain = ApiUtil.getVideoResourceDomain();
-            if (domain == null) {
-                //TODO loading error
-                return;
-            }
-            mAdapter.setDomain(domain);
             List<WorldTag> list = mWorld.getWorldTagList(5, ranking, isRecommend ? World.TAG_SORT_TYPE_RECOMMEND : World.TAG_SORT_TYPE_TIME);
             if (list.size() == 0) {
                 //TODO loading error
