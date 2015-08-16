@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
 
     @EBean
     public static class PagerController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
+        private static final String TAG = "PagerController";
         private WorldAdapter mAdapter;
         private SuperRecyclerView mRecyclerView;
         private boolean isRecommend;
@@ -183,6 +185,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
 
         @Override
         public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
+            Log.i(TAG, "start load more, int numberOfItems, int numberBeforeMore, int currentItemPos: " + numberOfItems + ", " + numberBeforeMore + ", " + currentItemPos);
             loadTags();
         }
     }
