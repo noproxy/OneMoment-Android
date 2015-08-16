@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.ui.adapter;
 
 import android.content.Context;
-import android.support.annotation.CallSuper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -28,13 +27,15 @@ public abstract class AbstractRecyclerViewAdapter<I, VH extends RecyclerView.Vie
         notifyItemInserted(location);
     }
 
-    @CallSuper
     @Override
-    public void onBindViewHolder(VH holder, int position) {
+    public final void onBindViewHolder(VH holder, int position) {
+        onBindViewHolder(holder, mItems.get(position), position);
         holder.itemView.setOnClickListener(v -> {
             if (mListener != null) mListener.onClick(holder.itemView, mItems.get(position));
         });
     }
+
+    public abstract void onBindViewHolder(VH holder, I item, int position);
 
     public boolean add(I object) {
         boolean re = mItems.add(object);

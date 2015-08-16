@@ -22,11 +22,11 @@ public class VideoLikeAdpter extends AbstractRecyclerViewAdapter<Video, VideoLik
     }
 
     @Override
-    public void onBindViewHolder(SimpleViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
+    public void onBindViewHolder(SimpleViewHolder holder, Video item, int position) {
         Video video = mItems.get(position);
         Picasso.with(mContext).load(video.domain.domain + video.fileName).into(holder.itemImageView);
     }
+
 
     @Override
     public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
