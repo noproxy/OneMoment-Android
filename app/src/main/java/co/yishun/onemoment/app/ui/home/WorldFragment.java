@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
@@ -62,7 +63,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
 //            container.addView(view);
 //            return view;
 //        }
-        SuperRecyclerView recyclerView = (SuperRecyclerView) inflater.inflate(R.layout.page_world, container, false);
+        HeaderCompatibleSuperRecyclerView recyclerView = (HeaderCompatibleSuperRecyclerView) inflater.inflate(R.layout.page_world, container, false);
         PagerController controller = WorldFragment_.PagerController_.getInstance_(inflater.getContext());
         controller.setUp(inflater.getContext(), recyclerView, position == 0, mWorld, this);
         container.addView(recyclerView);
@@ -84,7 +85,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
     public static class PagerController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
         private static final String TAG = "PagerController";
         private WorldAdapter mAdapter;
-        private SuperRecyclerView mRecyclerView;
+        private HeaderCompatibleSuperRecyclerView mRecyclerView;
         private boolean isRecommend;
         private WorldAdapter.OnTagClickListener mOnTagClickListener;
         private World mWorld;
@@ -94,7 +95,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
         public PagerController() {
         }
 
-        public void setUp(Context context, SuperRecyclerView mRecyclerView, boolean recommend, World world, WorldAdapter.OnTagClickListener listener) {
+        public void setUp(Context context, HeaderCompatibleSuperRecyclerView mRecyclerView, boolean recommend, World world, WorldAdapter.OnTagClickListener listener) {
             this.mRecyclerView = mRecyclerView;
             isRecommend = recommend;
             mOnTagClickListener = listener;
@@ -173,6 +174,7 @@ public class WorldFragment extends TabPagerFragment implements WorldAdapter.OnTa
         @UiThread
         void onLoadTags(List<WorldTag> list) {
             mAdapter.addAll(list);
+            mRecyclerView.loadEnd();
             mRecyclerView.getSwipeToRefresh().setRefreshing(false);
         }
 
