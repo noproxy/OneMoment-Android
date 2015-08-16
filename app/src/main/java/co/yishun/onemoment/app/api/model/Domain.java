@@ -6,6 +6,11 @@ package co.yishun.onemoment.app.api.model;
 public class Domain extends ApiModel {
     public String domain;
 
+    @Override
+    public String toString() {
+        return domain;
+    }
+
     public static class Type {
         public static final String VIDEO = "video";
         public static final String TAG = "tag";
