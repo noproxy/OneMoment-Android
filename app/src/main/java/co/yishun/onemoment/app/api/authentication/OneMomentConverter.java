@@ -26,6 +26,7 @@ import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import java8.util.stream.StreamSupport;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
@@ -96,10 +97,14 @@ public class OneMomentConverter implements Converter {
                     models = mGson.fromJson(data.get("banners").getAsJsonArray(), type);
                 } else if (genericType == Moment.class || genericType == Video.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
-                    models = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
+                    List<Video> videos = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
+                    StreamSupport.stream(videos).forEach(video -> video.domain = mGson.fromJson(data, Domain.class));
+                    models = videos;
                 } else if (genericType == WorldTag.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
-                    models = mGson.fromJson(data.get("tags").getAsJsonArray(), type);
+                    List<WorldTag> tags = mGson.fromJson(data.get("tags").getAsJsonArray(), type);
+                    StreamSupport.stream(tags).forEach(tag -> tag.domain = mGson.fromJson(data, Domain.class));
+                    models = tags;
                 } else {
                     models = new ArrayList<>();
                     Log.e(TAG, "unknown generic type, json: " + json);
