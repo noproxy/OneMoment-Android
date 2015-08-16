@@ -154,6 +154,7 @@ dependencies {
     aarLinkSources 'com.android.support.test.espresso:espresso-core:2.2:sources@jar'
     aarLinkSources 'com.android.support:recyclerview-v7:22.2.0:sources@jar'
     aarLinkSources 'com.daimajia.slider:library:1.1.5:sources@jar'
+    aarLinkSources 'com.malinskiy:superrecyclerview:1.1.1:sources@jar'
 }
 
 apply plugin: 'android-apt'
