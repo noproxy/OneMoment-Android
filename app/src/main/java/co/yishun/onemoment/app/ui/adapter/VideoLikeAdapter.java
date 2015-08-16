@@ -19,10 +19,10 @@ import co.yishun.onemoment.app.api.model.Video;
 /**
  * Created by Carlos on 2015/8/16.
  */
-public class VideoLikeAdpter extends AbstractRecyclerViewAdapter<Video, VideoLikeAdpter.SimpleViewHolder> {
+public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> {
     private final TwoWayView twoWayView;
 
-    public VideoLikeAdpter(Context context, OnItemClickListener<Video> listener, TwoWayView twoWayView) {
+    public VideoLikeAdapter(Context context, OnItemClickListener<Video> listener, TwoWayView twoWayView) {
         super(context, listener);
         this.twoWayView = twoWayView;
     }

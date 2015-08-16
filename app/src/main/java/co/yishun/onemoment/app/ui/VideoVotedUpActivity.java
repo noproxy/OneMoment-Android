@@ -22,7 +22,7 @@ import org.lucasr.twowayview.widget.TwoWayView;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
-import co.yishun.onemoment.app.ui.adapter.VideoLikeAdpter;
+import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
 
 /**
  * Created by yyz on 7/20/15.
@@ -71,7 +71,7 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
         }
         twoWayView.addItemDecoration(new DividerItemDecoration(divider));
 
-        twoWayView.setAdapter(new VideoLikeAdpter(this, this, twoWayView));
+        twoWayView.setAdapter(new VideoLikeAdapter(this, this, twoWayView));
     }
 
     @Override
