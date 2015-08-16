@@ -14,4 +14,5 @@ public class WorldTag extends ApiModel {
     @SerializedName("like_num")
     public int likeCount;
     public String type;
+    public Domain domain;
 }

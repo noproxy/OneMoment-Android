@@ -10,6 +10,7 @@ public class Video extends ApiModel {
     public String accountId;
     public String type;
     public List<VideoTag> tags;
+    public Domain domain;
 
     public static class Type {
         public static final String PUBLIC = "public";
