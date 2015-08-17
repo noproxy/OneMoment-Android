@@ -45,7 +45,6 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
 
-//        TODO
         MeAdapter adapter = new MeAdapter(inflater.getContext(), this);
         recyclerView.setAdapter(adapter);
         MeController_.getInstance_(inflater.getContext()).setUp(adapter, recyclerView);
