@@ -16,8 +16,8 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
-import co.yishun.onemoment.app.ui.other.PagerController;
 import co.yishun.onemoment.app.ui.other.PagerController_;
+import co.yishun.onemoment.app.ui.other.WorldPagerController;
 
 /**
  * Created by yyz on 7/13/15.
@@ -41,7 +41,7 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
     @Override
     protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
         HeaderCompatibleSuperRecyclerView recyclerView = (HeaderCompatibleSuperRecyclerView) inflater.inflate(R.layout.page_world, container, false);
-        PagerController controller = PagerController_.getInstance_(inflater.getContext());
+        WorldPagerController controller = PagerController_.getInstance_(inflater.getContext());
         controller.setUp(inflater.getContext(), recyclerView, position == 0, mWorld, this);
         container.addView(recyclerView);
         return recyclerView;

@@ -27,8 +27,8 @@ import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
  * Created by Carlos on 2015/8/16.
  */
 @EBean
-public class PagerController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
-    private static final String TAG = "PagerController";
+public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
+    private static final String TAG = "WorldPagerController";
     private WorldAdapter mAdapter;
     private HeaderCompatibleSuperRecyclerView mRecyclerView;
     private boolean isRecommend;
@@ -36,7 +36,7 @@ public class PagerController implements SwipeRefreshLayout.OnRefreshListener, On
     private BannerHeaderProvider mBannerHeaderProvider;
     private String ranking = "";
 
-    public PagerController() {
+    public WorldPagerController() {
     }
 
     public void setUp(Context context, HeaderCompatibleSuperRecyclerView mRecyclerView, boolean recommend, World world, WorldAdapter.OnItemClickListener<WorldTag> listener) {
