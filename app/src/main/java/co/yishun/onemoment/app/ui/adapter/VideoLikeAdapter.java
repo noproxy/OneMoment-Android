@@ -65,7 +65,7 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLi
         return new SimpleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.layout_video_like_item, parent, false));
     }
 
-    static class SimpleViewHolder extends RecyclerView.ViewHolder {
+    public static class SimpleViewHolder extends RecyclerView.ViewHolder {
         final ImageView itemImageView;
 
         public SimpleViewHolder(View itemView) {
