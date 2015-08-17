@@ -59,7 +59,7 @@ public class WorldAdapter extends AbstractRecyclerViewAdapter<WorldTag, WorldAda
         holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(getDrawableByType(item.type), null, null, null);
     }
 
-    static class SimpleViewHolder extends RecyclerView.ViewHolder {
+    public static class SimpleViewHolder extends RecyclerView.ViewHolder {
         final ImageView itemImageView;
         final TextView numTextView;
         final TextView tagTextView;
