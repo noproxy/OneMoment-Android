@@ -57,13 +57,25 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
 
     @Background
     void load() {
-        onLoad(synchronizedLoad());
+        onLoadEnd(synchronizedLoad());
     }
 
-    protected abstract List<I> synchronizedLoad();
+    /*
+    to ensure onLoad() execute synchronized
+     */
+    private synchronized List<I> synchronizedLoad() {
+        return onLoad();
+    }
+
+    /**
+     * load data from network, this will be call in the background.
+     *
+     * @return list of I
+     */
+    protected abstract List<I> onLoad();
 
     @UiThread
-    void onLoad(List<I> list) {
+    void onLoadEnd(List<I> list) {
         if (list != null) {
             getAdapter().addAll(list);
             if (mRecyclerView instanceof SuperRecyclerView) {

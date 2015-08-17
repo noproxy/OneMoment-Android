@@ -26,7 +26,7 @@ public class VotedUpController extends IntOffsetRefreshableRecyclerController<Su
     }
 
     @Override
-    protected synchronized List<Video> synchronizedLoad() {
+    protected List<Video> onLoad() {
         List<Video> list = mWorld.getLikedVideos(AccountHelper.getUserInfo(mContext)._id, getOffset(), 10);
         if (list.size() == 0) {
             //TODO loading error
