@@ -10,6 +10,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Banner;
+import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.VideoTag;
@@ -52,7 +53,7 @@ public interface World {
 
     @GET("/world/videos")
     List<TagVideo> getVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
-            , @Query("account_id") @Nullable String userId, @Query("seed") @Nullable String seed);
+            , @Query("account_id") @Nullable String userId, @Query("seed") @Nullable Seed seed);
 
     @GET("/world/private_videos")
     List<TagVideo> getPrivateVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
