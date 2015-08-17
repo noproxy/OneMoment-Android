@@ -30,7 +30,7 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLi
     public void onBindViewHolder(SimpleViewHolder holder, Video item, int position) {
         Video video = mItems.get(position);
         //TODO there is a video
-        Picasso.with(mContext).load(R.drawable.pic_slider_loading).into(holder.itemImageView);
+        Picasso.with(mContext).load(R.drawable.pic_slider_loading).fit().into(holder.itemImageView);
 
         boolean isVertical =
 //                (twoWayView.getOrientation() == TwoWayLayoutManager.Orientation.VERTICAL);
