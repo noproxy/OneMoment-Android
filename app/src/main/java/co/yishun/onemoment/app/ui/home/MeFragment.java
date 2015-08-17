@@ -12,13 +12,17 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import org.androidannotations.annotations.EFragment;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
+import co.yishun.onemoment.app.ui.adapter.MeAdapter;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
+import co.yishun.onemoment.app.ui.other.MeController_;
 
 /**
  * Created by yyz on 7/21/15.
  */
 @EFragment(R.layout.fragment_me)
-public class MeFragment extends TabPagerFragment {
+public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag> {
 
     @Override
     protected int getTitleDrawableRes() {
@@ -42,9 +46,10 @@ public class MeFragment extends TabPagerFragment {
         recyclerView.setLayoutManager(manager);
 
 //        TODO
-//        RecyclerView.Adapter adapter = new WorldFragment.WorldAdapter(inflater.getContext(),, Test.res, false);
+        MeAdapter adapter = new MeAdapter(inflater.getContext(), this);
+        recyclerView.setAdapter(adapter);
+        MeController_.getInstance_(inflater.getContext()).setUp(adapter, recyclerView);
 
-//        recyclerView.setAdapter(adapter);
         container.addView(rootView);
         return rootView;
     }
@@ -55,4 +60,8 @@ public class MeFragment extends TabPagerFragment {
     }
 
 
+    @Override
+    public void onClick(View view, WorldTag item) {
+
+    }
 }
