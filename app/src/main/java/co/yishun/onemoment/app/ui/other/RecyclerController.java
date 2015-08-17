@@ -5,6 +5,9 @@ import android.support.annotation.CallSuper;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
+
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
@@ -63,6 +66,13 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     void onLoad(List<I> list) {
         if (list != null) {
             getAdapter().addAll(list);
+            if (mRecyclerView instanceof SuperRecyclerView) {
+                ((SuperRecyclerView) mRecyclerView).getSwipeToRefresh().setRefreshing(false);
+            }
+            if (mRecyclerView instanceof HeaderCompatibleSuperRecyclerView) {
+                ((HeaderCompatibleSuperRecyclerView) mRecyclerView).loadEnd();
+            }
+
         }
     }
 }
