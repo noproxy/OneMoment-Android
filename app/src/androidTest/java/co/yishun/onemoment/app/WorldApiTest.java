@@ -13,7 +13,9 @@ import java.util.List;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Banner;
+import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.model.VideoTag;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import retrofit.RestAdapter;
 
@@ -57,7 +59,7 @@ public class WorldApiTest extends AndroidTestCase {
 
     @Test
     public void testGetVideoOfTag() {
-        List<Video> videos = mWorld.getVideoOfTag("我的父母", 0, 6, null, null, null);
+        List<TagVideo> videos = mWorld.getVideoOfTag("我的父母", 0, 6, null, null);
         assertNotNull(videos);
     }
 
@@ -69,10 +71,10 @@ public class WorldApiTest extends AndroidTestCase {
 
     @Test
     public void testAddVideoToWorld() {
-        List<Video.VideoTag> list = new ArrayList<>();
-        Video.VideoTag tag = new Video.VideoTag();
+        List<VideoTag> list = new ArrayList<>();
+        VideoTag tag = new VideoTag();
         tag.name = "test";
-        tag.type = Video.VideoTag.Type.TEXT;
+        tag.type = VideoTag.Type.TEXT;
         tag.x = 0;
         tag.y = 0;
         list.add(tag);
