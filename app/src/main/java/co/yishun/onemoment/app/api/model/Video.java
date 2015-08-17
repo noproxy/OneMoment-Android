@@ -19,17 +19,4 @@ public class Video extends ApiModel {
         public static final String PUBLIC = "public";
         public static final String PRIVATE = "private";
     }
-
-    public static class VideoTag {
-        public String name;
-        public String type;
-        public float x;
-        public float y;
-
-        public static class Type {
-            public static final String LOCATION = "location";
-            public static final String TEXT = "words";
-            public static final String TIME = "time";
-        }
-    }
 }

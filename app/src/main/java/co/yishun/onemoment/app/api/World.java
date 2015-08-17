@@ -10,7 +10,9 @@ import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Banner;
+import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.model.VideoTag;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -49,11 +51,11 @@ public interface World {
     List<WorldTag> getJoinedWorldTags(@Query("account_id") @NonNull String userId, @Query("type") @NonNull String type, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/world/videos")
-    List<Video> getVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
+    List<TagVideo> getVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
             , @Query("account_id") @Nullable String userId, @Query("seed") @Nullable String seed);
 
     @GET("/world/private_videos")
-    List<Video> getPrivateVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
+    List<TagVideo> getPrivateVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
             , @Query("account_id") @Nullable String userId);
 
     @GET("/world/tag/suggest")
@@ -66,7 +68,7 @@ public interface World {
     );
 
     class Util {
-        public static String getTagsJson(@NonNull List<Video.VideoTag> tags) {
+        public static String getTagsJson(@NonNull List<VideoTag> tags) {
             return new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().toJson(tags);
         }
     }

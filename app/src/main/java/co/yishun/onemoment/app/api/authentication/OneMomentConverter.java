@@ -22,6 +22,8 @@ import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.Moment;
+import co.yishun.onemoment.app.api.model.Seed;
+import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.api.model.Video;
@@ -98,12 +100,23 @@ public class OneMomentConverter implements Converter {
                 } else if (genericType == Moment.class || genericType == Video.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     List<Video> videos = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
-                    StreamSupport.stream(videos).forEach(video -> video.domain = mGson.fromJson(data, Domain.class));
+                    Domain domain = mGson.fromJson(data, Domain.class);
+                    StreamSupport.stream(videos).filter(v -> v != null).forEach(video -> video.domain = domain);
                     models = videos;
                 } else if (genericType == WorldTag.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     List<WorldTag> tags = mGson.fromJson(data.get("tags").getAsJsonArray(), type);
-                    StreamSupport.stream(tags).forEach(tag -> tag.domain = mGson.fromJson(data, Domain.class));
+                    Domain domain = mGson.fromJson(data, Domain.class);
+                    StreamSupport.stream(tags).filter(v -> v != null).forEach(tag -> tag.domain = domain);
+                    models = tags;
+                } else if (genericType == TagVideo.class) {
+                    JsonObject data = jsonObject.get("data").getAsJsonObject();
+                    List<TagVideo> tags = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
+                    Domain domain = mGson.fromJson(data, Domain.class);
+                    StreamSupport.stream(tags).filter(v -> v != null).forEach(tag -> tag.domain = domain);
+                    Seed seed = mGson.fromJson(data, Seed.class);
+                    StreamSupport.stream(tags).filter(v -> v != null).forEach(tag -> tag.seed = seed);
+
                     models = tags;
                 } else {
                     models = new ArrayList<>();
