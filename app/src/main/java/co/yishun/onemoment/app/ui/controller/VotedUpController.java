@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.ui.controller;
 
 import android.content.Context;
-import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
@@ -20,15 +19,19 @@ import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
  * Created by Carlos on 2015/8/17.
  */
 @EBean
-public class VotedUpController extends RecyclerController<Integer, SuperRecyclerView, Video, VideoLikeAdapter.SimpleViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
+public class VotedUpController extends RefreshableRecyclerController<Integer, SuperRecyclerView, Video, VideoLikeAdapter.SimpleViewHolder> {
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
 
     protected VotedUpController(Context context) {
         super(context);
     }
 
+    @Override
+    protected void resetOffset() {
+        setOffset(0);
+    }
+
     public void setUp(AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView) {
-        recyclerView.setRefreshListener(this);
         super.setUp(adapter, recyclerView, 0);
     }
 
@@ -41,12 +44,5 @@ public class VotedUpController extends RecyclerController<Integer, SuperRecycler
         }
         setOffset(getOffset() + 10);
         return list;
-    }
-
-    @Override
-    public void onRefresh() {
-        getAdapter().clear();
-        setOffset(0);
-        load();
     }
 }
