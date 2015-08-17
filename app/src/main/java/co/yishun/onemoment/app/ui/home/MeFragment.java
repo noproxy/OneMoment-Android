@@ -47,7 +47,7 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
 
         MeAdapter adapter = new MeAdapter(inflater.getContext(), this);
         recyclerView.setAdapter(adapter);
-        MeController_.getInstance_(inflater.getContext()).setUp(adapter, recyclerView);
+        MeController_.getInstance_(inflater.getContext()).setUp(adapter, recyclerView, position == 0);
 
         container.addView(rootView);
         return rootView;
