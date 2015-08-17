@@ -47,13 +47,15 @@
             android:paddingTop="8dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v7.widget.RecyclerView
+            <com.malinskiy.superrecyclerview.SuperRecyclerView
                 android:id="@+id/recyclerView"
                 style="@style/TwoWayView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                app:layout_empty="@layout/layout_empty"
+                app:layout_progress="@layout/layout_progress"
                 tools:listitem="@layout/layout_world_item"
                 />
         </FrameLayout>

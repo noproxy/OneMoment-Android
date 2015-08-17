@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,6 +11,7 @@ import android.view.View;
 
 import com.github.ppamorim.dragger.DraggerActivity;
 import com.github.ppamorim.dragger.DraggerView;
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -34,7 +34,7 @@ import co.yishun.onemoment.app.ui.other.VotedUpController_;
 @EActivity(R.layout.activity_video_voted_up)
 public class VideoVotedUpActivity extends DraggerActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<Video> {
     @ViewById Toolbar toolbar;
-    @ViewById RecyclerView recyclerView;
+    @ViewById SuperRecyclerView recyclerView;
     @ViewById DraggerView draggerView;
 
     @Override
@@ -63,7 +63,6 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
     @SuppressLint("NewApi")
     @AfterViews
     void setupTwoWayView() {
-        recyclerView.setHasFixedSize(true);
 
         final Drawable divider;
         if (SdkVersionHelper.getSdkInt() > 21) {

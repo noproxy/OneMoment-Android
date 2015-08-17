@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.squareup.picasso.Picasso;
 
 import org.lucasr.twowayview.widget.SpannableGridLayoutManager;
@@ -18,11 +19,11 @@ import co.yishun.onemoment.app.api.model.Video;
  * Created by Carlos on 2015/8/16.
  */
 public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> {
-    private final RecyclerView twoWayView;
+    private final SuperRecyclerView recyclerView;
 
-    public VideoLikeAdapter(Context context, OnItemClickListener<Video> listener, RecyclerView twoWayView) {
+    public VideoLikeAdapter(Context context, OnItemClickListener<Video> listener, SuperRecyclerView recyclerView) {
         super(context, listener);
-        this.twoWayView = twoWayView;
+        this.recyclerView = recyclerView;
     }
 
     @Override
