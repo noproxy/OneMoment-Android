@@ -15,10 +15,8 @@ import com.github.ppamorim.dragger.DraggerActivity;
 import com.github.ppamorim.dragger.DraggerView;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.SdkVersionHelper;
 import org.lucasr.twowayview.TwoWayLayoutManager;
@@ -115,28 +113,19 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
             super(context);
         }
 
-        @Background
-        void load() {
-            synchronizedLoad();
-        }
-
         public void setUp(AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter, RecyclerView recyclerView) {
             super.setUp(adapter, recyclerView, 0);
-            load();
         }
 
-        synchronized void synchronizedLoad() {
+        @Override
+        protected synchronized List<Video> synchronizedLoad() {
             List<Video> list = mWorld.getLikedVideos(AccountHelper.getUserInfo(mContext)._id, getOffset(), 10);
             if (list.size() == 0) {
                 //TODO loading error
-                return;
+                return null;
             }
             setOffset(getOffset() + 10);
-        }
-
-        @UiThread
-        void onLoad(List<Video> list) {
-            getAdapter().addAll(list);
+            return list;
         }
     }
 }
