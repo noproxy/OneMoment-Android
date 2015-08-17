@@ -21,7 +21,7 @@ import retrofit.http.Query;
 /**
  * Created by Carlos on 2015/8/4.
  */
-public interface Account extends API {
+public interface Account {
     @GET("/account/check_nickname")
     ApiModel isNicknameExist(
             @NonNull @Query("nickname") String nickname

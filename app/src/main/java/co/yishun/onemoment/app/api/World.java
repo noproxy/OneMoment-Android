@@ -22,7 +22,7 @@ import retrofit.http.Query;
 /**
  * Created by Carlos on 2015/8/8.
  */
-public interface World extends API {
+public interface World {
     String TAG_SORT_TYPE_RECOMMEND = "recommend";
     String TAG_SORT_TYPE_TIME = "time";
 
