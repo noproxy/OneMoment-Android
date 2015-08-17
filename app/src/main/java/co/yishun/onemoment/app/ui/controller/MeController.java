@@ -40,7 +40,7 @@ public class MeController extends IntOffsetRefreshableRecyclerController<SuperRe
     }
 
     public void setUp(AbstractRecyclerViewAdapter<WorldTag, WorldAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, boolean isPublic) {
+        this.isPublic = isPublic;// must first!
         super.setUp(adapter, recyclerView);
-        this.isPublic = isPublic;
     }
 }
