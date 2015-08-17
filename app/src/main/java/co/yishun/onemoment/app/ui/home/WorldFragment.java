@@ -17,8 +17,8 @@ import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.TagActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
-import co.yishun.onemoment.app.ui.other.WorldPagerController;
-import co.yishun.onemoment.app.ui.other.WorldPagerController_;
+import co.yishun.onemoment.app.ui.controller.WorldPagerController;
+import co.yishun.onemoment.app.ui.controller.WorldPagerController_;
 
 /**
  * Created by yyz on 7/13/15.

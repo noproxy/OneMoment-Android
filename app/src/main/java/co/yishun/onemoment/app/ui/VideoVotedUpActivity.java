@@ -25,7 +25,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
-import co.yishun.onemoment.app.ui.other.VotedUpController_;
+import co.yishun.onemoment.app.ui.controller.VotedUpController_;
 
 /**
  * Created by yyz on 7/20/15.

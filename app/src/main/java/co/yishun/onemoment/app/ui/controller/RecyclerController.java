@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui.other;
+package co.yishun.onemoment.app.ui.controller;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;
