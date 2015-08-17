@@ -15,7 +15,7 @@ import retrofit.http.Query;
 /**
  * Created by Carlos on 2015/8/8.
  */
-public interface Misc {
+public interface Misc extends API {
 
     @GET("/misc/upload_token")
     UploadToken getUploadToken(@Query("filename") @Nullable String filename);
