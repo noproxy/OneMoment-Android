@@ -12,27 +12,17 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Video;
-import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
 
 /**
  * Created by Carlos on 2015/8/17.
  */
 @EBean
-public class VotedUpController extends RefreshableRecyclerController<Integer, SuperRecyclerView, Video, VideoLikeAdapter.SimpleViewHolder> {
+public class VotedUpController extends IntOffsetRefreshableRecyclerController<SuperRecyclerView, Video, VideoLikeAdapter.SimpleViewHolder> {
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
 
     protected VotedUpController(Context context) {
         super(context);
-    }
-
-    @Override
-    protected void resetOffset() {
-        setOffset(0);
-    }
-
-    public void setUp(AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView) {
-        super.setUp(adapter, recyclerView, 0);
     }
 
     @Override

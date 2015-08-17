@@ -19,18 +19,13 @@ import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
  * Created by Carlos on 2015/8/17.
  */
 @EBean
-public class MeController extends RefreshableRecyclerController<Integer, SuperRecyclerView, WorldTag, WorldAdapter.SimpleViewHolder> {
+public class MeController extends IntOffsetRefreshableRecyclerController<SuperRecyclerView, WorldTag, WorldAdapter.SimpleViewHolder> {
     public static final int COUNT_EVERY_PAGE = 5;
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
     private boolean isPublic = true;
 
     protected MeController(Context context) {
         super(context);
-    }
-
-    @Override
-    protected void resetOffset() {
-        setOffset(0);
     }
 
     @Override
@@ -44,9 +39,8 @@ public class MeController extends RefreshableRecyclerController<Integer, SuperRe
         return list;
     }
 
-
     public void setUp(AbstractRecyclerViewAdapter<WorldTag, WorldAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, boolean isPublic) {
+        super.setUp(adapter, recyclerView);
         this.isPublic = isPublic;
-        super.setUp(adapter, recyclerView, 0);
     }
 }

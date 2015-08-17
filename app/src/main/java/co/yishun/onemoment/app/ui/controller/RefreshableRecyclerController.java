@@ -6,11 +6,14 @@ import android.support.v7.widget.RecyclerView;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
+import org.androidannotations.annotations.EBean;
+
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 
 /**
  * Created by Carlos on 2015/8/17.
  */
+@EBean
 public abstract class RefreshableRecyclerController<Offset, V extends SuperRecyclerView, I, VH extends RecyclerView.ViewHolder> extends RecyclerController<Offset, V, I, VH> implements SwipeRefreshLayout.OnRefreshListener {
     protected RefreshableRecyclerController(Context context) {
         super(context);
