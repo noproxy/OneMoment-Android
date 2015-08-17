@@ -23,6 +23,7 @@ import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
 public class MeController extends RecyclerController<Integer, SuperRecyclerView, WorldTag, WorldAdapter.SimpleViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
     public static final int COUNT_EVERY_PAGE = 5;
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
+    private boolean isPublic = true;
 
     protected MeController(Context context) {
         super(context);
@@ -30,7 +31,7 @@ public class MeController extends RecyclerController<Integer, SuperRecyclerView,
 
     @Override
     protected List<WorldTag> synchronizedLoad() {
-        List<WorldTag> list = mWorld.getJoinedWorldTags(AccountHelper.getUserInfo(mContext)._id, World.TYPE_PUBLIC, getOffset(), COUNT_EVERY_PAGE);
+        List<WorldTag> list = mWorld.getJoinedWorldTags(AccountHelper.getUserInfo(mContext)._id, isPublic ? World.TYPE_PUBLIC : World.TYPE_PRIVATE, getOffset(), COUNT_EVERY_PAGE);
         if (list.size() == 0) {
             //TODO loading error
             return null;
@@ -40,7 +41,9 @@ public class MeController extends RecyclerController<Integer, SuperRecyclerView,
     }
 
 
-    public void setUp(AbstractRecyclerViewAdapter<WorldTag, WorldAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView) {
+    public void setUp(AbstractRecyclerViewAdapter<WorldTag, WorldAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, boolean isPublic) {
+        this.isPublic = isPublic;
+        recyclerView.setRefreshListener(this);
         super.setUp(adapter, recyclerView, 0);
     }
 
