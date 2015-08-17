@@ -28,7 +28,6 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLi
 
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, Video item, int position) {
-        Video video = mItems.get(position);
         //TODO there is a video
         Picasso.with(mContext).load(R.drawable.pic_slider_loading).fit().into(holder.itemImageView);
 
@@ -64,7 +63,7 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLi
 
     @Override
     public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new SimpleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.layout_video_like_item, parent, false));
+        return new SimpleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.layout_item_video_like, parent, false));
     }
 
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
