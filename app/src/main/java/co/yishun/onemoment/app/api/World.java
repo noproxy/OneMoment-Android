@@ -50,7 +50,11 @@ public interface World {
 
     @GET("/world/videos")
     List<Video> getVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
-            , @Query("account_id") @Nullable String userId, @Query("seed") @Nullable String seed, @Query("type") @Nullable String type);
+            , @Query("account_id") @Nullable String userId, @Query("seed") @Nullable String seed);
+
+    @GET("/world/private_videos")
+    List<Video> getPrivateVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
+            , @Query("account_id") @Nullable String userId);
 
     @GET("/world/tag/suggest")
     List<WorldTag> getSuggestedTagName(@Query("words") @NonNull String tagName);
