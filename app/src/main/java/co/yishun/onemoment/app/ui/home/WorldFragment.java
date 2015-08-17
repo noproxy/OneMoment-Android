@@ -14,6 +14,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.TagActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
 import co.yishun.onemoment.app.ui.other.WorldPagerController;
@@ -55,7 +56,7 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
 
     @Override
     public void onClick(View view, WorldTag item) {
-
+        TagActivity_.intent(this).tag(item).start();
     }
 
 

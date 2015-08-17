@@ -133,6 +133,7 @@
             android:theme="@style/AppTheme.FitWindowsActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <activity android:name=".ui.TagActivity_"/>
     </application>
 
 </manifest>
