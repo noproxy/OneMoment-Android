@@ -3,10 +3,11 @@ package co.yishun.onemoment.app.ui.home;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.androidannotations.annotations.EFragment;
 
@@ -35,11 +36,10 @@ public class MeFragment extends TabPagerFragment {
     protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
         View rootView = inflater.inflate(R.layout.page_world, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        SuperRecyclerView recyclerView = (SuperRecyclerView) rootView.findViewById(R.id.recyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
-        recyclerView.setHasFixedSize(true);
 
 //        TODO
 //        RecyclerView.Adapter adapter = new WorldFragment.WorldAdapter(inflater.getContext(),, Test.res, false);
