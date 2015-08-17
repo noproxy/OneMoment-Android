@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -16,23 +15,17 @@ import com.github.ppamorim.dragger.DraggerView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.SdkVersionHelper;
 import org.lucasr.twowayview.TwoWayLayoutManager;
 import org.lucasr.twowayview.widget.DividerItemDecoration;
 import org.lucasr.twowayview.widget.SpannableGridLayoutManager;
 
-import java.util.List;
-
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountHelper;
-import co.yishun.onemoment.app.api.World;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
-import co.yishun.onemoment.app.ui.other.RecyclerController;
+import co.yishun.onemoment.app.ui.other.VotedUpController_;
 
 /**
  * Created by yyz on 7/20/15.
@@ -84,7 +77,7 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
 
         AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
         recyclerView.setAdapter(adapter);
-        VideoVotedUpActivity_.VotedUpController_.getInstance_(this).setUp(adapter, recyclerView);
+        VotedUpController_.getInstance_(this).setUp(adapter, recyclerView);
     }
     //TODO not test
 
@@ -105,28 +98,6 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
 
     }
 
-    @EBean
-    public static class VotedUpController extends RecyclerController<Integer, RecyclerView, Video, VideoLikeAdapter.SimpleViewHolder> {
-        private World mWorld = OneMomentV3.createAdapter().create(World.class);
 
-        protected VotedUpController(Context context) {
-            super(context);
-        }
-
-        public void setUp(AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter, RecyclerView recyclerView) {
-            super.setUp(adapter, recyclerView, 0);
-        }
-
-        @Override
-        protected synchronized List<Video> synchronizedLoad() {
-            List<Video> list = mWorld.getLikedVideos(AccountHelper.getUserInfo(mContext)._id, getOffset(), 10);
-            if (list.size() == 0) {
-                //TODO loading error
-                return null;
-            }
-            setOffset(getOffset() + 10);
-            return list;
-        }
-    }
 }
 
