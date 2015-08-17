@@ -9,9 +9,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import org.lucasr.twowayview.TwoWayLayoutManager;
 import org.lucasr.twowayview.widget.SpannableGridLayoutManager;
-import org.lucasr.twowayview.widget.TwoWayView;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Video;
@@ -20,9 +18,9 @@ import co.yishun.onemoment.app.api.model.Video;
  * Created by Carlos on 2015/8/16.
  */
 public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> {
-    private final TwoWayView twoWayView;
+    private final RecyclerView twoWayView;
 
-    public VideoLikeAdapter(Context context, OnItemClickListener<Video> listener, TwoWayView twoWayView) {
+    public VideoLikeAdapter(Context context, OnItemClickListener<Video> listener, RecyclerView twoWayView) {
         super(context, listener);
         this.twoWayView = twoWayView;
     }
@@ -32,8 +30,9 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLi
         Video video = mItems.get(position);
         Picasso.with(mContext).load(video.domain.domain + video.fileName).into(holder.itemImageView);
 
-        boolean isVertical = (twoWayView.getOrientation() == TwoWayLayoutManager.Orientation.VERTICAL);
-
+        boolean isVertical =
+//                (twoWayView.getOrientation() == TwoWayLayoutManager.Orientation.VERTICAL);
+                true;
         final SpannableGridLayoutManager.LayoutParams lp = (SpannableGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
 
         int id = position % 13;

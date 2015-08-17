@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,8 +17,9 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.SdkVersionHelper;
+import org.lucasr.twowayview.TwoWayLayoutManager;
 import org.lucasr.twowayview.widget.DividerItemDecoration;
-import org.lucasr.twowayview.widget.TwoWayView;
+import org.lucasr.twowayview.widget.SpannableGridLayoutManager;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Video;
@@ -31,7 +33,7 @@ import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
 @EActivity(R.layout.activity_video_voted_up)
 public class VideoVotedUpActivity extends DraggerActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<Video> {
     @ViewById Toolbar toolbar;
-    @ViewById TwoWayView twoWayView;
+    @ViewById RecyclerView recyclerView;
     @ViewById DraggerView draggerView;
 
     @Override
@@ -60,7 +62,7 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
     @SuppressLint("NewApi")
     @AfterViews
     void setupTwoWayView() {
-        twoWayView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
 
         final Drawable divider;
         if (SdkVersionHelper.getSdkInt() > 21) {
@@ -69,9 +71,10 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
             //noinspection deprecation
             divider = getResources().getDrawable(R.drawable.divider);
         }
-        twoWayView.addItemDecoration(new DividerItemDecoration(divider));
+        recyclerView.addItemDecoration(new DividerItemDecoration(divider));
+        recyclerView.setLayoutManager(new SpannableGridLayoutManager(TwoWayLayoutManager.Orientation.HORIZONTAL, 3, 2));
 
-        twoWayView.setAdapter(new VideoLikeAdapter(this, this, twoWayView));
+        recyclerView.setAdapter(new VideoLikeAdapter(this, this, recyclerView));
     }
 
     @Override

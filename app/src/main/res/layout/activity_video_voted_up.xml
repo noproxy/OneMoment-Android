@@ -47,16 +47,13 @@
             android:paddingTop="8dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <org.lucasr.twowayview.widget.TwoWayView
-                android:id="@+id/twoWayView"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 style="@style/TwoWayView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                app:twowayview_layoutManager="SpannableGridLayoutManager"
-                app:twowayview_numColumns="3"
-                app:twowayview_numRows="2"
                 tools:listitem="@layout/layout_world_item"
                 />
         </FrameLayout>
