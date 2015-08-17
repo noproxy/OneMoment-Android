@@ -25,6 +25,8 @@ import retrofit.http.Query;
 public interface World {
     String TAG_SORT_TYPE_RECOMMEND = "recommend";
     String TAG_SORT_TYPE_TIME = "time";
+    String TYPE_PUBLIC = "public";
+    String TYPE_PRIVATE = "private";
 
     @GET("/world/banners")
     List<Banner> getBanners(@Query("limit") int bannerNumLimit);
