@@ -1,10 +1,14 @@
 package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.VideoView;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -29,6 +33,9 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     WorldTag tag;
     @ViewById
     SuperRecyclerView recyclerView;
+    @ViewById CollapsingToolbarLayout collapsingToolbarLayout;
+    @ViewById VideoView videoView;
+    @ViewById ImageView videoImageView;
 
     @Nullable
     @Override
@@ -38,6 +45,11 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 
     @AfterViews
     void setViews() {
+        Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
+        collapsingToolbarLayout.setTitle(tag.name);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(getColor(R.color.textColorPrimary));
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);

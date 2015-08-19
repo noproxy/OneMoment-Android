@@ -5,6 +5,13 @@
              android:orientation="vertical">
 
     <VideoView
+        android:id="@+id/videoView"
         android:layout_width="match_parent"
         android:layout_height="320dp"/>
+
+    <ImageView
+        android:id="@+id/videoImageView"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:src="@drawable/pic_more_discovery"/>
 </FrameLayout>
