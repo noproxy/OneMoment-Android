@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.api.model;
 
+import android.support.annotation.StringDef;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -20,10 +22,15 @@ public class TagVideo extends ApiModel {
     public long createTime;
     public int likeNum;
     public String avatar;
-    public String type;
+    public @Type String type;
     public String worldId;
     public String nickname;
 
     public Domain domain;
     public Seed seed;
+
+    @StringDef({"public", "private"})
+    public @interface Type {
+
+    }
 }

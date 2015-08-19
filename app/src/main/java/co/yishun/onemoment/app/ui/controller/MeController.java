@@ -30,7 +30,7 @@ public class MeController extends IntOffsetRefreshableRecyclerController<SuperRe
 
     @Override
     protected List<WorldTag> onLoad() {
-        List<WorldTag> list = mWorld.getJoinedWorldTags(AccountHelper.getUserInfo(mContext)._id, isPublic ? World.TYPE_PUBLIC : World.TYPE_PRIVATE, getOffset(), COUNT_EVERY_PAGE);
+        List<WorldTag> list = mWorld.getJoinedWorldTags(AccountHelper.getUserInfo(mContext)._id, isPublic ? "public" : "private", getOffset(), COUNT_EVERY_PAGE);
         if (list.size() == 0) {
             //TODO loading error
             return null;

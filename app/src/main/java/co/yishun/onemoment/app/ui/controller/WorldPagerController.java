@@ -92,7 +92,7 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
     }
 
     synchronized void synchronizedLoadTags() {
-        List<WorldTag> list = mWorld.getWorldTagList(5, ranking, isRecommend ? World.TAG_SORT_TYPE_RECOMMEND : World.TAG_SORT_TYPE_TIME);
+        List<WorldTag> list = mWorld.getWorldTagList(5, ranking, isRecommend ? "recommend" : "time");
         if (list.size() == 0) {
             //TODO loading error
             return;

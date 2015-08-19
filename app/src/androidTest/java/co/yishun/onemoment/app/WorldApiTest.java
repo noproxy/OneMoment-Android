@@ -78,7 +78,7 @@ public class WorldApiTest extends AndroidTestCase {
         tag.x = 0;
         tag.y = 0;
         list.add(tag);
-        Video video = mWorld.addVideoToWorld(AccountApiTest.TEST_ACCOUNT_ID, Video.Type.PUBLIC, "temp.mp4", World.Util.getTagsJson(list));
+        Video video = mWorld.addVideoToWorld(AccountApiTest.TEST_ACCOUNT_ID, "public", "temp.mp4", World.Util.getTagsJson(list));
 
         assertNotNull(video);
     }

@@ -35,7 +35,7 @@ public class MiscApiTest extends AndroidTestCase {
 
     @Test
     public void testGetResourceDomain() {
-        Domain domain = mMisc.getResourceDomain(Domain.Type.VIDEO);
+        Domain domain = mMisc.getResourceDomain("video");
         assertEquals(domain.domain, DOMAIN_VIDEO_RESOURCE);
     }
 }

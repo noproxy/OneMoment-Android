@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.api.model;
 
+import android.support.annotation.StringDef;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -11,12 +13,11 @@ public class Video extends ApiModel {
     @SerializedName("filename")
     public String fileName;
     public String accountId;
-    public String type;
+    public @Type String type;
     public List<VideoTag> tags;
     public Domain domain;
 
-    public static class Type {
-        public static final String PUBLIC = "public";
-        public static final String PRIVATE = "private";
+    @StringDef({"public", "private"})
+    public @interface Type {
     }
 }

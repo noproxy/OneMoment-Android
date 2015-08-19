@@ -19,7 +19,7 @@ public class ApiUtil {
     @Nullable
     public static String getVideoResourceDomain() {
         if (mResourceDomain == null) {
-            Domain domain = OneMomentV3.createAdapter().create(Misc.class).getResourceDomain(Domain.Type.VIDEO);
+            Domain domain = OneMomentV3.createAdapter().create(Misc.class).getResourceDomain("video");
             if (domain.code >= 0) {
                 mResourceDomain = domain.domain.endsWith("/") ? domain.domain : domain.domain + "/";
             } else {

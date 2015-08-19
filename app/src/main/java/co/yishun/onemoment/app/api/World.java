@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.api;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
@@ -26,11 +27,6 @@ import retrofit.http.Query;
  * Created by Carlos on 2015/8/8.
  */
 public interface World {
-    String TAG_SORT_TYPE_RECOMMEND = "recommend";
-    String TAG_SORT_TYPE_TIME = "time";
-    String TYPE_PUBLIC = "public";
-    String TYPE_PRIVATE = "private";
-
     @GET("/world/banners")
     List<Banner> getBanners(@Query("limit") int bannerNumLimit);
 
@@ -43,13 +39,14 @@ public interface World {
     ApiModel unlikeVideo(@Path("video_like") @NonNull String videoId, @NonNull String userId);
 
     @GET("/world/tags")
-    List<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("ranking") @Nullable String ranking, @Query("sort") @Nullable String sort);
+    List<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("ranking") @Nullable String ranking, @Query("sort") @Nullable
+    @Sort String sort);
 
     @GET("/world/videos/liked")
     List<Video> getLikedVideos(@Query("account_id") @NonNull String userId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/world/tags/joined")
-    List<WorldTag> getJoinedWorldTags(@Query("account_id") @NonNull String userId, @Query("type") @NonNull String type, @Query("offset") int offset, @Query("limit") int limit);
+    List<WorldTag> getJoinedWorldTags(@Query("account_id") @NonNull String userId, @Query("type") @NonNull @WorldTag.Type String type, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/world/videos")
     List<TagVideo> getVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
@@ -64,9 +61,13 @@ public interface World {
 
     @POST("/world/video")
     @FormUrlEncoded
-    Video addVideoToWorld(@Field("account_id") @NonNull String userId, @Field("type") @NonNull String type,
+    Video addVideoToWorld(@Field("account_id") @NonNull String userId, @Field("type") @NonNull @Video.Type String type,
                           @Field("filename") @NonNull String fileName, @Field("tags") @NonNull String tags
     );
+
+    @StringDef({"recommend", "time"})
+    @interface Sort {
+    }
 
     class Util {
         public static String getTagsJson(@NonNull List<VideoTag> tags) {

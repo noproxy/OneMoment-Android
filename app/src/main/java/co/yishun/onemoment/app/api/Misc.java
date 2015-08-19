@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.api;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
 import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.UploadToken;
@@ -21,13 +22,13 @@ public interface Misc {
     UploadToken getUploadToken(@Query("filename") @Nullable String filename);
 
     @GET("/misc/resource_domain")
-    Domain getResourceDomain(@Query("type") @Nullable String type);
+    Domain getResourceDomain(@Query("type") @Nullable @DomainType String type);
 
     @GET("/misc/share_text")
-    void getShareText(@Query("type") @Nullable String type);
+    void getShareText(@Query("type") @Nullable @ShareType String type);
 
     @GET("/misc/share_image")
-    void getShareImage(@Query("type") @Nullable String type);
+    void getShareImage(@Query("type") @Nullable @ShareType String type);
 
     @FormUrlEncoded
     @POST("/misc/delete_video")
@@ -36,4 +37,12 @@ public interface Misc {
     @FormUrlEncoded
     @POST("misc/delete_tag/{account_id}")
     void deleteTag(@Path("account_id") @NonNull String userId);
+
+    @StringDef({"friends", "long_video", "world"})
+    @interface ShareType {
+    }
+
+    @StringDef({"video", "tag"})
+    @interface DomainType {
+    }
 }

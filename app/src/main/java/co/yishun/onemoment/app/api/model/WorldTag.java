@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.api.model;
 
+import android.support.annotation.StringDef;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -13,6 +15,11 @@ public class WorldTag extends ApiModel {
     public String thumbnail;
     @SerializedName("like_num")
     public int likeCount;
-    public String type;
+    public @Type String type;
     public Domain domain;
+
+
+    @StringDef({"public", "private"})
+    public @interface Type {
+    }
 }
