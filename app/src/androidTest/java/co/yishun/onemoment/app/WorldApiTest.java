@@ -74,7 +74,7 @@ public class WorldApiTest extends AndroidTestCase {
         List<VideoTag> list = new ArrayList<>();
         VideoTag tag = new VideoTag();
         tag.name = "test";
-        tag.type = VideoTag.Type.TEXT;
+        tag.type = "words";
         tag.x = 0;
         tag.y = 0;
         list.add(tag);
