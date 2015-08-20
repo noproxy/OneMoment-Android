@@ -21,7 +21,7 @@ import co.yishun.onemoment.app.ui.adapter.TagAdapter;
  * Created by Carlos on 2015/8/17.
  */
 @EBean
-public class TagController extends IntOffsetRefreshableRecyclerController<SuperRecyclerView, TagVideo, TagAdapter.SimpleViewHolder> {
+public class TagController extends RecyclerController<Integer, SuperRecyclerView, TagVideo, TagAdapter.SimpleViewHolder> {
     public static final int COUNT_EVERY_PAGE = 10;
     private WorldTag mTag;
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
@@ -33,7 +33,7 @@ public class TagController extends IntOffsetRefreshableRecyclerController<SuperR
 
     public void setUp(AbstractRecyclerViewAdapter<TagVideo, TagAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, WorldTag tag) {
         mTag = tag;
-        super.setUp(adapter, recyclerView);
+        super.setUp(adapter, recyclerView, 0);
     }
 
     @Override

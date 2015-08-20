@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +37,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @ViewById CollapsingToolbarLayout collapsingToolbarLayout;
     @ViewById VideoView videoView;
     @ViewById ImageView videoImageView;
+    @ViewById(R.id.ptr_layout) SwipeRefreshLayout swipeRefreshLayout;
 
     @Nullable
     @Override
@@ -48,7 +50,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         collapsingToolbarLayout.setTitle(tag.name);
         collapsingToolbarLayout.setCollapsedTitleTextColor(getColor(R.color.textColorPrimary));
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        collapsingToolbarLayout.setExpandedTitleColor(getColor(R.color.textColorPrimaryInverse));
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
