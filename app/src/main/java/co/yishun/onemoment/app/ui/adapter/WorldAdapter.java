@@ -2,7 +2,9 @@ package co.yishun.onemoment.app.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
@@ -52,7 +55,23 @@ public class WorldAdapter extends AbstractRecyclerViewAdapter<WorldTag, WorldAda
 
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, WorldTag item, int position) {
-        Picasso.with(mContext).load(item.domain + item.thumbnail).into(holder.itemImageView);
+        Picasso.with(mContext).load(item.domain + item.thumbnail).into(new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                holder.itemImageView.setImageBitmap(bitmap);
+                item.color = Palette.from(bitmap).generate().getMutedColor(mContext.getColor(R.color.colorPrimary));
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        });
         holder.numTextView.setText(String.valueOf(item.videosCount) + PeopleSuffix);
         holder.tagTextView.setText(item.name);
         holder.likeTextView.setText(String.valueOf(item.likeCount));

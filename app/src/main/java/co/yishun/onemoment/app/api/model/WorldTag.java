@@ -17,6 +17,8 @@ public class WorldTag extends ApiModel {
     public int likeCount;
     public @Type String type;
     public Domain domain;
+    // pick from Palette
+    public int color;
 
 
     @StringDef({"public", "private"})
