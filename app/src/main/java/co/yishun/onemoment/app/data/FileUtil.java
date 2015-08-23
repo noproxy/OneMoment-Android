@@ -8,6 +8,7 @@ import android.util.Log;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.Moment;
@@ -27,10 +28,6 @@ public class FileUtil {
 
     /**
      * Return supposing name of synced type of a video on server
-     *
-     * @param context
-     * @param syncedVideo
-     * @return
      */
     public static File getOutputMediaFile(Context context, Moment syncedVideo) {
         return getOutputMediaFile(context, FileUtil.Type.SYNCED, syncedVideo.getTimeStamp());
@@ -43,7 +40,7 @@ public class FileUtil {
     public static File getOutputMediaFile(Context context, Type type, @Nullable Long timestamp) {
         File mediaStorageDir = context.getDir(Constants.VIDEO_STORE_DIR, Context.MODE_PRIVATE);
         Log.i(TAG, "timestamp: " + timestamp);
-        String time = new SimpleDateFormat(Constants.TIME_FORMAT).format(timestamp == null ? new Date() : timestamp * 1000);
+        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(timestamp == null ? new Date() : timestamp * 1000);
         Log.i(TAG, "formatted time: " + time);
         return new File(mediaStorageDir.getPath() + File.separator + type.getPrefix(context) + Constants.URL_HYPHEN + time + Constants.URL_HYPHEN + timestamp + type.getSuffix());
     }
@@ -102,7 +99,7 @@ public class FileUtil {
         SYNCED {
             @Override
             public String getPrefix(Context context) {
-                return AccountHelper.getUserInfo(context)._id;
+                return AccountHelper.getAccountId(context);
             }
 
             @Override
