@@ -23,7 +23,8 @@ public class FileUtil {
     private static final String TAG = "FileUtil";
 
     public static File getTagVideoStoreFile(Context context, TagVideo video) {
-        return new File("");
+        File worldDir = context.getDir(Constants.WORLD_STORE_DIR, Context.MODE_PRIVATE);
+        return new File(worldDir, video.fileName);
     }
 
     /**
@@ -38,7 +39,7 @@ public class FileUtil {
     }
 
     public static File getOutputMediaFile(Context context, Type type, @Nullable Long timestamp) {
-        File mediaStorageDir = context.getDir(Constants.VIDEO_STORE_DIR, Context.MODE_PRIVATE);
+        File mediaStorageDir = context.getDir(Constants.Moment_STORE_DIR, Context.MODE_PRIVATE);
         Log.i(TAG, "timestamp: " + timestamp);
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(timestamp == null ? new Date() : timestamp * 1000);
         Log.i(TAG, "formatted time: " + time);
@@ -46,7 +47,7 @@ public class FileUtil {
     }
 
     public static File getOutputMediaDir(Context context) {
-        return context.getDir(Constants.VIDEO_STORE_DIR, Context.MODE_PRIVATE);
+        return context.getDir(Constants.Moment_STORE_DIR, Context.MODE_PRIVATE);
     }
 
     public static File getOutputMediaFile(Context context, Type type, @NonNull File file) {
