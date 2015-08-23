@@ -63,6 +63,11 @@ public class AccountHelper {
         updateOrCreateUserInfo(context, user);
     }
 
+    public static String getAccountId(Context context) {
+        account = getAccount(context);
+        return getAccountManager(context).getUserData(account, ACCOUNT_ID_KEY);
+    }
+
     public static boolean deleteAccount(Context context) {
         account = null;
         mUser = null;
