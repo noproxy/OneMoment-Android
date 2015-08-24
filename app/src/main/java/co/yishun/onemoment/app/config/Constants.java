@@ -20,8 +20,7 @@ public class Constants {
     public static final String IDENTITY_DIR = "identity";
     public static final String IDENTITY_INFO_FILE_NAME = "info";
     public static final String TIME_FORMAT = "yyyyMMdd";
-    public static final String MOMENT_STORE_DIR = "moment";
-    public static final String WORLD_STORE_DIR = "world";
+
     public static final String VIDEO_THUMB_STORE_DIR = "thumbs";
 
     public static final int CODE_SUCCESS = 1;

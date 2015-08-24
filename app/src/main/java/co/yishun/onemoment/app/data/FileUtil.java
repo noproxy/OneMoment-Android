@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.util.Log;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.Locale;
 
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.Moment;
+import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.config.Constants;
 
@@ -19,40 +21,46 @@ import co.yishun.onemoment.app.config.Constants;
  * Created by Carlos on 2015/8/21.
  */
 public class FileUtil {
+    public static final String MOMENT_STORE_DIR = "moment";
+    public static final String WORLD_STORE_DIR = "world";
 
     private static final String TAG = "FileUtil";
 
-    public static File getTagVideoStoreFile(Context context, TagVideo video) {
-        File worldDir = context.getDir(Constants.WORLD_STORE_DIR, Context.MODE_PRIVATE);
-        return new File(worldDir, video.fileName);
+    public static File getThumbnailStoreFile(Context context, QiniuKeyProvider provider, Type type) {
+        String dir = provider instanceof Moment ? MOMENT_STORE_DIR : WORLD_STORE_DIR;
+        return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + provider.getName() + type.getSuffix());
+    }
+
+    public static File getWorldVideoStoreFile(Context context, TagVideo video) {
+        return new File(getMediaStoreDir(context, WORLD_STORE_DIR), video.fileName);
+    }
+
+    /**
+     * @param unixTimeStamp when the moment is shot. Null if use now.
+     * @return file of the local moment shot at sometime.
+     */
+    public static File getLocalMomentStoreFile(Context context, @Nullable Long unixTimeStamp) {
+        File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
+        return getMediaStoreFile(context, mediaStorageDir, Type.LOCAL, unixTimeStamp);
     }
 
     /**
      * Return supposing name of synced type of a video on server
      */
-    public static File getOutputMediaFile(Context context, Moment syncedVideo) {
-        return getOutputMediaFile(context, FileUtil.Type.SYNCED, syncedVideo.getTimeStamp());
+    public static File getSyncedMomentStoreFile(Context context, @NonNull Moment moment) {
+        File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
+        return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, moment.getUnixTimeStamp());
     }
 
-    public static String getOutputMediaPath(Context context, Type type, @Nullable Long unixTimestamp) {
-        return getOutputMediaFile(context, type, unixTimestamp).getPath();
-    }
-
-    @Deprecated
-    public static File getOutputMediaFile(Context context, Type type, @Nullable Long timestamp) {
-        File mediaStorageDir = context.getDir(Constants.MOMENT_STORE_DIR, Context.MODE_PRIVATE);
-        Log.i(TAG, "timestamp: " + timestamp);
-        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(timestamp == null ? new Date() : timestamp * 1000);
+    private static File getMediaStoreFile(Context context, File dir, Type type, @Nullable Long unixTimeStamp) {
+        Log.i(TAG, "timestamp: " + unixTimeStamp);
+        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(unixTimeStamp == null ? new Date() : unixTimeStamp * 1000);
         Log.i(TAG, "formatted time: " + time);
-        return new File(mediaStorageDir.getPath() + File.separator + type.getPrefix(context) + Constants.URL_HYPHEN + time + Constants.URL_HYPHEN + timestamp + type.getSuffix());
+        return new File(dir, type.getPrefix(context) + Constants.URL_HYPHEN + time + Constants.URL_HYPHEN + unixTimeStamp + type.getSuffix());
     }
 
-    public static File getOutputMediaDir(Context context) {
-        return context.getDir(Constants.MOMENT_STORE_DIR, Context.MODE_PRIVATE);
-    }
-
-    public static File getOutputMediaFile(Context context, Type type, @NonNull File file) {
-        return getOutputMediaFile(context, type, parseTimeStamp(file));
+    private static File getMediaStoreDir(Context context, @MediaDir String dirType) {
+        return context.getDir(dirType, Context.MODE_PRIVATE);
     }
 
     public static long parseTimeStamp(File file) {
@@ -157,5 +165,9 @@ public class FileUtil {
         public abstract String getPrefix(Context context);
 
         public abstract String getSuffix();
+    }
+
+    @StringDef({MOMENT_STORE_DIR, WORLD_STORE_DIR})
+    public @interface MediaDir {
     }
 }

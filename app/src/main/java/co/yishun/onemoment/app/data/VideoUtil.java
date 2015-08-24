@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static co.yishun.onemoment.app.data.FileUtil.getOutputMediaFile;
+import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 
 /**
  * Created by Carlos on 2015/8/22.
@@ -24,8 +24,8 @@ public class VideoUtil {
      * @return path to the thumb
      * @throws IOException
      */
-    public static String createLargeThumbImage(Context context, String videoPath) throws IOException {
-        return createThumbImage(context, videoPath, MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
+    public static String createLargeThumbImage(Context context, QiniuKeyProvider provider, String videoPath) throws IOException {
+        return createThumbImage(context, videoPath, provider, MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
     }
 
     /**
@@ -34,8 +34,8 @@ public class VideoUtil {
      * @return path to the thumb
      * @throws IOException
      */
-    public static String createThumbImage(Context context, String videoPath) throws IOException {
-        return createThumbImage(context, videoPath, MediaStore.Images.Thumbnails.MICRO_KIND);
+    public static String createThumbImage(Context context, QiniuKeyProvider provider, String videoPath) throws IOException {
+        return createThumbImage(context, videoPath, provider, MediaStore.Images.Thumbnails.MICRO_KIND);
     }
 
     /**
@@ -44,8 +44,8 @@ public class VideoUtil {
      * @return path to the thumb
      * @throws IOException
      */
-    private static String createThumbImage(Context context, String videoPath, int kind) throws IOException {
-        File thumbFile = getOutputMediaFile(context, kind == MediaStore.Images.Thumbnails.FULL_SCREEN_KIND ? FileUtil.Type.LARGE_THUMB : FileUtil.Type.MICRO_THUMB, new File(videoPath));
+    private static String createThumbImage(Context context, String videoPath, QiniuKeyProvider provider, int kind) throws IOException {
+        File thumbFile = FileUtil.getThumbnailStoreFile(context, provider, kind == MediaStore.Images.Thumbnails.FULL_SCREEN_KIND ? FileUtil.Type.LARGE_THUMB : FileUtil.Type.MICRO_THUMB);
         Log.i(TAG, "create thumb image: " + thumbFile.getPath());
         if (thumbFile.exists()) thumbFile.delete();
         FileOutputStream fOut = new FileOutputStream(thumbFile);
