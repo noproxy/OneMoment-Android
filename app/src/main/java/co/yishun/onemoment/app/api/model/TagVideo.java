@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Carlos on 2015/8/17.
  */
-public class TagVideo extends ApiModel implements NameProvider {
+public class TagVideo extends ApiModel implements QiniuKeyProvider {
     public String _id;
     public boolean available;
     public boolean liked;

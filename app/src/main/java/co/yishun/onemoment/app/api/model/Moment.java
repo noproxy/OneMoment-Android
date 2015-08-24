@@ -10,7 +10,7 @@ import co.yishun.onemoment.app.config.Constants;
 /**
  * Created by Carlos on 2015/8/8.
  */
-public class Moment extends ApiModel implements Comparable<Moment>, NameProvider {
+public class Moment extends ApiModel implements Comparable<Moment>, QiniuKeyProvider {
     private static final String TAG = "Moment";
     public String mimeType = "video/mp4";
     public String hash;
