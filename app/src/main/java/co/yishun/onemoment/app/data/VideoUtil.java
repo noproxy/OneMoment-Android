@@ -50,7 +50,12 @@ public class VideoUtil {
         if (thumbFile.exists()) thumbFile.delete();
         FileOutputStream fOut = new FileOutputStream(thumbFile);
         Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
-        bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+        if (bitmap != null) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+        } else {
+            //TODO some video cannot get thumbnail
+            Log.e(TAG, "video: " + videoPath + ", create thumbnail failed.");
+        }
         fOut.flush();
         fOut.close();
         return thumbFile.getPath();
