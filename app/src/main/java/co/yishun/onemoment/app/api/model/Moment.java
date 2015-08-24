@@ -56,6 +56,6 @@ public class Moment extends ApiModel implements Comparable<Moment>, QiniuKeyProv
 
     @Override
     public String getName() {
-        return Constants.URL_HYPHEN + this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp();
+        return this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp();
     }
 }

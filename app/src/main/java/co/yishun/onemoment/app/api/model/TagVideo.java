@@ -31,7 +31,7 @@ public class TagVideo extends ApiModel implements QiniuKeyProvider {
 
     @Override
     public String getName() {
-        return fileName;
+        return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
     @StringDef({"public", "private"})

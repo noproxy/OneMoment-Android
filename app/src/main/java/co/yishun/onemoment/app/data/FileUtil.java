@@ -17,6 +17,8 @@ import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.config.Constants;
 
+import static co.yishun.onemoment.app.config.Constants.URL_HYPHEN;
+
 /**
  * Created by Carlos on 2015/8/21.
  */
@@ -56,7 +58,7 @@ public class FileUtil {
         Log.i(TAG, "timestamp: " + unixTimeStamp);
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(unixTimeStamp == null ? new Date() : unixTimeStamp * 1000);
         Log.i(TAG, "formatted time: " + time);
-        return new File(dir, type.getPrefix(context) + Constants.URL_HYPHEN + time + Constants.URL_HYPHEN + unixTimeStamp + type.getSuffix());
+        return new File(dir, type.getPrefix(context) + time + URL_HYPHEN + unixTimeStamp + type.getSuffix());
     }
 
     private static File getMediaStoreDir(Context context, @MediaDir String dirType) {
@@ -68,7 +70,7 @@ public class FileUtil {
     }
 
     public static long parseTimeStamp(String pathOrFileName) {
-        return Long.parseLong(pathOrFileName.substring(pathOrFileName.lastIndexOf(Constants.URL_HYPHEN) + 1, pathOrFileName.lastIndexOf(".")));
+        return Long.parseLong(pathOrFileName.substring(pathOrFileName.lastIndexOf(URL_HYPHEN) + 1, pathOrFileName.lastIndexOf(".")));
     }
 
     /**
@@ -109,7 +111,7 @@ public class FileUtil {
         SYNCED {
             @Override
             public String getPrefix(Context context) {
-                return AccountHelper.getAccountId(context);
+                return AccountHelper.getAccountId(context) + URL_HYPHEN;
             }
 
             @Override
@@ -120,7 +122,7 @@ public class FileUtil {
         RECORDED {
             @Override
             public String getPrefix(Context context) {
-                return "VID";
+                return "VID" + URL_HYPHEN;
             }
 
             @Override
@@ -131,7 +133,7 @@ public class FileUtil {
         LOCAL {
             @Override
             public String getPrefix(Context context) {
-                return "LOC";
+                return "LOC" + URL_HYPHEN;
             }
 
             @Override
@@ -142,7 +144,7 @@ public class FileUtil {
         LARGE_THUMB {
             @Override
             public String getPrefix(Context context) {
-                return "LAT";
+                return "LAT" + URL_HYPHEN;
             }
 
             @Override
@@ -153,7 +155,7 @@ public class FileUtil {
         MICRO_THUMB {
             @Override
             public String getPrefix(Context context) {
-                return "MIT";
+                return "MIT" + URL_HYPHEN;
             }
 
             @Override
