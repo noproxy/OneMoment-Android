@@ -10,7 +10,7 @@ import co.yishun.onemoment.app.config.Constants;
 /**
  * Created by Carlos on 2015/8/8.
  */
-public class Moment extends ApiModel implements Comparable<Moment> {
+public class Moment extends ApiModel implements Comparable<Moment>, NameProvider {
     private static final String TAG = "Moment";
     public String mimeType = "video/mp4";
     public String hash;
@@ -36,7 +36,7 @@ public class Moment extends ApiModel implements Comparable<Moment> {
         return id;
     }
 
-    public long getTimeStamp() {
+    public long getUnixTimeStamp() {
         return Long.parseLong(key.substring(key.lastIndexOf(Constants.URL_HYPHEN) + 1, key.lastIndexOf(".")));
     }
 
@@ -52,5 +52,10 @@ public class Moment extends ApiModel implements Comparable<Moment> {
     @Override
     public int compareTo(final @NonNull Moment moment) {
         return (int) (putTime - moment.putTime);
+    }
+
+    @Override
+    public String getName() {
+        return Constants.URL_HYPHEN + this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp();
     }
 }

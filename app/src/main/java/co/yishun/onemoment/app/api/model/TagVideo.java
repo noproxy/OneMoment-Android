@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Carlos on 2015/8/17.
  */
-public class TagVideo extends ApiModel {
+public class TagVideo extends ApiModel implements NameProvider {
     public String _id;
     public boolean available;
     public boolean liked;
@@ -28,6 +28,11 @@ public class TagVideo extends ApiModel {
 
     public Domain domain;
     public Seed seed;
+
+    @Override
+    public String getName() {
+        return fileName;
+    }
 
     @StringDef({"public", "private"})
     public @interface Type {
