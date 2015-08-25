@@ -6,6 +6,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -62,7 +63,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         collapsingToolbarLayout.setCollapsedTitleTextColor(getColor(R.color.textColorPrimary));
         collapsingToolbarLayout.setExpandedTitleColor(getColor(R.color.textColorPrimaryInverse));
 
-        LinearLayoutManager manager = new LinearLayoutManager(this);
+        GridLayoutManager manager = new GridLayoutManager(this, 3);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
 
