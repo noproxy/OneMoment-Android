@@ -157,7 +157,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private static String getQiniuVideoFileName(Context context, Moment moment) {
         String re = AccountHelper.getUserInfo(context)._id + Constants.URL_HYPHEN +
-//                moment.getTime() + Constants.URL_HYPHEN + moment.getTimeStamp() +
+//                moment.getTime() + Constants.URL_HYPHEN + moment.getUnixTimeStamp() +
                 Constants.VIDEO_FILE_SUFFIX;
         Log.i(TAG, "qiniu filename: " + re);
         return re;
@@ -285,13 +285,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //                if (video != null) {
 //                    Log.v(TAG, "on server: " + video.toString());
 //                    //if server has today moment
-//                    if (video.getTimeStamp() > moment.getTimeStamp()) {
+//                    if (video.getUnixTimeStamp() > moment.getUnixTimeStamp()) {
 //                        //if server is newer, download and delete older
 //                        Log.v(TAG, "download: " + video.toString());
 //                        CountDownLatch latch = new CountDownLatch(1);
 //                        downloadVideo(video, moment, latch);
 //                        latch.await();
-//                    } else if (video.getTimeStamp() < moment.getTimeStamp()) {
+//                    } else if (video.getUnixTimeStamp() < moment.getUnixTimeStamp()) {
 //                        //if local is newer, upload and delete older
 //                        Log.v(TAG, "upload: " + video.toString());
 //                        CountDownLatch latch = new CountDownLatch(1);
@@ -357,9 +357,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //
 //            boolean isNeedUpdateThumb = false;
 //            //check timestamp, because in v1.3.0 I use millisecond instead second
-//            if (String.valueOf(moment.getTimeStamp()).length() > 10) {
+//            if (String.valueOf(moment.getUnixTimeStamp()).length() > 10) {
 //                File wrongTimeVideo = new File(moment.getPath());
-//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getTimeStamp() / 1000);
+//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getUnixTimeStamp() / 1000);
 //                Log.d(TAG, "check timeStamp, case 0: " + moment.toString());
 //                Log.d(TAG, "correct path: " + correctTimeVideo);
 //                if (wrongTimeVideo.renameTo(correctTimeVideo)) {
@@ -370,9 +370,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //                    Log.i(TAG, "correct moment time: " + moment);
 //                }
 //            }
-//            if (!(new SimpleDateFormat(Constants.TIME_FORMAT).format(moment.getTimeStamp() * 1000).equals(moment.getTime()))) {
+//            if (!(new SimpleDateFormat(Constants.TIME_FORMAT).format(moment.getUnixTimeStamp() * 1000).equals(moment.getTime()))) {
 //                File wrongTimeVideo = new File(moment.getPath());
-//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getTimeStamp());
+//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getUnixTimeStamp());
 //                Log.d(TAG, "check timeStamp, case 1: " + moment.toString());
 //                Log.d(TAG, "correct path: " + correctTimeVideo);
 //                if (wrongTimeVideo.renameTo(correctTimeVideo)) {
@@ -385,7 +385,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //            }
 //            if (!getTimeFromPath(moment).equals(moment.getTime())) {
 //                File wrongTimeVideo = new File(moment.getPath());
-//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getTimeStamp());
+//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getUnixTimeStamp());
 //                Log.d(TAG, "check timeStamp, case 2: " + moment.toString());
 //                Log.d(TAG, "correct path: " + correctTimeVideo);
 //                if (wrongTimeVideo.renameTo(correctTimeVideo)) {
@@ -435,7 +435,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //    private void cleanFile() {
 //        try {
 //            //delete useless video
-//            File mediaDir = CameraHelper.getOutputMediaDir(getContext());
+//            File mediaDir = CameraHelper.getMediaStoreDir(getContext());
 //            for (String s : mediaDir.list((dir, filename) -> filename.startsWith(CameraHelper.Type.RECORDED.getPrefix(getContext())))) {
 //                File toDeleted = new File(mediaDir, s);
 //                Log.i(TAG, "delete: " + toDeleted);
