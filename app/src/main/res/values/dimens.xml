@@ -20,7 +20,7 @@
     <dimen name="drawer_elevation">16dp</dimen>
     <dimen name="snack_bar_elevation">6dp</dimen>
 
-    <dimen name="me_header_height">160dp</dimen>
+    <dimen name="me_header_height">240dp</dimen>
 
     <dimen name="navigation_elevation">12dp</dimen>
 </resources>
