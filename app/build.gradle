@@ -6,7 +6,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
-    signingConfigs {
+    signingConfigs() {
         debugSignature {
             keyAlias = properties.getProperty("KEY_ALIAS_DEBUG")
             keyPassword properties.getProperty("KEY_PASSWORD")
@@ -42,7 +42,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    buildTypes {
+    buildTypes() {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
