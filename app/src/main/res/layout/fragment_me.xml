@@ -8,53 +8,45 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <LinearLayout
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/app_bar_elevation"
+        android:fitsSystemWindows="true"
+        >
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <!-- background background not support centerCrop-->
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            >
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_me_header"
+                android:src="@drawable/bg_me_header"/>
+            <!-- not include because of background-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:contentInsetStart="72dp"
+                app:layout_scrollFlags="scroll|enterAlways"
                 />
 
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/appBar"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:elevation="@dimen/app_bar_elevation"
-                android:fitsSystemWindows="true"
+                android:orientation="vertical"
                 >
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    >
-
-
-                    <!-- not include because of background-->
-                    <android.support.v7.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        app:contentInsetStart="72dp"
-                        app:layout_scrollFlags="scroll|enterAlways"
-                        />
-
-                    <include layout="@layout/layout_me_header"/>
-
-                </FrameLayout>
+                <include layout="@layout/layout_me_header"/>
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabLayout"
@@ -70,15 +62,16 @@
                     app:tabSelectedTextColor="@color/colorAccent"
                     app:tabTextColor="@color/textColorPrimary"
                     />
-            </android.support.design.widget.AppBarLayout>
+            </LinearLayout>
 
         </FrameLayout>
+    </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
-    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
 </android.support.design.widget.CoordinatorLayout>
