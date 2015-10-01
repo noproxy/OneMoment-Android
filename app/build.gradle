@@ -133,7 +133,7 @@ dependencies {
     compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
     compile 'com.umeng.analytics:analytics:5.5.3'
     compile 'com.qiniu:qiniu-android-sdk:7.0.6.1'
-    compile 'io.realm:realm-android:0.81.1'
+    compile 'io.realm:realm-android:0.82.2'
 
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.nineoldandroids:library:2.4.0'
