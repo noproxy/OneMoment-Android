@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/momentPreviewImageView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="32dp"
+        android:background="@drawable/bg_btn_circular_white"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_diary"
+        app:border_color="@color/colorProfileImageBorder"
+        app:border_width="2dp"
+        />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toLeftOf="@id/momentPreviewImageView"
+        android:background="@color/colorAccent"
+        />
+    <!-- TODO change default picture-->
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/divider"
+        android:textAppearance="?android:textAppearanceMedium"
+        tool:text="2015/06/11"
+        />
+
+    <TextView
+        android:id="@+id/tagTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
+        android:drawableLeft="@drawable/ic_me_tag_msg"
+        android:drawablePadding="4dp"
+        android:drawableStart="@drawable/ic_me_tag_msg"
+        tool:text="No moment today"/>
+
+
+</RelativeLayout>
