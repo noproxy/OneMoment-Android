@@ -9,8 +9,8 @@ import io.realm.RealmObject;
  */
 public class Moment extends RealmObject {
     private static final String TAG = "CompatMoment";
-    String thumbPath;
-    String largeThumbPath;
+    private String thumbPath;
+    private String largeThumbPath;
     private String path;
 //    @PrimaryKey private int id;// old
     /**
@@ -28,6 +28,54 @@ public class Moment extends RealmObject {
         moment.owner = momentProvider.getOwnerID();
 
         return moment;
+    }
+
+    public String getThumbPath() {
+        return thumbPath;
+    }
+
+    public void setThumbPath(String thumbPath) {
+        this.thumbPath = thumbPath;
+    }
+
+    public String getLargeThumbPath() {
+        return largeThumbPath;
+    }
+
+    public void setLargeThumbPath(String largeThumbPath) {
+        this.largeThumbPath = largeThumbPath;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     //TODO handle thumb path
