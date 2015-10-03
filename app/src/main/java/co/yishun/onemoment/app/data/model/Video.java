@@ -11,6 +11,11 @@ public class Video implements Moment.MomentProvider {
     }
 
     @Override
+    public String getPath() {
+        return null;
+    }
+
+    @Override
     public String getTime() {
         return null;
     }
