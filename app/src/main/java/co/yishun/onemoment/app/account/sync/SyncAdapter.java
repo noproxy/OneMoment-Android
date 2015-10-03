@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import co.yishun.onemoment.app.account.AccountHelper;
-import co.yishun.onemoment.app.api.model.Moment;
+import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.config.Constants;
 
 
@@ -50,8 +50,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     ContentResolver mContentResolver;
     @SystemService
     ConnectivityManager connectivityManager;
-    //    @OrmLiteDao(helper = MomentDatabaseHelper.class, model = Moment.class)
-//    Dao<Moment, Integer> dao;
+    //    @OrmLiteDao(helper = MomentDatabaseHelper.class, model = ApiMoment.class)
+//    Dao<ApiMoment, Integer> dao;
     int databaseNum = 0;
     /**
      * whether local data update while sync. if true, need to notify some ui update
@@ -66,39 +66,39 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
-     * check moment file integrity.
+     * check apiMoment file integrity.
      */
-    public static void checkAndSolveBadMoment(@NonNull Moment moment, Context context, OnCheckedListener listener) throws SQLException {
-//        Dao<Moment, Integer> dao = OpenHelperManager.getHelper(context, MomentDatabaseHelper.class).getDao(Moment.class);
+    public static void checkAndSolveBadMoment(@NonNull ApiMoment apiMoment, Context context, OnCheckedListener listener) throws SQLException {
+//        Dao<ApiMoment, Integer> dao = OpenHelperManager.getHelper(context, MomentDatabaseHelper.class).getDao(ApiMoment.class);
 //        try {
-//            if (!repairVideo(dao, moment, context, listener)) {
-//                listener.onMomentDelete(moment);
+//            if (!repairVideo(dao, apiMoment, context, listener)) {
+//                listener.onMomentDelete(apiMoment);
 //                return;
 //            }
-//            if (!new File(moment.getLargeThumbPath()).exists()) {
-//                listener.onMomentStartRepairing(moment);
-//                String laP = CameraHelper.createLargeThumbImage(context, moment.getPath());
-//                moment.setPath(laP);
-//                Log.e(TAG, "repair moment large thumb");
-//                dao.update(moment);
+//            if (!new File(apiMoment.getLargeThumbPath()).exists()) {
+//                listener.onMomentStartRepairing(apiMoment);
+//                String laP = CameraHelper.createLargeThumbImage(context, apiMoment.getPath());
+//                apiMoment.setPath(laP);
+//                Log.e(TAG, "repair apiMoment large thumb");
+//                dao.update(apiMoment);
 //            }
-//            if (!new File(moment.getThumbPath()).exists()) {
-//                listener.onMomentStartRepairing(moment);
-//                String p = CameraHelper.createThumbImage(context, moment.getPath());
-//                moment.setPath(p);
-//                Log.e(TAG, "repair moment thumb");
-//                dao.update(moment);
+//            if (!new File(apiMoment.getThumbPath()).exists()) {
+//                listener.onMomentStartRepairing(apiMoment);
+//                String p = CameraHelper.createThumbImage(context, apiMoment.getPath());
+//                apiMoment.setPath(p);
+//                Log.e(TAG, "repair apiMoment thumb");
+//                dao.update(apiMoment);
 //            }
-//            listener.onMomentOk(moment);
+//            listener.onMomentOk(apiMoment);
 //        } catch (IOException e) {
 //            e.printStackTrace();
-//            dao.delete(moment);
-//            Log.e(TAG, "repair moment failed: IOException");
-//            listener.onMomentDelete(moment);
+//            dao.delete(apiMoment);
+//            Log.e(TAG, "repair apiMoment failed: IOException");
+//            listener.onMomentDelete(apiMoment);
 //        }
     }
 
-//    private static boolean repairVideo(@NonNull Dao<Moment, Integer> dao, @NonNull Moment moment, Context context, OnCheckedListener listener) throws SQLException {
+//    private static boolean repairVideo(@NonNull Dao<ApiMoment, Integer> dao, @NonNull ApiMoment moment, Context context, OnCheckedListener listener) throws SQLException {
 //        File video = new File(moment.getPath());
 //        if (!video.exists()) {
 //            listener.onMomentStartRepairing(moment);
@@ -155,9 +155,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //            return true;
 //    }
 
-    private static String getQiniuVideoFileName(Context context, Moment moment) {
+    private static String getQiniuVideoFileName(Context context, ApiMoment apiMoment) {
         String re = AccountHelper.getUserInfo(context)._id + Constants.URL_HYPHEN +
-//                moment.getTime() + Constants.URL_HYPHEN + moment.getUnixTimeStamp() +
+//                apiMoment.getTime() + Constants.URL_HYPHEN + apiMoment.getUnixTimeStamp() +
                 Constants.VIDEO_FILE_SUFFIX;
         Log.i(TAG, "qiniu filename: " + re);
         return re;
@@ -254,7 +254,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //        try {
 //            Log.v(TAG, "video on server: " + videosOnServer.toString());
 //            Log.i(TAG, "video got, start sync");
-//            List<Moment> toSyncedMoments = dao.queryBuilder().where().eq("owner", "LOC").or().eq("owner", AccountHelper.getIdentityInfo(getContext()).get_id()).query();
+//            List<ApiMoment> toSyncedMoments = dao.queryBuilder().where().eq("owner", "LOC").or().eq("owner", AccountHelper.getIdentityInfo(getContext()).get_id()).query();
 //
 ////            Log.d(TAG, "copy " + databaseNum + " to sdcard");
 ////            File database = new File("/data/data/co.yishun.onemoment.app/databases/OneDataBase.db");
@@ -271,7 +271,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //            Log.v(TAG, "queried moments: " + Arrays.toString(toSyncedMoments.toArray()));
 //
 //
-//            for (Moment moment : toSyncedMoments) {
+//            for (ApiMoment moment : toSyncedMoments) {
 //                Integer key = Integer.parseInt(moment.getTime());
 //                Data video = videosOnServer.get(key);
 //
@@ -330,8 +330,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //    /**
 //     * Ensure a moment and it's file is user private. if not, it will be change private.
 //     */
-//    private void checkMomentOwnerPrivate(@NonNull Moment moment) {
-//        Moment.lock(getContext());
+//    private void checkMomentOwnerPrivate(@NonNull ApiMoment moment) {
+//        ApiMoment.lock(getContext());
 //        try {
 //            //set file name
 //            String path = moment.getPath();
@@ -407,11 +407,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        } finally {
-//            Moment.unlock();
+//            ApiMoment.unlock();
 //        }
 //    }
 //
-//    private String getTimeFromPath(Moment moment) {
+//    private String getTimeFromPath(ApiMoment moment) {
 //        String key = moment.getPath();
 //        return key.substring(key.indexOf(Constants.URL_HYPHEN) + 1, key.lastIndexOf(Constants.URL_HYPHEN));
 //    }
@@ -504,7 +504,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //     * @param moment        to upload
 //     * @param videoToDelete old version on server
 //     */
-//    private void uploadMoment(@NonNull Moment moment, @Nullable Data videoToDelete, @Nullable CountDownLatch latch) {
+//    private void uploadMoment(@NonNull ApiMoment moment, @Nullable Data videoToDelete, @Nullable CountDownLatch latch) {
 //        Log.i(TAG, "upload a moment: " + moment.getPath());
 //        String qiNiuKey = getQiniuVideoFileName(moment);
 //        syncUpdate(UpdateType.UPLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
@@ -561,11 +561,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //
 //    }
 //
-//    private boolean deleteMoment(@NonNull Moment moment) {
+//    private boolean deleteMoment(@NonNull ApiMoment moment) {
 //        Log.i(TAG, "delete a moment: " + moment.getPath());
 //        boolean re = false;
 //
-//        Moment.lock(getContext());
+//        ApiMoment.lock(getContext());
 //        try {
 //            re = dao.delete(moment) == 1;
 //            if (re) {
@@ -581,7 +581,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //            e.printStackTrace();
 //            re = false;
 //        } finally {
-//            Moment.unlock();
+//            ApiMoment.unlock();
 //        }
 //
 //
@@ -594,7 +594,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //     * @param aVideoOnServer video to download.
 //     * @param momentOld      old local moment. It will do nothing if it is null.
 //     */
-//    private void downloadVideo(Data aVideoOnServer, @Nullable Moment momentOld, @Nullable CountDownLatch latch) {
+//    private void downloadVideo(Data aVideoOnServer, @Nullable ApiMoment momentOld, @Nullable CountDownLatch latch) {
 //        Log.i(TAG, "download a video: " + aVideoOnServer.getQiuniuKey());
 //        File fileSynced = CameraHelper.getOutputMediaFile(getContext(), aVideoOnServer);
 ////            OkHttpClient client = new OkHttpClient();
@@ -612,7 +612,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //                    //don't need lock
 //                    //if file exist, just register/update private moment at database
 //                    if (momentOld == null) {
-//                        Moment moment = Moment.from(aVideoOnServer, fileSynced.getPath(), pathToThumb, pathToLargeThumb);
+//                        ApiMoment moment = ApiMoment.from(aVideoOnServer, fileSynced.getPath(), pathToThumb, pathToLargeThumb);
 //                        Log.v(TAG, "create a recovered moment: " + moment);
 //                        dao.create(moment);
 //                        isDownloadChanged = true;
@@ -648,7 +648,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //                    String pathToThumb = CameraHelper.createThumbImage(getContext(), fileSynced.getPath());
 //                    String pathToLargeThumb = CameraHelper.createLargeThumbImage(getContext(), fileSynced.getPath());
 //
-//                    dao.create(Moment.from(aVideoOnServer, fileSynced.getPath(), pathToThumb, pathToLargeThumb));
+//                    dao.create(ApiMoment.from(aVideoOnServer, fileSynced.getPath(), pathToThumb, pathToLargeThumb));
 //
 //                    Log.i(TAG, "a video download ok: " + aVideoOnServer.getQiuniuKey());
 //                    isDownloadChanged = true;
@@ -672,7 +672,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //
 //    }
 //
-//    private String getQiniuVideoFileName(Moment moment) {
+//    private String getQiniuVideoFileName(ApiMoment moment) {
 //        return getQiniuVideoFileName(getContext(), moment);
 //    }
 //
@@ -702,18 +702,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //
     public interface OnCheckedListener {
         /**
-         * Moment is intact to use.
+         * ApiMoment is intact to use.
          */
-        void onMomentOk(Moment moment);
+        void onMomentOk(ApiMoment apiMoment);
 
         /**
-         * Moment is not intact. And try to repair it.
+         * ApiMoment is not intact. And try to repair it.
          */
-        void onMomentStartRepairing(Moment moment);
+        void onMomentStartRepairing(ApiMoment apiMoment);
 
         /**
-         * Moment is unable to be repaired, and has been deleted from database, you should stop use this moment.
+         * ApiMoment is unable to be repaired, and has been deleted from database, you should stop use this apiMoment.
          */
-        void onMomentDelete(Moment moment);
+        void onMomentDelete(ApiMoment apiMoment);
     }
 }

@@ -5,7 +5,7 @@ import co.yishun.onemoment.app.config.Constants;
 import retrofit.RestAdapter;
 
 /**
- * One Moment Server Api version 3.0
+ * One ApiMoment Server Api version 3.0
  * <p>
  * Created by Carlos on 2015/8/4.
  */

@@ -12,8 +12,8 @@ import java.util.List;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiModel;
+import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.Link;
-import co.yishun.onemoment.app.api.model.Moment;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.RestAdapter;
@@ -87,8 +87,8 @@ public class AccountApiTest extends AndroidTestCase {
 
     @Test
     public void testGetVideoList() {
-        List<Moment> moments = mAccount.getVideoList(TEST_ACCOUNT_ID);
-        assertNotNull(moments);
-        assertEquals(moments.size(), 73);
+        List<ApiMoment> apiMoments = mAccount.getVideoList(TEST_ACCOUNT_ID);
+        assertNotNull(apiMoments);
+        assertEquals(apiMoments.size(), 73);
     }
 }

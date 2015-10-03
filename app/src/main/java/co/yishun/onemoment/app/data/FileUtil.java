@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import co.yishun.onemoment.app.account.AccountHelper;
-import co.yishun.onemoment.app.api.model.Moment;
+import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.config.Constants;
@@ -29,7 +29,7 @@ public class FileUtil {
     private static final String TAG = "FileUtil";
 
     public static File getThumbnailStoreFile(Context context, QiniuKeyProvider provider, Type type) {
-        String dir = provider instanceof Moment ? MOMENT_STORE_DIR : WORLD_STORE_DIR;
+        String dir = provider instanceof ApiMoment ? MOMENT_STORE_DIR : WORLD_STORE_DIR;
         return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + provider.getName() + type.getSuffix());
     }
 
@@ -49,9 +49,9 @@ public class FileUtil {
     /**
      * Return supposing name of synced type of a video on server
      */
-    public static File getSyncedMomentStoreFile(Context context, @NonNull Moment moment) {
+    public static File getSyncedMomentStoreFile(Context context, @NonNull ApiMoment apiMoment) {
         File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
-        return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, moment.getUnixTimeStamp());
+        return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, apiMoment.getUnixTimeStamp());
     }
 
     private static File getMediaStoreFile(Context context, File dir, Type type, @Nullable Long unixTimeStamp) {

@@ -28,7 +28,7 @@
 
     <string name="pref_title_remind">Remind</string>
     <string name="pref_title_remind_everyday">Remind everyday</string>
-    <string name="pref_summary_remind_everyday">Shoot your moment everyday</string>
+    <string name="pref_summary_remind_everyday">Shoot your apiMoment everyday</string>
 
     <string name="pref_title_remind_ringtone">Ringtone</string>
     <string name="pref_remind_ringtone_silent">Silent</string>

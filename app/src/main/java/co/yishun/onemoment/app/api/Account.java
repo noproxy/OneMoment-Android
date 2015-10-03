@@ -8,8 +8,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
+import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.Link;
-import co.yishun.onemoment.app.api.model.Moment;
 import co.yishun.onemoment.app.api.model.User;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -123,7 +123,7 @@ public interface Account {
 
 
     @GET("/account/videos/{account_id}")
-    List<Moment> getVideoList(
+    List<ApiMoment> getVideoList(
             @Path("account_id") @NonNull String userId
     );
 

@@ -8,10 +8,11 @@ import com.sina.weibo.sdk.utils.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
 
 /**
+ * This is a model represent Moment from Server API 2.0
  * Created by Carlos on 2015/8/8.
  */
-public class Moment extends ApiModel implements Comparable<Moment>, QiniuKeyProvider {
-    private static final String TAG = "Moment";
+public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuKeyProvider {
+    private static final String TAG = "ApiMoment";
     public String mimeType = "video/mp4";
     public String hash;
     @SerializedName("fsize")
@@ -21,7 +22,7 @@ public class Moment extends ApiModel implements Comparable<Moment>, QiniuKeyProv
 
     //<userID>-<time>-<timestamp>.mp4
     // When be created by Gson into a List, auto set code 1
-    public Moment() {
+    public ApiMoment() {
         this.code = 1;
         this.msg = "";
     }
@@ -40,7 +41,6 @@ public class Moment extends ApiModel implements Comparable<Moment>, QiniuKeyProv
         return Long.parseLong(key.substring(key.lastIndexOf(Constants.URL_HYPHEN) + 1, key.lastIndexOf(".")));
     }
 
-
     @Override
     public String toString() {
         return "Data{" +
@@ -50,8 +50,8 @@ public class Moment extends ApiModel implements Comparable<Moment>, QiniuKeyProv
     }
 
     @Override
-    public int compareTo(final @NonNull Moment moment) {
-        return (int) (putTime - moment.putTime);
+    public int compareTo(final @NonNull ApiMoment apiMoment) {
+        return (int) (putTime - apiMoment.putTime);
     }
 
     @Override
