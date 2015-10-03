@@ -9,7 +9,7 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.model.Moment;
 
 /**
- * This is a model represent Moment from Server API 2.0
+ * This is a model represent CompatMoment from Server API 2.0
  * Created by Carlos on 2015/8/8.
  */
 public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuKeyProvider, Moment.MomentProvider {
@@ -26,6 +26,11 @@ public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuK
     public ApiMoment() {
         this.code = 1;
         this.msg = "";
+    }
+
+    @Override
+    public String getPath() {
+        return key;
     }
 
     @Override

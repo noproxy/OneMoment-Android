@@ -134,6 +134,9 @@ dependencies {
     compile 'com.umeng.analytics:analytics:5.5.3'
     compile 'com.qiniu:qiniu-android-sdk:7.0.6.1'
     compile 'io.realm:realm-android:0.82.2'
+    // for compatible
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
 
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.nineoldandroids:library:2.4.0'
