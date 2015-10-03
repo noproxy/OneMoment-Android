@@ -6,12 +6,13 @@ import com.google.gson.annotations.SerializedName;
 import com.sina.weibo.sdk.utils.LogUtil;
 
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.model.Moment;
 
 /**
  * This is a model represent Moment from Server API 2.0
  * Created by Carlos on 2015/8/8.
  */
-public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuKeyProvider {
+public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuKeyProvider, Moment.MomentProvider {
     private static final String TAG = "ApiMoment";
     public String mimeType = "video/mp4";
     public String hash;
@@ -27,16 +28,19 @@ public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuK
         this.msg = "";
     }
 
+    @Override
     public String getTime() {
         return this.key.substring(key.indexOf(Constants.URL_HYPHEN) + 1, key.lastIndexOf(Constants.URL_HYPHEN));
     }
 
-    public String getUserID() {
+    @Override
+    public String getOwnerID() {
         String id = this.key.substring(0, key.indexOf(Constants.URL_HYPHEN));
-        LogUtil.v(TAG, "getUserID: " + id);
+        LogUtil.v(TAG, "getOwnerID: " + id);
         return id;
     }
 
+    @Override
     public long getUnixTimeStamp() {
         return Long.parseLong(key.substring(key.lastIndexOf(Constants.URL_HYPHEN) + 1, key.lastIndexOf(".")));
     }
