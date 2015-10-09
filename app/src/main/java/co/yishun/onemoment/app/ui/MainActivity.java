@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 
 import java.lang.ref.WeakReference;
@@ -58,6 +59,11 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         if (fab != null) {
             return fab;
         } else return view;
+    }
+
+    @Click(R.id.fab)
+    void startShoot(View view) {
+        ShootActivity_.intent(this).start();
     }
 
     @Override
