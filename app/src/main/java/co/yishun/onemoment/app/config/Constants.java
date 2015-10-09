@@ -23,6 +23,10 @@ public class Constants {
 
     public static final String VIDEO_THUMB_STORE_DIR = "thumbs";
 
+    public static final int VIDEO_HEIGHT = 480;
+    public static final int VIDEO_WIDTH = 480;
+    public static final int VIDEO_FPS = 30;
+
     public static final int CODE_SUCCESS = 1;
     public static final int CODE_Fail = 0;
     public static final int CODE_PARAMETER_ABSENT = -1;
