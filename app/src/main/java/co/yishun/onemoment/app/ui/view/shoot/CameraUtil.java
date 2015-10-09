@@ -86,4 +86,24 @@ public class CameraUtil {
 //        Toast.makeText(this, "scaleX " + scaleX + "; scaleY " + scaleY, Toast.LENGTH_LONG).show();
         return mat;
     }
+
+    /**
+     * @return a integer pair of back camera id and front camera id.
+     */
+    public static CameraId findCameraId() {
+        int backId = -1, frontId = -1;
+        // Find the total number of cameras available
+        int mNumberOfCameras = Camera.getNumberOfCameras();
+        // Find the ID of the back-facing ("default") camera
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        for (int i = 0; i < mNumberOfCameras; i++) {
+            Camera.getCameraInfo(i, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                backId = i;
+            } else if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                frontId = i;
+            }
+        }
+        return CameraId.create(backId, frontId);
+    }
 }

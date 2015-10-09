@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.media.AudioManager;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,16 +20,14 @@ import co.yishun.onemoment.app.config.Constants;
  */
 public class ShootView extends TextureView implements IShootView {
     private static final String TAG = "ShootView";
-    Camera camera;
-    PackageManager packageManager = getContext().getPackageManager();
-    CameraSwitchController mCameraSwitchController;
-    FlashlightController mFlashlightController;
+    private PackageManager packageManager = getContext().getPackageManager();
+    private Camera camera;
     private Camera.Size mSize;
     private boolean needPreview = false;
     private boolean mHasFrontCamera;
-    private int FRONT_ID = -1;
-    private int BACK_ID = -1;
+    private CameraId mCameraId;
     private boolean mHasFlash;
+    private boolean mIsBackCamera = true;
 
     public ShootView(Context context) {
         super(context);
@@ -53,21 +50,16 @@ public class ShootView extends TextureView implements IShootView {
         init();
     }
 
-    @Override
-    public void setFlashlightController(FlashlightController controller) {
-        mFlashlightController = controller;
-    }
-
-    @Override
-    public void setCameraSwitchController(CameraSwitchController controller) {
-        mCameraSwitchController = controller;
-    }
-
     private void init() {
         Log.i(TAG, "ShootView init");
-        ((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE)).setStreamMute(AudioManager.STREAM_SYSTEM, true);
+//        ((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE)).setStreamMute(AudioManager.STREAM_SYSTEM, true);
         initCamera();
         initFlash();
+    }
+
+    @Override
+    public boolean isBackCamera() {
+        return mIsBackCamera;
     }
 
     private void applyTransform() {
@@ -96,6 +88,51 @@ public class ShootView extends TextureView implements IShootView {
         }
     }
 
+    @Override
+    public void setFlashlightOn(boolean isOn) {
+        if (isFlashlightAvailable()) {
+            try {
+                Camera.Parameters p = camera.getParameters();
+                p.setFlashMode(isOn ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
+                camera.setParameters(p);
+            } catch (Exception e) {
+                Log.e(TAG, "exception when set flash on! ", e);
+            }
+        }
+    }
+
+    @Override
+    public void setBackCameraOn(boolean isBack) {
+        releaseCamera();
+        camera = Camera.open(isBack ? mCameraId.back : mCameraId.front);
+        mIsBackCamera = isBack;
+        final Camera.Parameters parameters = camera.getParameters();
+        mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
+        int[] fps = CameraUtil.getOptimalPreviewFpsRange(parameters.getSupportedPreviewFpsRange(), Constants.VIDEO_FPS);
+
+        parameters.setPreviewSize(mSize.width, mSize.height);
+        parameters.setPreviewFpsRange(fps[0], fps[1]);
+        camera.setParameters(parameters);
+        camera.setDisplayOrientation(90);
+        Log.i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
+
+        try {
+            startPreview();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean isFlashlightAvailable() {
+        return mIsBackCamera && mHasFlash;
+    }
+
+    @Override
+    public boolean isFrontCameraAvailable() {
+        return mHasFrontCamera;
+    }
+
     private void startPreview() throws IOException {
         Log.i(TAG, "ShootView preview");
         if (isAvailable()) {
@@ -110,12 +147,12 @@ public class ShootView extends TextureView implements IShootView {
 
     private void initCamera() {
         mHasFrontCamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
-        findCameraId();
-        if (mHasFrontCamera && FRONT_ID == -1) {
-            Log.e(TAG, "has front camera, but not found");
-            mHasFrontCamera = false;
-        }
-        setCurrentCamera(false);
+        mCameraId = CameraUtil.findCameraId();
+
+        mHasFrontCamera = mHasFrontCamera && mCameraId.front != -1;
+        Log.e(TAG, "front camera enable: " + mHasFrontCamera);
+
+        setBackCameraOn(true);// load camera first
         this.setSurfaceTextureListener(new SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -147,67 +184,8 @@ public class ShootView extends TextureView implements IShootView {
         });
     }
 
-    private void findCameraId() {
-        // Find the total number of cameras available
-        int mNumberOfCameras = Camera.getNumberOfCameras();
-        // Find the ID of the back-facing ("default") camera
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        for (int i = 0; i < mNumberOfCameras; i++) {
-            Camera.getCameraInfo(i, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                BACK_ID = i;
-            } else if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                FRONT_ID = i;
-            }
-        }
-    }
-
-    @Override
-    public void setCurrentCamera(boolean isFront) {
-        releaseCamera();
-        camera = Camera.open(isFront ? FRONT_ID : BACK_ID);
-        final Camera.Parameters parameters = camera.getParameters();
-        mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
-        int[] fps = CameraUtil.getOptimalPreviewFpsRange(parameters.getSupportedPreviewFpsRange(), Constants.VIDEO_FPS);
-
-        parameters.setPreviewSize(mSize.width, mSize.height);
-        parameters.setPreviewFpsRange(fps[0], fps[1]);
-        camera.setParameters(parameters);
-        camera.setDisplayOrientation(90);
-        Log.i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
-
-        try {
-            startPreview();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void initFlash() {
         mHasFlash = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
-
-
-    /**
-     * @return whether success
-     */
-    protected boolean setFlashlight(boolean isOpen) {
-        if (mCameraSwitchController.isFrontCamera() || !mHasFlash)
-            return !isOpen;
-        else try {
-            Camera.Parameters p = camera.getParameters();
-            p.setFlashMode(isOpen ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
-            camera.setParameters(p);
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "exception when set flash on! ", e);
-            try {
-                return isOpen == camera.getParameters().getFlashMode().equals(Camera.Parameters.FLASH_MODE_TORCH);
-            } catch (Exception e1) {
-                Log.e(TAG, "exception when get flash mode", e);
-            }
-            return !isOpen;
-        }
-    }
-
 }
