@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+    <ImageSwitcher
+        android:id="@+id/recordFlashSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
+        >
+
+        <co.yishun.onemoment.app.ui.view.TintableImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/ripple_only"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_flashlight_switch_on"
+            app:tintColorStateList="@drawable/bg_normal_color_selector"
+            app:tintUpdateDelay="1000"
+            />
+
+        <co.yishun.onemoment.app.ui.view.TintableImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/ripple_only"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_flashlight_switch_off"
+            app:tintColorStateList="@drawable/bg_normal_color_selector"
+            app:tintUpdateDelay="1000"
+            />
+    </ImageSwitcher>
+
+    <Button
+        android:id="@+id/shootBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
+        android:minWidth="64dp"
+        />
+
+    <ImageSwitcher
+        android:id="@+id/cameraSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
+        >
+
+        <co.yishun.onemoment.app.ui.view.TintableImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/ripple_only"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_camera_switch"
+            app:tintColorStateList="@drawable/bg_normal_color_selector"
+            app:tintUpdateDelay="1000"/>
+
+        <co.yishun.onemoment.app.ui.view.TintableImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/ripple_only"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_camera_switch"
+            app:tintColorStateList="@drawable/bg_normal_color_selector"
+            app:tintUpdateDelay="1000"
+            />
+    </ImageSwitcher>
+</LinearLayout>

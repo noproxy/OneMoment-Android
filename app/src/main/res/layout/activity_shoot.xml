@@ -11,4 +11,6 @@
         android:background="@color/colorAccent"
         />
 
+
+    <include layout="@layout/layout_record_btn"/>
 </LinearLayout>
