@@ -59,7 +59,7 @@ public class WorldAdapter extends AbstractRecyclerViewAdapter<WorldTag, WorldAda
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 holder.itemImageView.setImageBitmap(bitmap);
-                item.color = Palette.from(bitmap).generate().getMutedColor(mContext.getColor(R.color.colorPrimary));
+                item.color = Palette.from(bitmap).generate().getMutedColor(mContext.getResources().getColor(R.color.colorPrimary));
             }
 
             @Override

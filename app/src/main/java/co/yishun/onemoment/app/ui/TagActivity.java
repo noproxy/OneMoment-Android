@@ -58,8 +58,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         setupToolbar(this, toolbar);
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         collapsingToolbarLayout.setTitle(tag.name);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getColor(R.color.textColorPrimary));
-        collapsingToolbarLayout.setExpandedTitleColor(getColor(R.color.textColorPrimaryInverse));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.textColorPrimary));
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.textColorPrimaryInverse));
 
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
