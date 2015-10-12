@@ -32,7 +32,7 @@ public class AccountHelper {
     public static AccountManager accountManager;
     public static Account account;
     private static User mUser = null;
-    private static WeakReference<OnUserInfoChangeListener> mListener;
+    private static WeakReference<OnUserInfoChangeListener> mListener = new WeakReference<>(null);
 
     private static AccountManager getAccountManager(Context context) {
         if (accountManager == null) {
@@ -140,7 +140,7 @@ public class AccountHelper {
     }
 
     public static void setOnUserInfoChangeListener(OnUserInfoChangeListener listener) {
-        mListener = new WeakReference<OnUserInfoChangeListener>(listener);
+        mListener = new WeakReference<>(listener);
     }
 
     public interface OnUserInfoChangeListener {
