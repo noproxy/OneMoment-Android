@@ -147,7 +147,10 @@
                 android:value=".ui.MainActivity_"
                 />
         </activity>
-        <activity android:name=".ui.ShootActivity_"/>
+        <activity
+            android:name=".ui.ShootActivity_"
+            android:theme="@style/AppTheme.ShootActivity"
+            />
     </application>
 
 </manifest>

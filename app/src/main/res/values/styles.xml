@@ -55,4 +55,8 @@
 
     <style name="AppTheme.FitWindowsActivity">
     </style>
+
+    <style name="AppTheme.ShootActivity">
+        <item name="android:windowBackground">@color/colorPrimary</item>
+    </style>
 </resources>
