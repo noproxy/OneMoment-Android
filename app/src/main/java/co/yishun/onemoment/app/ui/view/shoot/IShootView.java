@@ -8,7 +8,7 @@ public interface IShootView {
 
     void setFlashlightOn(boolean isOn);
 
-    void setBackCameraOn(boolean isBack);
+    void switchCamera(boolean isBack);
 
     boolean isFlashlightAvailable();
 

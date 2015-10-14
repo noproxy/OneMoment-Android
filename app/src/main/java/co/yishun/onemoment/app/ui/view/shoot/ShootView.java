@@ -102,7 +102,7 @@ public class ShootView extends TextureView implements IShootView {
     }
 
     @Override
-    public void setBackCameraOn(boolean isBack) {
+    public void switchCamera(boolean isBack) {
         releaseCamera();
         camera = Camera.open(isBack ? mCameraId.back : mCameraId.front);
         mIsBackCamera = isBack;
@@ -152,7 +152,7 @@ public class ShootView extends TextureView implements IShootView {
         mHasFrontCamera = mHasFrontCamera && mCameraId.front != -1;
         Log.e(TAG, "front camera enable: " + mHasFrontCamera);
 
-        setBackCameraOn(true);// load camera first
+        switchCamera(true);// load camera first
         this.setSurfaceTextureListener(new SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {

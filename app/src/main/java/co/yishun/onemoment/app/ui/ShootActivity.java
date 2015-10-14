@@ -66,7 +66,7 @@ public class ShootActivity extends BaseActivity {
     }
 
     private void cameraSwitchBtnClicked(View view) {
-        shootView.setBackCameraOn(!shootView.isBackCamera());
+        shootView.switchCamera(!shootView.isBackCamera());
         setControllerBtn();
     }
 
