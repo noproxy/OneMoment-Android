@@ -133,6 +133,7 @@ public class AccountHelper {
     }
 
     public static User getUserInfo(Context con) {
+        //TODO user info file check and download
         if (mUser == null) {
             loadUserInfo(con);
         }
