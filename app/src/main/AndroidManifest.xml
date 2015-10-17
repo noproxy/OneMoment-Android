@@ -153,10 +153,10 @@
             android:theme="@style/AppTheme.FitWindowsActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".ui.TagActivity_">
+        <activity android:name=".ui.TagActivity_"
+                  android:theme="@style/AppTheme.TagActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:theme="@style/AppTheme.MainActivity"
                 android:value=".ui.MainActivity_"
                 />
         </activity>

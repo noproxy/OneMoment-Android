@@ -19,6 +19,8 @@ public class WorldTag extends ApiModel {
     public Domain domain;
     // pick from Palette
     public int color;
+    // hold the Y position of the view, used in TagActivity
+    public int positionY;
 
 
     @StringDef({"public", "private"})
