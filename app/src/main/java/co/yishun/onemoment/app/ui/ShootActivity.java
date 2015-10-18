@@ -1,19 +1,14 @@
 package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.Nullable;
-import android.transitions.everywhere.ChangeBounds;
-import android.transitions.everywhere.ChangeImageTransform;
 import android.transitions.everywhere.Fade;
 import android.transitions.everywhere.Scene;
-import android.transitions.everywhere.Slide;
 import android.transitions.everywhere.TransitionManager;
 import android.transitions.everywhere.TransitionSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageSwitcher;
 
 import org.androidannotations.annotations.AfterViews;
@@ -54,7 +49,7 @@ public class ShootActivity extends BaseActivity {
 
     @UiThread()
     @AfterViews
-    void transition() {
+    void preTransition() {
         sceneRoot = (ViewGroup) findViewById(R.id.linearLayout);
 
         int cx = sceneRoot.getRight() - 132;
@@ -72,7 +67,7 @@ public class ShootActivity extends BaseActivity {
 
     @UiThread(delay = 50)
     @AfterViews
-    void test() {
+    void sceneTransition() {
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_shoot, this);
         TransitionSet set = new TransitionSet();
 
@@ -83,15 +78,12 @@ public class ShootActivity extends BaseActivity {
 
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
         set.setDuration(800);
-        Log.d("time", "time");
         TransitionManager.go(scene, set);
-        Log.d("time", "time");
 
-        setShootView();
+        afterTransition();
     }
 
-    //    @AfterViews
-    void setShootView() {
+    void afterTransition() {
         shootView = (IShootView) findViewById(R.id.shootView);
         setControllerBtn();
 

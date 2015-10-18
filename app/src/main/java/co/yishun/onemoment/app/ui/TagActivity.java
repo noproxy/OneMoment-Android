@@ -72,22 +72,19 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     }
 
     @AfterViews
-    void beforeTransition() {
+    void preTransition() {
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
         params.topMargin = tag.positionY;
         videoImageView.setBackgroundColor(tag.color);
 
-//        setupToolbar(this, toolbar);
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         collapsingToolbarLayout.setTitle("");
         collapsingToolbarLayout.setTitleEnabled(false);
-//        collapsingToolbarLayout.set
-
     }
 
     @UiThread(delay = 100)
     @AfterViews
-    void transition() {
+    void sceneTransition() {
         ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.coordinatorLayout);
         ObjectAnimator animator = ObjectAnimator.ofInt(sceneRoot, "backgroundColor",
                 0x00ffffff, getResources().getColor(R.color.colorPrimary)).setDuration(500);
