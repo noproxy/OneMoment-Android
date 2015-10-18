@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<io.codetail.widget.RevealFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <co.yishun.onemoment.app.ui.view.shoot.ShootView
-        android:id="@+id/shootView"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
-        />
+        android:orientation="vertical"
+        android:background="@color/colorPrimary">
 
+        <include layout="@layout/scene_activity_shoot_smooth"/>
 
-    <include layout="@layout/layout_record_btn"/>
-</LinearLayout>
+    </LinearLayout>
+</io.codetail.widget.RevealFrameLayout>

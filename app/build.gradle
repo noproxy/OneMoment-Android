@@ -202,6 +202,11 @@ dependencies {
     compile 'org.lucasr.twowayview:layouts:1.0.0-SNAPSHOT@aar'
 }
 
+dependencies {
+    compile('com.github.ozodrukh:CircularReveal:1.1.1@aar') {
+        transitive = true;
+    }
+}
 // https://www.reddit.com/r/androiddev/comments/3dnibt/support_library_2221_released/
 configurations.all() {
     // Currently espresso is dependent on support-annotations:22.2.0

@@ -16,9 +16,11 @@ import android.transitions.everywhere.ChangeBounds;
 import android.transitions.everywhere.ChangeImageTransform;
 import android.transitions.everywhere.Fade;
 import android.transitions.everywhere.Scene;
+import android.transitions.everywhere.Slide;
 import android.transitions.everywhere.TransitionManager;
 import android.transitions.everywhere.TransitionSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -116,6 +118,11 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         fadeIn.addTarget(R.id.collapsingToolbarLayout);
         fadeIn.setStartDelay(500);
         set.addTransition(fadeIn);
+
+        Slide slide = new Slide(Gravity.BOTTOM);
+        slide.addTarget(R.id.recyclerView);
+        slide.setDuration(500);
+        set.addTransition(slide);
 
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
         set.setDuration(800);
