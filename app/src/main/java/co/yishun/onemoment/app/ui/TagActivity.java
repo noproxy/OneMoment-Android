@@ -1,5 +1,8 @@
 package co.yishun.onemoment.app.ui;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.graphics.Color;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -18,6 +21,9 @@ import android.transitions.everywhere.TransitionSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -81,6 +87,11 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @AfterViews
     void transition() {
         ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.coordinatorLayout);
+        ObjectAnimator animator = ObjectAnimator.ofInt(sceneRoot, "backgroundColor",
+                0x00ffffff, getResources().getColor(R.color.colorPrimary)).setDuration(500);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.start();
+
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
         TransitionSet set = new TransitionSet();
 
@@ -97,6 +108,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         changeImageTransform.addTarget(R.id.videoImageView);
         changeImageTransform.setDuration(500);
         set.addTransition(changeImageTransform);
+        set.setInterpolator(new DecelerateInterpolator());
 
         Fade fadeIn = new Fade(Fade.IN);
         fadeIn.addTarget(R.id.recyclerView);
@@ -106,7 +118,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         set.addTransition(fadeIn);
 
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
-        set.setDuration(700);
+        set.setDuration(800);
         TransitionManager.go(scene, set);
 
         afterTransition();
@@ -114,8 +126,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         videoImageView = ((ImageView) findViewById(R.id.videoImageView));
         swipeRefreshLayout = ((SwipeRefreshLayout) findViewById(R.id.ptr_layout));
         recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
-        toolbar = ((Toolbar) findViewById(R.id.toolbar));
-        collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
 
         videoImageView.setBackgroundColor(tag.color);
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
@@ -129,8 +139,10 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         TagController_.getInstance_(this).setUp(adapter, recyclerView, tag);
     }
 
-    @UiThread(delay = 700)
+    @UiThread(delay = 600)
     void afterTransition() {
+        toolbar = ((Toolbar) findViewById(R.id.toolbar));
+        collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
         setupToolbar(this, toolbar);
         collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.colorPrimary));
         collapsingToolbarLayout.setTitleEnabled(true);

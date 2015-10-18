@@ -13,5 +13,5 @@
     <color name="colorPressed">#22b5b5b5</color>
     <color name="colorProfileImageBorder">#ffffff</color>
 
-    <color name="colorWindowTranslucent">#80000000</color>
+    <color name="colorWindowTranslucent">#00000000</color>
 </resources>
