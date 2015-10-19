@@ -6,20 +6,30 @@ import android.content.pm.PackageManager;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.os.Build;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.TextureView;
 
+import java.io.File;
 import java.io.IOException;
 
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.function.Callback;
+import co.yishun.onemoment.app.function.Consumer;
 
 /**
  * Created by Carlos on 2015/10/6.
  */
-public class ShootView extends TextureView implements IShootView {
+public class ShootView extends TextureView implements IShootView, MediaRecorder.OnInfoListener {
     private static final String TAG = "ShootView";
+    MediaRecorder mRecorder;
     private PackageManager packageManager = getContext().getPackageManager();
     private Camera camera;
     private Camera.Size mSize;
@@ -28,6 +38,11 @@ public class ShootView extends TextureView implements IShootView {
     private CameraId mCameraId;
     private boolean mHasFlash;
     private boolean mIsBackCamera = true;
+    private Consumer<File> mRecordEndConsumer;
+    private Callback mRecordStartCallback;
+    private File mFile = new File(CameraGLSurfaceView.getCacheDirectory(getContext(), true), System.currentTimeMillis() + "test.mp4");
+    private HandlerThread mHandlerThread;
+    private RecordHandler mBackgroundHandler;
 
     public ShootView(Context context) {
         super(context);
@@ -53,9 +68,18 @@ public class ShootView extends TextureView implements IShootView {
     private void init() {
         Log.i(TAG, "ShootView init");
 //        ((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE)).setStreamMute(AudioManager.STREAM_SYSTEM, true);
+
+        initHandler();
         initCamera();
         initFlash();
     }
+
+    private void initHandler() {
+        mHandlerThread = new HandlerThread("RecordHandlerThread");
+        mHandlerThread.start();
+        mBackgroundHandler = new RecordHandler(mHandlerThread.getLooper());
+    }
+
 
     @Override
     public boolean isBackCamera() {
@@ -103,6 +127,10 @@ public class ShootView extends TextureView implements IShootView {
 
     @Override
     public void switchCamera(boolean isBack) {
+        mBackgroundHandler.sendMessage(mBackgroundHandler.obtainMessage(RecordHandler.PREPARE, isBack));
+    }
+
+    private void innerSwitchCamera(boolean isBack) {
         releaseCamera();
         camera = Camera.open(isBack ? mCameraId.back : mCameraId.front);
         mIsBackCamera = isBack;
@@ -118,6 +146,7 @@ public class ShootView extends TextureView implements IShootView {
 
         try {
             startPreview();
+            prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -184,8 +213,129 @@ public class ShootView extends TextureView implements IShootView {
         });
     }
 
-
     private void initFlash() {
         mHasFlash = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+    }
+
+    private void prepare() {
+        CamcorderProfile profile = getProfile();
+        profile.videoFrameRate = 30;
+        profile.audioCodec = MediaRecorder.AudioEncoder.AAC;
+        profile.videoCodec = MediaRecorder.VideoEncoder.H264;
+        profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
+
+        mRecorder = new MediaRecorder();
+        camera.unlock();
+        mRecorder.setCamera(camera);
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+        mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        mRecorder.setOutputFile(mFile.getPath());//TODO set output file
+        mRecorder.setProfile(profile);
+        mRecorder.setOrientationHint(isBackCamera() ? 90 : 270);
+        mRecorder.setMaxDuration(1200);
+        mRecorder.setOnInfoListener(this);
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            Log.e(TAG, "MediaRecorder prepare exception", e);
+        }
+    }
+
+    private void onRecordStart() {
+        if (mRecordStartCallback != null) {
+            mRecordStartCallback.call();
+        }
+    }
+
+    private void onRecordEnd(File file) {
+        if (mRecordEndConsumer != null) {
+            mRecordEndConsumer.accept(file);
+        }
+    }
+
+    @Override
+    public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
+        mRecordStartCallback = recordStartCallback;
+        mRecordEndConsumer = recordEndConsumer;
+        mBackgroundHandler.sendEmptyMessage(RecordHandler.START);
+    }
+
+    @Override
+    public void onInfo(MediaRecorder mr, int what, int extra) {
+        switch (what) {
+            case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
+                onRecordEnd(mFile);
+                break;
+        }
+    }
+
+    private CamcorderProfile getProfile() {
+        CamcorderProfile profile = null;
+        int[] allProfiles = {
+                CamcorderProfile.QUALITY_480P,
+                CamcorderProfile.QUALITY_TIME_LAPSE_480P,
+
+                CamcorderProfile.QUALITY_720P,
+                CamcorderProfile.QUALITY_TIME_LAPSE_720P,
+                CamcorderProfile.QUALITY_LOW,
+                CamcorderProfile.QUALITY_TIME_LAPSE_LOW,
+                CamcorderProfile.QUALITY_QCIF,
+                CamcorderProfile.QUALITY_TIME_LAPSE_QCIF,
+                CamcorderProfile.QUALITY_CIF,
+                CamcorderProfile.QUALITY_TIME_LAPSE_CIF,
+
+                CamcorderProfile.QUALITY_HIGH,
+                CamcorderProfile.QUALITY_TIME_LAPSE_HIGH,
+                CamcorderProfile.QUALITY_1080P,
+                CamcorderProfile.QUALITY_TIME_LAPSE_1080P,
+
+        };
+        for (int oneProfile : allProfiles) {
+            if (CamcorderProfile.hasProfile(oneProfile)) {
+                profile = CamcorderProfile.get(oneProfile);
+                break;
+            }
+        }
+        if (profile == null) throw new IllegalArgumentException("no profile at all!!");
+        return profile;
+    }
+
+    public class RecordHandler extends Handler {
+        public static final int PREPARE = 1001;
+        public static final int START = 1002;
+        public static final int STOP = 1003;
+
+        public RecordHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(final Message msg) {
+            switch (msg.what) {
+                case RecordHandler.PREPARE:
+                    boolean isBack = (boolean) msg.obj;
+                    innerSwitchCamera(isBack);
+                    break;
+                case RecordHandler.START:
+                    mRecorder.start();
+                    onRecordStart();
+                    break;
+                case RecordHandler.STOP:
+                    mRecorder.release();
+
+                    this.removeCallbacksAndMessages(null);
+                    if (!mHandlerThread.isInterrupted()) {
+                        try {
+                            mHandlerThread.quit();
+                            mHandlerThread.interrupt();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
