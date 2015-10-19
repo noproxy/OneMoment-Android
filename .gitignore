@@ -116,3 +116,5 @@ gradle-app.setting
 # Avoid ignoring jar libs
 !app/libs/*
 
+captures/
+

@@ -153,8 +153,9 @@
             android:theme="@style/AppTheme.FitWindowsActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".ui.TagActivity_"
-                  android:theme="@style/AppTheme.TagActivity">
+        <activity
+            android:name=".ui.TagActivity_"
+            android:theme="@style/AppTheme.TagActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity_"
@@ -164,6 +165,15 @@
             android:name=".ui.ShootActivity_"
             android:theme="@style/AppTheme.ShootActivity"
             />
+        <activity
+            android:name=".ui.SearchActivity_"
+            android:theme="@style/AppTheme.SearchActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity_"
+                />
+        </activity>
     </application>
 
 </manifest>

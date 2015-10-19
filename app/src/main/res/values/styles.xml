@@ -58,13 +58,19 @@
 
     <style name="AppTheme.ShootActivity">
         <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:windowBackground">@color/colorWindowTranslucent</item>
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="AppTheme.TagActivity">
         <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:windowBackground">@color/colorWindowTranslucent</item>
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.SearchActivity">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 </resources>

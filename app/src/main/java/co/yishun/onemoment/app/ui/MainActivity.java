@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -136,6 +139,10 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
                 Intent intent = new Intent(this, SettingsActivity_.class);
                 startActivity(intent);
                 return false;
+            case R.id.main_search:
+                Intent i = new Intent(this, SearchActivity_.class);
+                startActivity(i);
+                break;
         }
         return true;
     }
@@ -152,6 +159,20 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        switch (currentItemId) {
+            case R.id.navigation_item_0:
+                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_action_search);
+                break;
+            case R.id.navigation_item_1:
+                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_diary);
+                break;
+            case R.id.navigation_item_2:
+                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_me);
+                break;
+            default:
+                menu.findItem(R.id.main_search).setVisible(false);
+                break;
+        }
         return true;
     }
 
@@ -160,7 +181,11 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) return true;
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.main_search:
+//                Intent intent = new Intent(this, SearchActivity_.class);
+//                startActivity(intent);
+                navigationTo(R.id.main_search);
+//                mDrawerToggle.setHomeAsUpIndicator();
                 return true;
         }
         return false;
