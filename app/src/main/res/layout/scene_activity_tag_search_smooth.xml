@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout
+    android:id="@+id/appBar"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:elevation="@dimen/app_bar_elevation"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/collapsingToolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:fitsSystemWindows="true"
+        app:collapsedTitleGravity="bottom"
+        app:contentScrim="@android:color/transparent"
+        app:expandedTitleMarginEnd="64dp"
+        app:expandedTitleMarginStart="42dp"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed"
+        >
+
+        <FrameLayout
+            android:id="@+id/videoFrame"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:layout_collapseMode="parallax"
+            >
+
+            <co.yishun.onemoment.app.ui.view.SquareCircleImageView
+                android:id="@+id/videoImageView"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/pic_profile_tmp"/>
+
+        </FrameLayout>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:elevation="@dimen/toolbar_elevation"
+            app:contentInsetStart="72dp"
+            app:layout_collapseMode="pin"
+            />
+    </android.support.design.widget.CollapsingToolbarLayout>
+</android.support.design.widget.AppBarLayout>

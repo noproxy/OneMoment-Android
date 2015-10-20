@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SquareCircleImageView">
+        <attr name="border_widthr" format="dimension"/>
+        <attr name="border_colorr" format="color"/>
+        <attr name="border_overlayr" format="boolean"/>
+    </declare-styleable>
+</resources>

@@ -1,15 +1,16 @@
 package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.Nullable;
-import android.transitions.everywhere.Fade;
-import android.transitions.everywhere.Scene;
-import android.transitions.everywhere.TransitionManager;
-import android.transitions.everywhere.TransitionSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageSwitcher;
+
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.Scene;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

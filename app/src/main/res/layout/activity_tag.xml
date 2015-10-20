@@ -5,10 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".ui.TagActivity"
     >
-
-    <include layout="@layout/scene_activity_tag_smooth"/>
 
 </android.support.design.widget.CoordinatorLayout>

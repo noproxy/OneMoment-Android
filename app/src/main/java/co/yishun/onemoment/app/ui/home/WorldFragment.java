@@ -15,6 +15,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.TagActivity;
 import co.yishun.onemoment.app.ui.TagActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
@@ -59,8 +60,7 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
     public void onClick(View view, WorldTag item) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        item.positionY = location[1];
-        TagActivity_.intent(this).tag(item).start();
+        TagActivity_.intent(this).tag(item).top(location[1]).from(TagActivity.FROM_WORLD_FRAGMENT).start();
     }
 
 
