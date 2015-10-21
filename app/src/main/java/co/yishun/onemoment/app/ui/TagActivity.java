@@ -115,26 +115,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @UiThread(delay = 100)
     @AfterViews
     void sceneTransition() {
-        sceneTransitionWorld();
-
-        afterTransition();
-
-        videoImageView = ((ImageView) findViewById(R.id.videoImageView));
-        swipeRefreshLayout = ((SwipeRefreshLayout) findViewById(R.id.ptr_layout));
-        recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
-
-        Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
-
-        GridLayoutManager manager = new GridLayoutManager(this, 3);
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(manager);
-
-        TagAdapter adapter = new TagAdapter(this, this);
-        recyclerView.setAdapter(adapter);
-        TagController_.getInstance_(this).setUp(adapter, recyclerView, tag);
-    }
-
-    void sceneTransitionWorld() {
         ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.coordinatorLayout);
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
 
@@ -177,18 +157,31 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         float oldRadiusRate = ((RoundRectImageView) sceneRoot.findViewById(R.id.videoImageView)).getRoundRate();
         TransitionManager.go(scene, set);
         float newRadiusRate = ((RoundRectImageView) sceneRoot.findViewById(R.id.videoImageView)).getRoundRate();
-        Log.e("radius", oldRadiusRate + " " + newRadiusRate);
         ObjectAnimator radiusAnimator = ObjectAnimator.ofFloat(sceneRoot.findViewById(R.id.videoImageView),
                 "roundRate", oldRadiusRate, newRadiusRate).setDuration(500);
         radiusAnimator.setEvaluator(new FloatEvaluator());
         radiusAnimator.setInterpolator(new AccelerateInterpolator());
         radiusAnimator.start();
 
+        afterTransition();
+
+        videoImageView = ((ImageView) findViewById(R.id.videoImageView));
+        swipeRefreshLayout = ((SwipeRefreshLayout) findViewById(R.id.ptr_layout));
+        recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
+
+        Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
+
+        GridLayoutManager manager = new GridLayoutManager(this, 3);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
+
+        TagAdapter adapter = new TagAdapter(this, this);
+        recyclerView.setAdapter(adapter);
+        TagController_.getInstance_(this).setUp(adapter, recyclerView, tag);
     }
 
     @UiThread(delay = 600)
     void afterTransition() {
-
         toolbar = ((Toolbar) findViewById(R.id.toolbar));
         collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
         setupToolbar(this, toolbar);

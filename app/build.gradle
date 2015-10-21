@@ -31,6 +31,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     aaptOptions {
@@ -79,6 +80,9 @@ android {
 def SUPPORT_VERSION = '23.0.0'
 
 dependencies {
+    // avoid method number limit
+    compile 'com.android.support:multidex:1.0.1'
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'net.sourceforge.streamsupport:streamsupport:1.2.2'
     // https://developer.android.com/reference/android/support/annotation/package-summary.html
