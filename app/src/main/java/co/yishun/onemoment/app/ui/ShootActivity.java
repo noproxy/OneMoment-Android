@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageSwitcher;
+import android.widget.Toast;
 
 import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Scene;
@@ -13,12 +14,18 @@ import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
+
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.function.Callback;
+import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView;
 import co.yishun.onemoment.app.ui.view.shoot.IShootView;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
@@ -27,13 +34,16 @@ import io.codetail.animation.ViewAnimationUtils;
  * Created by Carlos on 2015/10/4.
  */
 @EActivity(R.layout.activity_shoot)
-public class ShootActivity extends BaseActivity {
+public class ShootActivity extends BaseActivity implements Callback, Consumer<File> {
     private ViewGroup sceneRoot;
     IShootView shootView;
     @ViewById
     ImageSwitcher recordFlashSwitch;
     @ViewById
     ImageSwitcher cameraSwitch;
+    private
+    @Nullable
+    CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
 
     @Nullable
@@ -44,8 +54,10 @@ public class ShootActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
+        if (mCameraGLSurfaceView != null) {
+            mCameraGLSurfaceView.onResume();
+        }
         super.onResume();
-
     }
 
     @UiThread()
@@ -61,7 +73,6 @@ public class ShootActivity extends BaseActivity {
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(500);
         animator.start();
-
 
 
     }
@@ -86,6 +97,9 @@ public class ShootActivity extends BaseActivity {
 
     void afterTransition() {
         shootView = (IShootView) findViewById(R.id.shootView);
+        if (shootView instanceof CameraGLSurfaceView) {
+            mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
+        }
         setControllerBtn();
 
         recordFlashSwitch.getCurrentView().setOnClickListener(this::flashlightBtnClicked);
@@ -94,17 +108,26 @@ public class ShootActivity extends BaseActivity {
         cameraSwitch.getNextView().setOnClickListener(this::cameraSwitchBtnClicked);
     }
 
+    @Click
+    void shootBtnClicked() {
+        shootView.record(this, this);
+    }
+
     @Override
     protected void onPause() {
+        if (mCameraGLSurfaceView != null) {
+            mCameraGLSurfaceView.onPause();
+        }
         super.onPause();
         this.finish();
     }
 
     @Override
     protected void onDestroy() {
+        if (mCameraGLSurfaceView != null) {
+            mCameraGLSurfaceView.onDestroy();
+        }
         super.onDestroy();
-        if (shootView != null)
-            shootView.releaseCamera();
     }
 
     private void setControllerBtn() {
@@ -116,7 +139,7 @@ public class ShootActivity extends BaseActivity {
     }
 
     private void cameraSwitchBtnClicked(View view) {
-        shootView.setBackCameraOn(!shootView.isBackCamera());
+        shootView.switchCamera(!shootView.isBackCamera());
         setControllerBtn();
     }
 
@@ -124,5 +147,15 @@ public class ShootActivity extends BaseActivity {
         flashOn = !flashOn;
         shootView.setFlashlightOn(flashOn);
         recordFlashSwitch.setDisplayedChild(flashOn ? 1 : 0);
+    }
+
+    @Override
+    public void call() {
+        Toast.makeText(ShootActivity.this, "start record", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void accept(File file) {
+        Toast.makeText(ShootActivity.this, "success: " + file.getPath(), Toast.LENGTH_SHORT).show();
     }
 }
