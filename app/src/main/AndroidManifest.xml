@@ -156,10 +156,10 @@
         <activity
             android:name=".ui.TagActivity_"
             android:theme="@style/AppTheme.TagActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"
-                />
+            <!--<meta-data-->
+                <!--android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value=".ui.MainActivity_"-->
+                <!--/>-->
         </activity>
         <activity
             android:name=".ui.ShootActivity_"
