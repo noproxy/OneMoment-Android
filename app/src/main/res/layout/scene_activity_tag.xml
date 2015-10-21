@@ -30,11 +30,13 @@
                 app:layout_collapseMode="parallax"
                 >
 
-                <co.yishun.onemoment.app.ui.view.SquareCircleImageView
+                <co.yishun.onemoment.app.ui.view.RoundRectImageView
                     android:id="@+id/videoImageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/pic_more_discovery"/>
+                    android:src="@drawable/pic_more_discovery"
+                    app:force_square="true"
+                    app:round_rate="0"/>
             </FrameLayout>
 
             <android.support.v7.widget.Toolbar

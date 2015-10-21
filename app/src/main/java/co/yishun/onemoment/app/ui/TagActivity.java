@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.FloatEvaluator;
 import android.animation.ObjectAnimator;
@@ -16,20 +17,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+
 import com.transitionseverywhere.ChangeBounds;
 import com.transitionseverywhere.ChangeClipBounds;
 import com.transitionseverywhere.ChangeImageTransform;
 import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.Slide;
+import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -37,6 +40,7 @@ import android.widget.ImageView;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.squareup.picasso.Picasso;
+import com.transitionseverywhere.TransitionValues;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -52,6 +56,7 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
+import co.yishun.onemoment.app.ui.view.RoundRectImageView;
 import co.yishun.onemoment.app.ui.view.SquareCircleImageView;
 
 /**
@@ -62,8 +67,10 @@ import co.yishun.onemoment.app.ui.view.SquareCircleImageView;
 public class TagActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
     public static final int FROM_WORLD_FRAGMENT = 0;
     public static final int FROM_SEARCH_ACTIVITY = 1;
-    @Extra int top;
-    @Extra int from;
+    @Extra
+    int top;
+    @Extra
+    int from;
     @Extra
     WorldTag tag;
     @ViewById
@@ -84,7 +91,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return null;
     }
 
-    void setLayout(){
+    void setLayout() {
         swipeRefreshLayout = ((SwipeRefreshLayout) coordinatorLayout.findViewById(R.id.ptr_layout));
         toolbar = ((Toolbar) coordinatorLayout.findViewById(R.id.toolbar));
         videoImageView = ((ImageView) coordinatorLayout.findViewById(R.id.videoImageView));
@@ -100,15 +107,13 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
             setLayout();
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
             params.topMargin += top;
-        }
-        else if (from==FROM_SEARCH_ACTIVITY) {
+        } else if (from == FROM_SEARCH_ACTIVITY) {
             coordinatorLayout.addView(LayoutInflater.from(this).inflate(
                     R.layout.scene_activity_tag_search_smooth, coordinatorLayout, false));
             setLayout();
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
             params.topMargin += top;
         }
-//        videoImageView.setBackgroundColor(tag.color);
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         collapsingToolbarLayout.setTitle("");
@@ -118,12 +123,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @UiThread(delay = 100)
     @AfterViews
     void sceneTransition() {
-        if (from == FROM_WORLD_FRAGMENT) {
-            sceneTransitionWorld();
-        }
-        else if (from == FROM_SEARCH_ACTIVITY) {
-            sceneTransitionSearch();
-        }
+        sceneTransitionWorld();
 
         afterTransition();
 
@@ -131,7 +131,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         swipeRefreshLayout = ((SwipeRefreshLayout) findViewById(R.id.ptr_layout));
         recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
 
-//        videoImageView.setBackgroundColor(tag.color);
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
 
         GridLayoutManager manager = new GridLayoutManager(this, 3);
@@ -145,28 +144,28 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 
     void sceneTransitionWorld() {
         ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.coordinatorLayout);
+        Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
+
         ObjectAnimator animator = ObjectAnimator.ofInt(sceneRoot, "backgroundColor",
                 0x00ffffff, getResources().getColor(R.color.colorPrimary)).setDuration(500);
         animator.setEvaluator(new ArgbEvaluator());
         animator.start();
 
-        Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
         TransitionSet set = new TransitionSet();
 
         ChangeBounds changeBounds = new ChangeBounds();
         changeBounds.addTarget(R.id.videoImageView);
         changeBounds.addTarget(R.id.collapsingToolbarLayout);
-//        changeBounds.addTarget(R.id.itemLayout);
         changeBounds.addTarget(R.id.appBar);
         changeBounds.addTarget(R.id.videoFrame);
         changeBounds.setDuration(500);
+        changeBounds.setInterpolator(new DecelerateInterpolator(2.0f));
         set.addTransition(changeBounds);
 
         ChangeImageTransform changeImageTransform = new ChangeImageTransform();
         changeImageTransform.addTarget(R.id.videoImageView);
         changeImageTransform.setDuration(500);
         set.addTransition(changeImageTransform);
-        set.setInterpolator(new DecelerateInterpolator());
 
         Fade fadeIn = new Fade(Fade.IN);
         fadeIn.addTarget(R.id.recyclerView);
@@ -182,59 +181,17 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
         set.setDuration(800);
+
+        float oldRadiusRate = ((RoundRectImageView) sceneRoot.findViewById(R.id.videoImageView)).getRoundRate();
         TransitionManager.go(scene, set);
-
-        ((SquareCircleImageView)sceneRoot.findViewById(R.id.videoImageView)).setRadiusScale(3.0f);
-    }
-
-    void sceneTransitionSearch() {
-        ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.coordinatorLayout);
-        ObjectAnimator animator = ObjectAnimator.ofInt(sceneRoot, "backgroundColor",
-                0x00ffffff, getResources().getColor(R.color.colorPrimary)).setDuration(500);
-        animator.setEvaluator(new ArgbEvaluator());
-        animator.start();
-
-        Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
-        TransitionSet set = new TransitionSet();
-
-        ChangeBounds changeBounds = new ChangeBounds();
-        changeBounds.addTarget(R.id.videoImageView);
-        changeBounds.addTarget(R.id.collapsingToolbarLayout);
-        changeBounds.addTarget(R.id.appBar);
-        changeBounds.addTarget(R.id.videoFrame);
-        changeBounds.setDuration(500);
-        set.addTransition(changeBounds);
-
-        ChangeClipBounds clipBounds = new ChangeClipBounds();
-        clipBounds.addTarget(R.id.videoImageView);
-        set.addTransition(clipBounds);
-
-        ChangeImageTransform changeImageTransform = new ChangeImageTransform();
-        changeImageTransform.addTarget(R.id.videoImageView);
-        changeImageTransform.setDuration(500);
-        set.addTransition(changeImageTransform);
-        set.setInterpolator(new DecelerateInterpolator());
-
-        Fade fadeIn = new Fade(Fade.IN);
-        fadeIn.addTarget(R.id.recyclerView);
-        fadeIn.addTarget(R.id.toolbar);
-        fadeIn.addTarget(R.id.collapsingToolbarLayout);
-        fadeIn.setStartDelay(500);
-        set.addTransition(fadeIn);
-
-        Slide slide = new Slide(Gravity.BOTTOM);
-        slide.addTarget(R.id.recyclerView);
-        slide.setDuration(500);
-        set.addTransition(slide);
-
-        set.setOrdering(TransitionSet.ORDERING_TOGETHER);
-        set.setDuration(800);
-        TransitionManager.go(scene, set);
-
+        float newRadiusRate = ((RoundRectImageView) sceneRoot.findViewById(R.id.videoImageView)).getRoundRate();
+        Log.e("radius", oldRadiusRate + " " + newRadiusRate);
         ObjectAnimator radiusAnimator = ObjectAnimator.ofFloat(sceneRoot.findViewById(R.id.videoImageView),
-                "radiusScale", 1.0f, 1.414f).setDuration(700);
+                "roundRate", oldRadiusRate, newRadiusRate).setDuration(500);
         radiusAnimator.setEvaluator(new FloatEvaluator());
+        radiusAnimator.setInterpolator(new AccelerateInterpolator());
         radiusAnimator.start();
+
     }
 
     @UiThread(delay = 600)

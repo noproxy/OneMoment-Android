@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:orientation="vertical">
+    android:paddingRight="16dp">
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="92dp"
         android:orientation="horizontal">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <co.yishun.onemoment.app.ui.view.RoundRectImageView
             android:id="@+id/itemImageView"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/pic_profile_tmp"/>
+            android:src="@drawable/pic_profile_tmp"
+            app:round_rate="1"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -27,9 +30,9 @@
                 android:id="@+id/tagTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
                 android:drawableLeft="@drawable/ic_world_tag_msg"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_world_tag_msg"
@@ -37,6 +40,7 @@
                 android:text="Happy Hongkong"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/textColorPrimary"/>
+
             <TextView
                 android:id="@+id/numTextView"
                 android:layout_width="wrap_content"

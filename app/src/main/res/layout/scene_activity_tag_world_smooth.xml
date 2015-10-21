@@ -31,7 +31,7 @@
             app:layout_collapseMode="parallax"
             >
 
-            <ImageView
+            <co.yishun.onemoment.app.ui.view.RoundRectImageView
                 android:id="@+id/videoImageView"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
@@ -40,8 +40,8 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:background="@color/colorPrimary"
-                android:scaleType="centerCrop"
-                android:src="@drawable/pic_more_discovery"/>
+                android:src="@drawable/pic_more_discovery"
+                app:round_radius="4dp"/>
         </FrameLayout>
 
         <android.support.v7.widget.Toolbar
