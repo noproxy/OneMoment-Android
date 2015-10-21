@@ -118,21 +118,25 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
                 if (worldFragment == null) {
                     worldFragment = new WorldFragment_();
                 }
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, worldFragment).commit();
+                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
+                        .replace(R.id.fragment_container, worldFragment).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_1:
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, new VerifyFragment_()).commit();
+                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
+                        .replace(R.id.fragment_container, new VerifyFragment_()).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:
                 DiscoveryFragment_ fragment2 = new DiscoveryFragment_();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment2).commit();
+                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
+                        .replace(R.id.fragment_container, fragment2).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_3:
                 MeFragment_ fragment3 = new MeFragment_();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment3).commit();
+                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
+                        .replace(R.id.fragment_container, fragment3).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_4:

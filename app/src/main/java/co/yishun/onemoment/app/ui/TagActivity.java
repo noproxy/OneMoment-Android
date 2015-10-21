@@ -1,11 +1,8 @@
 package co.yishun.onemoment.app.ui;
 
-import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.FloatEvaluator;
 import android.animation.ObjectAnimator;
-import android.content.pm.LabeledIntent;
-import android.graphics.Color;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -19,12 +16,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 
 import com.transitionseverywhere.ChangeBounds;
-import com.transitionseverywhere.ChangeClipBounds;
 import com.transitionseverywhere.ChangeImageTransform;
 import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.Slide;
-import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
@@ -40,9 +35,7 @@ import android.widget.ImageView;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.squareup.picasso.Picasso;
-import com.transitionseverywhere.TransitionValues;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -57,7 +50,6 @@ import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
 import co.yishun.onemoment.app.ui.view.RoundRectImageView;
-import co.yishun.onemoment.app.ui.view.SquareCircleImageView;
 
 /**
  * Created by Carlos on 2015/8/17.
