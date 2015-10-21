@@ -3,23 +3,31 @@ package co.yishun.onemoment.app.ui;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageSwitcher;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
+
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.function.Callback;
+import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView;
 import co.yishun.onemoment.app.ui.view.shoot.IShootView;
 
 /**
  * Created by Carlos on 2015/10/4.
  */
 @EActivity(R.layout.activity_shoot)
-public class ShootActivity extends BaseActivity {
+public class ShootActivity extends BaseActivity implements Callback, Consumer<File> {
     IShootView shootView;
     @ViewById ImageSwitcher recordFlashSwitch;
     @ViewById ImageSwitcher cameraSwitch;
+    private @Nullable CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
 
     @Nullable
@@ -30,13 +38,18 @@ public class ShootActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
+        if (mCameraGLSurfaceView != null) {
+            mCameraGLSurfaceView.onResume();
+        }
         super.onResume();
-
     }
 
     @AfterViews
     void setShootView() {
         shootView = (IShootView) findViewById(R.id.shootView);
+        if (shootView instanceof CameraGLSurfaceView) {
+            mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
+        }
         setControllerBtn();
 
         recordFlashSwitch.getCurrentView().setOnClickListener(this::flashlightBtnClicked);
@@ -45,16 +58,27 @@ public class ShootActivity extends BaseActivity {
         cameraSwitch.getNextView().setOnClickListener(this::cameraSwitchBtnClicked);
     }
 
+    @Click
+    void shootBtnClicked() {
+        shootView.record(this, this);
+    }
+
+
     @Override
     protected void onPause() {
+        if (mCameraGLSurfaceView != null) {
+            mCameraGLSurfaceView.onPause();
+        }
         super.onPause();
         this.finish();
     }
 
     @Override
     protected void onDestroy() {
+        if (mCameraGLSurfaceView != null) {
+            mCameraGLSurfaceView.onDestroy();
+        }
         super.onDestroy();
-        shootView.releaseCamera();
     }
 
     private void setControllerBtn() {
@@ -66,7 +90,7 @@ public class ShootActivity extends BaseActivity {
     }
 
     private void cameraSwitchBtnClicked(View view) {
-        shootView.setBackCameraOn(!shootView.isBackCamera());
+        shootView.switchCamera(!shootView.isBackCamera());
         setControllerBtn();
     }
 
@@ -74,5 +98,15 @@ public class ShootActivity extends BaseActivity {
         flashOn = !flashOn;
         shootView.setFlashlightOn(flashOn);
         recordFlashSwitch.setDisplayedChild(flashOn ? 1 : 0);
+    }
+
+    @Override
+    public void call() {
+        Toast.makeText(ShootActivity.this, "start record", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void accept(File file) {
+        Toast.makeText(ShootActivity.this, "success: " + file.getPath(), Toast.LENGTH_SHORT).show();
     }
 }
