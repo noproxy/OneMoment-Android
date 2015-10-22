@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.TagActivity;
 import co.yishun.onemoment.app.ui.TagActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
@@ -56,7 +58,9 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
 
     @Override
     public void onClick(View view, WorldTag item) {
-        TagActivity_.intent(this).tag(item).start();
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        TagActivity_.intent(this).tag(item).top(location[1]).from(TagActivity.FROM_WORLD_FRAGMENT).start();
     }
 
 

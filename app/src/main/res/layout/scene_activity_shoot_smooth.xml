@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+    <!-- TODO set different view by whether is above Android 4.3-->
+    <co.yishun.onemoment.app.ui.view.shoot.ShootView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include layout="@layout/layout_record_btn"/>
+</merge>

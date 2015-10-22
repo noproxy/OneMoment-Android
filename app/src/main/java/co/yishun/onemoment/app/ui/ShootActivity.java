@@ -1,13 +1,22 @@
 package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageSwitcher;
 import android.widget.Toast;
+
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.Scene;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
@@ -18,16 +27,23 @@ import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView;
 import co.yishun.onemoment.app.ui.view.shoot.IShootView;
+import io.codetail.animation.SupportAnimator;
+import io.codetail.animation.ViewAnimationUtils;
 
 /**
  * Created by Carlos on 2015/10/4.
  */
 @EActivity(R.layout.activity_shoot)
 public class ShootActivity extends BaseActivity implements Callback, Consumer<File> {
+    private ViewGroup sceneRoot;
     IShootView shootView;
-    @ViewById ImageSwitcher recordFlashSwitch;
-    @ViewById ImageSwitcher cameraSwitch;
-    private @Nullable CameraGLSurfaceView mCameraGLSurfaceView;
+    @ViewById
+    ImageSwitcher recordFlashSwitch;
+    @ViewById
+    ImageSwitcher cameraSwitch;
+    private
+    @Nullable
+    CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
 
     @Nullable
@@ -44,8 +60,42 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         super.onResume();
     }
 
+    @UiThread()
     @AfterViews
-    void setShootView() {
+    void preTransition() {
+        sceneRoot = (ViewGroup) findViewById(R.id.linearLayout);
+
+        int cx = sceneRoot.getRight() - 132;
+        int cy = sceneRoot.getBottom() - 132;
+        int finalRadius = (int) Math.hypot(sceneRoot.getWidth(), sceneRoot.getHeight());
+
+        SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, cx, cy, 0, finalRadius);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(500);
+        animator.start();
+
+
+    }
+
+    @UiThread(delay = 50)
+    @AfterViews
+    void sceneTransition() {
+        Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_shoot, this);
+        TransitionSet set = new TransitionSet();
+
+        Fade fadeIn = new Fade(Fade.IN);
+        fadeIn.addTarget(R.id.shootView);
+        fadeIn.setStartDelay(350);
+        set.addTransition(fadeIn);
+
+        set.setOrdering(TransitionSet.ORDERING_TOGETHER);
+        set.setDuration(800);
+        TransitionManager.go(scene, set);
+
+        afterTransition();
+    }
+
+    void afterTransition() {
         shootView = (IShootView) findViewById(R.id.shootView);
         if (shootView instanceof CameraGLSurfaceView) {
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
@@ -62,7 +112,6 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     void shootBtnClicked() {
         shootView.record(this, this);
     }
-
 
     @Override
     protected void onPause() {
