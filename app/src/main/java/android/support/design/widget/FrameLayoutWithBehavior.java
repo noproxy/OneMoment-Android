@@ -120,7 +120,7 @@ public class FrameLayoutWithBehavior extends FrameLayout {
                         .alpha(1.0F)
                         .setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR)
                         .withLayer()
-                        .setListener((ViewPropertyAnimatorListener) null)
+                        .setListener(null)
                         .start();
             } else {
                 Animation anim = android.view.animation.AnimationUtils.loadAnimation(button.getContext(), R.anim.fab_in);
