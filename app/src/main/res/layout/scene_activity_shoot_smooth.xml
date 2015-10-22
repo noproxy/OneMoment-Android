@@ -2,7 +2,8 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
-    <co.yishun.onemoment.app.ui.view.SquareFrameLayout
+    <!-- TODO set different view by whether is above Android 4.3-->
+    <co.yishun.onemoment.app.ui.view.shoot.ShootView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
