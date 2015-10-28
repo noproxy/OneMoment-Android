@@ -31,6 +31,7 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
+import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
@@ -73,6 +74,8 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RealmHelper.setup(this);
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();

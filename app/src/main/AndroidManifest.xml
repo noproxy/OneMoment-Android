@@ -171,6 +171,10 @@
                 android:value=".ui.MainActivity_"
                 />
         </activity>
+        <activity android:name=".ui.PlayActivity_"
+            android:theme="@style/AppTheme.PlayActivity">
+
+        </activity>
     </application>
 
 </manifest>

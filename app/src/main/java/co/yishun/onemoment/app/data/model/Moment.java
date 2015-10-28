@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.data.model;
 
+import co.yishun.onemoment.app.api.model.*;
+import co.yishun.onemoment.app.api.model.Video;
 import io.realm.RealmObject;
 
 /**

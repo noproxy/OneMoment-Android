@@ -74,6 +74,11 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="AppTheme.PlayActivity">
+        <item name="android:textColorTertiary">@color/textColorPrimary</item>
+        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
+    </style>
+
     <style name="TagActivityAnim">
         <item name="android:windowEnterAnimation">@null</item>
         <item name="android:windowExitAnimation">@anim/shrink_fade_out_from_bottom</item>

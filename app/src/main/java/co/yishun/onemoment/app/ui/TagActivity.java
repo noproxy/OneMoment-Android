@@ -170,6 +170,9 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
+        videoImageView.setOnClickListener(v -> {
+            PlayActivity_.intent(this).worldTag(tag).start();
+        });
 
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -206,8 +209,16 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return ab;
     }
 
+    private void videoImageClick() {
+
+    }
+
     @Override
     public void onClick(View view, TagVideo item) {
+//        if(RealmHelper.getTagNum("20151027") < 3){
+//            RealmHelper.addTag("test", 0.1f, 0.1f);
+//        } else Toast.makeText(this, "full", Toast.LENGTH_SHORT).show();
+        PlayActivity_.intent(this).tagVideo(item).start();
 
     }
 }

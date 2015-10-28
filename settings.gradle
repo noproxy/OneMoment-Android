@@ -1,1 +1,1 @@
-include ':dragger', ':app', ':transition-library'
+include ':dragger', ':app', ':transition-library', ':play-library'

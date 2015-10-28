@@ -29,12 +29,13 @@ public class SquareFrameLayout extends FrameLayout {
 
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        final int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
-        setMeasuredDimension(width, width);
+//        final int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+//        setMeasuredDimension(width, width);
+        super.onMeasure(widthMeasureSpec,widthMeasureSpec);
     }
 
-    @Override
-    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
-        super.onSizeChanged(w, w, oldw, oldh);
-    }
+//    @Override
+//    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
+//        super.onSizeChanged(w, w, oldw, oldh);
+//    }
 }

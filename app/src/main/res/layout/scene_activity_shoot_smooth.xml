@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
     <!-- TODO set different view by whether is above Android 4.3-->
-    <co.yishun.onemoment.app.ui.view.shoot.ShootView
+    <co.yishun.onemoment.app.ui.view.RoundRectImageView
+        android:id="@+id/shootView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:force_square="true"
+        app:round_rate="0"/>
 
     <include layout="@layout/layout_record_btn"/>
 </merge>

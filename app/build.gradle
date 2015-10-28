@@ -211,6 +211,11 @@ dependencies {
         transitive = true;
     }
 }
+
+dependencies {
+//    compile 'co.yishun:library:1.1'
+    compile project(':play-library')
+}
 // https://www.reddit.com/r/androiddev/comments/3dnibt/support_library_2221_released/
 configurations.all() {
     // Currently espresso is dependent on support-annotations:22.2.0
