@@ -2,8 +2,8 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
-    <!-- below Android 4.3 -->
-    <co.yishun.onemoment.app.ui.view.shoot.ShootView
+    <!-- above Android 4.3 -->
+    <co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView
         android:id="@+id/shootView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
