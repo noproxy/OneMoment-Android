@@ -158,6 +158,7 @@ class AsyncHandler {
         mActivity.getApplicationContext().startActivity(AccountActivity_.intent(mActivity).userInfo(info).type(getType(mAuthHelper)).get().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         mActivity.finish();
         //TODO startActivity from mActivity context will fail on Huawei. Reason is not clear now.
+        //TODO bug: snackbar not work
     }
 
     private AccessTokenKeeper.KeeperType getType(AuthHelper helper) {
