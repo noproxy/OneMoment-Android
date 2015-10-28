@@ -16,6 +16,7 @@
 
 package co.yishun.onemoment.app.ui.view.shoot.video;
 
+import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
@@ -37,7 +38,7 @@ import java.nio.ByteBuffer;
  * This class is not thread-safe, with one exception: it is valid to use the input surface
  * on one thread, and drain the output on a different thread.
  */
-@Deprecated
+@TargetApi(18)
 public class VideoEncoderCore {
     private static final String TAG = "VideoEncoderCore";
     private static final boolean VERBOSE = false;

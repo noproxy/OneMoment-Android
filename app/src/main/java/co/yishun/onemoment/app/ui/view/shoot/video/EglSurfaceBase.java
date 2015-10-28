@@ -16,6 +16,7 @@
 
 package co.yishun.onemoment.app.ui.view.shoot.video;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.opengl.EGL14;
 import android.opengl.EGLSurface;
@@ -37,7 +38,7 @@ import co.yishun.onemoment.app.ui.view.shoot.gles.GlUtil;
  * <p>
  * There can be multiple surfaces associated with a single context.
  */
-@Deprecated
+@TargetApi(17)
 public class EglSurfaceBase {
     protected static final String TAG = "EglSurfaceBase";
 

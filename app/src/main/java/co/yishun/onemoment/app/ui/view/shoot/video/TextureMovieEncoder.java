@@ -16,6 +16,7 @@
 
 package co.yishun.onemoment.app.ui.view.shoot.video;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.EGLContext;
@@ -58,7 +59,7 @@ import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.getCame
  * <p>
  * TODO: tweak the API (esp. textureId) so it's less awkward for simple use cases.
  */
-@Deprecated
+@TargetApi(17)
 public class TextureMovieEncoder implements Runnable {
     private static final String TAG = "TextureMovieEncoder";
 

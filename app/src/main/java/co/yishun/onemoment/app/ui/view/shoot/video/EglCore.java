@@ -16,6 +16,7 @@
 
 package co.yishun.onemoment.app.ui.view.shoot.video;
 
+import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.EGLConfig;
@@ -31,7 +32,7 @@ import android.view.Surface;
  * <p>
  * The EGLContext must only be attached to one thread at a time.  This class is not thread-safe.
  */
-@Deprecated
+@TargetApi(18)
 public final class EglCore {
     /**
      * Constructor flag: surface must be recordable.  This discourages EGL from using a
