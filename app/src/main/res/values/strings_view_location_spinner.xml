@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="view_location_spinner_title">Location</string>
-    <string-array name="view_location_spinner_items">
-        <item>Male</item>
-        <item>Female</item>
-    </string-array>
     <string name="view_location_spinner_positive_btn">OK</string>
     <string name="view_location_spinner_default">Location</string>
 
