@@ -53,6 +53,7 @@ public class AccountActivity extends PickCropActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "AccountActivity onCreate");
         mAdapter = OneMomentV3.createAdapter();
         mAccount = mAdapter.create(Account.class);
         fragmentManager = getSupportFragmentManager();

@@ -115,6 +115,7 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
                 TokenResponse tokenResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(response.body().string(), TokenResponse.class);
                 handler.post(() -> mListener.onSuccess(from(tokenResponse)));
             } catch (Exception e) {
+                Log.i(TAG, "Exception when request wechat login");
                 e.printStackTrace();
                 handler.post(mListener::onFail);
             }
