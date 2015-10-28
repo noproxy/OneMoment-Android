@@ -227,6 +227,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
     @Override
     public boolean isFlashlightAvailable() {
+        Log.i(TAG, "mIsBackCamera: " + mIsBackCamera + ", mHasFlash " + mHasFlash);
         return mIsBackCamera && mHasFlash;
     }
 
