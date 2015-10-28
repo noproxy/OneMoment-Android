@@ -53,6 +53,7 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
             UserInfoResponse infoResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(response.body().string(), UserInfoResponse.class);
             return from(infoResponse);
         } catch (Exception e) {
+            Log.i(TAG, "Exception when get wechat user info");
             e.printStackTrace();
         }
         return null;
