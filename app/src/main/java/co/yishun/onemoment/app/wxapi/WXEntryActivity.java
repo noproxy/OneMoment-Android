@@ -154,8 +154,10 @@ class AsyncHandler {
     @SupposeBackground
     void getUserInfo(OAuthToken token) {
         UserInfo info = mAuthHelper.getUserInfo(token);
-        AccountActivity_.intent(mActivity).userInfo(info).type(getType(mAuthHelper)).start();
         mActivity.showSnackMsg(R.string.activity_wx_entry_auth_success);
+        mActivity.getApplicationContext().startActivity(AccountActivity_.intent(mActivity).userInfo(info).type(getType(mAuthHelper)).get().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        mActivity.finish();
+        //TODO startActivity from mActivity context will fail on Huawei. Reason is not clear now.
     }
 
     private AccessTokenKeeper.KeeperType getType(AuthHelper helper) {
