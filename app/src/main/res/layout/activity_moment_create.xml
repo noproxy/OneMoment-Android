@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <co.yishun.onemoment.app.ui.view.SquareVideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <Button
+        android:id="@+id/nextBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:minHeight="48dp"
+        android:text="@string/activity_moment_create_next_btn_text"
+        android:textColor="@color/textColorPrimaryInverse"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/nextBtn"
+        android:layout_below="@id/videoView"
+        >
+
+        <Switch
+            android:id="@+id/permissionSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingBottom="12dp"
+            />
+
+        <TextView
+            android:id="@+id/hintText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/permissionSwitch"
+            android:layout_centerHorizontal="true"
+            android:text="@string/activity_moment_create_private_hint"
+            />
+
+
+    </RelativeLayout>
+</RelativeLayout>

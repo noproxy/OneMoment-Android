@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_moment_create_next_btn_text">next</string>
+    <string name="activity_moment_create_private_hint">Private</string>
+    <string name="activity_moment_create_private_text">Only you can view</string>
+    <string name="activity_moment_create_public_text">Public</string>
+    <string name="activity_moment_create_public_hint">Everyone can view</string>
+</resources>
