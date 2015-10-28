@@ -14,10 +14,8 @@ import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
-import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 
@@ -35,12 +33,13 @@ import io.codetail.animation.ViewAnimationUtils;
  */
 @EActivity(R.layout.activity_shoot)
 public class ShootActivity extends BaseActivity implements Callback, Consumer<File> {
-    private ViewGroup sceneRoot;
+    private static final String TAG = "ShootActivity";
     IShootView shootView;
-    @ViewById
+    //    @ViewById unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
     ImageSwitcher recordFlashSwitch;
-    @ViewById
+    //    @ViewById unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
     ImageSwitcher cameraSwitch;
+    private ViewGroup sceneRoot;
     private
     @Nullable
     CameraGLSurfaceView mCameraGLSurfaceView;
@@ -100,7 +99,12 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         if (shootView instanceof CameraGLSurfaceView) {
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
         }
+        recordFlashSwitch = (ImageSwitcher) findViewById(R.id.recordFlashSwitch);
+        cameraSwitch = (ImageSwitcher) findViewById(R.id.cameraSwitch);
+        findViewById(R.id.shootBtn).setOnClickListener(this::shootBtnClicked);
+
         setControllerBtn();
+
 
         recordFlashSwitch.getCurrentView().setOnClickListener(this::flashlightBtnClicked);
         recordFlashSwitch.getNextView().setOnClickListener(this::flashlightBtnClicked);
@@ -108,8 +112,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         cameraSwitch.getNextView().setOnClickListener(this::cameraSwitchBtnClicked);
     }
 
-    @Click
-    void shootBtnClicked() {
+    //    @Click unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
+    void shootBtnClicked(View v) {
         shootView.record(this, this);
     }
 
@@ -144,6 +148,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     private void flashlightBtnClicked(View view) {
+        Log.i(TAG, "flashlight switch, from " + flashOn + " to " + !flashOn);
         flashOn = !flashOn;
         shootView.setFlashlightOn(flashOn);
         recordFlashSwitch.setDisplayedChild(flashOn ? 1 : 0);
