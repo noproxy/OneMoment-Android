@@ -9,10 +9,16 @@
     android:layout_gravity="start"
     android:background="?android:colorBackground"
     android:elevation="@dimen/navigation_elevation"
-    app:headerLayout="@layout/layout_nav_header"
     app:itemBackground="@drawable/bg_nav_item"
     app:itemIconTint="@color/nav_item_color_selector"
     app:itemTextColor="@color/nav_item_color_selector"
     app:menu="@menu/menu_nav"
     tools:showIn="@layout/activity_main"
     />
+    <!--
+            views in NavigationView cannot be found from NavigationView or Activity since support 23.1.0
+            see: http://stackoverflow.com/questions/33199764/android-api-23-change-navigation-view-headerlayout-textview
+            so, remove:
+                app:headerLayout="@layout/layout_nav_header"
+            and set it in Java code
+    -->
