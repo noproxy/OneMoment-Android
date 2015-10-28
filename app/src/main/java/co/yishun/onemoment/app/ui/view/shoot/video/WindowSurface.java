@@ -15,6 +15,7 @@
  */
 package co.yishun.onemoment.app.ui.view.shoot.video;
 
+import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
 import android.view.Surface;
 
@@ -23,7 +24,7 @@ import android.view.Surface;
  * <p>
  * It's good practice to explicitly release() the surface, preferably from a "finally" block.
  */
-@Deprecated
+@TargetApi(17)
 public class WindowSurface extends EglSurfaceBase {
     private Surface mSurface;
     private boolean mReleaseSurface;

@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.view.shoot;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
@@ -22,6 +23,7 @@ import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.getCame
 /**
  * Created by Carlos on 2015/10/13.
  */
+@TargetApi(value = 17)
 public class CameraRecordRender implements GLSurfaceView.Renderer {
     private static final int RECORDING_OFF = 0;
     private static final int RECORDING_ON = 1;

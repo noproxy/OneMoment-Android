@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.view.shoot;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
@@ -25,6 +26,7 @@ import co.yishun.onemoment.app.ui.view.shoot.video.EncoderConfig;
 /**
  * Created by Carlos on 2015/10/13.
  */
+@TargetApi(18)
 public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceTexture.OnFrameAvailableListener, IShootView {
     private static final String TAG = "CameraGLSurfaceView";
     private final Object mLock = new Object();
