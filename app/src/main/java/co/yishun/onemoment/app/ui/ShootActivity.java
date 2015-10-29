@@ -156,11 +156,20 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     @Override
     public void call() {
+        Log.i(TAG, "call");
         Toast.makeText(ShootActivity.this, "start record", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void accept(File file) {
+        Log.i(TAG, "accept: " + file);
         Toast.makeText(ShootActivity.this, "success: " + file.getPath(), Toast.LENGTH_SHORT).show();
+        delayStart(file);
+        this.finish();
+    }
+
+    @UiThread(delay = 1000)
+    void delayStart(File file) {
+        MomentCreateActivity_.intent(this).videoPath(file.getPath()).start();
     }
 }
