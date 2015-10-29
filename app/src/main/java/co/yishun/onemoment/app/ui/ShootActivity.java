@@ -1,10 +1,12 @@
 package co.yishun.onemoment.app.ui;
 
+import android.animation.ObjectAnimator;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageSwitcher;
 import android.widget.Toast;
 
@@ -70,26 +72,19 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         int finalRadius = (int) Math.hypot(sceneRoot.getWidth(), sceneRoot.getHeight());
 
         SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, cx, cy, 0, finalRadius);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(500);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.setDuration(350);
         animator.start();
-
 
     }
 
-    @UiThread(delay = 50)
+    @UiThread(delay = 250)
     @AfterViews
     void sceneTransition() {
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_shoot, this);
         TransitionSet set = new TransitionSet();
-
-        Fade fadeIn = new Fade(Fade.IN);
-        fadeIn.addTarget(R.id.shootView);
-        fadeIn.setStartDelay(350);
-        set.addTransition(fadeIn);
-
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
-        set.setDuration(800);
+        set.setDuration(50);
         TransitionManager.go(scene, set);
 
         afterTransition();
@@ -100,6 +95,9 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         if (shootView instanceof CameraGLSurfaceView) {
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
         }
+        ObjectAnimator animator = ObjectAnimator.ofFloat(findViewById(R.id.maskImageView), "alpha", 1f, 0f).setDuration(350);
+        animator.start();
+
         setControllerBtn();
 
         recordFlashSwitch.getCurrentView().setOnClickListener(this::flashlightBtnClicked);

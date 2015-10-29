@@ -32,11 +32,11 @@ public interface World {
 
     @FormUrlEncoded
     @POST("/world/like/video/{video_id}")
-    ApiModel likeVideo(@Path("video_like") @NonNull String videoId, @NonNull String userId);
+    ApiModel likeVideo(@Path("video_id") @NonNull String videoId, @Field("account_id") @NonNull String userId);
 
     @FormUrlEncoded
     @POST("/world/unlike/video/{video_id}")
-    ApiModel unlikeVideo(@Path("video_like") @NonNull String videoId, @NonNull String userId);
+    ApiModel unlikeVideo(@Path("video_id") @NonNull String videoId, @Field("account_id") @NonNull String userId);
 
     @GET("/world/tags")
     List<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("ranking") @Nullable String ranking, @Query("sort") @Nullable

@@ -40,16 +40,17 @@ public class OnemomentPlayerView extends RelativeLayout
     private LinearLayout mHeadsContainer;
     private List<VideoResource> mVideoResources = new LinkedList<VideoResource>();
     private MediaPlayer mActiveMediaPlayer;
+
+    private OnIndexChangeListener indexChangeListener;
     private int mVideoIndex = 0;
     private boolean mShowPlayBtn = true;
     private boolean mAutoplay = false;
     private boolean mShowTags = true;
+    private boolean mPrepared = false;
 
     public OnemomentPlayerView(Context context) {
         super(context);
         init(context, null, 0);
-//        mActiveMediaPlayer.setDataSource();
-//        mActiveMediaPlayer.setNextMediaPlayer();
     }
 
     public OnemomentPlayerView(Context context, AttributeSet attrs) {
@@ -119,7 +120,7 @@ public class OnemomentPlayerView extends RelativeLayout
 
     public void stop() {
         if (mActiveMediaPlayer.isPlaying()) {
-            mActiveMediaPlayer.stop();
+            mActiveMediaPlayer.pause();
             mActiveMediaPlayer.release();
         }
     }
@@ -130,12 +131,16 @@ public class OnemomentPlayerView extends RelativeLayout
     }
 
     public void prepare() throws IOException {
+        if (mPrepared) return;
+
         if (mVideoResources.size() <= 0)
             return;
         VideoResource first = mVideoResources.get(0);
         mTagsContainer.setVideoTags(first.getVideoTags());
         mActiveMediaPlayer.setDataSource(getContext(), first.getVideoUri());
         mActiveMediaPlayer.prepare();
+        indexChangeListener.indexChangeTo(0);
+        mPrepared = true;
     }
 
     public void setShowPlayBtn(boolean mShowPlayBtn) {
@@ -183,7 +188,7 @@ public class OnemomentPlayerView extends RelativeLayout
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
         Log.i("[OPV]", "SurfaceChanged");
     }
 
@@ -224,6 +229,7 @@ public class OnemomentPlayerView extends RelativeLayout
             e.printStackTrace();
         }
 
+        indexChangeListener.indexChangeTo(mVideoIndex);
         mTagsContainer.setVideoTags(mVideoResources.get(mVideoIndex).getVideoTags());
         mTagsContainer.showTags();
 
@@ -235,8 +241,17 @@ public class OnemomentPlayerView extends RelativeLayout
             mPlayBtn.setVisibility(View.VISIBLE);
         }
     }
-
-    public void setOnTouchListener(View.OnTouchListener listener) {
-        mVideo.setOnTouchListener(listener);
+    public void setIndexChangeListener(OnIndexChangeListener indexChangeListener) {
+        this.indexChangeListener = indexChangeListener;
     }
+
+
+    public interface OnIndexChangeListener{
+        void indexChangeTo(int index);
+    }
+
+
+//    public void setOnTouchListener(View.OnTouchListener listener) {
+//        mVideo.setOnTouchListener(listener);
+//    }
 }

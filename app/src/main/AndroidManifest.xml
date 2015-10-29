@@ -171,9 +171,12 @@
                 android:value=".ui.MainActivity_"
                 />
         </activity>
-        <activity android:name=".ui.PlayActivity_"
+        <activity
+            android:name=".ui.PlayActivity_"
             android:theme="@style/AppTheme.PlayActivity">
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.TagActivity_"/>
         </activity>
     </application>
 

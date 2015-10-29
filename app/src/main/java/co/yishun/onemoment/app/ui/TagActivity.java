@@ -73,9 +73,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     CollapsingToolbarLayout collapsingToolbarLayout;
     ImageView videoImageView;
     SwipeRefreshLayout swipeRefreshLayout;
-
-    @LayoutRes()
-    String a = "";
+    private boolean transitionOver = false;
+    private TagAdapter tagAdapter;
 
     @Nullable
     @Override
@@ -170,17 +169,17 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
-        videoImageView.setOnClickListener(v -> {
-            PlayActivity_.intent(this).worldTag(tag).start();
-        });
+        videoImageView.setOnClickListener(v -> PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start());
 
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
 
-        TagAdapter adapter = new TagAdapter(this, this);
-        recyclerView.setAdapter(adapter);
-        TagController_.getInstance_(this).setUp(adapter, recyclerView, tag);
+        tagAdapter = new TagAdapter(this, this);
+        recyclerView.setAdapter(tagAdapter);
+        TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
+
+        transitionOver = true;
     }
 
     @UiThread(delay = 600)
@@ -193,6 +192,16 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         collapsingToolbarLayout.setTitle(tag.name);
         collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.textColorPrimary));
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.textColorPrimaryInverse));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (transitionOver) {
+            Log.d("tag activity", "refresh");
+            tagAdapter.clear();
+            TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
+        }
     }
 
     @CallSuper
@@ -218,7 +227,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 //        if(RealmHelper.getTagNum("20151027") < 3){
 //            RealmHelper.addTag("test", 0.1f, 0.1f);
 //        } else Toast.makeText(this, "full", Toast.LENGTH_SHORT).show();
-        PlayActivity_.intent(this).tagVideo(item).start();
+        PlayActivity_.intent(this).oneVideo(item).type(PlayActivity.TYPE_VIDEO).start();
 
     }
 }
