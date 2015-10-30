@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="arv_normalSize">32dp</dimen>
-    <dimen name="arv_selectSize">48dp</dimen>
+    <dimen name="arv_normalSize">40dp</dimen>
+    <dimen name="arv_selectSize">56dp</dimen>
     <dimen name="arv_dividerSize">8dp</dimen>
 </resources>

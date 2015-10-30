@@ -104,10 +104,10 @@ public class PlayActivity extends BaseActivity {
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        setTitle(worldTag.name);
+        toolbar.setTitle(worldTag.name);
         String num = String.valueOf(worldTag.videosCount);
         SpannableString ss = new SpannableString(num + "人加入");
-        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length()+ 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
         Log.i("setupToolbar", "set home as up true");
         return ab;

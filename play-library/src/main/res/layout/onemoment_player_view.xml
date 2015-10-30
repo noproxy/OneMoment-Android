@@ -14,7 +14,8 @@
         <co.yishun.library.OnemomentPlaySurfaceView
             android:id="@+id/om_video_surface"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:keepScreenOn="true"/>
 
         <ImageView
             android:id="@+id/om_play_btn"
@@ -29,8 +30,8 @@
         android:layout_marginTop="8dp"
         android:id="@+id/om_avatar_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        app:arv_normalSize="32dp"
-        app:arv_selectSize="48dp"/>
+        android:layout_height="@dimen/arv_selectSize"
+        app:arv_normalSize="@dimen/arv_normalSize"
+        app:arv_selectSize="@dimen/arv_selectSize"/>
 
 </LinearLayout>

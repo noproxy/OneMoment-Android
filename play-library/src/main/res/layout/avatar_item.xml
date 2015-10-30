@@ -8,8 +8,8 @@
 
     <co.yishun.library.RoundRectImageView
         android:id="@+id/avatarItem"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/arv_normalSize"
+        android:layout_height="@dimen/arv_normalSize"
         android:layout_centerVertical="true"
         app:rrim_forceSquare="true"
         app:rrim_roundRate="1"/>
