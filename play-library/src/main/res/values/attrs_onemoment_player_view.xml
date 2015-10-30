@@ -1,7 +1,7 @@
 <resources>
     <declare-styleable name="OnemomentPlayerView">
-        <attr name="autoplay" format="boolean"/>
-        <attr name="showPlayButton" format="boolean"/>
-        <attr name="showTags" format="boolean"/>
+        <attr name="opv_autoplay" format="boolean"/>
+        <attr name="opv_showPlayButton" format="boolean"/>
+        <attr name="opv_showTags" format="boolean"/>
     </declare-styleable>
 </resources>

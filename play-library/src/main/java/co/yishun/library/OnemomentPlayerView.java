@@ -2,51 +2,38 @@ package co.yishun.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import co.yishun.library.resource.VideoResource;
-import co.yishun.library.tag.VideoTag;
 
 /**
  * OnemomentPlayerView
  *
  * @author ZhihaoJun
  */
-public class OnemomentPlayerView extends RelativeLayout
-        implements SurfaceHolder.Callback, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnCompletionListener {
-    private SurfaceHolder mVideoSurfaceHolder;
-    private SurfaceView mVideo;
-    private ImageView mPlayBtn;
-    private VideoTagsContainer mTagsContainer;
-    private LinearLayout mHeadsContainer;
-    private List<VideoResource> mVideoResources = new LinkedList<VideoResource>();
-    private MediaPlayer mActiveMediaPlayer;
+public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlaySurfaceView.PlayOneListener {
+    public final static String VIDEO_TAG_VIEW_TAG = "video_tag";
 
-    private OnIndexChangeListener indexChangeListener;
-    private int mVideoIndex = 0;
+    private OnemomentPlaySurfaceView mPlaySurface;
+    private AvatarRecyclerView mAvatarView;
+    private ImageView mPlayBtn;
+    private PlayTagContainer mTagContainer;
+    private List<VideoResource> mVideoResources = new LinkedList<VideoResource>();
+    private OnVideoChangeListener mVideoChangeListener;
+    private int mPreparedIndex = 0;
+    private int mCompletionIndex = 0;
     private boolean mShowPlayBtn = true;
     private boolean mAutoplay = false;
     private boolean mShowTags = true;
-    private boolean mPrepared = false;
+    private boolean mSinglePlay = true;
 
     public OnemomentPlayerView(Context context) {
         super(context);
@@ -64,17 +51,13 @@ public class OnemomentPlayerView extends RelativeLayout
     }
 
     public void init(Context context, AttributeSet attrs, int defStyle) {
-        mActiveMediaPlayer = new MediaPlayer();
         if (attrs != null) {
-            TypedArray ta = context.getTheme().obtainStyledAttributes(
-                    attrs,
-                    R.styleable.OnemomentPlayerView,
-                    0, 0);
+            TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.OnemomentPlayerView, 0, 0);
 
             try {
-                mShowPlayBtn = ta.getBoolean(R.styleable.OnemomentPlayerView_showPlayButton, true);
-                mAutoplay = ta.getBoolean(R.styleable.OnemomentPlayerView_autoplay, false);
-                mShowTags = ta.getBoolean(R.styleable.OnemomentPlayerView_showTags, true);
+                mShowPlayBtn = ta.getBoolean(R.styleable.OnemomentPlayerView_opv_showPlayButton, true);
+                mAutoplay = ta.getBoolean(R.styleable.OnemomentPlayerView_opv_autoplay, false);
+                mShowTags = ta.getBoolean(R.styleable.OnemomentPlayerView_opv_showTags, true);
             } finally {
                 ta.recycle();
             }
@@ -85,68 +68,98 @@ public class OnemomentPlayerView extends RelativeLayout
         }
 
         // get views
-        mVideo = (SurfaceView) findViewById(R.id.om_video_surface);
+        mPlaySurface = (OnemomentPlaySurfaceView) findViewById(R.id.om_video_surface);
         mPlayBtn = (ImageView) findViewById(R.id.om_play_btn);
-        mTagsContainer = (VideoTagsContainer) findViewById(R.id.om_tags_container);
-        mHeadsContainer = (LinearLayout) findViewById(R.id.om_heads_container);
+        mTagContainer = (PlayTagContainer) findViewById(R.id.om_tags_container);
+        mAvatarView = (AvatarRecyclerView) findViewById(R.id.om_avatar_recycler_view);
 
-        // add listeners
-        mVideoSurfaceHolder = mVideo.getHolder();
-        mVideoSurfaceHolder.addCallback(this);
-        mActiveMediaPlayer.setOnCompletionListener(this);
+        mPlaySurface.setOneListener(this);
+
+        mCompletionIndex = -1;
     }
 
     public boolean isPlaying() {
-        return mActiveMediaPlayer.isPlaying();
+        return mPlaySurface.isPlaying();
+    }
+
+    public void prepare() {
+        mPlaySurface.setVideoResource(mVideoResources.get(0));
+        if (mVideoResources.size() == 1) {
+            mPlaySurface.setNextVideoResource(mVideoResources.get(0));
+            mPreparedIndex = 0;
+        } else {
+            mPlaySurface.setNextVideoResource(mVideoResources.get(1));
+            mPreparedIndex = 1;
+        }
+        mPlaySurface.fistPrepare();
     }
 
     public void start() {
-        if (!mActiveMediaPlayer.isPlaying()) {
-            mActiveMediaPlayer.start();
-        }
+        mPlaySurface.start();
         if (mShowPlayBtn) {
             mPlayBtn.setVisibility(View.INVISIBLE);
         }
     }
 
     public void pause() {
-        if (mActiveMediaPlayer.isPlaying()) {
-            mActiveMediaPlayer.pause();
-        }
+        mPlaySurface.pause();
         if (mShowPlayBtn) {
             mPlayBtn.setVisibility(View.VISIBLE);
         }
     }
 
     public void stop() {
-        if (mActiveMediaPlayer.isPlaying()) {
-            mActiveMediaPlayer.pause();
-            mActiveMediaPlayer.release();
+        mPlaySurface.stop();
+    }
+
+    public void reset() {
+        if (mShowPlayBtn) {
+            mPlayBtn.setVisibility(View.VISIBLE);
+        }
+        if (mVideoResources.size() >= 1) {
+            mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
+
+            mPlaySurface.setVideoResource(mVideoResources.get(0));
+            mPreparedIndex = 0;
+            mPlaySurface.fistPrepare();
+        }
+        if (mVideoResources.size() >= 2) {
+            mPlaySurface.setNextVideoResource(mVideoResources.get(1));
+            mPreparedIndex = 1;
+            mPlaySurface.nextPrepare();
         }
     }
 
     public void addVideoResource(VideoResource videoResource) {
         Log.i("[OPV]", "add resource " + videoResource);
         mVideoResources.add(videoResource);
+        if (mVideoResources.size() == 1) {
+            mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
+
+            mPlaySurface.setVideoResource(mVideoResources.get(0));
+            mPreparedIndex = 0;
+            mTagContainer.setVideoTags(mVideoResources.get(0).getVideoTags());
+            mPlaySurface.fistPrepare();
+        }
+        if (mVideoResources.size() == 2) {
+            mPlaySurface.setNextVideoResource(mVideoResources.get(1));
+            mPreparedIndex = 1;
+            mPlaySurface.nextPrepare();
+        }
     }
 
-    public void prepare() throws IOException {
-        if (mPrepared) return;
-
-        if (mVideoResources.size() <= 0)
-            return;
-        VideoResource first = mVideoResources.get(0);
-        mTagsContainer.setVideoTags(first.getVideoTags());
-        mActiveMediaPlayer.setDataSource(getContext(), first.getVideoUri());
-        mActiveMediaPlayer.prepare();
-        indexChangeListener.indexChangeTo(0);
-        mPrepared = true;
+    public void addAvatarUrl(String url) {
+        mAvatarView.addAvatar(url);
     }
 
     public void setShowPlayBtn(boolean mShowPlayBtn) {
         this.mShowPlayBtn = mShowPlayBtn;
         invalidate();
         requestLayout();
+    }
+
+    public void setVideoChangeListener(OnVideoChangeListener videoChangeListener) {
+        this.mVideoChangeListener = videoChangeListener;
     }
 
     public boolean isAutoplay() {
@@ -158,100 +171,51 @@ public class OnemomentPlayerView extends RelativeLayout
     }
 
     public boolean isShowTags() {
-        return mTagsContainer.isShowTags();
-    }
-
-    public void addVideoTag(VideoTag tag) {
-        mTagsContainer.addTag(tag);
+        return mTagContainer.isShowTags();
     }
 
     public void setShowTags(boolean showTags) {
-        mTagsContainer.setShowTags(showTags);
+        mTagContainer.setShowTags(showTags);
     }
 
-    public boolean isTagEditable() {
-        return mTagsContainer.isEditable();
+    public int getCurrentIndex() {
+        return (mCompletionIndex + 1) % mVideoResources.size();
     }
 
-    public void setTagEditable(boolean mTagEditable) {
-        mTagsContainer.setEditable(mTagEditable);
-    }
-
-    public int getVideoIndex() {
-        return this.mVideoIndex;
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        Log.i("[OPV]", "SurfaceCreated");
-        mActiveMediaPlayer.setDisplay(surfaceHolder);
+    public void setSinglePlay(boolean singlePlay) {
+        this.mSinglePlay = singlePlay;
+        if (singlePlay) {
+            mAvatarView.setVisibility(GONE);
+        }
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
-        Log.i("[OPV]", "SurfaceChanged");
-    }
+    public void onOneCompletion() {
+        mCompletionIndex++;
+        mCompletionIndex %= mVideoResources.size();
 
-    @Override
-    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        Log.i("[OPV]", "SurfaceDestroyed");
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
-        Log.i("[OPV]", "mp error" + what + "");
-        Log.i("[OPV]", "mp error" + extra + "");
-        return false;
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mediaPlayer) {
-        Log.i("[OPV]", "mp complete");
-        if (mVideoIndex < mVideoResources.size() - 1) {
-            mVideoIndex++;
+        if (mSinglePlay || mVideoResources.size() == 1) {
+//            mAvatarView.scrollToNext();
+            reset();
         } else {
-            mVideoIndex = 0;
-        }
-
-        Log.i("[OPV]", "next video index: " + mVideoIndex);
-        VideoResource vr = mVideoResources.get(mVideoIndex);
-        mActiveMediaPlayer.reset();
-        try {
-            mActiveMediaPlayer.setDataSource(getContext(), vr.getVideoUri());
-        } catch (IOException e) {
-            Log.i("[OPV]", "media player set data source failed");
-            e.printStackTrace();
-        }
-        try {
-            mActiveMediaPlayer.prepare();
-        } catch (IOException e) {
-            Log.i("[OPV]", "media player prepare failed");
-            e.printStackTrace();
-        }
-
-        indexChangeListener.indexChangeTo(mVideoIndex);
-        mTagsContainer.setVideoTags(mVideoResources.get(mVideoIndex).getVideoTags());
-        mTagsContainer.showTags();
-
-        if (mVideoIndex != 0) {
-            mActiveMediaPlayer.start();
-        }
-
-        if (mShowPlayBtn && mVideoIndex == 0) {
-            mPlayBtn.setVisibility(View.VISIBLE);
+            mAvatarView.scrollToNext();
+            mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
+            mTagContainer.setVideoTags(mVideoResources.get((mCompletionIndex + 1) % mVideoResources.size()).getVideoTags());
+            if (mCompletionIndex == mVideoResources.size() - 2) {
+                mPlaySurface.setNextVideoResource(null);
+                return;
+            }
+            if (mCompletionIndex == mVideoResources.size() - 1) {
+                reset();
+                return;
+            }
+            mPreparedIndex++;
+            mPreparedIndex %= mVideoResources.size();
+            mPlaySurface.setNextVideoResource(mVideoResources.get(mPreparedIndex));
         }
     }
-    public void setIndexChangeListener(OnIndexChangeListener indexChangeListener) {
-        this.indexChangeListener = indexChangeListener;
+
+    public interface OnVideoChangeListener {
+        void videoChangeTo(int index);
     }
-
-
-    public interface OnIndexChangeListener{
-        void indexChangeTo(int index);
-    }
-
-
-//    public void setOnTouchListener(View.OnTouchListener listener) {
-//        mVideo.setOnTouchListener(listener);
-//    }
 }

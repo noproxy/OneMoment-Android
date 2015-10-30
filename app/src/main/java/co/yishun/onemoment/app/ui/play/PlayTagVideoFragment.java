@@ -40,7 +40,7 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  * Created on 2015/10/28.
  */
 @EFragment(R.layout.fragment_play_tag_video)
-public class PlayTagVideoFragment extends BaseFragment {
+public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlayerView.OnVideoChangeListener {
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
     @FragmentArg
     TagVideo oneVideo;
@@ -56,11 +56,12 @@ public class PlayTagVideoFragment extends BaseFragment {
     @AfterViews
     void setup() {
         Log.d("oneVideo", oneVideo.toString());
-
         Picasso.with(this.getActivity()).load(oneVideo.avatar).into(avatar);
 
         usernameTextView.setText(oneVideo.nickname);
 
+        videoPlayView.setSinglePlay(true);
+        videoPlayView.setVideoChangeListener(this);
         VideoResource vr1 = new LocalVideo(new BaseVideoResource(), FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo).getPath());
         List<VideoTag> tags = new LinkedList<VideoTag>();
         for (int i = 0; i < oneVideo.tags.size(); i++) {
@@ -68,12 +69,6 @@ public class PlayTagVideoFragment extends BaseFragment {
         }
         vr1 = new TaggedVideo(vr1, tags);
         videoPlayView.addVideoResource(vr1);
-
-        try {
-            videoPlayView.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         if (oneVideo.liked) {
             voteCountTextView.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Small_Inverse);
@@ -126,5 +121,10 @@ public class PlayTagVideoFragment extends BaseFragment {
         if (videoPlayView != null) {
             videoPlayView.stop();
         }
+    }
+
+    @Override
+    public void videoChangeTo(int index) {
+
     }
 }

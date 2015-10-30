@@ -227,7 +227,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 //        if(RealmHelper.getTagNum("20151027") < 3){
 //            RealmHelper.addTag("test", 0.1f, 0.1f);
 //        } else Toast.makeText(this, "full", Toast.LENGTH_SHORT).show();
-        PlayActivity_.intent(this).oneVideo(item).type(PlayActivity.TYPE_VIDEO).start();
+        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
 
     }
 }

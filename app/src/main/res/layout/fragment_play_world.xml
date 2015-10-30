@@ -5,42 +5,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <co.yishun.library.OnemomentPlayerView
+        android:id="@+id/videoPlayView"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="wrap_content">
 
-    </RelativeLayout>
+    </co.yishun.library.OnemomentPlayerView>
 
-    <co.yishun.onemoment.app.ui.view.SquareFrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <co.yishun.library.OnemomentPlayerView
-            android:id="@+id/videoPlayView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </co.yishun.library.OnemomentPlayerView>
-
-    </co.yishun.onemoment.app.ui.view.SquareFrameLayout>
-
-
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"/>
 
     <TextView
         android:id="@+id/voteCountTextView"
-        android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
         android:background="@drawable/bg_vote_up"
-        android:gravity="center"
         android:drawableLeft="@drawable/ic_like_video"
+        android:drawablePadding="16dp"
         android:drawableStart="@drawable/ic_like_video"
+        android:gravity="center"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:drawablePadding="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Inverse"
         android:text="32"
-        android:layout_gravity="center_horizontal"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Inverse"/>
 
 
 </LinearLayout>
