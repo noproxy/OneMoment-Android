@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="view_location_spinner_title">Location</string>
-    <string name="view_location_spinner_positive_btn">OK</string>
-    <string name="view_location_spinner_default">Location</string>
+    <string name="view_location_spinner_title">位置</string>
+    <string name="view_location_spinner_positive_btn">确定</string>
+    <string name="view_location_spinner_default">位置</string>
 
     <string-array name="provinces" translatable="false">
         <item>北京</item>

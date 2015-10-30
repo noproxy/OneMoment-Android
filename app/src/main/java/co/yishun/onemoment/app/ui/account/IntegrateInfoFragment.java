@@ -60,13 +60,12 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
     @ViewById
     CircleImageView profileImageView;
     @ViewById EditText nickNameEditText;
-    private String nickName;
     private Uri croppedProfileUri;
     private boolean avatarUploadOk = false;
 
     @AfterTextChange(R.id.nickNameEditText)
     void onNickNameChanged(Editable text, TextView nicknameText) {
-        nickName = text.toString().trim();
+        userInfo.name = text.toString().trim();
     }
 
     @Override
@@ -86,21 +85,22 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
 
     private boolean checkInfo() {
         Account.Gender gender = genderSpinner.getSelectGender();
+        userInfo.gender = gender.toString();
         if (gender == Account.Gender.OTHER) {
             mActivity.showSnackMsg(R.string.fragment_integrate_info_error_gender_empty);
             return false;
         }
 
-        String location = locationSpinner.getSelectedLocation();
-        if (location == null) {
+        userInfo.location = locationSpinner.getSelectedLocation();
+        if (TextUtils.isEmpty(userInfo.location)) {
             mActivity.showSnackMsg(R.string.fragment_integrate_info_error_location_empty);
             return false;
         }
-        if (TextUtils.isEmpty(nickName)) {
+        if (TextUtils.isEmpty(userInfo.name)) {
             mActivity.showSnackMsg(R.string.fragment_integrate_info_error_nickname_empty);
             return false;
         }
-        if (nickName.length() >= 90) {
+        if (userInfo.name.length() >= 90) {
             mActivity.showSnackMsg(R.string.fragment_integrate_info_error_nickname_long);
             return false;
         }
@@ -173,21 +173,19 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
     @SupposeBackground
     void signUp() {
         mActivity.showProgress(R.string.fragment_integrate_info_sign_up_progress);
-        String location = locationSpinner.getSelectedLocation();
-        assert location != null;
         User user;
         switch (type) {
             case WeChat:
-                user = mActivity.getAccountService().signUpByWeChat(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, nickName);
+                user = mActivity.getAccountService().signUpByWeChat(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
                 break;
             case Weibo:
-                user = mActivity.getAccountService().signUpByWeibo(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, nickName);
+                user = mActivity.getAccountService().signUpByWeibo(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
                 break;
             case QQ:
-                user = mActivity.getAccountService().signUpByQQ(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, nickName);
+                user = mActivity.getAccountService().signUpByQQ(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
                 break;
             default:
-                user = mActivity.getAccountService().signUpByPhone(phoneNum, password, nickName, genderSpinner.getSelectGender(), null, location);
+                user = mActivity.getAccountService().signUpByPhone(phoneNum, password, userInfo.name, Account.Gender.format(userInfo.gender), null, userInfo.location);
                 break;
         }
         if (user.code > 0) {
@@ -239,13 +237,15 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
 
     @AfterViews
     void setViews() {
-        if (userInfo != null) {
-            nickNameEditText.setText(userInfo.name);
-            genderSpinner.setSelectedGender(Account.Gender.format(userInfo.gender));
-            locationSpinner.setSelectedLocation(userInfo.location);
-            // not set uri, because three party image don't need upload
-            // if uri not null( user set avatar replace image from three-party), it will update after sign up
-            Picasso.with(mActivity).load(userInfo.avatar_large).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
+        if (userInfo == null) {
+            userInfo = new UserInfo();
         }
+        nickNameEditText.setText(userInfo.name);
+        genderSpinner.setSelectedGender(Account.Gender.format(userInfo.gender));
+        if (TextUtils.isEmpty(userInfo.location))
+            locationSpinner.setSelectedLocation(userInfo.location);
+        // not set uri, because three party image don't need upload
+        // if uri not null( user set avatar replace image from three-party), it will update after sign up
+        Picasso.with(mActivity).load(userInfo.avatar_large).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
     }
 }

@@ -1,7 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -12,7 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +47,9 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     private int currentItemId = 0;
     private WorldFragment worldFragment;
     private Account mAccount = OneMomentV3.createAdapter().create(Account.class);
+    private ImageView profileImageView;
+    private TextView usernameTextView;
+    private TextView locationTextView;
 
     /**
      * get fab to display SnackBar
@@ -84,12 +85,22 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     private void setupNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        ((NavigationView) findViewById(R.id.navigationView))
-                .setNavigationItemSelectedListener(menuItem -> {
-                    menuItem.setChecked(true);
-                    drawerLayout.closeDrawers();
-                    return navigationTo(menuItem.getItemId());
-                });
+        NavigationView navigationView = ((NavigationView) findViewById(R.id.navigationView));
+        // views in NavigationView can only be found from NavigationView since support 23.1.0
+        // http://stackoverflow.com/questions/33199764/android-api-23-change-navigation-view-headerlayout-textview
+        View header = LayoutInflater.from(this).inflate(R.layout.layout_nav_header, navigationView, false);
+        navigationView.addHeaderView(header);
+
+        profileImageView = (ImageView) header.findViewById(R.id.profileImageView);
+        usernameTextView = (TextView) header.findViewById(R.id.usernameTextView);
+        locationTextView = (TextView) header.findViewById(R.id.locationTextView);
+
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            menuItem.setChecked(true);
+            drawerLayout.closeDrawers();
+            return navigationTo(menuItem.getItemId());
+        });
+
         invalidateUserInfo(AccountHelper.getUserInfo(this));
         AccountHelper.setOnUserInfoChangeListener(this);
         floatingActionButton = new WeakReference<>((FloatingActionButton) findViewById(R.id.fab));
@@ -101,10 +112,9 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         if (user == null) {
             return;
         }
-        ImageView imageView = (ImageView) findViewById(R.id.profileImageView);
-        Picasso.with(this).load(user.avatarUrl).into(imageView);
-        ((TextView) findViewById(R.id.usernameTextView)).setText(user.nickname);
-        ((TextView) findViewById(R.id.locationTextView)).setText(user.location);
+        Picasso.with(this).load(user.avatarUrl).into(profileImageView);
+        usernameTextView.setText(user.nickname);
+        locationTextView.setText(user.location);
     }
 
     public void syncToggle() {
