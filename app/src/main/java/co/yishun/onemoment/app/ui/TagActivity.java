@@ -206,7 +206,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     protected void onResume() {
         super.onResume();
         if (transitionOver) {
-            Log.d("tag activity", "refresh");
             tagAdapter.clear();
             TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
         }
@@ -232,9 +231,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 
     @Override
     public void onClick(View view, TagVideo item) {
-//        if(RealmHelper.getTagNum("20151027") < 3){
-//            RealmHelper.addTag("test", 0.1f, 0.1f);
-//        } else Toast.makeText(this, "full", Toast.LENGTH_SHORT).show();
         PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
 
     }

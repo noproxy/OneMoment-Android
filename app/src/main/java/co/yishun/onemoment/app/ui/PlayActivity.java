@@ -10,6 +10,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -60,6 +61,7 @@ import co.yishun.onemoment.app.ui.play.PlayWorldFragment_;
 public class PlayActivity extends BaseActivity {
     public static final int TYPE_VIDEO = 1;
     public static final int TYPE_WORLD = 2;
+    private static final String TAG = "PlayActivity";
 
     @Extra
     int type;
@@ -69,6 +71,8 @@ public class PlayActivity extends BaseActivity {
     WorldTag worldTag;
     @ViewById
     Toolbar toolbar;
+    @ViewById
+    ImageView addImageView;
 
     private FragmentManager fragmentManager;
 
@@ -114,12 +118,20 @@ public class PlayActivity extends BaseActivity {
         return ab;
     }
 
+    @Click(R.id.addImageView)
+    void addVideo(View view) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
+                .transitionY(location[1] + view.getHeight() / 2).start();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

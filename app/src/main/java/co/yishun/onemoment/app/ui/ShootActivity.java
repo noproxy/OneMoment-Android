@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
 import android.animation.ObjectAnimator;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.transitionseverywhere.TransitionSet;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 
 import java.io.File;
@@ -46,6 +48,10 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @Nullable
     CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
+    @Extra
+    int transitionX;
+    @Extra
+    int transitionY;
 
     @Nullable
     @Override
@@ -66,11 +72,16 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     void preTransition() {
         sceneRoot = (ViewGroup) findViewById(R.id.linearLayout);
 
-        int cx = sceneRoot.getRight() - 132;
-        int cy = sceneRoot.getBottom() - 132;
         int finalRadius = (int) Math.hypot(sceneRoot.getWidth(), sceneRoot.getHeight());
-
-        SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, cx, cy, 0, finalRadius);
+        // before lollipop, the topMargin start below statusBar
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                int result = getResources().getDimensionPixelSize(resourceId);
+                transitionY -= result;
+            }
+        }
+        SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, transitionX, transitionY, 0, finalRadius);
         animator.setInterpolator(new AccelerateInterpolator());
         animator.setDuration(350);
         animator.start();

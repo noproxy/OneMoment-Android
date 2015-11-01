@@ -62,9 +62,6 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
     public void onClick(View view, WorldTag item) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        Log.d("location", Arrays.toString(location));
-        view.getLocationInWindow(location);
-        Log.d("location", Arrays.toString(location));
         TagActivity_.intent(this).tag(item).top(location[1]).from(TagActivity.FROM_WORLD_FRAGMENT).start();
     }
 

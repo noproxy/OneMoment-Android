@@ -69,7 +69,10 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Click(R.id.fab)
     void startShoot(View view) {
-        ShootActivity_.intent(this).start();
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
+                .transitionY(location[1] + view.getHeight() / 2).start();
     }
 
     @Override
