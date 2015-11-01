@@ -10,12 +10,10 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +29,6 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiModel;
-import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
@@ -71,9 +68,9 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
         videoPlayView.addVideoResource(vr1);
 
         if (oneVideo.liked) {
-            voteCountTextView.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Small_Inverse);
+            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
         } else {
-            voteCountTextView.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Small);
+            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
         }
         voteCountTextView.setText(oneVideo.likeNum + "");
     }
@@ -106,11 +103,11 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
     void voteSuccess() {
         if (oneVideo.liked) {
             oneVideo.likeNum++;
-            voteCountTextView.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Small_Inverse);
+            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
             voteCountTextView.setText(oneVideo.likeNum + "");
         } else {
             oneVideo.likeNum--;
-            voteCountTextView.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Small);
+            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
             voteCountTextView.setText(oneVideo.likeNum + "");
         }
     }

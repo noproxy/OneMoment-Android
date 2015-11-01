@@ -25,6 +25,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     private VideoResource mNextVideoResource;
     private boolean mHolderCreated = false;
     private boolean mHolderDestroyed = false;
+    private boolean mMediaError = false;
     private boolean mStop;
     private PlayOneListener mOneListener;
 
@@ -169,7 +170,10 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Log.e(TAG, what + " " + extra);
-        return false;
+        mMediaError = true;
+        reset();
+        nextPrepare();
+        return true;
     }
 
     @Override
