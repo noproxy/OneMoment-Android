@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import co.yishun.onemoment.app.R;
@@ -22,7 +22,7 @@ import co.yishun.onemoment.app.R;
  * Created by Carlos on 2015/11/1.
  */
 public class MomentCountDateView extends LinearLayout {
-    public static final String DATE_FORMAT = "yyyy/MM/DD";
+    public static final String DATE_FORMAT = "yyyy/MM/dd";
     public static final String HTML_PART0 = "<font color='";
     public static final String HTML_PART1 = "'>";
     public static final String HTML_PART2 = "</font>";
@@ -55,13 +55,12 @@ public class MomentCountDateView extends LinearLayout {
     private void init() {
         this.setOrientation(HORIZONTAL);
         this.setGravity(Gravity.CENTER);
-        LayoutInflater.from(getContext()).inflate(R.layout.merge_permission_switch, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.merge_moment_count_date_view, this, true);
 
         countTextView = (TextView) findViewById(R.id.countTextView);
         dateTextView = (TextView) findViewById(R.id.dateTextView);
 
-        Calendar calendar = Calendar.getInstance();
-        String date = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(calendar);
+        String date = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(new Date());
         dateTextView.setText(date);
 
         Resources resources = getContext().getResources();
