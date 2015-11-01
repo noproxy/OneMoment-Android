@@ -87,4 +87,11 @@
         <item name="android:windowEnterAnimation">@null</item>
         <item name="android:windowExitAnimation">@anim/shrink_fade_out_from_bottom</item>
     </style>
+
+    <style name="AppTheme.MomentCreateActivity">
+    </style>
+
+    <style name="SwitchTextAppearance" parent="TextAppearance.AppCompat.Widget.Switch">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
 </resources>
