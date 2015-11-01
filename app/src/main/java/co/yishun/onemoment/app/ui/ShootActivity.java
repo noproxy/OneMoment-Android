@@ -6,12 +6,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageSwitcher;
 import android.widget.Toast;
 
-import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
@@ -43,15 +40,15 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     ImageSwitcher recordFlashSwitch;
     //    @ViewById unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
     ImageSwitcher cameraSwitch;
+    @Extra
+    int transitionX;
+    @Extra
+    int transitionY;
     private ViewGroup sceneRoot;
     private
     @Nullable
     CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
-    @Extra
-    int transitionX;
-    @Extra
-    int transitionY;
 
     @Nullable
     @Override
@@ -71,20 +68,24 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @AfterViews
     void preTransition() {
         sceneRoot = (ViewGroup) findViewById(R.id.linearLayout);
-
-        int finalRadius = (int) Math.hypot(sceneRoot.getWidth(), sceneRoot.getHeight());
-        // before lollipop, the topMargin start below statusBar
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-            if (resourceId > 0) {
-                int result = getResources().getDimensionPixelSize(resourceId);
-                transitionY -= result;
+        sceneRoot.setVisibility(View.INVISIBLE);
+        sceneRoot.post(() -> {
+            int finalRadius = (int) Math.hypot(sceneRoot.getWidth(), sceneRoot.getHeight());
+            // before lollipop, the topMargin start below statusBar
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+                if (resourceId > 0) {
+                    int result = getResources().getDimensionPixelSize(resourceId);
+                    transitionY -= result;
+                }
             }
-        }
-        SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, transitionX, transitionY, 0, finalRadius);
-        animator.setInterpolator(new AccelerateInterpolator());
-        animator.setDuration(350);
-        animator.start();
+            SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, transitionX, transitionY, 0, finalRadius);
+//        animator.setInterpolator(new DecelerateInterpolator());
+            Log.d(TAG, transitionX + " " + transitionY + " " + finalRadius);
+            animator.setDuration(350);
+            animator.start();
+            sceneRoot.setVisibility(View.VISIBLE);
+        });
 
     }
 
@@ -96,7 +97,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
         set.setDuration(50);
         TransitionManager.go(scene, set);
-
+        findViewById(R.id.shootView).setVisibility(View.INVISIBLE);
         afterTransition();
     }
 
@@ -108,6 +109,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(findViewById(R.id.maskImageView), "alpha", 1f, 0f).setDuration(350);
         animator.start();
+        ((View) shootView).setVisibility(View.VISIBLE);
 
         recordFlashSwitch = (ImageSwitcher) findViewById(R.id.recordFlashSwitch);
         cameraSwitch = (ImageSwitcher) findViewById(R.id.cameraSwitch);
