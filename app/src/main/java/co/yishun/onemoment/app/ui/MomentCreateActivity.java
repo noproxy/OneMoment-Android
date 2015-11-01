@@ -16,6 +16,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.view.MomentCountDateView;
 import co.yishun.onemoment.app.ui.view.PermissionSwitch;
@@ -30,8 +31,9 @@ public class MomentCreateActivity extends BaseActivity {
     @Extra String videoPath;
     @ViewById VideoView videoView;
     @ViewById Toolbar toolbar;
-    @Extra boolean fromWorld = false;
+    @Extra boolean forWorld = false;
     @ViewById FrameLayout containerFrameLayout;
+    @Extra WorldTag worldTag;
 
     @Nullable
     @Override
@@ -43,7 +45,7 @@ public class MomentCreateActivity extends BaseActivity {
     void addView() {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         View child;
-        if (fromWorld) {
+        if (forWorld) {
             child = new PermissionSwitch(this);
         } else {
             child = new MomentCountDateView(this);

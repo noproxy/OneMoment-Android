@@ -6,12 +6,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageSwitcher;
 import android.widget.Toast;
 
-import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
@@ -24,6 +22,7 @@ import org.androidannotations.annotations.UiThread;
 import java.io.File;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -43,15 +42,18 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     ImageSwitcher recordFlashSwitch;
     //    @ViewById unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
     ImageSwitcher cameraSwitch;
+    @Extra int transitionX;
+    @Extra int transitionY;
+
+    // forwarding to MomentCreateActivity
+    @Extra boolean forWorld = false;
+    @Extra WorldTag worldTag;
+
     private ViewGroup sceneRoot;
     private
     @Nullable
     CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
-    @Extra
-    int transitionX;
-    @Extra
-    int transitionY;
 
     @Nullable
     @Override
@@ -74,7 +76,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
         int finalRadius = (int) Math.hypot(sceneRoot.getWidth(), sceneRoot.getHeight());
         // before lollipop, the topMargin start below statusBar
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 int result = getResources().getDimensionPixelSize(resourceId);
@@ -180,6 +182,6 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     @UiThread(delay = 1000)
     void delayStart(File file) {
-        MomentCreateActivity_.intent(this).videoPath(file.getPath()).start();
+        MomentCreateActivity_.intent(this).videoPath(file.getPath()).forWorld(forWorld).worldTag(worldTag).start();
     }
 }

@@ -10,44 +10,19 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import co.yishun.library.OnemomentPlayerView;
-import co.yishun.library.resource.BaseVideoResource;
-import co.yishun.library.resource.LocalVideo;
-import co.yishun.library.resource.TaggedVideo;
-import co.yishun.library.resource.VideoResource;
-import co.yishun.library.tag.BaseVideoTag;
-import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountHelper;
-import co.yishun.onemoment.app.api.World;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
-import co.yishun.onemoment.app.api.model.ApiModel;
-import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.WorldTag;
-import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
@@ -112,7 +87,7 @@ public class PlayActivity extends BaseActivity {
         ab.setTitle(worldTag.name);
         String num = String.valueOf(worldTag.videosCount);
         SpannableString ss = new SpannableString(num + "人加入");
-        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length()+ 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
         Log.i("setupToolbar", "set home as up true");
         return ab;
@@ -123,7 +98,7 @@ public class PlayActivity extends BaseActivity {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).start();
+                .transitionY(location[1] + view.getHeight() / 2).worldTag(worldTag).forWorld(true).start();
     }
 
     @Override
