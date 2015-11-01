@@ -134,10 +134,10 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     @UiThread
     void refreshUserInfo(int index) {
         if (tagVideos.get(index).liked) {
-            voteCountTextView.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Small_Inverse);
+            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
             voteCountTextView.setText(tagVideos.get(index).likeNum + "");
         } else {
-            voteCountTextView.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Small);
+            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
             voteCountTextView.setText(tagVideos.get(index).likeNum + "");
         }
         usernameTextView.setText(tagVideos.get(index).nickname);

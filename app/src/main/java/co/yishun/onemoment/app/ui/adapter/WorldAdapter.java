@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +87,7 @@ public class WorldAdapter extends AbstractRecyclerViewAdapter<WorldTag, WorldAda
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
+//            ((CardView)itemView).setPreventCornerOverlap(false);
             itemImageView = (ImageView) itemView.findViewById(R.id.itemImageView);
             numTextView = (TextView) itemView.findViewById(R.id.numTextView);
             tagTextView = (TextView) itemView.findViewById(R.id.tagTextView);

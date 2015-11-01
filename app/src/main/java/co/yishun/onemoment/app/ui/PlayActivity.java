@@ -10,6 +10,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -104,12 +105,22 @@ public class PlayActivity extends BaseActivity {
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle(worldTag.name);
+        ab.setTitle(worldTag.name);
         String num = String.valueOf(worldTag.videosCount);
         SpannableString ss = new SpannableString(num + "人加入");
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length()+ 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
         Log.i("setupToolbar", "set home as up true");
         return ab;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

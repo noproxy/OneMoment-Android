@@ -3,6 +3,8 @@ package co.yishun.onemoment.app.ui;
 import android.animation.ArgbEvaluator;
 import android.animation.FloatEvaluator;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -95,16 +97,22 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         if (from == FROM_WORLD_FRAGMENT) {
             coordinatorLayout.addView(LayoutInflater.from(this).inflate(
                     R.layout.scene_activity_tag_world_smooth, coordinatorLayout, false));
-            setLayout();
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
-            params.topMargin += top;
         } else if (from == FROM_SEARCH_ACTIVITY) {
             coordinatorLayout.addView(LayoutInflater.from(this).inflate(
                     R.layout.scene_activity_tag_search_smooth, coordinatorLayout, false));
-            setLayout();
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
-            params.topMargin += top;
         }
+        setLayout();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
+        // before lollipop, the topMargin start below statusBar
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                int result = getResources().getDimensionPixelSize(resourceId);
+                top -= result;
+            }
+        }
+        params.topMargin += top;
+        videoImageView.setLayoutParams(params);
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         collapsingToolbarLayout.setTitle("");
