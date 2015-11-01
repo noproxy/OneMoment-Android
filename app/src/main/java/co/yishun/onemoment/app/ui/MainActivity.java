@@ -97,7 +97,9 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         locationTextView = (TextView) header.findViewById(R.id.locationTextView);
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-            menuItem.setChecked(true);
+            if (menuItem.getGroupId() == R.id.group_switch) {
+                menuItem.setChecked(true);
+            }
             drawerLayout.closeDrawers();
             return navigationTo(menuItem.getItemId());
         });
@@ -167,15 +169,15 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Override
     public void onBackPressed() {
-        if (currentItemId != R.id.navigation_item_0) {
-            if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
-                drawerLayout.closeDrawers();
-            } else {
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawers();
+        } else {
+            if (currentItemId != R.id.navigation_item_0) {
                 navigationTo(R.id.navigation_item_0);
                 ((NavigationView) findViewById(R.id.navigationView)).setCheckedItem(R.id.navigation_item_0);
-            }
-        } else
-            supportFinishAfterTransition();
+            } else
+                supportFinishAfterTransition();
+        }
     }
 
     @Override
