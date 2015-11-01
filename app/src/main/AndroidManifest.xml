@@ -175,6 +175,15 @@
             android:name=".ui.PlayActivity_"
             android:theme="@style/AppTheme.PlayActivity">
         </activity>
+        <activity
+            android:name=".ui.MomentCreateActivity_"
+            android:theme="@style/AppTheme.MomentCreateActivity"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity_"
+                />
+        </activity>
     </application>
 
 </manifest>

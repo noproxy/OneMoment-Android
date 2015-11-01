@@ -165,7 +165,7 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
                 case RECORDING_ON:
                 case RECORDING_RESUMED:
                     Log.i(TAG, "else RECORDING_RESUME");
-                    mVideoEncoder.stopRecording();
+                    mVideoEncoder.stopRecording(() -> mCameraHandler.sendEmptyMessage(CameraGLSurfaceView.CameraHandler.END));
                     mRecordingStatus = RECORDING_OFF;
                     break;
                 case RECORDING_OFF:

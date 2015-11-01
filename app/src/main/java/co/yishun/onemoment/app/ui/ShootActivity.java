@@ -21,6 +21,7 @@ import org.androidannotations.annotations.UiThread;
 import java.io.File;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -40,10 +41,18 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     ImageSwitcher recordFlashSwitch;
     //    @ViewById unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
     ImageSwitcher cameraSwitch;
+
     @Extra
     int transitionX;
     @Extra
     int transitionY;
+
+    // forwarding to MomentCreateActivity
+    @Extra
+    boolean forWorld = false;
+    @Extra
+    WorldTag worldTag;
+
     private ViewGroup sceneRoot;
     private
     @Nullable
@@ -97,7 +106,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
         set.setDuration(50);
         TransitionManager.go(scene, set);
-        findViewById(R.id.shootView).setVisibility(View.INVISIBLE);
+//        findViewById(R.id.shootView).setVisibility(View.INVISIBLE);
         afterTransition();
     }
 
@@ -109,7 +118,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(findViewById(R.id.maskImageView), "alpha", 1f, 0f).setDuration(350);
         animator.start();
-        ((View) shootView).setVisibility(View.VISIBLE);
+//        ((View) shootView).setVisibility(View.VISIBLE);
 
         recordFlashSwitch = (ImageSwitcher) findViewById(R.id.recordFlashSwitch);
         cameraSwitch = (ImageSwitcher) findViewById(R.id.cameraSwitch);
@@ -168,11 +177,20 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     @Override
     public void call() {
+        Log.i(TAG, "call");
         Toast.makeText(ShootActivity.this, "start record", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void accept(File file) {
+        Log.i(TAG, "accept: " + file);
         Toast.makeText(ShootActivity.this, "success: " + file.getPath(), Toast.LENGTH_SHORT).show();
+        delayStart(file);
+        this.finish();
+    }
+
+    @UiThread(delay = 1000)
+    void delayStart(File file) {
+        MomentCreateActivity_.intent(this).videoPath(file.getPath()).forWorld(forWorld).worldTag(worldTag).start();
     }
 }

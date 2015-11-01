@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:gravity="center"
+       android:orientation="vertical"
+       tools:showIn="@layout/activity_moment_create"
+    >
+
+    <Switch
+        android:id="@+id/permissionSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:paddingBottom="12dp"
+        android:switchTextAppearance="@style/SwitchTextAppearance"
+        android:textOff="@string/activity_moment_create_private_text"
+        android:textOn="@string/activity_moment_create_public_text"
+        android:thumb="@drawable/ic_permission_switch"
+        android:track="@drawable/bg_permission_switch"
+        />
+
+    <TextView
+        android:id="@+id/hintText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_moment_create_private_hint"
+        />
+</merge>

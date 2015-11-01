@@ -40,7 +40,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     private CameraId mCameraId;
     private Camera.Size mSize;
     private SurfaceTexture mSurfaceTexture;
-
+    private File file;
+    private Consumer<File> onEndListener;
 
     public CameraGLSurfaceView(Context context) {
         super(context);
@@ -91,6 +92,10 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
 
         return cacheDir;
+    }
+
+    void onRecordEnd() {
+
     }
 
     private void init() {
@@ -244,7 +249,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     @Override
     public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
         Handler uiHandler = new Handler(Looper.getMainLooper());
-        File file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
+        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
         Log.i(TAG, file.toString());
         queueEvent(() -> mCameraRenderer.setEncoderConfig(new EncoderConfig(file, 480, 480, 1024 * 1024)));
         queueEvent(() -> {
@@ -252,9 +257,15 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
             uiHandler.post(recordStartCallback::call);
             postDelayed(() -> {
                 mCameraRenderer.setRecordingEnabled(false);
-                uiHandler.post(() -> recordEndConsumer.accept(file));
+                onEndListener = recordEndConsumer;
             }, 1200);
         });
+    }
+
+    private void onEnd() {
+        if (onEndListener != null) {
+            onEndListener.accept(file);
+        }
     }
 
     public void changeFilter(FilterType filterType) {
@@ -263,6 +274,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
     public class CameraHandler extends Handler {
         public static final int START = 1001;
+        public static final int END = 1004;
         public static final int STOP = 1002;
         public static final int RESUME = 1003;
 
@@ -288,6 +300,9 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
                     break;
                 case CameraHandler.STOP:
                     innerReleaseCamera();
+                    break;
+                case END:
+                    onEnd();
                     break;
                 default:
                     break;
