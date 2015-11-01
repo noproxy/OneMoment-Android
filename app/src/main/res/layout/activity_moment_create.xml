@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/containerRelativeLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -28,48 +30,19 @@
         android:textColor="@color/textColorPrimaryInverse"
         />
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/containerFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/nextBtn"
         android:layout_below="@id/videoView"
         android:gravity="center"
-        android:orientation="vertical"
         >
 
-        <Switch
-            android:id="@+id/permissionSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:paddingBottom="12dp"
-            android:switchTextAppearance="@style/SwitchTextAppearance"
-            android:textOff="@string/activity_moment_create_private_text"
-            android:textOn="@string/activity_moment_create_public_text"
-            android:thumb="@drawable/ic_permission_switch"
-            android:track="@drawable/bg_permission_switch"
-            />
+        <!--<include layout="@layout/merge_permission_switch"/>-->
 
-        <TextView
-            android:id="@+id/hintText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/activity_moment_create_private_hint"
-            />
-        <!--<TextView-->
-        <!--android:id="@+id/dateTextView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textAppearance="?android:textAppearanceLarge"-->
-        <!--android:textColor="@color/textColorPrimaryDark"-->
-        <!--tools:text="2014/06/11"/>-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/countTextView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--tools:text="第110个一瞬"-->
-        <!--/>-->
+        <!--<include layout="@layout/merge_moment_count_date_view"/>-->
 
 
-    </LinearLayout>
+    </FrameLayout>
 </RelativeLayout>

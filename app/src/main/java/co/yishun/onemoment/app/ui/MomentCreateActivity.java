@@ -3,10 +3,10 @@ package co.yishun.onemoment.app.ui;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.VideoView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -17,6 +17,8 @@ import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.view.MomentCountDateView;
+import co.yishun.onemoment.app.ui.view.PermissionSwitch;
 
 /**
  * Created by Carlos on 2015/10/29.
@@ -28,7 +30,8 @@ public class MomentCreateActivity extends BaseActivity {
     @Extra String videoPath;
     @ViewById VideoView videoView;
     @ViewById Toolbar toolbar;
-    private TextView countTextView;
+    @Extra boolean fromWorld = false;
+    @ViewById FrameLayout containerFrameLayout;
 
     @Nullable
     @Override
@@ -37,13 +40,20 @@ public class MomentCreateActivity extends BaseActivity {
     }
 
     @AfterViews
-    void setCountTextView() {
-        if (countTextView == null) return;
-        int count = 110;//TODO get it from database
-        final String prefixText = "<font color='" + getResources().getColor(R.color.colorAccent) + "'>" + getString(R.string.activity_moment_create_count_text_prefix) + "</font>";
-        final String suffixText = "<font color='" + getResources().getColor(R.color.colorAccent) + "'>" + getString(R.string.activity_moment_create_count_text_suffix) + "</font>";
-        final String countText = "<font color='" + getResources().getColor(R.color.textColorPrimaryDark) + "'>" + count + "</font>";
-        countTextView.setText(Html.fromHtml(prefixText + " " + countText + " " + suffixText));
+    void addView() {
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        View child;
+        if (fromWorld) {
+            child = new PermissionSwitch(this);
+        } else {
+            child = new MomentCountDateView(this);
+            setCountTextView();
+        }
+        containerFrameLayout.addView(child, params);
+    }
+
+    private void setCountTextView() {
+        int count = 110;//TODO get it from database and set it
     }
 
     @AfterViews
