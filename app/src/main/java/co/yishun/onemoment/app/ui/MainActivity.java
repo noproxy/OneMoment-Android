@@ -10,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -167,7 +168,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     @Override
     public void onBackPressed() {
         if (currentItemId != R.id.navigation_item_0) {
-            navigationTo(R.id.navigation_item_0);
+            if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
+                drawerLayout.closeDrawers();
+            } else {
+                navigationTo(R.id.navigation_item_0);
+                ((NavigationView) findViewById(R.id.navigationView)).setCheckedItem(R.id.navigation_item_0);
+            }
         } else
             supportFinishAfterTransition();
     }
