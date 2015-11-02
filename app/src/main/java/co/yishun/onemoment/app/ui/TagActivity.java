@@ -113,6 +113,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         }
         params.topMargin += top;
         videoImageView.setLayoutParams(params);
+//        coordinatorLayout.invalidate();
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         collapsingToolbarLayout.setTitle("");
