@@ -17,8 +17,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.EActivity;
@@ -37,6 +35,8 @@ import co.yishun.onemoment.app.ui.home.MeFragment_;
 import co.yishun.onemoment.app.ui.home.VerifyFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
+import co.yishun.onemoment.app.ui.view.floatingactionbutton.FloatingActionButton;
+import co.yishun.onemoment.app.ui.view.floatingactionbutton.FloatingActionsMenu;
 
 @EActivity
 public class MainActivity extends BaseActivity implements AccountHelper.OnUserInfoChangeListener {
@@ -109,23 +109,26 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         invalidateUserInfo(AccountHelper.getUserInfo(this));
         AccountHelper.setOnUserInfoChangeListener(this);
 
-        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) findViewById(R.id.fab);
-        floatingActionMenu = new WeakReference<>(floatingActionsMenu);
+        FloatingActionsMenu fam = (FloatingActionsMenu) findViewById(R.id.fab);
+        floatingActionMenu = new WeakReference<>(fam);
+
         FloatingActionButton momentShootBtn = new FloatingActionButton(this);
+        momentShootBtn.setIcon(R.drawable.pic_fab_menu_diary);
         momentShootBtn.setTitle("Moment");
         momentShootBtn.setOnClickListener(v -> {
             startShoot(v, false);
-            floatingActionsMenu.collapse();
+            fam.collapse();
         });
         FloatingActionButton worldShootBtn = new FloatingActionButton(this);
+        worldShootBtn.setIcon(R.drawable.pic_fab_menu_world);
         worldShootBtn.setTitle("World");
         worldShootBtn.setOnClickListener(v -> {
             startShoot(v, true);
-            floatingActionsMenu.collapse();
+            fam.collapse();
         });
 
-        floatingActionsMenu.addButton(momentShootBtn);
-        floatingActionsMenu.addButton(worldShootBtn);
+        fam.addButton(momentShootBtn);
+        fam.addButton(worldShootBtn);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
