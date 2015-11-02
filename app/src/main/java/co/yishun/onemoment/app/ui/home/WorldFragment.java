@@ -11,6 +11,8 @@ import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
 
 import org.androidannotations.annotations.EFragment;
 
+import java.util.Arrays;
+
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;

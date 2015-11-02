@@ -16,18 +16,21 @@
 
 package co.yishun.onemoment.app.ui.view.shoot.video;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.EGLContext;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.ui.view.shoot.gles.FullFrameRect;
 
 import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.FilterType;
@@ -58,7 +61,7 @@ import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.getCame
  * <p>
  * TODO: tweak the API (esp. textureId) so it's less awkward for simple use cases.
  */
-@Deprecated
+@TargetApi(17)
 public class TextureMovieEncoder implements Runnable {
     private static final String TAG = "TextureMovieEncoder";
 
@@ -147,8 +150,11 @@ public class TextureMovieEncoder implements Runnable {
      * so we can provide reasonable status UI (and let the caller know that movie encoding
      * has completed).
      */
-    public void stopRecording() {
-        mHandler.sendMessage(mHandler.obtainMessage(MSG_STOP_RECORDING));
+    public void stopRecording(Callback stopListener) {
+        Log.i(TAG, "stopRecording: " + stopListener);
+        Message message = mHandler.obtainMessage(MSG_STOP_RECORDING);
+        message.obj = stopListener;
+        mHandler.sendMessage(message);
         mHandler.sendMessage(mHandler.obtainMessage(MSG_QUIT));
         // We don't know when these will actually finish (or even start).  We don't want to
         // delay the UI thread though, so we return immediately.
@@ -283,9 +289,12 @@ public class TextureMovieEncoder implements Runnable {
     /**
      * Handles a request to stop encoding.
      */
-    private void handleStopRecording() {
+    private void handleStopRecording(@Nullable Callback callback) {
         Log.d(TAG, "handleStopRecording");
         mVideoEncoder.drainEncoder(true);
+        if (callback != null) {
+            callback.call();
+        }
         releaseEncoder();
     }
 
@@ -386,34 +395,42 @@ public class TextureMovieEncoder implements Runnable {
 
             switch (what) {
                 case MSG_START_RECORDING:
+                    Log.i(TAG, "MSG_START_RECORDING");
                     encoder.handleStartRecording((EncoderConfig) obj);
                     break;
                 case MSG_STOP_RECORDING:
-                    encoder.handleStopRecording();
+                    Log.i(TAG, "MSG_STOP_RECORDING");
+                    encoder.handleStopRecording((co.yishun.onemoment.app.function.Callback) obj);
                     break;
 
                 case MSG_SCALE_MVP_MATRIX:
+                    Log.i(TAG,"MSG_SCALE_MVP_MATRIX" );
                     encoder.handleSaleMVPMatrix((PointF) obj);
                     break;
 
                 case MSG_FRAME_AVAILABLE:
+                    Log.i(TAG, "MSG_FRAME_AVAILABLE");
                     long timestamp =
                             (((long) inputMessage.arg1) << 32) | (((long) inputMessage.arg2)
                                     & 0xffffffffL);
                     encoder.handleFrameAvailable((float[]) obj, timestamp);
                     break;
                 case MSG_SET_TEXTURE_ID:
+                    Log.i(TAG, "MSG_SET_TEXTURE_ID");
                     encoder.handleSetTexture(inputMessage.arg1);
                     break;
                 case MSG_UPDATE_SHARED_CONTEXT:
+                    Log.i(TAG, "MSG_UPDATE_SHARED_CONTEXT");
                     encoder.handleUpdateSharedContext((EGLContext) inputMessage.obj);
                     break;
 
                 case MSG_UPDATE_FILTER:
+                    Log.i(TAG, "MSG_UPDATE_FILTER");
                     encoder.handleUpdateFilter((FilterType) inputMessage.obj);
                     break;
 
                 case MSG_QUIT:
+                    Log.i(TAG, "MSG_QUIT");
                     Looper looper = Looper.myLooper();
                     if (looper != null) {
                         looper.quit();

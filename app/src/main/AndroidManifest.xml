@@ -72,7 +72,7 @@
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity"
+                android:value=".ui.MainActivity_"
                 />
         </activity>
 
@@ -166,6 +166,19 @@
             android:name=".ui.SearchActivity_"
             android:theme="@style/AppTheme.SearchActivity">
 
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity_"
+                />
+        </activity>
+        <activity
+            android:name=".ui.PlayActivity_"
+            android:theme="@style/AppTheme.PlayActivity">
+        </activity>
+        <activity
+            android:name=".ui.MomentCreateActivity_"
+            android:theme="@style/AppTheme.MomentCreateActivity"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity_"

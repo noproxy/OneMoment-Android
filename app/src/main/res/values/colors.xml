@@ -6,6 +6,7 @@
     <color name="colorSecondary">#17d79f</color>
 
     <color name="textColorPrimary">#8b8b8b</color>
+    <color name="textColorPrimaryDark">#545454</color>
     <color name="textColorPrimaryInverse">#ffffff</color>
 
     <color name="colorBackground">#f7f7f7</color>

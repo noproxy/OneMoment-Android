@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundRectImageView">
+        <attr name="rrim_forceSquare" format="boolean"/>
+        <attr name="rrim_roundRadius" format="dimension"/>
+        <attr name="rrim_roundRadius_x" format="dimension"/>
+        <attr name="rrim_roundRadius_y" format="dimension"/>
+        <attr name="rrim_roundRate" format="float" />
+    </declare-styleable>
+</resources>

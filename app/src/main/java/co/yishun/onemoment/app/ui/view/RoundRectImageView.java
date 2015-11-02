@@ -100,8 +100,12 @@ public class RoundRectImageView extends ImageView {
         updateShaderMatrix();
 
         mDrawableRect.set(0, 0, getWidth(), getHeight());
-        canvas.drawRoundRect(mDrawableRect, getWidth() / 2.0f * mRoundRate,
-                getHeight() / 2.0f * mRoundRate, mBitmapPaint);
+        if (mRoundRadius > 0 ) {
+            canvas.drawRoundRect(mDrawableRect, mRoundRadius, mRoundRadius, mBitmapPaint);
+        } else {
+            canvas.drawRoundRect(mDrawableRect, getWidth() / 2.0f * mRoundRate,
+                    getHeight() / 2.0f * mRoundRate, mBitmapPaint);
+        }
     }
 
     private void updateShaderMatrix() {

@@ -3,6 +3,8 @@ package co.yishun.onemoment.app.ui;
 import android.animation.ArgbEvaluator;
 import android.animation.FloatEvaluator;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -73,9 +75,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     CollapsingToolbarLayout collapsingToolbarLayout;
     ImageView videoImageView;
     SwipeRefreshLayout swipeRefreshLayout;
-
-    @LayoutRes()
-    String a = "";
+    private boolean transitionOver = false;
+    private TagAdapter tagAdapter;
 
     @Nullable
     @Override
@@ -96,16 +97,23 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         if (from == FROM_WORLD_FRAGMENT) {
             coordinatorLayout.addView(LayoutInflater.from(this).inflate(
                     R.layout.scene_activity_tag_world_smooth, coordinatorLayout, false));
-            setLayout();
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
-            params.topMargin += top;
         } else if (from == FROM_SEARCH_ACTIVITY) {
             coordinatorLayout.addView(LayoutInflater.from(this).inflate(
                     R.layout.scene_activity_tag_search_smooth, coordinatorLayout, false));
-            setLayout();
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
-            params.topMargin += top;
         }
+        setLayout();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
+        // before lollipop, the topMargin start below statusBar
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                int result = getResources().getDimensionPixelSize(resourceId);
+                top -= result;
+            }
+        }
+        params.topMargin += top;
+        videoImageView.setLayoutParams(params);
+//        coordinatorLayout.invalidate();
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         collapsingToolbarLayout.setTitle("");
@@ -170,14 +178,17 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
+        videoImageView.setOnClickListener(v -> PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start());
 
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
 
-        TagAdapter adapter = new TagAdapter(this, this);
-        recyclerView.setAdapter(adapter);
-        TagController_.getInstance_(this).setUp(adapter, recyclerView, tag);
+        tagAdapter = new TagAdapter(this, this);
+        recyclerView.setAdapter(tagAdapter);
+        TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
+
+        transitionOver = true;
     }
 
     @UiThread(delay = 600)
@@ -190,6 +201,15 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         collapsingToolbarLayout.setTitle(tag.name);
         collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.textColorPrimary));
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.textColorPrimaryInverse));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (transitionOver) {
+            tagAdapter.clear();
+            TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
+        }
     }
 
     @CallSuper
@@ -206,8 +226,13 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return ab;
     }
 
+    private void videoImageClick() {
+
+    }
+
     @Override
     public void onClick(View view, TagVideo item) {
+        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
 
     }
 }

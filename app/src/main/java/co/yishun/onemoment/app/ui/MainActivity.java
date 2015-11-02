@@ -1,7 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -12,7 +10,8 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.SearchView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +30,7 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
+import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
@@ -48,6 +48,9 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     private int currentItemId = 0;
     private WorldFragment worldFragment;
     private Account mAccount = OneMomentV3.createAdapter().create(Account.class);
+    private ImageView profileImageView;
+    private TextView usernameTextView;
+    private TextView locationTextView;
 
     /**
      * get fab to display SnackBar
@@ -66,13 +69,18 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Click(R.id.fab)
     void startShoot(View view) {
-        ShootActivity_.intent(this).start();
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
+                .transitionY(location[1] + view.getHeight() / 2).start();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RealmHelper.setup(this);
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
@@ -81,12 +89,24 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     private void setupNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        ((NavigationView) findViewById(R.id.navigationView))
-                .setNavigationItemSelectedListener(menuItem -> {
-                    menuItem.setChecked(true);
-                    drawerLayout.closeDrawers();
-                    return navigationTo(menuItem.getItemId());
-                });
+        NavigationView navigationView = ((NavigationView) findViewById(R.id.navigationView));
+        // views in NavigationView can only be found from NavigationView since support 23.1.0
+        // http://stackoverflow.com/questions/33199764/android-api-23-change-navigation-view-headerlayout-textview
+        View header = LayoutInflater.from(this).inflate(R.layout.layout_nav_header, navigationView, false);
+        navigationView.addHeaderView(header);
+
+        profileImageView = (ImageView) header.findViewById(R.id.profileImageView);
+        usernameTextView = (TextView) header.findViewById(R.id.usernameTextView);
+        locationTextView = (TextView) header.findViewById(R.id.locationTextView);
+
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            if (menuItem.getGroupId() == R.id.group_switch) {
+                menuItem.setChecked(true);
+            }
+            drawerLayout.closeDrawers();
+            return navigationTo(menuItem.getItemId());
+        });
+
         invalidateUserInfo(AccountHelper.getUserInfo(this));
         AccountHelper.setOnUserInfoChangeListener(this);
         floatingActionButton = new WeakReference<>((FloatingActionButton) findViewById(R.id.fab));
@@ -98,10 +118,9 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         if (user == null) {
             return;
         }
-        ImageView imageView = (ImageView) findViewById(R.id.profileImageView);
-        Picasso.with(this).load(user.avatarUrl).into(imageView);
-        ((TextView) findViewById(R.id.usernameTextView)).setText(user.nickname);
-        ((TextView) findViewById(R.id.locationTextView)).setText(user.location);
+        Picasso.with(this).load(user.avatarUrl).into(profileImageView);
+        usernameTextView.setText(user.nickname);
+        locationTextView.setText(user.location);
     }
 
     public void syncToggle() {
@@ -153,10 +172,15 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Override
     public void onBackPressed() {
-        if (currentItemId != R.id.navigation_item_0) {
-            navigationTo(R.id.navigation_item_0);
-        } else
-            supportFinishAfterTransition();
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawers();
+        } else {
+            if (currentItemId != R.id.navigation_item_0) {
+                navigationTo(R.id.navigation_item_0);
+                ((NavigationView) findViewById(R.id.navigationView)).setCheckedItem(R.id.navigation_item_0);
+            } else
+                supportFinishAfterTransition();
+        }
     }
 
     @Override

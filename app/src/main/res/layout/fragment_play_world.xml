@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <co.yishun.library.OnemomentPlayerView
+        android:id="@+id/videoPlayView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </co.yishun.library.OnemomentPlayerView>
+
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"/>
+
+    <TextView
+        android:id="@+id/voteCountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_vote_up"
+        android:drawableLeft="@drawable/ic_like_video"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_like_video"
+        android:gravity="center"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:text="32"
+        android:textAppearance="@style/TextAppearance.AppCompat.Inverse"/>
+
+
+</LinearLayout>

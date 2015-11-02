@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Base" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
     <style name="AppTheme.FitWindowsActivity">
