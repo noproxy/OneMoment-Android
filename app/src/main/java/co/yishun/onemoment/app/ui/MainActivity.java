@@ -83,6 +83,7 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
+        setActionMenu();
         navigationTo(R.id.navigation_item_0);
     }
 
@@ -109,6 +110,11 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         invalidateUserInfo(AccountHelper.getUserInfo(this));
         AccountHelper.setOnUserInfoChangeListener(this);
 
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
+        drawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    private void setActionMenu() {
         FloatingActionsMenu fam = (FloatingActionsMenu) findViewById(R.id.fab);
         floatingActionMenu = new WeakReference<>(fam);
 
@@ -130,8 +136,6 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         fam.addButton(momentShootBtn);
         fam.addButton(worldShootBtn);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
-        drawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     private void invalidateUserInfo(User user) {
