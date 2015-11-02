@@ -78,6 +78,7 @@ public class MomentCreateActivity extends BaseActivity {
 
     @Click
     void nextBtnClicked(View view) {
+        TagCreateActivity_.intent(this).worldTag(worldTag).forWorld(forWorld).videoPath(videoPath).start();
     }
 
 }
