@@ -124,6 +124,8 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
         FloatingActionButton momentShootBtn = new FloatingActionButton(this);
         momentShootBtn.setIcon(R.drawable.pic_fab_menu_diary);
+        momentShootBtn.setColorNormalResId(R.color.colorPrimary);
+        momentShootBtn.setColorPressedResId(R.color.colorPrimaryDark);
         momentShootBtn.setTitle("Moment");
         momentShootBtn.setOnClickListener(v -> {
             startShoot(v, false);
@@ -131,6 +133,8 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         });
         FloatingActionButton worldShootBtn = new FloatingActionButton(this);
         worldShootBtn.setIcon(R.drawable.pic_fab_menu_world);
+        worldShootBtn.setColorNormalResId(R.color.colorPrimary);
+        worldShootBtn.setColorPressedResId(R.color.colorPrimaryDark);
         worldShootBtn.setTitle("World");
         worldShootBtn.setOnClickListener(v -> {
             startShoot(v, true);
