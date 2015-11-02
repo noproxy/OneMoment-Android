@@ -74,13 +74,13 @@ public class EditTagContainer extends FrameLayout {
         this.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction()==MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
                     return true;
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (event.getY() > mSize)
                         return true;
-                    addTagListener.onAddTag(event.getX() / mSize, event.getY() / mSize);
+                    onAddTag(event.getX() / mSize, event.getY() / mSize);
                     return true;
                 }
                 return false;
@@ -128,7 +128,7 @@ public class EditTagContainer extends FrameLayout {
         return videoTags;
     }
 
-    public void setAddTagListener(OnAddTagListener listener) {
+    public void setOnAddTagListener(OnAddTagListener listener) {
         this.addTagListener = listener;
     }
 
@@ -151,6 +151,12 @@ public class EditTagContainer extends FrameLayout {
 
         Log.i("[VTC]", "tag container size " + mSize);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    private void onAddTag(float x, float y) {
+        if (addTagListener != null) {
+            addTagListener.onAddTag(x, y);
+        }
     }
 
     public interface OnAddTagListener {
