@@ -184,6 +184,16 @@
                 android:value=".ui.MainActivity_"
                 />
         </activity>
+        <activity
+            android:name=".ui.TagCreateActivity_"
+            android:theme="@style/AppTheme.TagCreateActivity"
+            >
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MomentCreateActivity_"
+                />
+        </activity>
     </application>
 
 </manifest>

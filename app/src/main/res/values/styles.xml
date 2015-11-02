@@ -91,6 +91,9 @@
     <style name="AppTheme.MomentCreateActivity">
     </style>
 
+    <style name="AppTheme.TagCreateActivity">
+    </style>
+
     <style name="SwitchTextAppearance" parent="TextAppearance.AppCompat.Widget.Switch">
         <item name="android:textColor">@color/colorAccent</item>
     </style>

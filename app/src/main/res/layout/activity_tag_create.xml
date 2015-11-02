@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"
+        />
+
+    <Button
+        android:id="@+id/nextBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:minHeight="48dp"
+        android:text="@string/activity_moment_create_next_btn_text"
+        android:textColor="@color/textColorPrimaryInverse"
+        />
+
+    <co.yishun.library.EditTagContainer
+        android:id="@+id/editTagContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/nextBtn"
+        android:layout_below="@id/toolbar"
+        >
+
+        <ImageView
+            android:id="@+id/momentPreviewImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/pic_world_empty"
+            />
+
+    </co.yishun.library.EditTagContainer>
+
+
+</RelativeLayout>
