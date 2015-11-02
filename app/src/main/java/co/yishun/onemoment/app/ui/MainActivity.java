@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -18,9 +17,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.squareup.picasso.Picasso;
 
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 
 import java.lang.ref.WeakReference;
@@ -40,7 +40,7 @@ import co.yishun.onemoment.app.ui.home.WorldFragment_;
 
 @EActivity
 public class MainActivity extends BaseActivity implements AccountHelper.OnUserInfoChangeListener {
-    private static WeakReference<FloatingActionButton> floatingActionButton;
+    private static WeakReference<FloatingActionsMenu> floatingActionMenu;
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawerLayout;
@@ -61,18 +61,17 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     public static
     @NonNull
     View withView(@NonNull View view) {
-        FloatingActionButton fab = floatingActionButton.get();
+        FloatingActionsMenu fab = floatingActionMenu.get();
         if (fab != null) {
             return fab;
         } else return view;
     }
 
-    @Click(R.id.fab)
-    void startShoot(View view) {
+    private void startShoot(View view, boolean forWorld) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).start();
+                .transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
     }
 
     @Override
@@ -109,7 +108,25 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
         invalidateUserInfo(AccountHelper.getUserInfo(this));
         AccountHelper.setOnUserInfoChangeListener(this);
-        floatingActionButton = new WeakReference<>((FloatingActionButton) findViewById(R.id.fab));
+
+        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) findViewById(R.id.fab);
+        floatingActionMenu = new WeakReference<>(floatingActionsMenu);
+        FloatingActionButton momentShootBtn = new FloatingActionButton(this);
+        momentShootBtn.setTitle("Moment");
+        momentShootBtn.setOnClickListener(v -> {
+            startShoot(v, false);
+            floatingActionsMenu.collapse();
+        });
+        FloatingActionButton worldShootBtn = new FloatingActionButton(this);
+        worldShootBtn.setTitle("World");
+        worldShootBtn.setOnClickListener(v -> {
+            startShoot(v, true);
+            floatingActionsMenu.collapse();
+        });
+
+        floatingActionsMenu.addButton(momentShootBtn);
+        floatingActionsMenu.addButton(worldShootBtn);
+
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
     }
@@ -242,7 +259,7 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     @Nullable
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        return floatingActionButton.get();
+        return floatingActionMenu.get();
     }
 
     @Override
