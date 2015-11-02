@@ -10,7 +10,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -148,7 +147,6 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        Log.i(TAG, "onTouch: " + event);
         // collapse fab if click outside of fab
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect outRect = new Rect();
