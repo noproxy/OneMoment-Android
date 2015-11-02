@@ -48,6 +48,13 @@ public class TagCreateActivity extends BaseActivity {
         Log.i("setupToolbar", "set home as up true");
     }
 
+    @AfterViews
+    void setEditTagContainer() {
+        editTagContainer.setOnAddTagListener((x, y) -> {
+            //TODO startActivity to add TAG
+        });
+    }
+
     @Click
     void nextBtnClicked(View view) {
 
