@@ -40,5 +40,20 @@
 
     </co.yishun.library.EditTagContainer>
 
+    <FrameLayout
+        android:id="@+id/searchFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:background="@color/colorWindowTranslucentBlack">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:background="@color/colorPrimary"/>
+
+    </FrameLayout>
 </RelativeLayout>

@@ -195,13 +195,6 @@
                 android:value=".ui.MomentCreateActivity_"
                 />
         </activity>
-        <activity android:name=".ui.TagSearchActivity_"
-            android:theme="@style/AppTheme.TagSearchActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.TagCreateActivity_"
-                />
-        </activity>
     </application>
 
 </manifest>

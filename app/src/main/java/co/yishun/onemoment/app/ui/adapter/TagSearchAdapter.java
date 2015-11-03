@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Collection;
-import java.util.List;
 
 import co.yishun.onemoment.app.R;
 
@@ -32,9 +31,12 @@ public class TagSearchAdapter extends AbstractRecyclerViewAdapter<String, TagSea
     }
 
     public boolean addFixedItems(Collection<? extends String> collection) {
+        if (fixedSize > 0) {
+            mItems.clear();
+        }
         boolean re = mItems.addAll(collection);
         fixedSize = collection.size();
-        notifyItemRangeChanged(mItems.size() - collection.size(), collection.size());
+        notifyDataSetChanged();
         return re;
     }
 
