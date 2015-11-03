@@ -34,7 +34,8 @@
 
     <co.yishun.onemoment.app.ui.view.SquareFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="16dp">
 
         <co.yishun.library.OnemomentPlayerView
             android:id="@+id/videoPlayView"
@@ -45,20 +46,6 @@
 
     </co.yishun.onemoment.app.ui.view.SquareFrameLayout>
 
-    <TextView
-        android:id="@+id/voteCountTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_vote_up"
-        android:drawableLeft="@drawable/ic_like_video"
-        android:drawablePadding="16dp"
-        android:drawableStart="@drawable/ic_like_video"
-        android:gravity="center"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:text="32"
-        android:textAppearance="@style/TextAppearance.AppCompat.Inverse"/>
+    <include layout="@layout/layout_play_vote"/>
 
 </LinearLayout>

@@ -137,7 +137,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         List<String> defaultTag = new ArrayList<>();
         defaultTag.add(AccountHelper.getUserInfo(this).location);
         defaultTag.add(new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date()));
-        if (forWorld) {
+        if (forWorld && worldTag != null && !"".equals(worldTag.name)) {
             defaultTag.add(worldTag.name);
         }
         adapter.addFixedItems(defaultTag);

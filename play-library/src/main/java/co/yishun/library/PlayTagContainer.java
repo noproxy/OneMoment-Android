@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,11 +18,7 @@ import co.yishun.library.tag.VideoTag;
 /**
  * Created by jay on 10/4/15.
  */
-public class PlayTagContainer extends FrameLayout {
-    public final static String VIDEO_TAG_VIEW_TAG = "video_tag";
-    private int mSize;
-    private List<VideoTag> videoTags;
-    private List<View> tagViews;
+public class PlayTagContainer extends TagContainer {
     private boolean mShowTags = true;
 
     public PlayTagContainer(Context context) {
@@ -51,25 +48,7 @@ public class PlayTagContainer extends FrameLayout {
 
         for (int i = 0; i < videoTags.size(); i++) {
             VideoTag videoTag = videoTags.get(i);
-
-            TextView textView;
-            if (i < tagViews.size()) {
-                textView = (TextView) tagViews.get(i);
-            } else {
-                textView = new TextView(getContext());
-                textView.setTag(VIDEO_TAG_VIEW_TAG);
-                tagViews.add(textView);
-            }
-            textView.setText(videoTag.getText());
-
-            int left = (int) (videoTag.getX() * getSize());
-            int top = (int) (videoTag.getY() * getSize());
-
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(left, top, 0, 0);
-            textView.setLayoutParams(params);
+            TextView textView = setTextView(videoTag);
             addView(textView);
         }
     }
@@ -86,25 +65,9 @@ public class PlayTagContainer extends FrameLayout {
         }
     }
 
-    public int getSize() {
-        return mSize;
-    }
-
-    public List<VideoTag> getVideoTags() {
-        return videoTags;
-    }
-
     public void setVideoTags(List<VideoTag> videoTags) {
         this.videoTags = videoTags;
         showTags();
-    }
-
-    public boolean isShowTags() {
-        return mShowTags;
-    }
-
-    public void setShowTags(boolean mShowTags) {
-        this.mShowTags = mShowTags;
     }
 
     @Override

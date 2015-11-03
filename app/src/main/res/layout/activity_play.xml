@@ -27,9 +27,9 @@
                 android:id="@+id/addImageView"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_gravity="right"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_action_search"
-                android:layout_gravity="right"/>
+                android:src="@drawable/ic_action_add"/>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 

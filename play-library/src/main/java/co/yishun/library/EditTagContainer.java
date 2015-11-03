@@ -16,11 +16,7 @@ import co.yishun.library.tag.VideoTag;
 /**
  * Created on 2015/10/29.
  */
-public class EditTagContainer extends RelativeLayout {
-    public final static String VIDEO_TAG_VIEW_TAG = "video_tag";
-    private int mSize;
-    private List<VideoTag> videoTags;
-    private List<View> tagViews;
+public class EditTagContainer extends TagContainer {
     private OnAddTagListener addTagListener;
 
     private View.OnTouchListener listener = new View.OnTouchListener() {
@@ -101,42 +97,11 @@ public class EditTagContainer extends RelativeLayout {
 
     public void addTag(VideoTag tag) {
         videoTags.add(tag);
-        TextView textView = new TextView(getContext());
+        TextView textView = setTextView(tag);
         textView.setOnTouchListener(listener);
-        textView.setTag(VIDEO_TAG_VIEW_TAG);
-
-        tagViews.add(textView);
-        textView.setText(tag.getText());
-        // position
-        int left = (int) (tag.getX() * getSize());
-        int top = (int) (tag.getY() * getSize());
-
-        textView.setSingleLine();
-        textView.setX(left);
-        textView.setY(top);
-        textView.setSingleLine(true);
         addView(textView);
+        tagViews.add(textView);
         Log.d("[ETC]", textView.getWidth() + " " + textView.getHeight());
-    }
-
-    private void clearTags() {
-        for (int i = 0; i < getChildCount(); ) {
-            View v = getChildAt(i);
-            Object tag = v.getTag();
-            if (tag != null && tag.equals(VIDEO_TAG_VIEW_TAG)) {
-                removeViewAt(i);
-            } else {
-                i++;
-            }
-        }
-    }
-
-    public int getSize() {
-        return mSize;
-    }
-
-    public List<VideoTag> getVideoTags() {
-        return videoTags;
     }
 
     public void setOnAddTagListener(OnAddTagListener listener) {
