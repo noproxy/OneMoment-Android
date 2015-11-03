@@ -16,5 +16,6 @@
 
     <color name="colorWindowTransparent">#00000000</color>
     <color name="colorWindowTranslucent">#f0f7f7f7</color>
+    <color name="colorWindowTranslucentBlack">#a0000000</color>
     <color name="colorDivider">#dcdcdc</color>
 </resources>

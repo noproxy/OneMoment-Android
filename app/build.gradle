@@ -153,6 +153,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'com.afollestad:material-dialogs:0.7.8.1'
     compile 'com.malinskiy:superrecyclerview:1.1.1'
+    compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
 }
 
 apply plugin: 'aar-link-sources'

@@ -2,7 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
         android:id="@+id/toolbar"
@@ -28,11 +29,12 @@
         android:layout_below="@id/toolbar"
         >
 
-        <ImageView
+        <co.yishun.onemoment.app.ui.view.RoundRectImageView
             android:id="@+id/momentPreviewImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/pic_world_empty"
+            app:force_square="true"
             />
 
     </co.yishun.library.EditTagContainer>

@@ -32,6 +32,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:name=".OMApplication"
@@ -188,10 +189,17 @@
             android:name=".ui.TagCreateActivity_"
             android:theme="@style/AppTheme.TagCreateActivity"
             >
-            >
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MomentCreateActivity_"
+                />
+        </activity>
+        <activity android:name=".ui.TagSearchActivity_"
+            android:theme="@style/AppTheme.TagSearchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.TagCreateActivity_"
                 />
         </activity>
     </application>
