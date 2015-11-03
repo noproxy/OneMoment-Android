@@ -43,15 +43,16 @@
         </android.support.v7.widget.Toolbar>
         <!--</io.codetail.widget.RevealFrameLayout>-->
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@color/colorPrimary">
-
-        </android.support.v7.widget.RecyclerView>
     </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@color/colorPrimary"/>
+
 
 </LinearLayout>

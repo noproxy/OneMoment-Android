@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -19,6 +19,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +30,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -36,6 +39,7 @@ import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -81,15 +85,22 @@ public class TagSearchActivity extends BaseActivity implements AbstractRecyclerV
     }
 
     @AfterViews
-    void preTransition() {
-        ObjectAnimator animatorBack = ObjectAnimator.ofInt(recyclerView, "alpha", 0, 1).setDuration(500);
-        animatorBack.start();
-    }
-
-    @AfterViews
     void setViews() {
-        setupToolbar(this, toolbar);
 
+        queryText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                search();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         queryText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 search();
@@ -98,45 +109,56 @@ public class TagSearchActivity extends BaseActivity implements AbstractRecyclerV
             return false;
         });
 
+        setupToolbar(this, toolbar);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
 
         adapter = new TagSearchAdapter(this, this);
         recyclerView.setAdapter(adapter);
-        adapter.add(AccountHelper.getUserInfo(this).location);
-        adapter.add(new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date()));
+
+        afterTransition();
+        getLocation();
+
+    }
+
+    void afterTransition() {
+        List<String> defaultTag = new ArrayList<>();
+        defaultTag.add(AccountHelper.getUserInfo(this).location);
+        defaultTag.add(new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date()));
         if (forWorld) {
-            adapter.add(worldTag);
+            defaultTag.add(worldTag);
         }
+        adapter.addFixedItems(defaultTag);
     }
 
     @CallSuper
     protected ActionBar setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
-        if (toolbar == null)
-            throw new UnsupportedOperationException("You need bind Toolbar instance to" +
-                    " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
         activity.setSupportActionBar(toolbar);
 
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowTitleEnabled(false);
-        Log.i("setupToolbar", "set home as up true");
         return ab;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_add, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.main_search) {
-            search();
+        if (item.getItemId() == R.id.menu_add) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(RESULT_DATA, queryText.getText().toString());
+            this.setResult(RESULT_OK, resultIntent);
+            checkPermission();
+            locationManager.removeUpdates(this);
+            exit();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -146,7 +168,6 @@ public class TagSearchActivity extends BaseActivity implements AbstractRecyclerV
         if ("".equals(queryText.getText().toString())) {
             return;
         }
-        hideKeyboard();
         TagSearchController_.getInstance_(this).setUp(adapter, recyclerView, queryText.getText().toString());
     }
 
@@ -165,26 +186,23 @@ public class TagSearchActivity extends BaseActivity implements AbstractRecyclerV
         Intent resultIntent = new Intent();
         resultIntent.putExtra(RESULT_DATA, item);
         this.setResult(RESULT_OK, resultIntent);
+        checkPermission();
+        locationManager.removeUpdates(this);
         exit();
     }
 
-    @AfterViews
+    @Background
     public void getLocation() {
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         String provider = LocationManager.NETWORK_PROVIDER;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-        }
+        checkPermission();
         Location lastKnownLocation = locationManager.getLastKnownLocation(provider);
         if (lastKnownLocation != null) {
             formatLocation(lastKnownLocation);
         }
 
-        locationManager.requestSingleUpdate(provider, this, null);
+        locationManager.requestSingleUpdate(provider, this, Looper.getMainLooper());
     }
 
     void formatLocation(Location location) {
@@ -197,7 +215,16 @@ public class TagSearchActivity extends BaseActivity implements AbstractRecyclerV
                     latitude, longitude, 1);
             if (addressList != null && addressList.size() > 0) {
                 Address address = addressList.get(0);
-                result = address.getAdminArea() + " " + address.getLocality();
+                String province = address.getAdminArea();
+                String city = address.getLocality();
+                if (province.endsWith("省")){
+                    province = province.substring(0, province.lastIndexOf("省"));
+                }
+                if (city.endsWith("市")){
+                    city = city.substring(0, city.lastIndexOf("市"));
+                }
+                result = province + " " + city;
+//                Log.d(TAG, address.toString());
                 addItem(0, result);
             }
         } catch (IOException e) {
@@ -211,6 +238,14 @@ public class TagSearchActivity extends BaseActivity implements AbstractRecyclerV
             adapter.add(item);
         } else {
             adapter.replaceItem(position, item);
+        }
+    }
+
+    void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                //not check
+            }
         }
     }
 

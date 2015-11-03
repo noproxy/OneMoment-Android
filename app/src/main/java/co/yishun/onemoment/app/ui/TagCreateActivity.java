@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -46,6 +48,11 @@ public class TagCreateActivity extends BaseActivity {
     }
 
     @AfterViews
+    void setupViews() {
+
+    }
+
+    @AfterViews
     void setupToolbar() {
         setSupportActionBar(toolbar);
 
@@ -55,6 +62,7 @@ public class TagCreateActivity extends BaseActivity {
         ab.setTitle(R.string.activity_moment_create_title_text);
         Log.i("setupToolbar", "set home as up true");
     }
+
 
     @AfterViews
     void setEditTagContainer() {

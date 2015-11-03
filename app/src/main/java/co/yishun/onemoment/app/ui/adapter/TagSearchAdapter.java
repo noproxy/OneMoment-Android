@@ -7,24 +7,47 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collection;
+import java.util.List;
+
 import co.yishun.onemoment.app.R;
 
 /**
  * Created by Jinge on 2015/11/2.
  */
 public class TagSearchAdapter extends AbstractRecyclerViewAdapter<String, TagSearchAdapter.TagSearchViewHolder> {
+    private int fixedSize;
 
     public TagSearchAdapter(Context context, OnItemClickListener<String> listener) {
         super(context, listener);
     }
 
     public void replaceItem(int position, String item) {
-        if (mItems.get(position).equals(item)) {
+        if (position >= mItems.size() || mItems.get(position).equals(item)) {
             return;
         }
         mItems.remove(position);
         mItems.add(position, item);
         notifyItemChanged(position);
+    }
+
+    public boolean addFixedItems(Collection<? extends String> collection) {
+        boolean re = mItems.addAll(collection);
+        fixedSize = collection.size();
+        notifyItemRangeChanged(mItems.size() - collection.size(), collection.size());
+        return re;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends String> collection) {
+        if (fixedSize > 0) {
+            mItems.subList(fixedSize, mItems.size()).clear();
+        } else {
+            mItems.clear();
+        }
+        boolean re = mItems.addAll(collection);
+        notifyDataSetChanged();
+        return re;
     }
 
     @Override

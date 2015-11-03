@@ -5,8 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import co.yishun.library.tag.VideoTag;
 /**
  * Created on 2015/10/29.
  */
-public class EditTagContainer extends FrameLayout {
+public class EditTagContainer extends RelativeLayout {
     public final static String VIDEO_TAG_VIEW_TAG = "video_tag";
     private int mSize;
     private List<VideoTag> videoTags;
@@ -38,8 +37,18 @@ public class EditTagContainer extends FrameLayout {
                 case MotionEvent.ACTION_MOVE:
                     float moveX = event.getX() - touchX;
                     float moveY = event.getY() - touchY;
-                    v.setX(v.getX() + moveX);
-                    v.setY(v.getY() + moveY);
+                    if (v.getX() + moveX + v.getWidth() > mSize) {
+                        v.setX(mSize - v.getWidth());
+                    } else if (v.getX() + moveX < 0) {
+                        v.setX(0);
+                    } else {
+                        v.setX(v.getX() + moveX);
+                    }
+                    if (v.getY() + moveY < 0) {
+                        v.setY(0);
+                    } else {
+                        v.setY(v.getY() + moveY);
+                    }
                     return true;
                 case MotionEvent.ACTION_UP:
                     if (v.getY() > getSize()) {
@@ -74,14 +83,16 @@ public class EditTagContainer extends FrameLayout {
         this.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
-                    return true;
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getY() > mSize)
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        return event.getY() <= mSize;
+                    case MotionEvent.ACTION_MOVE:
                         return true;
-                    onAddTag(event.getX() / mSize, event.getY() / mSize);
-                    return true;
+                    case MotionEvent.ACTION_UP:
+                        if (event.getY() > mSize)
+                            return true;
+                        onAddTag(event.getX() / mSize, event.getY() / mSize);
+                        return true;
                 }
                 return false;
             }
@@ -100,12 +111,12 @@ public class EditTagContainer extends FrameLayout {
         int left = (int) (tag.getX() * getSize());
         int top = (int) (tag.getY() * getSize());
 
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(left, top, 0, 0);
-        textView.setLayoutParams(params);
+        textView.setSingleLine();
+        textView.setX(left);
+        textView.setY(top);
+        textView.setSingleLine(true);
         addView(textView);
+        Log.d("[ETC]", textView.getWidth() + " " + textView.getHeight());
     }
 
     private void clearTags() {
