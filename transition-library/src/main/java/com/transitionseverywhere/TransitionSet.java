@@ -533,7 +533,7 @@ public class TransitionSet extends Transition {
         for (int i = 0; i < numTransitions; ++i) {
             mTransitions.get(i).setSceneRoot(sceneRoot);
         }
-        return (TransitionSet) this;
+        return this;
     }
 
     @Override

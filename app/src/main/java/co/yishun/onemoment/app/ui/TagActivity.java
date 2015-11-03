@@ -3,10 +3,8 @@ package co.yishun.onemoment.app.ui;
 import android.animation.ArgbEvaluator;
 import android.animation.FloatEvaluator;
 import android.animation.ObjectAnimator;
-import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.CallSuper;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,15 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-
-import com.transitionseverywhere.ChangeBounds;
-import com.transitionseverywhere.ChangeImageTransform;
-import com.transitionseverywhere.Fade;
-import com.transitionseverywhere.Scene;
-import com.transitionseverywhere.Slide;
-import com.transitionseverywhere.TransitionManager;
-import com.transitionseverywhere.TransitionSet;
-
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +26,13 @@ import android.widget.ImageView;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.squareup.picasso.Picasso;
+import com.transitionseverywhere.ChangeBounds;
+import com.transitionseverywhere.ChangeImageTransform;
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.Scene;
+import com.transitionseverywhere.Slide;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -104,7 +100,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         setLayout();
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
         // before lollipop, the topMargin start below statusBar
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 int result = getResources().getDimensionPixelSize(resourceId);
