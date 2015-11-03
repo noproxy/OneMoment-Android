@@ -54,6 +54,7 @@
 
 
             <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/worldFABBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/pic_fab_menu_world"
@@ -63,6 +64,7 @@
             />
 
             <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/diaryFABBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/pic_fab_menu_diary"

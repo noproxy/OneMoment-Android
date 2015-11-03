@@ -146,6 +146,14 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
         FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
         floatingActionMenu = new WeakReference<FloatingActionMenu>(fam);
+        fam.findViewById(R.id.worldFABBtn).setOnClickListener(v -> {
+            startShoot(v, true);
+            fam.close(false);
+        });
+        fam.findViewById(R.id.diaryFABBtn).setOnClickListener(v -> {
+            startShoot(v, false);
+            fam.close(false);
+        });
 
     }
 
