@@ -110,7 +110,7 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         });
 
         invalidateUserInfo(AccountHelper.getUserInfo(this));
-        AccountHelper.setOnUserInfoChangeListener(this);
+        AccountHelper.addOnUserInfoChangedListener(this);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
