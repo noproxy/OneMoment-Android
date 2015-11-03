@@ -39,7 +39,7 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     void setHeader() {
         User user = AccountHelper.getUserInfo(getContext());
         invalidateUserInfo(user);
-        AccountHelper.setOnUserInfoChangeListener(this::invalidateUserInfo);
+        AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
     }
 
     @Override
