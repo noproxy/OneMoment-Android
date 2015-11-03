@@ -11,10 +11,12 @@ import android.graphics.drawable.shapes.Shape;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import co.yishun.onemoment.app.R;
 
 public class AddFloatingActionButton extends FloatingActionButton {
+    private static final String TAG = "AddFloatingActionButton";
     int mPlusColor;
 
     public AddFloatingActionButton(Context context) {
@@ -64,7 +66,15 @@ public class AddFloatingActionButton extends FloatingActionButton {
     @Override
     Drawable getIconDrawable() {
         final float iconSize = getDimension(R.dimen.fab_icon_size);
+        return getIconDrawableForCustomCollapseIcon(iconSize, iconSize);
+//        return getResources().getDrawable(R.drawable.ic_play);
+    }
+
+    Drawable getIconDrawableForCustomCollapseIcon(float width, float height) {
+        final float iconSize =
+         Math.max(width, height);
         final float iconHalfSize = iconSize / 2f;
+        Log.i(TAG, "iconSize: " + iconSize);
 
         final float plusSize = getDimension(R.dimen.fab_plus_icon_size);
         final float plusHalfStroke = getDimension(R.dimen.fab_plus_icon_stroke) / 2f;
@@ -86,5 +96,11 @@ public class AddFloatingActionButton extends FloatingActionButton {
         paint.setAntiAlias(true);
 
         return drawable;
+    }
+
+    @Override
+    void updateBackground() {
+        Log.i(TAG, "add button");
+        super.updateBackground();
     }
 }
