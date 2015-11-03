@@ -48,13 +48,20 @@
 
                 <include layout="@layout/layout_me_header"/>
 
+
+                <!--
+                This is removed from TabLayout:
+                    android:paddingLeft="26dp"
+                    android:paddingRight="26dp"
+
+                Because in latest design support library 23.1.0, paddingLeft/End
+                    is not drawn correctly. It not looks like symmetrical. So, removed both.
+                -->
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:paddingLeft="26dp"
-                    android:paddingRight="26dp"
                     app:tabIndicatorColor="@color/colorAccent"
                     app:tabIndicatorHeight="2dp"
                     app:tabMinWidth="32dp"
