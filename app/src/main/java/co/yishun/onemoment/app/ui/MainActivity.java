@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.EActivity;
@@ -37,13 +38,12 @@ import co.yishun.onemoment.app.ui.home.MeFragment_;
 import co.yishun.onemoment.app.ui.home.VerifyFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
-import co.yishun.onemoment.app.ui.view.floatingactionbutton.FloatingActionButton;
-import co.yishun.onemoment.app.ui.view.floatingactionbutton.FloatingActionsMenu;
 
 @EActivity
 public class MainActivity extends BaseActivity implements AccountHelper.OnUserInfoChangeListener {
     private static final String TAG = "MainActivity";
-    private static WeakReference<FloatingActionsMenu> floatingActionMenu;
+    //    private static WeakReference<FloatingActionsMenu> floatingActionMenu;
+    private static WeakReference<FloatingActionMenu> floatingActionMenu;
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawerLayout;
@@ -64,7 +64,8 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     public static
     @NonNull
     View withView(@NonNull View view) {
-        FloatingActionsMenu fab = floatingActionMenu.get();
+//        FloatingActionsMenu fab = floatingActionMenu.get();
+        FloatingActionMenu fab = floatingActionMenu.get();
         if (fab != null) {
             return fab;
         } else return view;
@@ -118,30 +119,33 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     }
 
     private void setActionMenu() {
-        FloatingActionsMenu fam = (FloatingActionsMenu) findViewById(R.id.fab);
-        floatingActionMenu = new WeakReference<>(fam);
+//        FloatingActionsMenu fam = (FloatingActionsMenu) findViewById(R.id.fab);
+//        floatingActionMenu = new WeakReference<>(fam);
+//
+//        FloatingActionButton momentShootBtn = new FloatingActionButton(this);
+//        momentShootBtn.setIcon(R.drawable.pic_fab_menu_diary);
+//        momentShootBtn.setColorNormalResId(R.color.colorPrimary);
+//        momentShootBtn.setColorPressedResId(R.color.colorPrimaryDark);
+//        momentShootBtn.setTitle("Moment");
+//        momentShootBtn.setOnClickListener(v -> {
+//            startShoot(v, false);
+//            fam.collapse();
+//        });
+//        FloatingActionButton worldShootBtn = new FloatingActionButton(this);
+//        worldShootBtn.setIcon(R.drawable.pic_fab_menu_world);
+//        worldShootBtn.setColorNormalResId(R.color.colorPrimary);
+//        worldShootBtn.setColorPressedResId(R.color.colorPrimaryDark);
+//        worldShootBtn.setTitle("World");
+//        worldShootBtn.setOnClickListener(v -> {
+//            startShoot(v, true);
+//            fam.collapse();
+//        });
+//
+//        fam.addButton(momentShootBtn);
+//        fam.addButton(worldShootBtn);
 
-        FloatingActionButton momentShootBtn = new FloatingActionButton(this);
-        momentShootBtn.setIcon(R.drawable.pic_fab_menu_diary);
-        momentShootBtn.setColorNormalResId(R.color.colorPrimary);
-        momentShootBtn.setColorPressedResId(R.color.colorPrimaryDark);
-        momentShootBtn.setTitle("Moment");
-        momentShootBtn.setOnClickListener(v -> {
-            startShoot(v, false);
-            fam.collapse();
-        });
-        FloatingActionButton worldShootBtn = new FloatingActionButton(this);
-        worldShootBtn.setIcon(R.drawable.pic_fab_menu_world);
-        worldShootBtn.setColorNormalResId(R.color.colorPrimary);
-        worldShootBtn.setColorPressedResId(R.color.colorPrimaryDark);
-        worldShootBtn.setTitle("World");
-        worldShootBtn.setOnClickListener(v -> {
-            startShoot(v, true);
-            fam.collapse();
-        });
-
-        fam.addButton(momentShootBtn);
-        fam.addButton(worldShootBtn);
+        FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
+        floatingActionMenu = new WeakReference<FloatingActionMenu>(fam);
 
     }
 
@@ -150,12 +154,13 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         // collapse fab if click outside of fab
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect outRect = new Rect();
-            FloatingActionsMenu fam = floatingActionMenu.get();
+//            FloatingActionsMenu fam = floatingActionMenu.get();
+            FloatingActionMenu fam = floatingActionMenu.get();
             if (fam != null) {
                 fam.getGlobalVisibleRect(outRect);
                 if (!outRect.contains(((int) event.getRawX()), ((int) event.getRawY()))) {
                     fam.clearFocus();
-                    fam.collapse();
+                    fam.close(false);
                 }
             }
         }
