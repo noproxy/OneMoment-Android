@@ -22,25 +22,6 @@
             android:fitsSystemWindows="true">
         </FrameLayout>
 
-        <!--<co.yishun.onemoment.app.ui.view.floatingactionbutton.FloatingActionsMenu-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="end|bottom"-->
-        <!--android:layout_margin="16dp"-->
-        <!--android:stateListAnimator="@anim/fab_elevation"-->
-        <!--app:backgroundTint="@color/colorAccent"-->
-        <!--app:borderWidth="0dp"-->
-        <!--app:elevation="@dimen/fab_elevation"-->
-        <!--app:fab_addButtonColorNormal="@color/colorAccent"-->
-        <!--app:fab_addButtonColorPressed="@color/colorAccentDark"-->
-        <!--app:fab_collapsedIcon="@drawable/ic_fab"-->
-        <!--app:fab_colorNormal="@color/colorAccent"-->
-        <!--app:fab_colorPressed="#ffb86b"-->
-        <!--app:fab_icon="@drawable/ic_fab"-->
-        <!--app:layout_anchor="@id/fragment_container"-->
-        <!--app:layout_anchorGravity="bottom|right|end"-->
-        <!--/>-->
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/fab"
             android:layout_width="wrap_content"
@@ -48,6 +29,8 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:stateListAnimator="@anim/fab_elevation"
+            app:layout_anchor="@id/fragment_container"
+            app:layout_anchorGravity="bottom|right|end"
             app:menu_colorNormal="@color/colorAccent"
             app:menu_colorPressed="@color/colorAccentDark"
             app:menu_icon="@drawable/ic_fab">
