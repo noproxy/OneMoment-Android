@@ -8,6 +8,7 @@ import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.File;
@@ -16,11 +17,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import java8.util.stream.StreamSupport;
 
 /**
  * Created by Carlos on 2015/8/13.
@@ -32,7 +34,7 @@ public class AccountHelper {
     public static AccountManager accountManager;
     public static Account account;
     private static User mUser = null;
-    private static WeakReference<OnUserInfoChangeListener> mListener = new WeakReference<>(null);
+    private static WeakHashMap<Integer, OnUserInfoChangeListener> mListeners = new WeakHashMap<>();
 
     private static AccountManager getAccountManager(Context context) {
         if (accountManager == null) {
@@ -98,15 +100,16 @@ public class AccountHelper {
             oos.writeObject(user);
             oos.close();
             mUser = user;
-            OnUserInfoChangeListener listener = mListener.get();
-            if (listener != null) {
-                listener.onUserInfoChange(user);
-            }
+            onUserInfoChange(user);
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    private static void onUserInfoChange(User user) {
+        StreamSupport.stream(mListeners.values()).filter(l -> l != null).forEach((OnUserInfoChangeListener l) -> l.onUserInfoChange(user));
     }
 
     private static String getUserInfoDir(Context context) {
@@ -140,9 +143,14 @@ public class AccountHelper {
         return mUser;
     }
 
-    public static void setOnUserInfoChangeListener(OnUserInfoChangeListener listener) {
-        mListener = new WeakReference<>(listener);
+    public static void addOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
+        mListeners.put(listener.hashCode(), listener);
     }
+
+    public static void removeOnUserInforChangedListener(@NonNull OnUserInfoChangeListener listener) {
+        mListeners.remove(listener.hashCode());
+    }
+
 
     public interface OnUserInfoChangeListener {
         void onUserInfoChange(User info);
