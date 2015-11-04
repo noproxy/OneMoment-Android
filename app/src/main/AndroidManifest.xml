@@ -211,6 +211,9 @@
             android:enabled="true"
             android:process=":remote">
         </service>
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="kCbiUVqj0L2QAo3vHgMefShZ" />
     </application>
 
 </manifest>

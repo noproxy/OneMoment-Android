@@ -75,6 +75,11 @@ android {
         marketYingyongbao {}
         marketUniversal {}// for other market
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 def SUPPORT_VERSION = '23.1.0'

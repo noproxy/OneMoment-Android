@@ -1,16 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
@@ -27,8 +17,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -36,7 +30,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,7 +50,7 @@ import co.yishun.onemoment.app.ui.controller.TagSearchController_;
  * Created by Carlos on 2015/11/2.
  */
 @EActivity(R.layout.activity_tag_create)
-public class TagCreateActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<String>, LocationListener, TextView.OnEditorActionListener, TextWatcher {
+public class TagCreateActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<String>, TextView.OnEditorActionListener, TextWatcher {
     public static final int REQUEST_CODE_SEARCH = 1;
     private static final String TAG = "TagCreateActivity";
     @ViewById
@@ -84,8 +77,8 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
     Button nextBtn;
 
     TagSearchAdapter adapter;
-    private LocationManager locationManager;
     private boolean searching = false;
+    private LocationClient locationClient;
 
     private float tagX;
     private float tagY;
@@ -135,13 +128,18 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         showKeyboard();
 
         List<String> defaultTag = new ArrayList<>();
-        defaultTag.add(AccountHelper.getUserInfo(this).location);
+        if (locationClient.getLastKnownLocation() == null) {
+            defaultTag.add(AccountHelper.getUserInfo(this).location);
+        } else {
+            defaultTag.add(formatLocation(locationClient.getLastKnownLocation()));
+        }
+
         defaultTag.add(new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date()));
         if (forWorld && worldTag != null && !"".equals(worldTag.name)) {
             defaultTag.add(worldTag.name);
         }
         adapter.addFixedItems(defaultTag);
-        getLocation();
+        locationClient.start();
     }
 
     void recoverSearch() {
@@ -153,14 +151,12 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         nextBtn.setVisibility(View.VISIBLE);
         searchFrame.setVisibility(View.GONE);
         hideKeyboard();
-        checkPermission();
-        locationManager.removeUpdates(this);
+        locationClient.stop();
     }
 
     @AfterViews
     void setEditTagContainer() {
         editTagContainer.setOnAddTagListener((x, y) -> {
-            //TODO startActivity to add TAG
             tagX = x;
             tagY = y;
             setupSearch();
@@ -210,45 +206,39 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         TagSearchController_.getInstance_(this).setUp(adapter, recyclerView, queryText.getText().toString());
     }
 
-    @Background
-    void getLocation() {
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        String provider = LocationManager.NETWORK_PROVIDER;
-
-        checkPermission();
-        Location lastKnownLocation = locationManager.getLastKnownLocation(provider);
-        if (lastKnownLocation != null) {
-            formatLocation(lastKnownLocation);
-        }
-
-        locationManager.requestSingleUpdate(provider, this, Looper.getMainLooper());
+    @AfterInject
+    void setupLocation() {
+        locationClient = new LocationClient(getApplicationContext());
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
+        option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
+        option.setOpenGps(true);
+        option.setIsNeedLocationDescribe(false);
+        option.SetIgnoreCacheException(false);
+        option.setEnableSimulateGps(false);
+        locationClient.setLocOption(option);
+        locationClient.registerLocationListener(bdLocation -> {
+            if ("".equals(formatLocation(bdLocation))){
+                return;
+            }
+            addItem(0, formatLocation(bdLocation));
+        });
     }
 
-    void formatLocation(Location location) {
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        String result = null;
-        try {
-            List<Address> addressList = geocoder.getFromLocation(
-                    latitude, longitude, 1);
-            if (addressList != null && addressList.size() > 0) {
-                Address address = addressList.get(0);
-                String province = address.getAdminArea();
-                String city = address.getLocality();
-                if (province.endsWith("省")) {
-                    province = province.substring(0, province.lastIndexOf("省"));
-                }
-                if (city.endsWith("市")) {
-                    city = city.substring(0, city.lastIndexOf("市"));
-                }
-                result = province + " " + city;
-                Log.d(TAG, "get location " + result);
-                addItem(0, result);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Unable connect to Geocoder", e);
+    String formatLocation(BDLocation location) {
+        if (location == null || "".equals(location.getProvince()) || "".equals(location.getCity())) {
+            return null;
         }
+        String province = location.getProvince();
+        String city = location.getCity();
+        if (province.endsWith("省")) {
+            province = province.substring(0, province.lastIndexOf("省"));
+        }
+        if (city.endsWith("市")) {
+            city = city.substring(0, city.lastIndexOf("市"));
+        }
+        return province + " " + city;
     }
 
     @UiThread
@@ -257,14 +247,6 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
             adapter.add(item);
         } else {
             adapter.replaceItem(position, item);
-        }
-    }
-
-    void checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "permission error on M");
-            }
         }
     }
 
@@ -296,26 +278,6 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
 
     @Override
     public void afterTextChanged(Editable s) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        formatLocation(location);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
 
     }
 
