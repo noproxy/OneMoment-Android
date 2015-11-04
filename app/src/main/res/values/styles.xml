@@ -12,6 +12,8 @@
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:windowBackground">@drawable/bg_window</item>
         <item name="android:windowActionBar">false</item>
+        <item name="drawerArrowStyle">@style/AppTheme.DrawerArrowToggle</item>
+        <item name="colorControlNormal">?attr/colorAccent</item>
     </style>
 
     <style name="AppTheme.Dragger">
@@ -38,7 +40,6 @@
 
     <!-- for toolbar menu and overflow color -->
     <style name="AppTheme.MainActivity">
-        <item name="android:textColorSecondary">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.SplashActivity">
@@ -77,6 +78,10 @@
     <style name="AppTheme.PlayActivity">
         <item name="android:textColorTertiary">@color/textColorPrimary</item>
         <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/textColorPrimaryDark</item>
     </style>
 
     <style name="TextAppearance.PlaySmall" parent="TextAppearance.AppCompat.Small"/>

@@ -226,11 +226,14 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
     }
 
     String formatLocation(BDLocation location) {
-        if (location == null || "".equals(location.getProvince()) || "".equals(location.getCity())) {
+        if (location == null) {
             return null;
         }
         String province = location.getProvince();
         String city = location.getCity();
+        if (province == null || city == null || province.equals("") || city.equals("")){
+            return null;
+        }
         if (province.endsWith("省")) {
             province = province.substring(0, province.lastIndexOf("省"));
         }
