@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.Collection;
+
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
 
@@ -34,6 +36,14 @@ public class SearchAdapter extends AbstractRecyclerViewAdapter<WorldTag, SearchA
                 resource.getDrawable(R.drawable.ic_world_tag_msg)
         };
         PeopleSuffix = " " + context.getString(R.string.fragment_world_suffix_people_count);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends WorldTag> collection) {
+        mItems.clear();
+        boolean re = mItems.addAll(collection);
+        notifyDataSetChanged();
+        return re;
     }
 
     @Override

@@ -46,9 +46,6 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  */
 @EFragment(R.layout.fragment_play_world)
 public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerView.OnVideoChangeListener {
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
-    private List<TagVideo> tagVideos = new ArrayList<>();
-    private int voteIndex;
     @FragmentArg
     WorldTag worldTag;
     @ViewById
@@ -57,7 +54,9 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     TextView voteCountTextView;
     @ViewById
     TextView usernameTextView;
-
+    private World mWorld = OneMomentV3.createAdapter().create(World.class);
+    private List<TagVideo> tagVideos = new ArrayList<>();
+    private int voteIndex;
     private Seed seed;
     private int offset = 0;
 
@@ -135,11 +134,12 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     void refreshUserInfo(int index) {
         if (tagVideos.get(index).liked) {
             voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
-            voteCountTextView.setText(tagVideos.get(index).likeNum + "");
+            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
         } else {
             voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
-            voteCountTextView.setText(tagVideos.get(index).likeNum + "");
+            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
         }
+        voteCountTextView.setText(tagVideos.get(index).likeNum + "");
         usernameTextView.setText(tagVideos.get(index).nickname);
     }
 

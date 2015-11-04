@@ -40,16 +40,7 @@
                     app:round_rate="0"/>
             </FrameLayout>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                android:elevation="@dimen/toolbar_elevation"
-                android:fitsSystemWindows="true"
-                app:contentInsetStart="72dp"
-                app:layout_collapseMode="pin"
-                />
+            <include layout="@layout/layout_toolbar_add"/>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -57,9 +48,9 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="3dp"
         android:layout_marginLeft="-3dp"
         android:layout_marginRight="-3dp"
+        android:layout_marginTop="3dp"
         android:background="@color/colorPrimary"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_empty="@layout/layout_empty"

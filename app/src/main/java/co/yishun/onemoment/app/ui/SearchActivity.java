@@ -10,8 +10,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
@@ -82,20 +82,40 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
     void setViews() {
         setupToolbar(this, toolbar);
 
-        queryText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                search();
-                return true;
-            }
-            return false;
-        });
-
+        setupQueryText();
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
 
         adapter = new SearchAdapter(this, this);
         recyclerView.setAdapter(adapter);
+    }
+
+    void setupQueryText() {
+        queryText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                search();
+                hideKeyboard();
+                return true;
+            }
+            return false;
+        });
+        queryText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                search();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @CallSuper
@@ -133,7 +153,6 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
         if ("".equals(queryText.getText().toString())) {
             return;
         }
-        hideKeyboard();
         SearchController_.getInstance_(this).setUp(adapter, recyclerView, queryText.getText().toString());
     }
 
@@ -142,7 +161,7 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
         imm.showSoftInput(queryText, 0);
     }
 
-    void hideKeyboard(){
+    void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(queryText.getWindowToken(), 0);
     }

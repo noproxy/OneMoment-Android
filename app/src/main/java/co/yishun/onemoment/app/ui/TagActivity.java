@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -71,6 +72,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     CollapsingToolbarLayout collapsingToolbarLayout;
     ImageView videoImageView;
     SwipeRefreshLayout swipeRefreshLayout;
+    ImageView addImageView;
     private boolean transitionOver = false;
     private TagAdapter tagAdapter;
 
@@ -109,7 +111,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         }
         params.topMargin += top;
         videoImageView.setLayoutParams(params);
-//        coordinatorLayout.invalidate();
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         collapsingToolbarLayout.setTitle("");
@@ -146,6 +147,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         Fade fadeIn = new Fade(Fade.IN);
         fadeIn.addTarget(R.id.recyclerView);
         fadeIn.addTarget(R.id.toolbar);
+        fadeIn.addTarget(R.id.addImageView);
         fadeIn.addTarget(R.id.collapsingToolbarLayout);
         fadeIn.setStartDelay(500);
         set.addTransition(fadeIn);
@@ -172,6 +174,13 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         videoImageView = ((ImageView) findViewById(R.id.videoImageView));
         swipeRefreshLayout = ((SwipeRefreshLayout) findViewById(R.id.ptr_layout));
         recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
+        addImageView = (ImageView) findViewById(R.id.addImageView);
+        addImageView.setOnClickListener(view -> {
+            int[] location = new int[2];
+            view.getLocationOnScreen(location);
+            ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
+                    .transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
+        });
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         videoImageView.setOnClickListener(v -> PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start());
@@ -222,6 +231,15 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return ab;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void videoImageClick() {
 
     }
@@ -229,6 +247,5 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @Override
     public void onClick(View view, TagVideo item) {
         PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
-
     }
 }

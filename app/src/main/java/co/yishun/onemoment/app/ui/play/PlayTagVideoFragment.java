@@ -38,7 +38,6 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  */
 @EFragment(R.layout.fragment_play_tag_video)
 public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlayerView.OnVideoChangeListener {
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
     @FragmentArg
     TagVideo oneVideo;
     @ViewById
@@ -49,6 +48,7 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
     OnemomentPlayerView videoPlayView;
     @ViewById
     TextView voteCountTextView;
+    private World mWorld = OneMomentV3.createAdapter().create(World.class);
 
     @AfterViews
     void setup() {
@@ -69,8 +69,10 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
 
         if (oneVideo.liked) {
             voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
+            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
         } else {
             voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
+            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
         }
         voteCountTextView.setText(oneVideo.likeNum + "");
     }
@@ -104,12 +106,13 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
         if (oneVideo.liked) {
             oneVideo.likeNum++;
             voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
-            voteCountTextView.setText(oneVideo.likeNum + "");
+            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
         } else {
             oneVideo.likeNum--;
             voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
-            voteCountTextView.setText(oneVideo.likeNum + "");
+            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
         }
+        voteCountTextView.setText(oneVideo.likeNum + "");
     }
 
     @Override
