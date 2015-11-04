@@ -27,7 +27,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             >
 
-            <FrameLayout
+            <co.yishun.onemoment.app.ui.view.SquareFrameLayout
                 android:id="@+id/videoFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,7 +42,12 @@
                     android:src="@drawable/pic_more_discovery"
                     app:force_square="true"
                     app:round_rate="0"/>
-            </FrameLayout>
+
+                <View
+                    android:background="@drawable/bg_tag_activity_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </co.yishun.onemoment.app.ui.view.SquareFrameLayout>
 
             <include layout="@layout/layout_toolbar_add"/>
 
