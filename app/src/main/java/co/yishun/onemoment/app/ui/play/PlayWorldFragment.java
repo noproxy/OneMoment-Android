@@ -143,6 +143,16 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         usernameTextView.setText(tagVideos.get(index).nickname);
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (videoPlayView != null) {
+            videoPlayView.pause();
+        }
+    }
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();

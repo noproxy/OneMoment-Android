@@ -117,8 +117,9 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
             mPlayBtn.setVisibility(View.VISIBLE);
         }
         if (mVideoResources.size() >= 1) {
-            mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
-
+            if (mVideoChangeListener != null) {
+                mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
+            }
             mPlaySurface.setVideoResource(mVideoResources.get(0));
             mPreparedIndex = 0;
             mPlaySurface.fistPrepare();
@@ -134,8 +135,9 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
         Log.i("[OPV]", "add resource " + videoResource);
         mVideoResources.add(videoResource);
         if (mVideoResources.size() == 1) {
-            mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
-
+            if (mVideoChangeListener != null) {
+                mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
+            }
             mPlaySurface.setVideoResource(mVideoResources.get(0));
             mPreparedIndex = 0;
             mTagContainer.setVideoTags(mVideoResources.get(0).getVideoTags());
@@ -195,11 +197,12 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
         mCompletionIndex %= mVideoResources.size();
 
         if (mSinglePlay || mVideoResources.size() == 1) {
-//            mAvatarView.scrollToNext();
             reset();
         } else {
             mAvatarView.scrollToNext();
-            mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
+            if (mVideoChangeListener != null) {
+                mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
+            }
             mTagContainer.setVideoTags(mVideoResources.get((mCompletionIndex + 1) % mVideoResources.size()).getVideoTags());
             if (mCompletionIndex == mVideoResources.size() - 2) {
                 mPlaySurface.setNextVideoResource(null);

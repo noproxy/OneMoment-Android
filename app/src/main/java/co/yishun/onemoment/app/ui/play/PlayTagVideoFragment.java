@@ -37,7 +37,7 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  * Created on 2015/10/28.
  */
 @EFragment(R.layout.fragment_play_tag_video)
-public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlayerView.OnVideoChangeListener {
+public class PlayTagVideoFragment extends BaseFragment {
     @FragmentArg
     TagVideo oneVideo;
     @ViewById
@@ -58,7 +58,6 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
         usernameTextView.setText(oneVideo.nickname);
 
         videoPlayView.setSinglePlay(true);
-        videoPlayView.setVideoChangeListener(this);
         VideoResource vr1 = new LocalVideo(new BaseVideoResource(), FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo).getPath());
         List<VideoTag> tags = new LinkedList<VideoTag>();
         for (int i = 0; i < oneVideo.tags.size(); i++) {
@@ -67,14 +66,7 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
         vr1 = new TaggedVideo(vr1, tags);
         videoPlayView.addVideoResource(vr1);
 
-        if (oneVideo.liked) {
-            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
-            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
-        } else {
-            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
-            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
-        }
-        voteCountTextView.setText(oneVideo.likeNum + "");
+        refreshUserInfo();
     }
 
     @Click(R.id.videoPlayView)
@@ -97,22 +89,33 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
         }
         if (model.code == 1) {
             oneVideo.liked = !oneVideo.liked;
-            voteSuccess();
+            if (oneVideo.liked) {
+                oneVideo.likeNum++;
+            } else {
+                oneVideo.likeNum--;
+            }
+            refreshUserInfo();
         }
     }
 
     @UiThread
-    void voteSuccess() {
+    void refreshUserInfo() {
         if (oneVideo.liked) {
-            oneVideo.likeNum++;
             voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
         } else {
-            oneVideo.likeNum--;
             voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
         }
         voteCountTextView.setText(oneVideo.likeNum + "");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (videoPlayView != null) {
+            videoPlayView.pause();
+        }
     }
 
     @Override
@@ -121,10 +124,5 @@ public class PlayTagVideoFragment extends BaseFragment implements OnemomentPlaye
         if (videoPlayView != null) {
             videoPlayView.stop();
         }
-    }
-
-    @Override
-    public void videoChangeTo(int index) {
-
     }
 }

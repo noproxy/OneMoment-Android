@@ -107,6 +107,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
             if (resourceId > 0) {
                 int result = getResources().getDimensionPixelSize(resourceId);
                 top -= result;
+
             }
         }
         params.topMargin += top;
@@ -120,7 +121,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @UiThread(delay = 100)
     @AfterViews
     void sceneTransition() {
-        ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.coordinatorLayout);
+        ViewGroup sceneRoot =coordinatorLayout;
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
 
         ObjectAnimator animator = ObjectAnimator.ofInt(sceneRoot, "backgroundColor",
@@ -162,6 +163,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 
         float oldRadiusRate = ((RoundRectImageView) sceneRoot.findViewById(R.id.videoImageView)).getRoundRate();
         TransitionManager.go(scene, set);
+        sceneRoot.setFitsSystemWindows(true);
         float newRadiusRate = ((RoundRectImageView) sceneRoot.findViewById(R.id.videoImageView)).getRoundRate();
         ObjectAnimator radiusAnimator = ObjectAnimator.ofFloat(sceneRoot.findViewById(R.id.videoImageView),
                 "roundRate", oldRadiusRate, newRadiusRate).setDuration(500);

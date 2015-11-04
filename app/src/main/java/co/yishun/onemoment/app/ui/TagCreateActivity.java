@@ -133,7 +133,6 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         } else {
             defaultTag.add(formatLocation(locationClient.getLastKnownLocation()));
         }
-
         defaultTag.add(new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date()));
         if (forWorld && worldTag != null && !"".equals(worldTag.name)) {
             defaultTag.add(worldTag.name);

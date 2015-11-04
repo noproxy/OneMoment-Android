@@ -152,7 +152,9 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         mp.release();
         if (mNextPlayer == null || mp == mNextPlayer) {
             Log.d(TAG, "end");
-            mOneListener.onOneCompletion();
+            if (mOneListener !=null) {
+                mOneListener.onOneCompletion();
+            }
         } else {
             mMediaPlayer = null;
             Log.d(TAG, "to next");
@@ -162,7 +164,9 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
                 return;
             }
             mMediaPlayer.setDisplay(mHolder);
-            mOneListener.onOneCompletion();
+            if (mOneListener !=null) {
+                mOneListener.onOneCompletion();
+            }
             nextPrepare();
         }
     }
