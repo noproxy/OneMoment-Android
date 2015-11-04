@@ -44,6 +44,7 @@
                     app:round_rate="0"/>
 
                 <View
+                    android:id="@+id/videoMask"
                     android:background="@drawable/bg_tag_activity_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>

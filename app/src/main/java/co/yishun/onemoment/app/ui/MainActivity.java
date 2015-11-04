@@ -139,8 +139,8 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
             if (fam != null) {
                 fam.getGlobalVisibleRect(outRect);
                 if (!outRect.contains(((int) event.getRawX()), ((int) event.getRawY()))) {
-                    fam.clearFocus();
-                    fam.close(false);
+//                    fam.clearFocus();
+//                    fam.close(false);
                 }
             }
         }

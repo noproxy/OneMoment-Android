@@ -149,6 +149,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         fadeIn.addTarget(R.id.recyclerView);
         fadeIn.addTarget(R.id.toolbar);
         fadeIn.addTarget(R.id.addImageView);
+        fadeIn.addTarget(R.id.videoMask);
         fadeIn.addTarget(R.id.collapsingToolbarLayout);
         fadeIn.setStartDelay(500);
         set.addTransition(fadeIn);
