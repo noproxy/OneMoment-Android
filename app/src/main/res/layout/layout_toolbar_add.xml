@@ -8,7 +8,6 @@
     android:background="@android:color/transparent"
     android:elevation="@dimen/toolbar_elevation"
     app:contentInsetStart="56dp"
-    android:fitsSystemWindows="true"
     app:layout_collapseMode="pin"
     >
 

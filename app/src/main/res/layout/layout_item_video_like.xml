@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<co.yishun.onemoment.app.ui.view.SquareImageView
+<co.yishun.onemoment.app.ui.view.RoundRectImageView
     android:id="@+id/itemImageView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp"
+    android:layout_margin="4dp"
     android:scaleType="centerCrop"
+    app:force_square="true"
+    app:round_rate="0"
     android:stateListAnimator="@anim/btn_elevation"
-    />
+    xmlns:app="http://schemas.android.com/apk/res-auto"/>
