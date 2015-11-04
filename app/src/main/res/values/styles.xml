@@ -80,10 +80,6 @@
         <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
     </style>
 
-    <style name="TextAppearance.AppTheme.Medium" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@color/textColorPrimaryDark</item>
-    </style>
-
     <style name="TextAppearance.PlaySmall" parent="TextAppearance.AppCompat.Small"/>
 
     <style name="TextAppearance.PlaySmall.Inverse" parent="TextAppearance.AppCompat.Small.Inverse"/>
@@ -97,6 +93,10 @@
     </style>
 
     <style name="AppTheme.TagCreateActivity">
+    </style>
+
+    <style name="AppTheme.DrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">?attr/colorAccent</item>
     </style>
 
     <style name="SwitchTextAppearance" parent="TextAppearance.AppCompat.Widget.Switch">
