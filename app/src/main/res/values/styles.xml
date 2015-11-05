@@ -93,7 +93,7 @@
 
     <style name="AppTheme.WindowAnimation" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/activity_fade_in</item>
-        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@anim/window_fade_out</item>
         <item name="android:activityCloseEnterAnimation">@null</item>
         <item name="android:activityCloseExitAnimation">@anim/activity_fade_out</item>
     </style>
