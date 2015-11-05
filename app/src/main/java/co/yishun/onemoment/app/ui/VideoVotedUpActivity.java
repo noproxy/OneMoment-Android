@@ -1,7 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,8 +15,6 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.api.SdkVersionHelper;
-import org.solovyev.android.views.llm.DividerItemDecoration;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Video;
@@ -59,18 +55,9 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
         overridePendingTransition(0, 0);
     }
 
-    @SuppressLint("NewApi")
     @AfterViews
     void setupTwoWayView() {
 
-        final Drawable divider;
-        if (SdkVersionHelper.getSdkInt() > 21) {
-            divider = getResources().getDrawable(R.drawable.divider, null);
-        } else {
-            //noinspection deprecation
-            divider = getResources().getDrawable(R.drawable.divider);
-        }
-        recyclerView.addItemDecoration(new DividerItemDecoration(divider));
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
