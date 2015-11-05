@@ -56,7 +56,7 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
     }
 
     @AfterViews
-    void setupTwoWayView() {
+    void setView() {
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
