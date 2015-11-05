@@ -197,7 +197,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':dragger')
+//    compile project(':dragger') removed
 //    compile 'com.github.ppamorim:dragger:1.1'
     compile 'com.jenzz:materialpreference:1.3'
 }
