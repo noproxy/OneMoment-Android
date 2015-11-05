@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:app="http://schemas.android.com/apk/lib/co.yishun.onemoment.momentcalendar"
+    >
+    <item android:color="#00000000"/>
+    <item android:color="@color/disableTextColor"
+          android:state_enabled="false"
+          app:state_today="false"
+        />
+    <item android:color="@color/enableTextColor"
+          android:state_checkable="false"
+          android:state_enabled="true"
+        />
+    <item android:color="@color/checkTextColor"
+          android:state_checkable="true"
+          android:state_checked="true"
+          android:state_enabled="true"
+        />
+    <item android:color="@color/todayTextColor"
+          app:state_today="true"
+        />
+</selector>
