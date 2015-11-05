@@ -243,10 +243,17 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         if (mDrawerToggle.onOptionsItemSelected(item)) return true;
         switch (item.getItemId()) {
             case R.id.main_search:
-//                Intent intent = new Intent(this, SearchActivity_.class);
-//                startActivity(intent);
-                navigationTo(R.id.main_search);
-//                mDrawerToggle.setHomeAsUpIndicator();
+                switch (currentItemId) {
+                    case R.id.navigation_item_0:
+                        navigationTo(R.id.main_search);
+                        break;
+                    case R.id.navigation_item_1:
+                        break;
+                    case R.id.navigation_item_2:
+                        break;
+                    default:
+                        break;
+                }
                 return true;
         }
         return false;

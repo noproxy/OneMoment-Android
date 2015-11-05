@@ -19,6 +19,7 @@
             android:positiveButtonText="@null"
             android:summary="Auto Sync every %s"
             android:title="@string/pref_title_sync_frequency"
+            android:layout="@layout/layout_preference_mtd"
             />
         <com.jenzz.materialpreference.CheckBoxPreference
             android:defaultValue="false"
@@ -52,6 +53,7 @@
             android:key="@string/pref_key_remind_ringtone"
             android:ringtoneType="notification"
             android:title="@string/pref_title_remind_ringtone"
+            android:layout="@layout/layout_preference_mtd"
             />
         <com.jenzz.materialpreference.CheckBoxPreference
             android:defaultValue="true"
