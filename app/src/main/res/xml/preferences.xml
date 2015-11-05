@@ -9,7 +9,7 @@
             android:summary="@string/pref_summary_sync_auto"
             android:title="@string/pref_title_sync_auto"
             />
-        <ListPreference
+        <co.yishun.onemoment.app.ui.view.ListPreferenceCompat
             android:defaultValue="180"
             android:dependency="sync"
             android:entries="@array/pref_sync_frequency_titles"
