@@ -54,6 +54,7 @@ public class TodayMomentView extends RelativeLayout {
         mDateTextView = (TextView) findViewById(R.id.dateTextView);
         mTagTextView = (TextView) findViewById(R.id.tagTextView);
         mMomentImageView = (CircleImageView) findViewById(R.id.momentPreviewImageView);
+        setTodayMoment(TodayMoment.noMomentToday(new Date()));
     }
 
     public void setTodayMoment(@NonNull TodayMoment todayMoment) {
