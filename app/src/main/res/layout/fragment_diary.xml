@@ -1,41 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/passwordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="8dp"
-        android:text="Password"
-        />
-
-    <co.yishun.onemoment.app.ui.view.CountDownView
-        android:id="@+id/countDownView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Count Down"/>
-
-    <co.yishun.onemoment.app.ui.view.VisiblePasswordView
+    <!-- placeholder-->
+    <co.yishun.onemoment.app.ui.view.SquareImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Test Password View"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
-        android:text="2333"
-        app:inputTypeInvisible="textPassword"
-        app:inputTypeVisible="textVisiblePassword"
-        app:minTouchHeight="48dp"
-        app:minTouchWidth="48dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/pic_world_empty"
         />
+
+    <co.yishun.onemoment.app.ui.view.TodayMomentView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
