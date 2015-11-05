@@ -1,66 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.github.ppamorim.dragger.DraggerView
-    android:id="@+id/draggerView"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/dragView"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dragger_layout="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    dragger_layout:drag_position="top"
-    dragger_layout:drag_view_id="@+id/dragView"
-    dragger_layout:shadow_view_id="@+id/shadow_view">
+    android:background="@drawable/bg_window"
+    android:fitsSystemWindows="true">
 
-    <FrameLayout
-        android:id="@+id/shadow_view"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:visibility="invisible"/>
-
-
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/dragView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_window"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/app_bar_elevation"
+        android:fitsSystemWindows="true"
         >
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/app_bar_elevation"
-            android:fitsSystemWindows="true"
-            >
+        <include layout="@layout/layout_toolbar"/>
 
-            <include layout="@layout/layout_toolbar"/>
+    </android.support.design.widget.AppBarLayout>
 
-        </android.support.design.widget.AppBarLayout>
-
-        <!-- TwoWayView has bug with paddingTop and marginTop, so add parent-->
-        <FrameLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <com.malinskiy.superrecyclerview.SuperRecyclerView
-                android:id="@+id/recyclerView"
-                style="@style/TwoWayView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                app:layout_empty="@layout/layout_empty"
-                app:layout_progress="@layout/layout_progress"
-                tools:listitem="@layout/layout_world_item"
-                />
-        </FrameLayout>
-
-
-    </android.support.design.widget.CoordinatorLayout>
-</com.github.ppamorim.dragger.DraggerView>
+    <com.malinskiy.superrecyclerview.SuperRecyclerView
+        android:id="@+id/recyclerView"
+        style="@style/TwoWayView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_empty="@layout/layout_empty"
+        app:layout_progress="@layout/layout_progress"
+        tools:listitem="@layout/layout_world_item"
+        />
+</android.support.design.widget.CoordinatorLayout>
 

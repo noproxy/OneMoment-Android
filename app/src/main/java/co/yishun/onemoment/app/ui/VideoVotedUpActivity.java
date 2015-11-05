@@ -1,30 +1,25 @@
 package co.yishun.onemoment.app.ui;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.github.ppamorim.dragger.DraggerActivity;
-import com.github.ppamorim.dragger.DraggerView;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.api.SdkVersionHelper;
-import org.lucasr.twowayview.TwoWayLayoutManager;
-import org.lucasr.twowayview.widget.DividerItemDecoration;
-import org.lucasr.twowayview.widget.SpannableGridLayoutManager;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.VotedUpController_;
 
 /**
@@ -32,10 +27,9 @@ import co.yishun.onemoment.app.ui.controller.VotedUpController_;
  */
 //TODO handle not extend BaseActivity
 @EActivity(R.layout.activity_video_voted_up)
-public class VideoVotedUpActivity extends DraggerActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<Video> {
+public class VideoVotedUpActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<Video> {
     @ViewById Toolbar toolbar;
     @ViewById SuperRecyclerView recyclerView;
-    @ViewById DraggerView draggerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,25 +48,22 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
         Log.i("setupToolbar", "set home as up true");
     }
 
+    @Nullable
+    @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
+        return null;
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         overridePendingTransition(0, 0);
     }
 
-    @SuppressLint("NewApi")
     @AfterViews
-    void setupTwoWayView() {
+    void setView() {
 
-        final Drawable divider;
-        if (SdkVersionHelper.getSdkInt() > 21) {
-            divider = getResources().getDrawable(R.drawable.divider, null);
-        } else {
-            //noinspection deprecation
-            divider = getResources().getDrawable(R.drawable.divider);
-        }
-        recyclerView.addItemDecoration(new DividerItemDecoration(divider));
-        recyclerView.setLayoutManager(new SpannableGridLayoutManager(TwoWayLayoutManager.Orientation.HORIZONTAL, 3, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
         recyclerView.setAdapter(adapter);

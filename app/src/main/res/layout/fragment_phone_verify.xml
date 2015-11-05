@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.3dp"
             android:layout_below="@id/verificationCodeEditText"
-            android:background="@color/black"
+            android:background="@android:color/black"
             />
 
         <co.yishun.onemoment.app.ui.view.CountDownResentView
