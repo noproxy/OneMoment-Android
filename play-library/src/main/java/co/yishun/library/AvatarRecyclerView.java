@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -45,6 +46,11 @@ public class AvatarRecyclerView extends RecyclerView {
     public AvatarRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs, defStyle);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        return true;
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
