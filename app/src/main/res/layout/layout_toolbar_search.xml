@@ -8,15 +8,13 @@
     android:background="@color/colorPrimary"
     android:elevation="@dimen/toolbar_elevation"
     android:fitsSystemWindows="true"
-    app:contentInsetStart="56dp"
+    app:contentInsetStart="72dp"
     app:layout_collapseMode="pin">
 
     <ImageView
         android:id="@+id/addView"
         android:layout_width="48dp"
         android:layout_height="56dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:layout_gravity="right"
         android:scaleType="centerInside"
         android:src="@drawable/ic_action_add"/>
@@ -26,6 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:imeOptions="actionSearch"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:inputType="text"
         android:singleLine="true"/>
 
