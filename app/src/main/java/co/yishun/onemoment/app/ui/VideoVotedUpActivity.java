@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -17,9 +18,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.api.SdkVersionHelper;
-import org.lucasr.twowayview.TwoWayLayoutManager;
-import org.lucasr.twowayview.widget.DividerItemDecoration;
-import org.lucasr.twowayview.widget.SpannableGridLayoutManager;
+import org.solovyev.android.views.llm.DividerItemDecoration;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Video;
@@ -72,7 +71,7 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
             divider = getResources().getDrawable(R.drawable.divider);
         }
         recyclerView.addItemDecoration(new DividerItemDecoration(divider));
-        recyclerView.setLayoutManager(new SpannableGridLayoutManager(TwoWayLayoutManager.Orientation.HORIZONTAL, 3, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
         recyclerView.setAdapter(adapter);
