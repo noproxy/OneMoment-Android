@@ -17,7 +17,7 @@
             android:key="sync_frequency"
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
-            android:summary="Auto Sync every %s"
+            android:summary="@string/pref_summary_sync_frequency"
             android:title="@string/pref_title_sync_frequency"
             android:layout="@layout/layout_preference_mtd"
             />

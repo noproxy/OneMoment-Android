@@ -6,6 +6,7 @@
     <string name="pref_title_sync_auto">Auto sync</string>
     <string name="pref_summary_sync_auto">Backing up to server</string>
     <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string name="pref_summary_sync_frequency">Auto Sync every %s</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>
         <item>30 minutes</item>

@@ -124,7 +124,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     }
 
     public boolean isPlaying() {
-        return !(mMediaPlayer == null) && mMediaPlayer.isPlaying();
+        return mMediaPlayer != null && mMediaPlayer.isPlaying();
     }
 
     public void setVideoResource(VideoResource videoResource) {
