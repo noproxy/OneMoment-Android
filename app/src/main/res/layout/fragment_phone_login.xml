@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.3dp"
             android:layout_below="@id/phoneEditText"
-            android:background="@color/black"
+            android:background="@android:color/black"
             />
 
         <!--TODO visible password view -->
