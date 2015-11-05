@@ -15,8 +15,8 @@ import co.yishun.onemoment.app.ui.view.CountDownView;
  * Created by yyz on 7/25/15.
  */
 
-@EFragment(R.layout.layout_countdown)
-public class VerifyFragment extends Fragment {
+@EFragment(R.layout.fragment_diary)
+public class DiaryFragment extends Fragment {
 
     @ViewById CountDownView countDownView;
 

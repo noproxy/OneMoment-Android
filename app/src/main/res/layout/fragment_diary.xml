@@ -9,8 +9,6 @@
         android:id="@+id/passwordTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/divider"
-        android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:padding="8dp"
         android:text="Password"
