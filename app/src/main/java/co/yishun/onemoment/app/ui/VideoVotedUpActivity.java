@@ -62,7 +62,7 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
 
     @AfterViews
     void setView() {
-
+        //TODO solve sliding conflict
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
