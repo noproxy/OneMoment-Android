@@ -2,12 +2,12 @@
 <android.support.design.widget.CoordinatorLayout
     android:id="@+id/dragView"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_window"
-    android:fitsSystemWindows="true"
-    >
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
@@ -21,24 +21,17 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!-- TwoWayView has bug with paddingTop and marginTop, so add parent-->
-    <FrameLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.malinskiy.superrecyclerview.SuperRecyclerView
+        android:id="@+id/recyclerView"
+        style="@style/TwoWayView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <com.malinskiy.superrecyclerview.SuperRecyclerView
-            android:id="@+id/recyclerView"
-            style="@style/TwoWayView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_empty="@layout/layout_empty"
-            app:layout_progress="@layout/layout_progress"
-            tools:listitem="@layout/layout_world_item"
-            />
-    </FrameLayout>
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_empty="@layout/layout_empty"
+        app:layout_progress="@layout/layout_progress"
+        tools:listitem="@layout/layout_world_item"
+        />
 </android.support.design.widget.CoordinatorLayout>
 
