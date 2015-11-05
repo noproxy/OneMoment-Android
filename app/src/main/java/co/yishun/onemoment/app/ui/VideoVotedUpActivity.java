@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -8,8 +9,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.github.ppamorim.dragger.DraggerActivity;
-import com.github.ppamorim.dragger.DraggerView;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -20,6 +19,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.VotedUpController_;
 
 /**
@@ -27,10 +27,9 @@ import co.yishun.onemoment.app.ui.controller.VotedUpController_;
  */
 //TODO handle not extend BaseActivity
 @EActivity(R.layout.activity_video_voted_up)
-public class VideoVotedUpActivity extends DraggerActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<Video> {
+public class VideoVotedUpActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<Video> {
     @ViewById Toolbar toolbar;
     @ViewById SuperRecyclerView recyclerView;
-    @ViewById DraggerView draggerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +46,12 @@ public class VideoVotedUpActivity extends DraggerActivity implements AbstractRec
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.video_vote_up_title);
         Log.i("setupToolbar", "set home as up true");
+    }
+
+    @Nullable
+    @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
+        return null;
     }
 
     @Override
