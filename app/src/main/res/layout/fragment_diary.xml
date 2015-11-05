@@ -2,13 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/colorPrimary"
               android:orientation="vertical">
 
+
     <!-- placeholder-->
-    <co.yishun.onemoment.app.ui.view.SquareImageView
+    <co.yishun.library.calendarlibrary.MomentCalendar
+        android:id="@+id/momentCalendar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/pic_world_empty"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@android:color/white"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
         />
 
     <co.yishun.onemoment.app.ui.view.TodayMomentView
