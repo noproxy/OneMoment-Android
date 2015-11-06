@@ -22,17 +22,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@android:color/white"
-            android:paddingLeft="4dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingTop="8dp"
+            android:paddingTop="4dp"
             />
 
         <co.yishun.onemoment.app.ui.view.TodayMomentView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="16dp"
+            android:layout_marginBottom="56dp"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingRight="32dp"
             />
 
     </LinearLayout>
