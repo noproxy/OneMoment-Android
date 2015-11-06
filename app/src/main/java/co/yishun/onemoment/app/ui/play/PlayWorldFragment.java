@@ -70,6 +70,9 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         seed = videos.get(0).seed;
 
         for (TagVideo oneVideo : videos) {
+            if (this.getActivity() == null) {
+                return;
+            }
             File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
             if (fileSynced.exists()) {
                 addVideo(oneVideo, fileSynced);

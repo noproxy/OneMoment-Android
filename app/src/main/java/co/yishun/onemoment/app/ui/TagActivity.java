@@ -210,7 +210,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     protected void onResume() {
         super.onResume();
         if (transitionOver) {
-            tagAdapter.clear();
             TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
         }
     }

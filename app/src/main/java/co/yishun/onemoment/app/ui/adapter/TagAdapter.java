@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -29,6 +31,8 @@ import co.yishun.onemoment.app.data.VideoUtil;
  * Created by Carlos on 2015/8/17.
  */
 public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter.SimpleViewHolder> {
+    private static final String TAG = "TagAdapter";
+
     public TagAdapter(Context context, OnItemClickListener<TagVideo> listener) {
         super(context, listener);
     }
@@ -39,6 +43,19 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
         holder.setUp(item);
     }
 
+    public void addItems(List<? extends TagVideo> collection, int offset) {
+        int preSize = mItems.size();
+        Log.d(TAG, offset + " " + mItems.size());
+        for (int i = 0; i < collection.size(); i++) {
+            if (mItems.size() < offset) {
+                mItems.add(collection.get(i));
+            } else {
+                mItems.get(i + offset - collection.size()).likeNum = collection.get(i).likeNum;
+                mItems.get(i + offset - collection.size()).liked = collection.get(i).liked;
+            }
+        }
+        notifyItemRangeInserted(preSize, mItems.size() - preSize);
+    }
 
     @Override
     public TagAdapter.SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

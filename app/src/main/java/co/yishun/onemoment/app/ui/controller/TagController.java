@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui.controller;
 import android.content.Context;
 import android.util.Log;
 
+import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
@@ -48,15 +49,16 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
             //TODO loading error
             return null;
         }
-        setOffset(getOffset() + COUNT_EVERY_PAGE);
+        setOffset(getOffset() + list.size());
         return list;
     }
 
     @Override
     @UiThread
     void onLoadEnd(List<TagVideo> list) {
-        super.onLoadEnd(list);
-        if (list == null || list.size() == 0) {
+        if (list != null) {
+            ((TagAdapter)getAdapter()).addItems(list, getOffset());
+        }else {
             getRecyclerView().hideMoreProgress();
         }
     }
