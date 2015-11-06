@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.play;
 
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.squareup.okhttp.Call;
@@ -107,8 +108,10 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     void videoClick() {
         if (videoPlayView.isPlaying()) {
             videoPlayView.pause();
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             videoPlayView.start();
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
 
@@ -166,6 +169,9 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
 
     @Override
     public void videoChangeTo(int index) {
+        if (index == 0) {
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
         refreshUserInfo(index);
     }
 

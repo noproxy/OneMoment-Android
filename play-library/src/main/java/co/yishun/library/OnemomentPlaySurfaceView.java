@@ -60,16 +60,14 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
             return;
         }
         try {
-            Log.d(TAG, "first " + mVideoResource);
             mMediaPlayer = new MediaPlayer();
             if (mHolderCreated) {
                 Log.d(TAG, "first media " + mMediaPlayer);
                 mMediaPlayer.setDisplay(mHolder);
-            } else {
-                Log.d(TAG, "creating ");
             }
             mMediaPlayer.setDataSource(getContext(), mVideoResource.getVideoUri());
             mMediaPlayer.prepare();
+            mMediaPlayer.setScreenOnWhilePlaying(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,6 +88,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
             mNextPlayer.setOnPreparedListener(this);
             mNextPlayer.setOnCompletionListener(this);
             mNextPlayer.setOnErrorListener(this);
+            mNextPlayer.setScreenOnWhilePlaying(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
