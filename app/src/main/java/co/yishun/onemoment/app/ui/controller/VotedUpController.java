@@ -35,4 +35,5 @@ public class VotedUpController extends IntOffsetRefreshableRecyclerController<Su
         setOffset(getOffset() + 10);
         return list;
     }
+    //TODO download video and image
 }

@@ -202,18 +202,13 @@ repositories {
 }
 
 dependencies {
-    compile project(':dragger')
+//    compile project(':dragger') removed
 //    compile 'com.github.ppamorim:dragger:1.1'
     compile 'com.jenzz:materialpreference:1.3'
 }
 
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-}
-
-dependencies {
-    compile 'org.lucasr.twowayview:core:1.0.0-SNAPSHOT@aar'
-    compile 'org.lucasr.twowayview:layouts:1.0.0-SNAPSHOT@aar'
 }
 
 dependencies {
