@@ -11,7 +11,8 @@
     app:contentInsetStart="72dp"
     app:layout_collapseMode="pin">
 
-    <ImageView
+    <ImageButton
+        style="@style/AppTheme.Widget.ImageButton"
         android:id="@+id/addView"
         android:layout_width="48dp"
         android:layout_height="56dp"

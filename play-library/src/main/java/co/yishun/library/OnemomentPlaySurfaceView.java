@@ -102,7 +102,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     }
 
     public void pause() {
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
         }
     }

@@ -12,8 +12,8 @@
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:windowBackground">@drawable/bg_window</item>
         <item name="android:windowActionBar">false</item>
-        <item name="android:windowAnimationStyle">@style/AppTheme.WindowAnimation</item>
-        <item name="drawerArrowStyle">@style/AppTheme.DrawerArrowToggle</item>
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity</item>
+        <item name="drawerArrowStyle">@style/AppTheme.Widget.DrawerArrowToggle</item>
         <item name="colorControlNormal">?attr/colorAccent</item>
     </style>
 
@@ -59,19 +59,19 @@
     </style>
 
     <style name="AppTheme.ShootActivity">
-        <item name="android:windowAnimationStyle">@style/AppTheme.WindowAnimation.NoIn</item>
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
         <item name="android:windowBackground">@color/colorWindowTransparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="AppTheme.TagActivity">
-        <item name="android:windowAnimationStyle">@style/AppTheme.WindowAnimation.NoIn</item>
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
         <item name="android:windowBackground">@color/colorWindowTransparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="AppTheme.SearchActivity">
-        <item name="android:windowAnimationStyle">@style/AppTheme.WindowAnimation.NoIn</item>
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
         <item name="android:windowBackground">@color/colorWindowTransparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
@@ -91,22 +91,27 @@
     <style name="AppTheme.TagCreateActivity">
     </style>
 
-    <style name="AppTheme.WindowAnimation" parent="@android:style/Animation.Activity">
+    <style name="AppTheme.Animation.Activity" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/activity_fade_in</item>
         <item name="android:activityOpenExitAnimation">@anim/window_fade_out</item>
         <item name="android:activityCloseEnterAnimation">@null</item>
         <item name="android:activityCloseExitAnimation">@anim/activity_fade_out</item>
     </style>
 
-    <style name="AppTheme.WindowAnimation.NoIn">
+    <style name="AppTheme.Animation.Activity.NoIn">
         <item name="android:activityOpenEnterAnimation">@null</item>
     </style>
 
-    <style name="AppTheme.DrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">
+    <style name="AppTheme.Widget.DrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">?attr/colorAccent</item>
     </style>
 
     <style name="SwitchTextAppearance" parent="TextAppearance.AppCompat.Widget.Switch">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
+
+    <style name="AppTheme.Widget.ImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/bg_btn_menu</item>
+    </style>
+
 </resources>
