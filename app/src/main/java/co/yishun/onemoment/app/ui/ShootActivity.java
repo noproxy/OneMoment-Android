@@ -89,7 +89,6 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
                 }
             }
             SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, transitionX, transitionY, 0, finalRadius);
-//        animator.setInterpolator(new DecelerateInterpolator());
             Log.d(TAG, transitionX + " " + transitionY + " " + finalRadius);
             animator.setDuration(350);
             animator.start();
@@ -106,7 +105,6 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
         set.setDuration(50);
         TransitionManager.go(scene, set);
-//        findViewById(R.id.shootView).setVisibility(View.INVISIBLE);
         afterTransition();
     }
 
@@ -118,7 +116,6 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(findViewById(R.id.maskImageView), "alpha", 1f, 0f).setDuration(350);
         animator.start();
-//        ((View) shootView).setVisibility(View.VISIBLE);
 
         recordFlashSwitch = (ImageSwitcher) findViewById(R.id.recordFlashSwitch);
         cameraSwitch = (ImageSwitcher) findViewById(R.id.cameraSwitch);
