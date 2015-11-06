@@ -48,9 +48,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider"
-        android:drawableLeft="@drawable/ic_me_tag_msg"
-        android:drawablePadding="4dp"
-        android:drawableStart="@drawable/ic_me_tag_msg"
         tool:text="No moment today"/>
 
 
