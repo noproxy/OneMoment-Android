@@ -12,10 +12,12 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.data.model.Moment;
+import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -59,17 +61,18 @@ public class TodayMomentView extends RelativeLayout {
 
     public void setTodayMoment(@NonNull TodayMoment todayMoment) {
         mDateTextView.setText(todayMoment.date);
+        mTagTextView.setText(todayMoment.tag == null ? NO_MOMENT : todayMoment.tag);
         if (todayMoment.moment != null) {
             Moment moment = todayMoment.moment;
             Picasso.with(getContext()).load(moment.getPath()//TODO  add "file://" ?
             ).into(mMomentImageView);
-            //TODO add tag into Moment and set tag
         }
     }
 
     public static class TodayMoment {
         private String date;
         private Moment moment;
+        private String tag;
 
         private TodayMoment() {
         }
@@ -77,6 +80,7 @@ public class TodayMomentView extends RelativeLayout {
         public static TodayMoment noMomentToday(Date date) {
             TodayMoment todayMoment = new TodayMoment();
             todayMoment.date = new SimpleDateFormat("yyyy/MM/DD", Locale.getDefault()).format(date);
+            todayMoment.tag = null;
             return todayMoment;
         }
 
@@ -84,6 +88,10 @@ public class TodayMomentView extends RelativeLayout {
             TodayMoment todayMoment = new TodayMoment();
             todayMoment.moment = moment;
             todayMoment.date = new SimpleDateFormat("yyyy/MM/DD", Locale.getDefault()).format(moment.getTimeStamp() * 1000);
+            List<OMLocalVideoTag> tags = Moment.readTags(moment);
+            if (tags != null && tags.size() > 0) {
+                todayMoment.tag = tags.get(0).getTagText();
+            }
             return todayMoment;
         }
     }
