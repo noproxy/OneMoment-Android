@@ -27,7 +27,7 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
         for (int i = 0; i < 3; i++) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MONTH, i - 1);
-            MomentMonthView view = new MomentMonthView(context, calendar, adapter);
+            MomentMonthView view = new MomentMonthView(context, calendar, adapter, momentCalendar);
             monthViews[i] = view;
         }
         momentCalendar.setAdapter(this);

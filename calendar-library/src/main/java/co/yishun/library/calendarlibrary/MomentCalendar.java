@@ -17,18 +17,29 @@ import java.util.Locale;
  */
 public class MomentCalendar extends AnimationViewPager {
     public static final int MAX_WEEK_NUM = 6;
-    CalendarAdapter mAdapter;
+    public static final float DAY_VIEW_RATIO = 0.8f;
     // Those Paint, Rect, Size and Padding are just used to measure ViewPager but won't be used in drawing of this view.
-    private Rect mWeekTextMeasureRect;
-    private Rect mMonthTextMeasureRect;
-    private float mWeekTitlePadding = getResources().getDimension(R.dimen.MMV_weekTitlePadding);
-    private float mWeekTitleSize = getResources().getDimension(R.dimen.MMV_weekTitleSize);
-    private Paint mMonthTitlePaint;
-    private Paint mWeekTitlePaint;
-    private float mMonthTitleSize = getResources().getDimension(R.dimen.MMV_monthTitleSize);
-    private float mMonthTitlePadding = getResources().getDimension(R.dimen.MMV_monthTitlePadding);
-    private String mMonthTitle;
-    private String[] mWeekTitleArray;
+    CalendarAdapter mAdapter;
+
+    int mDayViewWidth = 0;
+    int mDayViewHeight = 0;
+
+    Paint mWeekTitlePaint;
+    String[] mWeekTitleArray;
+    float mWeekTitlePadding = getResources().getDimension(R.dimen.MMV_weekTitlePadding);
+    float mWeekTitleSize = getResources().getDimension(R.dimen.MMV_weekTitleSize);
+    Rect mWeekTitleMeasureRect;
+    float mWeekTitleHeight;
+
+    Paint mMonthTitlePaint;
+    String mExampleMonthTitle;
+    float mMonthTitlePadding = getResources().getDimension(R.dimen.MMV_monthTitlePadding);
+    float mMonthTitleSize = getResources().getDimension(R.dimen.MMV_monthTitleSize);
+    Rect mMonthTitleMeasureRect;
+    float mMonthTitleHeight;
+
+    int GRAY = getResources().getColor(R.color.colorGray);
+    int ORANGE = getResources().getColor(R.color.colorOrange);
 
     public MomentCalendar(Context context) {
         super(context);
@@ -43,33 +54,38 @@ public class MomentCalendar extends AnimationViewPager {
     private void init() {
         this.setTransitionEffect(TransitionEffect.CubeIn);
 
-        mWeekTitleArray = getResources().getStringArray(R.array.day_of_week);
         mMonthTitlePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mMonthTitlePaint.setTextSize(mMonthTitleSize);
+        mMonthTitlePaint.setColor(ORANGE);
+        mMonthTitleMeasureRect = new Rect();
+
         mWeekTitlePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mWeekTitlePaint.setTextSize(mWeekTitleSize);
-        mMonthTextMeasureRect = new Rect();
-        mWeekTextMeasureRect = new Rect();
+        mWeekTitlePaint.setColor(GRAY);
+        mWeekTitleMeasureRect = new Rect();
 
-        mMonthTitle = new SimpleDateFormat("yyyy/MM", Locale.getDefault()).format(new Date());
+        mWeekTitleArray = getResources().getStringArray(R.array.day_of_week);
+        mExampleMonthTitle = new SimpleDateFormat("yyyy/MM", Locale.getDefault()).format(new Date());
 
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int rw = MeasureSpec.getSize(widthMeasureSpec);
-        int w = rw;
+        int w = rw - getPaddingRight() - getPaddingLeft();
 
-        int itemLength = w / 7;
+        mDayViewWidth = w / 7;
+        mDayViewHeight = (int) (mDayViewWidth * DAY_VIEW_RATIO);
 
-        mMonthTitlePaint.getTextBounds(mMonthTitle, 0, mMonthTitle.length(), mMonthTextMeasureRect);
-        float monthTitleHeight = mMonthTextMeasureRect.height() + mMonthTitlePadding * 2;
-        mWeekTitlePaint.getTextBounds(mWeekTitleArray[0], 0, 1, mWeekTextMeasureRect);
-        float weekTitleHeight = mWeekTextMeasureRect.height() + mWeekTitlePadding * 2;
+        mMonthTitlePaint.getTextBounds(mExampleMonthTitle, 0, mExampleMonthTitle.length(), mMonthTitleMeasureRect);
+        mMonthTitleHeight = mMonthTitleMeasureRect.height() + mMonthTitlePadding * 2;
+        mWeekTitlePaint.getTextBounds(mWeekTitleArray[0], 0, 1, mWeekTitleMeasureRect);
+        mWeekTitleHeight = mWeekTitleMeasureRect.height() + mWeekTitlePadding * 2;
 
-        int h = (int) (itemLength * MAX_WEEK_NUM + monthTitleHeight + weekTitleHeight);        //TODO this not include the padding of the child MonthView
+        int h = (int) (mDayViewHeight * MAX_WEEK_NUM + mMonthTitleHeight + mWeekTitleHeight + getPaddingTop() + getPaddingBottom());        //TODO this not include the padding of the child MonthView
 
-        super.onMeasure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(h, MeasureSpec.AT_MOST));
+        super.onMeasure(MeasureSpec.makeMeasureSpec(rw, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+//        setMeasuredDimension(w, h);
     }
 
     public void setAdapter(MomentMonthView.MonthAdapter adapter) {

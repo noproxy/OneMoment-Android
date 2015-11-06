@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -16,6 +17,7 @@ import android.view.View;
  */
 public class DayView extends View implements View.OnClickListener {
 
+    private static final String TAG = "DayView";
     private static DayView mSelectedDayView = null;
     private Paint mBackgroundPaint;
     private TextPaint mTextPaint;
@@ -78,6 +80,7 @@ public class DayView extends View implements View.OnClickListener {
     }
 
     private void init(int day) {
+        setWillNotDraw(false);
         mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBackgroundPaint.setColor(ORANGE);
 
@@ -97,8 +100,9 @@ public class DayView extends View implements View.OnClickListener {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-//        int h = getMeasuredHeight();
-//        int w = getMeasuredWidth();
+        int h = getMeasuredHeight();
+        int w = getMeasuredWidth();
+        Log.i(TAG, "h: " + h + ", w: " + w);
 
         mTextPaint.getTextBounds(day, 0, day.length(), mTextRect);
     }
