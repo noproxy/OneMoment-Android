@@ -79,7 +79,7 @@ public class TodayMomentView extends RelativeLayout {
 
         public static TodayMoment noMomentToday(Date date) {
             TodayMoment todayMoment = new TodayMoment();
-            todayMoment.date = new SimpleDateFormat("yyyy/MM/DD", Locale.getDefault()).format(date);
+            todayMoment.date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(date);
             todayMoment.tag = null;
             return todayMoment;
         }
