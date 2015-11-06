@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
@@ -68,10 +69,19 @@ public class SearchAdapter extends AbstractRecyclerViewAdapter<WorldTag, SearchA
 
             }
         });
+        Resources resource = mContext.getResources();
         holder.numTextView.setText(String.valueOf(item.videosCount) + PeopleSuffix);
         holder.tagTextView.setText(item.name);
         holder.likeTextView.setText(String.valueOf(item.likeCount));
-        holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(getDrawableByType(item.type), null, null, null);
+
+        Drawable tagDraw = getDrawableByType(item.type);
+        tagDraw.setColorFilter(resource.getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+        holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(tagDraw, null, null, null);
+        Drawable likeDraw = resource.getDrawable(R.drawable.ic_world_like);
+        if (likeDraw != null) {
+            likeDraw.setColorFilter(resource.getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+        }
+        holder.likeTextView.setCompoundDrawablesWithIntrinsicBounds(likeDraw, null, null, null);
     }
 
     private Drawable getDrawableByType(String type) {
