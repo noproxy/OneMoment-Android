@@ -2,8 +2,10 @@ package co.yishun.onemoment.app.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,12 +13,11 @@ import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
 
 import org.androidannotations.annotations.EFragment;
 
-import java.util.Arrays;
-
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.SearchActivity_;
 import co.yishun.onemoment.app.ui.TagActivity;
 import co.yishun.onemoment.app.ui.TagActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
@@ -52,6 +53,22 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
         return recyclerView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_fragment_world, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.fragment_world_action_search:
+                SearchActivity_.intent(this).start();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected int getContentViewId(Bundle savedInstanceState) {
