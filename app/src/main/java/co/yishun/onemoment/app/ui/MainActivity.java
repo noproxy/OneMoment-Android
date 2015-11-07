@@ -214,45 +214,16 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        switch (currentItemId) {
-            case R.id.navigation_item_0:
-                menu.findItem(R.id.fragment_world_action_search).setIcon(R.drawable.ic_action_search);
-                break;
-            case R.id.navigation_item_1:
-                menu.findItem(R.id.fragment_world_action_search).setIcon(R.drawable.ic_diary);
-                break;
-            case R.id.navigation_item_2:
-                menu.findItem(R.id.fragment_world_action_search).setIcon(R.drawable.ic_me);
-                break;
-            default:
-                menu.findItem(R.id.fragment_world_action_search).setVisible(false);
-                break;
-        }
+        // no global option menu, but fragment would add menu
         return true;
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) return true;
-        switch (item.getItemId()) {
-            case R.id.fragment_world_action_search:
-                switch (currentItemId) {
-                    case R.id.navigation_item_0:
-                        navigationTo(R.id.fragment_world_action_search);
-                        break;
-                    case R.id.navigation_item_1:
-                        break;
-                    case R.id.navigation_item_2:
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-        }
-        return false;
+        // no global option menu to handle, fragment handles itself.
+        // Just forwarding to DrawerToggle to handle item in NavigationDrawer
+        return mDrawerToggle.onOptionsItemSelected(item);
     }
 
     public void onEspressoBtnClick(View view) {
