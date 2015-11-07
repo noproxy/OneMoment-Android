@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -150,7 +151,7 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
     }
 
     private void search() {
-        if ("".equals(queryText.getText().toString())) {
+        if (TextUtils.isEmpty(queryText.getText())) {
             return;
         }
         SearchController_.getInstance_(this).setUp(adapter, recyclerView, queryText.getText().toString());
