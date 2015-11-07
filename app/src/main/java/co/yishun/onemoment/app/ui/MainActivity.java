@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,6 +25,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 
 import java.lang.ref.WeakReference;
 
@@ -102,11 +105,13 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         locationTextView = (TextView) header.findViewById(R.id.locationTextView);
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-            if (menuItem.getGroupId() == R.id.group_switch) {
-                menuItem.setChecked(true);
-            }
             drawerLayout.closeDrawers();
-            return navigationTo(menuItem.getItemId());
+            int id = menuItem.getItemId();
+            if (id == R.id.navigation_item_4) {
+                delayStartSettingsActivity();
+                return false;
+            } else
+                return navigationTo(menuItem.getItemId());
         });
 
         invalidateUserInfo(AccountHelper.getUserInfo(this));
@@ -114,6 +119,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    @UiThread(delay = 300)
+    void delayStartSettingsActivity() {
+        SettingsActivity_.intent(this).start();
+        //TODO add animation
     }
 
     private void setActionMenu() {
@@ -162,41 +173,44 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         }
     }
 
+    /**
+     * switch main ui to selected fragment
+     *
+     * @param itemId id of the targeted fragment
+     * @return whether the fragment is checked.
+     */
     private boolean navigationTo(int itemId) {
         if (itemId == currentItemId) return true;
         //TODO add delay to let drawer close
+        @SuppressLint("CommitTransaction")
+        Fragment targetFragment;
         switch (itemId) {
             case R.id.navigation_item_0:
                 if (worldFragment == null) {
-                    worldFragment = new WorldFragment_();
+                    worldFragment = WorldFragment_.builder().build();
                 }
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, worldFragment).commit();
-                currentItemId = itemId;
+                targetFragment = worldFragment;
                 break;
             case R.id.navigation_item_1:
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, new DiaryFragment_()).commit();
-                currentItemId = itemId;
+                targetFragment = DiaryFragment_.builder().build();
                 break;
             case R.id.navigation_item_2:
-                DiscoveryFragment_ fragment2 = new DiscoveryFragment_();
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, fragment2).commit();
-                currentItemId = itemId;
+                targetFragment = DiscoveryFragment_.builder().build();
                 break;
             case R.id.navigation_item_3:
-                MeFragment_ fragment3 = new MeFragment_();
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, fragment3).commit();
-                currentItemId = itemId;
+                targetFragment = MeFragment_.builder().build();
                 break;
-            case R.id.navigation_item_4:
-                Intent intent = new Intent(this, SettingsActivity_.class);
-                startActivity(intent);
+            default:
                 return false;
         }
+        currentItemId = itemId;
+        delayCommit(targetFragment);
         return true;
+    }
+
+    @UiThread(delay = 300)
+    void delayCommit(Fragment targetFragment) {
+        fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commit();
     }
 
     @Override
