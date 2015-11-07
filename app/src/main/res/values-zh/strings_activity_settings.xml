@@ -6,6 +6,7 @@
     <string name="pref_title_sync_auto">自动同步</string>
     <string name="pref_summary_sync_auto">将视频备份到服务器</string>
     <string name="pref_title_sync_frequency">同步频率</string>
+    <string name="pref_summary_sync_frequency">每%s同步一次</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15分钟</item>
         <item>30分钟</item>

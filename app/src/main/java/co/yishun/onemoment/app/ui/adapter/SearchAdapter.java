@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import co.yishun.onemoment.app.api.model.WorldTag;
  * Created on 2015/10/19.
  */
 public class SearchAdapter extends AbstractRecyclerViewAdapter<WorldTag, SearchAdapter.SimpleViewHolder> {
+    private static final String TAG = "SearchAdapter";
     private final String PeopleSuffix;
     private final Drawable[] mTagDrawable;
 
@@ -51,6 +53,7 @@ public class SearchAdapter extends AbstractRecyclerViewAdapter<WorldTag, SearchA
         Picasso.with(mContext).load(item.domain + item.thumbnail).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                Log.d(TAG, "loaded " + position + " " + from);
                 holder.itemImageView.setImageBitmap(bitmap);
                 item.color = Palette.from(bitmap).generate().getMutedColor(mContext.getResources().getColor(R.color.colorPrimary));
             }

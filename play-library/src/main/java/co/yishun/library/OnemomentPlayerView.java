@@ -95,9 +95,11 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
     }
 
     public void start() {
-        mPlaySurface.start();
-        if (mShowPlayBtn) {
-            mPlayBtn.setVisibility(View.INVISIBLE);
+        if (mVideoResources.size() >= 1) {
+            mPlaySurface.start();
+            if (mShowPlayBtn) {
+                mPlayBtn.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

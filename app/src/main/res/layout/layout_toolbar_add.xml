@@ -7,14 +7,15 @@
     android:layout_height="?attr/actionBarSize"
     android:background="@android:color/transparent"
     android:elevation="@dimen/toolbar_elevation"
-    app:contentInsetStart="56dp"
+    app:contentInsetStart="72dp"
     app:layout_collapseMode="pin"
     >
 
-    <ImageView
+    <ImageButton
+        style="@style/AppTheme.Widget.ImageButton"
         android:id="@+id/addImageView"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_gravity="right"
         android:scaleType="centerInside"
         android:src="@drawable/ic_action_add"/>

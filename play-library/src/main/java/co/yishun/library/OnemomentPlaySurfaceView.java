@@ -96,13 +96,13 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     }
 
     public void start() {
-        if (!mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
             mMediaPlayer.start();
         }
     }
 
     public void pause() {
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
         }
     }
@@ -124,7 +124,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     }
 
     public boolean isPlaying() {
-        return mMediaPlayer.isPlaying();
+        return mMediaPlayer != null && mMediaPlayer.isPlaying();
     }
 
     public void setVideoResource(VideoResource videoResource) {
@@ -152,7 +152,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         mp.release();
         if (mNextPlayer == null || mp == mNextPlayer) {
             Log.d(TAG, "end");
-            if (mOneListener !=null) {
+            if (mOneListener != null) {
                 mOneListener.onOneCompletion();
             }
         } else {
@@ -164,7 +164,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
                 return;
             }
             mMediaPlayer.setDisplay(mHolder);
-            if (mOneListener !=null) {
+            if (mOneListener != null) {
                 mOneListener.onOneCompletion();
             }
             nextPrepare();

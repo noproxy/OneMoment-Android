@@ -10,6 +10,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -125,6 +127,12 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         recyclerView.setVisibility(View.VISIBLE);
         nextBtn.setVisibility(View.GONE);
         searchFrame.setVisibility(View.VISIBLE);
+        Animation queryTextAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_query_in);
+        queryText.startAnimation(queryTextAnim);
+        Animation recyclerAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_content_in);
+        recyclerView.startAnimation(recyclerAnim);
+        Animation addAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_add_in);
+        addView.startAnimation(addAnim);
         showKeyboard();
 
         List<String> defaultTag = new ArrayList<>();
@@ -143,14 +151,28 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
 
     void recoverSearch() {
         searching = false;
+        Animation queryTextAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_query_out);
+        queryText.startAnimation(queryTextAnim);
+        Animation recyclerAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_content_out);
+        recyclerView.startAnimation(recyclerAnim);
+        Animation frameAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_frame_out);
+        searchFrame.startAnimation(frameAnim);
+        Animation addAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_add_out);
+        addView.startAnimation(addAnim);
+        Animation nextAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_next_in);
+        nextBtn.startAnimation(nextAnim);
+        viewChange();
+        hideKeyboard();
+        locationClient.stop();
+    }
+
+    @UiThread(delay = 200)
+    void viewChange(){
+        searchFrame.setVisibility(View.GONE);
         queryText.setVisibility(View.GONE);
-        queryText.requestFocus();
         addView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         nextBtn.setVisibility(View.VISIBLE);
-        searchFrame.setVisibility(View.GONE);
-        hideKeyboard();
-        locationClient.stop();
     }
 
     @AfterViews
@@ -164,7 +186,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
 
     boolean addTag(String tag) {
         if ("".equals(tag)) {
-            showSnackMsg("empty tag not permit");
+            showSnackMsg("empty tag not permitted");
             return false;
         }
         editTagContainer.addTag(new BaseVideoTag(tag, tagX, tagY));
@@ -181,6 +203,11 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         if (addTag(item)) {
             recoverSearch();
         }
+    }
+
+    @Click
+    void searchFrameClicked(View view) {
+        recoverSearch();
     }
 
     @Click

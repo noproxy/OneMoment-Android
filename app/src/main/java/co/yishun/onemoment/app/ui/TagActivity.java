@@ -178,15 +178,10 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         swipeRefreshLayout = ((SwipeRefreshLayout) findViewById(R.id.ptr_layout));
         recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
         addImageView = (ImageView) findViewById(R.id.addImageView);
-        addImageView.setOnClickListener(view -> {
-            int[] location = new int[2];
-            view.getLocationOnScreen(location);
-            ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                    .transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
-        });
+        addImageView.setOnClickListener(this::addImageClicked);
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
-        videoImageView.setOnClickListener(v -> PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start());
+        videoImageView.setOnClickListener(this::videoImageClick);
 
         GridLayoutManager manager = new GridLayoutManager(this, 3);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -243,8 +238,15 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return super.onOptionsItemSelected(item);
     }
 
-    private void videoImageClick() {
+    void addImageClicked(View view) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
+                .transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
+    }
 
+    void videoImageClick(View v) {
+        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
     }
 
     @Override
