@@ -142,7 +142,7 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.main_search) {
+        if (item.getItemId() == R.id.fragment_world_action_search) {
             search();
             return true;
         }

@@ -195,10 +195,6 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
                 Intent intent = new Intent(this, SettingsActivity_.class);
                 startActivity(intent);
                 return false;
-            case R.id.main_search:
-                Intent i = new Intent(this, SearchActivity_.class);
-                startActivity(i);
-                break;
         }
         return true;
     }
@@ -222,16 +218,16 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         getMenuInflater().inflate(R.menu.menu_main, menu);
         switch (currentItemId) {
             case R.id.navigation_item_0:
-                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_action_search);
+                menu.findItem(R.id.fragment_world_action_search).setIcon(R.drawable.ic_action_search);
                 break;
             case R.id.navigation_item_1:
-                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_diary);
+                menu.findItem(R.id.fragment_world_action_search).setIcon(R.drawable.ic_diary);
                 break;
             case R.id.navigation_item_2:
-                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_me);
+                menu.findItem(R.id.fragment_world_action_search).setIcon(R.drawable.ic_me);
                 break;
             default:
-                menu.findItem(R.id.main_search).setVisible(false);
+                menu.findItem(R.id.fragment_world_action_search).setVisible(false);
                 break;
         }
         return true;
@@ -242,10 +238,10 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) return true;
         switch (item.getItemId()) {
-            case R.id.main_search:
+            case R.id.fragment_world_action_search:
                 switch (currentItemId) {
                     case R.id.navigation_item_0:
-                        navigationTo(R.id.main_search);
+                        navigationTo(R.id.fragment_world_action_search);
                         break;
                     case R.id.navigation_item_1:
                         break;
