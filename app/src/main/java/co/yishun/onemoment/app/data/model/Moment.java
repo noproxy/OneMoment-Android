@@ -1,5 +1,8 @@
 package co.yishun.onemoment.app.data.model;
 
+import java.util.List;
+
+import co.yishun.onemoment.app.data.RealmHelper;
 import io.realm.RealmObject;
 
 /**
@@ -28,6 +31,10 @@ public class Moment extends RealmObject {
         moment.owner = momentProvider.getOwnerID();
 
         return moment;
+    }
+
+    public static List<OMLocalVideoTag> readTags(Moment moment) {
+        return RealmHelper.getTags(moment.getTime());
     }
 
     public String getThumbPath() {

@@ -33,9 +33,9 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.home.DiaryFragment_;
 import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
-import co.yishun.onemoment.app.ui.home.VerifyFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
 
@@ -176,7 +176,7 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
                 break;
             case R.id.navigation_item_1:
                 fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, new VerifyFragment_()).commit();
+                        .replace(R.id.fragment_container, new DiaryFragment_()).commit();
                 currentItemId = itemId;
                 break;
             case R.id.navigation_item_2:

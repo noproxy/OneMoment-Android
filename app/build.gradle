@@ -220,6 +220,7 @@ dependencies {
 dependencies {
 //    compile 'co.yishun:library:1.3.2'
     compile project(':play-library')
+    compile project(':calendar-library')
 }
 // https://www.reddit.com/r/androiddev/comments/3dnibt/support_library_2221_released/
 configurations.all() {

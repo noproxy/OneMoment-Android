@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.common;
 
+import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.v7.app.ActionBar;
@@ -14,6 +15,12 @@ import co.yishun.onemoment.app.ui.MainActivity;
  */
 public abstract class ToolbarFragment extends BaseFragment {
     protected Toolbar toolbar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     protected abstract @DrawableRes int getTitleDrawableRes();
 
