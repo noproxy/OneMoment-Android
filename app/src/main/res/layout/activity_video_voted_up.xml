@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     android:id="@+id/dragView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,14 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_window"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/app_bar_elevation"
-        android:fitsSystemWindows="true"
         >
 
         <include layout="@layout/layout_toolbar"/>
@@ -33,5 +33,5 @@
         app:layout_progress="@layout/layout_progress"
         tools:listitem="@layout/layout_world_item"
         />
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
 
