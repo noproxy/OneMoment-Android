@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -136,13 +137,13 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_search, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.main_search) {
+        if (item.getItemId() == R.id.fragment_world_action_search) {
             search();
             return true;
         }
@@ -150,7 +151,7 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
     }
 
     private void search() {
-        if ("".equals(queryText.getText().toString())) {
+        if (TextUtils.isEmpty(queryText.getText())) {
             return;
         }
         SearchController_.getInstance_(this).setUp(adapter, recyclerView, queryText.getText().toString());

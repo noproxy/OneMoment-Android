@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,6 +25,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 
 import java.lang.ref.WeakReference;
 
@@ -102,11 +105,13 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         locationTextView = (TextView) header.findViewById(R.id.locationTextView);
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-            if (menuItem.getGroupId() == R.id.group_switch) {
-                menuItem.setChecked(true);
-            }
             drawerLayout.closeDrawers();
-            return navigationTo(menuItem.getItemId());
+            int id = menuItem.getItemId();
+            if (id == R.id.navigation_item_4) {
+                delayStartSettingsActivity();
+                return false;
+            } else
+                return navigationTo(menuItem.getItemId());
         });
 
         invalidateUserInfo(AccountHelper.getUserInfo(this));
@@ -114,6 +119,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    @UiThread(delay = 300)
+    void delayStartSettingsActivity() {
+        SettingsActivity_.intent(this).start();
+        //TODO add animation
     }
 
     private void setActionMenu() {
@@ -162,45 +173,44 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         }
     }
 
+    /**
+     * switch main ui to selected fragment
+     *
+     * @param itemId id of the targeted fragment
+     * @return whether the fragment is checked.
+     */
     private boolean navigationTo(int itemId) {
         if (itemId == currentItemId) return true;
         //TODO add delay to let drawer close
+        @SuppressLint("CommitTransaction")
+        Fragment targetFragment;
         switch (itemId) {
             case R.id.navigation_item_0:
                 if (worldFragment == null) {
-                    worldFragment = new WorldFragment_();
+                    worldFragment = WorldFragment_.builder().build();
                 }
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, worldFragment).commit();
-                currentItemId = itemId;
+                targetFragment = worldFragment;
                 break;
             case R.id.navigation_item_1:
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, new DiaryFragment_()).commit();
-                currentItemId = itemId;
+                targetFragment = DiaryFragment_.builder().build();
                 break;
             case R.id.navigation_item_2:
-                DiscoveryFragment_ fragment2 = new DiscoveryFragment_();
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, fragment2).commit();
-                currentItemId = itemId;
+                targetFragment = DiscoveryFragment_.builder().build();
                 break;
             case R.id.navigation_item_3:
-                MeFragment_ fragment3 = new MeFragment_();
-                fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
-                        .replace(R.id.fragment_container, fragment3).commit();
-                currentItemId = itemId;
+                targetFragment = MeFragment_.builder().build();
                 break;
-            case R.id.navigation_item_4:
-                Intent intent = new Intent(this, SettingsActivity_.class);
-                startActivity(intent);
+            default:
                 return false;
-            case R.id.main_search:
-                Intent i = new Intent(this, SearchActivity_.class);
-                startActivity(i);
-                break;
         }
+        currentItemId = itemId;
+        delayCommit(targetFragment);
         return true;
+    }
+
+    @UiThread(delay = 300)
+    void delayCommit(Fragment targetFragment) {
+        fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commit();
     }
 
     @Override
@@ -218,45 +228,16 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        switch (currentItemId) {
-            case R.id.navigation_item_0:
-                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_action_search);
-                break;
-            case R.id.navigation_item_1:
-                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_diary);
-                break;
-            case R.id.navigation_item_2:
-                menu.findItem(R.id.main_search).setIcon(R.drawable.ic_me);
-                break;
-            default:
-                menu.findItem(R.id.main_search).setVisible(false);
-                break;
-        }
+        // no global option menu, but fragment would add menu
         return true;
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) return true;
-        switch (item.getItemId()) {
-            case R.id.main_search:
-                switch (currentItemId) {
-                    case R.id.navigation_item_0:
-                        navigationTo(R.id.main_search);
-                        break;
-                    case R.id.navigation_item_1:
-                        break;
-                    case R.id.navigation_item_2:
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-        }
-        return false;
+        // no global option menu to handle, fragment handles itself.
+        // Just forwarding to DrawerToggle to handle item in NavigationDrawer
+        return mDrawerToggle.onOptionsItemSelected(item);
     }
 
     public void onEspressoBtnClick(View view) {
