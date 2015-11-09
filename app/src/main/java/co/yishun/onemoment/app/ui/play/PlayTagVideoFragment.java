@@ -1,5 +1,9 @@
 package co.yishun.onemoment.app.ui.play;
 
+import android.content.AsyncTaskLoader;
+import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +20,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import co.yishun.library.OnemomentPlayerView;
 import co.yishun.library.resource.BaseVideoResource;
