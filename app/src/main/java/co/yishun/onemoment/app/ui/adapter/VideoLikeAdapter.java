@@ -23,23 +23,22 @@ import java.io.InputStream;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.TagVideo;
-import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.VideoUtil;
 
 /**
  * Created by Carlos on 2015/8/16.
  */
-public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> {
+public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<TagVideo, VideoLikeAdapter.SimpleViewHolder> {
     private final SuperRecyclerView recyclerView;
 
-    public VideoLikeAdapter(Context context, OnItemClickListener<Video> listener, SuperRecyclerView recyclerView) {
+    public VideoLikeAdapter(Context context, OnItemClickListener<TagVideo> listener, SuperRecyclerView recyclerView) {
         super(context, listener);
         this.recyclerView = recyclerView;
     }
 
     @Override
-    public void onBindViewHolder(SimpleViewHolder holder, Video item, int position) {
+    public void onBindViewHolder(SimpleViewHolder holder, TagVideo item, int position) {
         //TODO there is a video
         Picasso.with(mContext).load(R.drawable.pic_slider_loading).fit().into(holder.itemImageView);
         holder.setUp(item);
@@ -62,7 +61,7 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLi
             context = itemView.getContext();
         }
 
-        protected void setUp(Video video) {
+        protected void setUp(TagVideo video) {
             if (task != null) {
                 task.cancel(true);
             }
@@ -71,15 +70,15 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<Video, VideoLi
 
         }
 
-        public class TagVideoDownloaderTask extends AsyncTask<Video, Integer, Boolean> {
+        public class TagVideoDownloaderTask extends AsyncTask<TagVideo, Integer, Boolean> {
             private static final String TAG = "TagVideoDownloaderTask";
             private String largeThumbImage;
             private String thumbImage;
 
 
             @Override
-            protected Boolean doInBackground(Video... tagVideos) {
-                final Video tagVideo = tagVideos[0];
+            protected Boolean doInBackground(TagVideo... tagVideos) {
+                final TagVideo tagVideo = tagVideos[0];
                 try {
 
                     // if video exists

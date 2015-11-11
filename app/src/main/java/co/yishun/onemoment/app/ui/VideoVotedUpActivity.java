@@ -16,6 +16,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
@@ -27,7 +28,7 @@ import co.yishun.onemoment.app.ui.controller.VotedUpController_;
  */
 //TODO handle not extend BaseActivity
 @EActivity(R.layout.activity_video_voted_up)
-public class VideoVotedUpActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<Video> {
+public class VideoVotedUpActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
     @ViewById Toolbar toolbar;
     @ViewById SuperRecyclerView recyclerView;
 
@@ -65,7 +66,7 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
         //TODO solve sliding conflict
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
-        AbstractRecyclerViewAdapter<Video, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
+        AbstractRecyclerViewAdapter<TagVideo, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
         recyclerView.setAdapter(adapter);
         VotedUpController_.getInstance_(this).setUp(adapter, recyclerView);
     }
@@ -84,7 +85,7 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     }
 
     @Override
-    public void onClick(View view, Video item) {
+    public void onClick(View view, TagVideo item) {
 
     }
 
