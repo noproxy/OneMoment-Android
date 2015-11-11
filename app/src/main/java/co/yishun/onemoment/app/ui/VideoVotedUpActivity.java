@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,6 +26,7 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.VotedUpController_;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
+import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 
 /**
  * Created by yyz on 7/20/15.
@@ -75,7 +77,12 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     @AfterViews
     void setView() {
         //TODO solve sliding conflict
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        int spanCount = 3;
+        int spacing = (int) getResources().getDimension(R.dimen.video_grid_divider);
+        GridLayoutManager manager = new GridLayoutManager(this, spanCount);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
 
 //        AbstractRecyclerViewAdapter<TagVideo, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
         TagAdapter adapter = new TagAdapter(this, this);
