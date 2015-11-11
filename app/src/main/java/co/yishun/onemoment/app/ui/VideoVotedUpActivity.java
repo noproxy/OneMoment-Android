@@ -19,6 +19,7 @@ import org.androidannotations.annotations.ViewById;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
+import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.VotedUpController_;
@@ -76,7 +77,8 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
         //TODO solve sliding conflict
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
-        AbstractRecyclerViewAdapter<TagVideo, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
+//        AbstractRecyclerViewAdapter<TagVideo, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
+        TagAdapter adapter = new TagAdapter(this, this);
         recyclerView.setAdapter(adapter);
         VotedUpController_.getInstance_(this).setUp(adapter, recyclerView);
     }
