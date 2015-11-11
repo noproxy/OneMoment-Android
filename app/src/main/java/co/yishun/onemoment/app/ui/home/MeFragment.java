@@ -82,6 +82,7 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_me, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
