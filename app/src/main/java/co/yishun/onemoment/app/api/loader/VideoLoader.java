@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.api.loader;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
@@ -14,50 +13,51 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 
-import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.VideoUtil;
 
 /**
  * Created by Jinge on 2015/11/9.
  */
-public class VideoTaskLoader extends AsyncTaskLoader<Boolean> {
+public class VideoLoader extends AsyncTaskLoader<Boolean> {
     private static final String TAG = "TagVideoDownloaderTask";
-    TagVideo tagVideo;
-    WeakReference<ImageView> target;
+    private VideoTask mTask;
     private String largeThumbImage;
     private String thumbImage;
     private Context mContext;
     private boolean isCancelled;
 
-    public VideoTaskLoader(Context context) {
+    public VideoLoader(Context context, VideoTask task) {
         super(context);
+        mTask = task;
+    }
 
+    public void setTask(VideoTask mTask) {
+        this.mTask = mTask;
     }
 
     @Override
     public Boolean loadInBackground() {
         try {
             // if video exists
-            File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, tagVideo);
+            File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, mTask.getTagVideo());
             if (fileSynced.exists()) {
 
                 // check whether thumbnail exists
-                File large = FileUtil.getThumbnailStoreFile(mContext, tagVideo, FileUtil.Type.LARGE_THUMB);
-                File small = FileUtil.getThumbnailStoreFile(mContext, tagVideo, FileUtil.Type.MICRO_THUMB);
+                File large = FileUtil.getThumbnailStoreFile(mContext, mTask.getTagVideo(), FileUtil.Type.LARGE_THUMB);
+                File small = FileUtil.getThumbnailStoreFile(mContext, mTask.getTagVideo(), FileUtil.Type.MICRO_THUMB);
                 boolean re = true;
                 try {
                     if (large.exists()) {
                         largeThumbImage = large.getPath();
                     } else {
-                        largeThumbImage = VideoUtil.createLargeThumbImage(mContext, tagVideo, fileSynced.getPath());
+                        largeThumbImage = VideoUtil.createLargeThumbImage(mContext, mTask.getTagVideo(), fileSynced.getPath());
                     }
                     if (small.exists()) {
                         thumbImage = small.getPath();
                     } else {
-                        thumbImage = VideoUtil.createThumbImage(mContext, tagVideo, fileSynced.getPath());
+                        thumbImage = VideoUtil.createThumbImage(mContext, mTask.getTagVideo(), fileSynced.getPath());
                     }
                 } catch (IOException e) {
                     // create thumbnail failed, video file may be damaged, redownload
@@ -72,7 +72,7 @@ public class VideoTaskLoader extends AsyncTaskLoader<Boolean> {
             }
 
             OkHttpClient httpClient = new OkHttpClient();
-            Call call = httpClient.newCall(new Request.Builder().url(tagVideo.domain + tagVideo.fileName).get().build());
+            Call call = httpClient.newCall(new Request.Builder().url(mTask.getTagVideo().domain + mTask.getTagVideo().fileName).get().build());
             Response response = call.execute();
 
             if (response.code() == 200) {
@@ -98,8 +98,8 @@ public class VideoTaskLoader extends AsyncTaskLoader<Boolean> {
 //                            publishProgress((int) (total * 100 / fileLength));
                         output.write(data, 0, count);
                     }
-                    largeThumbImage = VideoUtil.createLargeThumbImage(mContext, tagVideo, fileSynced.getPath());
-                    thumbImage = VideoUtil.createThumbImage(mContext, tagVideo, fileSynced.getPath());
+                    largeThumbImage = VideoUtil.createLargeThumbImage(mContext, mTask.getTagVideo(), fileSynced.getPath());
+                    thumbImage = VideoUtil.createThumbImage(mContext, mTask.getTagVideo(), fileSynced.getPath());
 
                     return total == fileLength;
                 } catch (IOException ignore) {
@@ -120,6 +120,24 @@ public class VideoTaskLoader extends AsyncTaskLoader<Boolean> {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public VideoTask getTask() {
+        return mTask;
+    }
+
+    public String getLargeThumbImage() {
+        return largeThumbImage;
+    }
+
+    public String getThumbImage() {
+        return thumbImage;
+    }
+
+    @Override
+    protected boolean onCancelLoad() {
+        isCancelled = true;
+        return super.onCancelLoad();
     }
 }
 
