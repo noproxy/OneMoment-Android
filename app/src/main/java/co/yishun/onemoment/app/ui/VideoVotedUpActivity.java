@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
@@ -17,11 +18,12 @@ import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.TagVideo;
-import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.VotedUpController_;
+import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
+import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
 
 /**
  * Created by yyz on 7/20/15.
@@ -29,8 +31,16 @@ import co.yishun.onemoment.app.ui.controller.VotedUpController_;
 //TODO handle not extend BaseActivity
 @EActivity(R.layout.activity_video_voted_up)
 public class VideoVotedUpActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
-    @ViewById Toolbar toolbar;
-    @ViewById SuperRecyclerView recyclerView;
+    private static final String TAG = "VideoVotedUpActivity";
+    @ViewById
+    Toolbar toolbar;
+    @ViewById
+    SuperRecyclerView recyclerView;
+    @ViewById
+    FrameLayout containerFrameLayout;
+
+    private PlayTagVideoFragment previewFragment;
+    private boolean preview = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +82,17 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     }
     //TODO not test
 
+
+    @Override
+    public void onBackPressed() {
+        if (preview) {
+            getSupportFragmentManager().beginTransaction().remove(previewFragment).commit();
+            preview = false;
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -86,7 +107,11 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
 
     @Override
     public void onClick(View view, TagVideo item) {
-
+        preview = true;
+        previewFragment = PlayTagVideoFragment_.builder().oneVideo(item).build();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerFrameLayout, previewFragment).commit();
+//        PlayActivity_.intent(this).type(PlayActivity.TYPE_VIDEO).oneVideo(item).start();
     }
 
 
