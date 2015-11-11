@@ -19,10 +19,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.List;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.loader.VideoLoaderManager;
+import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.VideoUtil;
@@ -45,7 +46,6 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
 
     public void addItems(List<? extends TagVideo> collection, int offset) {
         int preSize = mItems.size();
-        Log.d(TAG, offset + " " + mItems.size());
         for (int i = 0; i < collection.size(); i++) {
             if (mItems.size() < offset) {
                 mItems.add(collection.get(i));
@@ -65,7 +65,8 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
     public static class SimpleViewHolder extends RecyclerView.ViewHolder {
         final ImageView itemImageView;
         private final Context context;
-        private TagVideoDownloaderTask task;
+        //        private TagVideoDownloaderTask task;
+        private VideoTask task;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
@@ -75,11 +76,12 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
 
         protected void setUp(TagVideo video) {
             if (task != null) {
-                task.cancel(true);
+//                task.cancel(true);
+                task.cancel();
             }
-            task = new TagVideoDownloaderTask();
-            task.execute(video);
-
+//            task = new TagVideoDownloaderTask();
+//            task.execute(video);
+            task = VideoLoaderManager.getInstance().createTask(video, itemImageView);
         }
 
         public class TagVideoDownloaderTask extends AsyncTask<TagVideo, Integer, Boolean> {

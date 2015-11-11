@@ -21,7 +21,7 @@ import co.yishun.onemoment.app.data.VideoUtil;
  * Created by Jinge on 2015/11/9.
  */
 public class VideoLoader extends AsyncTaskLoader<Boolean> {
-    private static final String TAG = "TagVideoDownloaderTask";
+    private static final String TAG = "VideoLoader";
     private VideoTask mTask;
     private String largeThumbImage;
     private String thumbImage;
@@ -30,20 +30,25 @@ public class VideoLoader extends AsyncTaskLoader<Boolean> {
 
     public VideoLoader(Context context, VideoTask task) {
         super(context);
+        mContext = context;
         mTask = task;
     }
 
-    public void setTask(VideoTask mTask) {
-        this.mTask = mTask;
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+        Log.d(TAG, "start");
     }
 
     @Override
     public Boolean loadInBackground() {
+        Log.d(TAG, "back start");
         try {
             // if video exists
             File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, mTask.getTagVideo());
+            Log.d(TAG, "loader start");
             if (fileSynced.exists()) {
-
+                Log.d(TAG, "file exist");
                 // check whether thumbnail exists
                 File large = FileUtil.getThumbnailStoreFile(mContext, mTask.getTagVideo(), FileUtil.Type.LARGE_THUMB);
                 File small = FileUtil.getThumbnailStoreFile(mContext, mTask.getTagVideo(), FileUtil.Type.MICRO_THUMB);
@@ -70,6 +75,7 @@ public class VideoLoader extends AsyncTaskLoader<Boolean> {
                 }
                 if (re) return true;
             }
+            Log.d(TAG, "file not exist");
 
             OkHttpClient httpClient = new OkHttpClient();
             Call call = httpClient.newCall(new Request.Builder().url(mTask.getTagVideo().domain + mTask.getTagVideo().fileName).get().build());
@@ -124,6 +130,10 @@ public class VideoLoader extends AsyncTaskLoader<Boolean> {
 
     public VideoTask getTask() {
         return mTask;
+    }
+
+    public void setTask(VideoTask mTask) {
+        this.mTask = mTask;
     }
 
     public String getLargeThumbImage() {
