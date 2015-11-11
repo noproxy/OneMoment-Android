@@ -23,4 +23,6 @@
     <dimen name="me_header_height">160dp</dimen>
 
     <dimen name="navigation_elevation">12dp</dimen>
+
+    <dimen name="video_grid_divider">6dp</dimen>
 </resources>

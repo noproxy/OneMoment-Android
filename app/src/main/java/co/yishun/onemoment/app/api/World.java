@@ -43,7 +43,7 @@ public interface World {
     @Sort String sort);
 
     @GET("/world/videos/liked")
-    List<Video> getLikedVideos(@Query("account_id") @NonNull String userId, @Query("offset") int offset, @Query("limit") int limit);
+    List<TagVideo> getLikedVideos(@Query("account_id") @NonNull String userId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/world/tags/joined")
     List<WorldTag> getJoinedWorldTags(@Query("account_id") @NonNull String userId, @Query("type") @NonNull @WorldTag.Type String type, @Query("offset") int offset, @Query("limit") int limit);
