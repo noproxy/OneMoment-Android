@@ -16,11 +16,15 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.api.Account;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
@@ -43,6 +47,13 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         User user = AccountHelper.getUserInfo(getContext());
         invalidateUserInfo(user);
         AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
+        updateUserInfo();
+    }
+
+    @Background
+    void updateUserInfo() {
+        Account account = OneMomentV3.createAdapter().create(Account.class);
+        invalidateUserInfo(account.getUserInfo(AccountHelper.getAccountId(getContext())));
     }
 
     @Override
@@ -101,7 +112,8 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
 
     }
 
-    private void invalidateUserInfo(User user) {
+    @UiThread
+    void invalidateUserInfo(User user) {
         if (user == null) {
             return;
         }
@@ -109,7 +121,7 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         nickNameTextView.setText(user.nickname);
         String voted = String.format(getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));
         votedCountTextView.setText(voted);
-        String vote = String.format(getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.joinedWorld.length));
+        String vote = String.format(getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.likedWorldVideos.length));
         voteCountTextView.setText(vote);
     }
 }
