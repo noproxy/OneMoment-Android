@@ -46,7 +46,7 @@ public class PermissionSwitch extends LinearLayout {
     }
 
     private void init() {
-        this.setOrientation(HORIZONTAL);
+        this.setOrientation(VERTICAL);
         this.setGravity(Gravity.CENTER);
         LayoutInflater.from(getContext()).inflate(R.layout.merge_permission_switch, this, true);
         offHintText = getContext().getString(R.string.activity_moment_create_private_hint);
