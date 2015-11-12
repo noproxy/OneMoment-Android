@@ -91,6 +91,10 @@
     <style name="AppTheme.TagCreateActivity">
     </style>
 
+    <style name="AppTheme.UserInfoActivity">
+
+    </style>
+
     <style name="AppTheme.Animation.Activity" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/activity_fade_in</item>
         <item name="android:activityOpenExitAnimation">@anim/window_fade_out</item>
