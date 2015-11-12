@@ -1,17 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <include layout="@layout/layout_toolbar"/>
 
     <RelativeLayout
+        android:id="@+id/avatarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="72dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/activity_user_info_avatar"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+        <co.yishun.onemoment.app.ui.view.RoundRectImageView
+            android:id="@+id/avatarImage"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:round_rate='1'/>
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"/>
+
+    <fragment
+        android:id="@+id/usernameFragment"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
+        tools:layout="@layout/fragment_user_info_item"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"/>
+
+    <fragment
+        android:id="@+id/weiboFragment"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
+        tools:layout="@layout/fragment_user_info_item"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"/>
+
+    <fragment
+        android:id="@+id/genderFragment"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
+        tools:layout="@layout/fragment_user_info_item"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"/>
+
+    <fragment
+        android:id="@+id/locationFragment"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
+        tools:layout="@layout/fragment_user_info_item"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"/>
 
 </LinearLayout>

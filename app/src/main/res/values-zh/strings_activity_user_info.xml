@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_user_info_title">个人资料</string>
+    <string name="activity_user_info_avatar">头像</string>
+    <string name="activity_user_info_username">名字</string>
+    <string name="activity_user_info_weibo_id">微博ID</string>
+    <string name="activity_user_info_gender">性别</string>
+    <string name="activity_user_info_location">地区</string>
+</resources>

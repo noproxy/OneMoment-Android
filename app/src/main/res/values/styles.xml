@@ -92,7 +92,7 @@
     </style>
 
     <style name="AppTheme.UserInfoActivity">
-
+        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.Animation.Activity" parent="@android:style/Animation.Activity">
