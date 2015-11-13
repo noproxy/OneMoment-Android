@@ -56,23 +56,7 @@ public class WorldAdapter extends AbstractRecyclerViewAdapter<WorldTag, WorldAda
 
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, WorldTag item, int position) {
-        Picasso.with(mContext).load(item.domain + item.thumbnail).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                holder.itemImageView.setImageBitmap(bitmap);
-                item.color = Palette.from(bitmap).generate().getMutedColor(mContext.getResources().getColor(R.color.colorPrimary));
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        });
+        Picasso.with(mContext).load(item.domain + item.thumbnail).into(holder.itemImageView);
         holder.numTextView.setText(String.valueOf(item.videosCount) + PeopleSuffix);
         holder.tagTextView.setText(item.name);
         holder.likeTextView.setText(String.valueOf(item.likeCount));
