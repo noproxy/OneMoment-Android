@@ -6,7 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +41,7 @@ import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
 import co.yishun.onemoment.app.ui.common.PickCropActivity;
+import co.yishun.onemoment.app.ui.view.LocationChooseDialog;
 
 /**
  * Created by Jinge on 2015/11/12.
@@ -94,11 +97,23 @@ public class UserInfoActivity extends PickCropActivity {
         weiboFragment.setTitle(getResources().getString(R.string.activity_user_info_weibo_id));
         genderFragment.setTitle(getResources().getString(R.string.activity_user_info_gender));
         locationFragment.setTitle(getResources().getString(R.string.activity_user_info_location));
+        locationFragment.setOnClickListener(this::locationClicked);
         invalidateUserInfo(AccountHelper.getUserInfo(this));
     }
 
     void pickAvatar(View view) {
         Crop.pickImage(this);
+    }
+
+    void locationClicked(View view) {
+        LocationChooseDialog dialog = new LocationChooseDialog.Builder(this).build();
+        dialog.setLocationSelectedListener(this::locationSelected);
+        dialog.show();
+    }
+
+    void locationSelected(String location, Pair<String, String> provinceAndDistrict) {
+        if (TextUtils.equals(location, AccountHelper.getUserInfo(this).location)) return;
+        updateUserInfo(AccountHelper.getUserInfo(this)._id, null, null, null, location);
     }
 
     @UiThread
@@ -163,9 +178,14 @@ public class UserInfoActivity extends PickCropActivity {
         if (!avatarUploadOk) {
             return;
         }
+        updateUserInfo(userId, null, null, qiNiuKey, null);
+    }
+
+    @Background
+    void updateUserInfo(String userId, String nickname, Account.Gender gender, String qiNiuKey, String location) {
         Log.d(TAG, "before upload " + AccountHelper.getUserInfo(this).avatarUrl);
         Account account = OneMomentV3.createAdapter().create(Account.class);
-        User user = account.updateInfo(userId, null, null, qiNiuKey, null);
+        User user = account.updateInfo(userId, nickname, gender, qiNiuKey, location);
         if (user.code <= 0) {
             Log.i(TAG, "update info failed: " + user.msg);
             return;
@@ -176,6 +196,7 @@ public class UserInfoActivity extends PickCropActivity {
     }
 
     public static class ItemFragment extends BaseFragment {
+        ViewGroup rootView;
         TextView itemTitle;
         TextView itemContent;
 
@@ -183,10 +204,10 @@ public class UserInfoActivity extends PickCropActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             super.onCreateView(inflater, container, savedInstanceState);
-            ViewGroup viewRoot = (ViewGroup) inflater.inflate(R.layout.fragment_user_info_item, container, false);
-            itemTitle = (TextView) viewRoot.findViewById(R.id.itemTitle);
-            itemContent = (TextView) viewRoot.findViewById(R.id.itemContent);
-            return viewRoot;
+            rootView = (ViewGroup) inflater.inflate(R.layout.fragment_user_info_item, container, false);
+            itemTitle = (TextView) rootView.findViewById(R.id.itemTitle);
+            itemContent = (TextView) rootView.findViewById(R.id.itemContent);
+            return rootView;
         }
 
         void setTitle(String title) {
@@ -195,6 +216,10 @@ public class UserInfoActivity extends PickCropActivity {
 
         void setContent(String content) {
             itemContent.setText(content);
+        }
+
+        void setOnClickListener(View.OnClickListener listener) {
+            rootView.setOnClickListener(listener);
         }
     }
 
