@@ -50,6 +50,7 @@ public class User extends ApiModel {
     public String location;
     public String _id;
     public String[] joinedWorld;
+    public String[] likedWorldVideos;
 
     public User() {
         super(1, "");

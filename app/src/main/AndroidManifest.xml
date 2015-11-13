@@ -205,6 +205,14 @@
                 />
         </activity>
 
+        <activity
+            android:name=".ui.UserInfoActivity_"
+            android:theme="@style/AppTheme.UserInfoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity_"/>
+        </activity>
+
         <!-- baidu location service-->
         <service
             android:name="com.baidu.location.f"
@@ -213,7 +221,7 @@
         </service>
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="kCbiUVqj0L2QAo3vHgMefShZ" />
+            android:value="kCbiUVqj0L2QAo3vHgMefShZ"/>
     </application>
 
 </manifest>
