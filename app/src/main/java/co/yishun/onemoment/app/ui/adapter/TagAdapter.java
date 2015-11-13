@@ -22,8 +22,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.loader.VideoLoaderManager;
-import co.yishun.onemoment.app.api.loader.VideoTask;
+import co.yishun.onemoment.app.api.loader.VideoDownload;
+import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.VideoUtil;
@@ -62,11 +62,10 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
         return new SimpleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.layout_item_video_like, parent, false));
     }
 
-    public static class SimpleViewHolder extends RecyclerView.ViewHolder {
+    public class SimpleViewHolder extends RecyclerView.ViewHolder {
         final ImageView itemImageView;
         private final Context context;
-        //        private TagVideoDownloaderTask task;
-        private VideoTask task;
+        private VideoDownload task;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
@@ -75,13 +74,8 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
         }
 
         protected void setUp(TagVideo video) {
-            if (task != null) {
-//                task.cancel(true);
-                task.cancel();
-            }
-//            task = new TagVideoDownloaderTask();
-//            task.execute(video);
-            task = VideoLoaderManager.getInstance().createTask(video, itemImageView);
+            task = VideoTaskManager.getInstance().addDownloadTask(task, video);
+            task.setImageView(itemImageView);
         }
 
         public class TagVideoDownloaderTask extends AsyncTask<TagVideo, Integer, Boolean> {
@@ -93,6 +87,7 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
             @Override
             protected Boolean doInBackground(TagVideo... tagVideos) {
                 final TagVideo tagVideo = tagVideos[0];
+                Log.d(TAG, "start " + tagVideo._id);
                 try {
 
                     // if video exists
@@ -185,6 +180,7 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
             @Override
             protected void onPostExecute(Boolean result) {
                 if (result) {
+                    Log.d(TAG, "stop");
                     Picasso.with(context).load(new File(thumbImage)).into(itemImageView);
                 }
             }
