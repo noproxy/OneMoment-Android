@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,11 +50,22 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     @ViewById
     ImageView profileImageView;// "Vote 3"
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        AccountHelper.removeOnUserInforChangedListener(this::invalidateUserInfo);
+    }
+
     @AfterViews
     void setHeader() {
         User user = AccountHelper.getUserInfo(getContext());
         invalidateUserInfo(user);
-        AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
         updateUserInfo();
     }
 
