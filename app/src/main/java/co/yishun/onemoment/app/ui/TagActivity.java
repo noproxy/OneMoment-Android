@@ -35,6 +35,7 @@ import com.transitionseverywhere.Slide;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -42,6 +43,8 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.loader.VideoLoaderManager;
+import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
@@ -213,9 +216,16 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @Override
     protected void onResume() {
         super.onResume();
+        VideoTaskManager.getInstance().init(this);
         if (transitionOver) {
             TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        VideoTaskManager.getInstance().quit();
     }
 
     @CallSuper
