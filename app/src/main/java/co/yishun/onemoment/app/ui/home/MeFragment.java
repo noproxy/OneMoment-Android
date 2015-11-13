@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui.home;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,10 +39,15 @@ import co.yishun.onemoment.app.ui.controller.MeController_;
  */
 @EFragment(R.layout.fragment_me)
 public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag> {
-    @ViewById TextView nickNameTextView;
-    @ViewById TextView votedCountTextView;
-    @ViewById TextView voteCountTextView;// "Voted 21"
-    @ViewById ImageView profileImageView;// "Vote 3"
+    private static final String TAG = "MeFragment";
+    @ViewById
+    TextView nickNameTextView;
+    @ViewById
+    TextView votedCountTextView;
+    @ViewById
+    TextView voteCountTextView;// "Voted 21"
+    @ViewById
+    ImageView profileImageView;// "Vote 3"
 
     @AfterViews
     void setHeader() {
@@ -54,7 +60,9 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     @Background
     void updateUserInfo() {
         Account account = OneMomentV3.createAdapter().create(Account.class);
-        invalidateUserInfo(account.getUserInfo(AccountHelper.getAccountId(getContext())));
+        User user = account.getUserInfo(AccountHelper.getAccountId(getContext()));
+        AccountHelper.updateOrCreateUserInfo(this.getActivity(), user);
+        invalidateUserInfo(user);
     }
 
     @Override
@@ -119,6 +127,7 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         if (user == null) {
             return;
         }
+        Log.d(TAG, user.avatarUrl);
         Picasso.with(getContext()).load(user.avatarUrl).into(profileImageView);
         nickNameTextView.setText(user.nickname);
         String voted = String.format(getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));

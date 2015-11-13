@@ -23,7 +23,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
-import org.androidannotations.annotations.SupposeBackground;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.concurrent.CountDownLatch;
@@ -87,24 +87,32 @@ public class UserInfoActivity extends PickCropActivity {
 
     @AfterViews
     void setupViews() {
+        AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
         avatarLayout.setOnClickListener(this::pickAvatar);
-        Picasso.with(this).load(AccountHelper.getUserInfo(this).avatarUrl).into(avatarImage);
 
         usernameFragment.setTitle(getResources().getString(R.string.activity_user_info_username));
-        usernameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
-
         weiboFragment.setTitle(getResources().getString(R.string.activity_user_info_weibo_id));
-        weiboFragment.setContent(AccountHelper.getUserInfo(this).weiboNickname);
-
         genderFragment.setTitle(getResources().getString(R.string.activity_user_info_gender));
-        genderFragment.setContent(AccountHelper.getUserInfo(this).gender.toString());
-
         locationFragment.setTitle(getResources().getString(R.string.activity_user_info_location));
-        locationFragment.setContent(AccountHelper.getUserInfo(this).location);
+        invalidateUserInfo(AccountHelper.getUserInfo(this));
     }
 
     void pickAvatar(View view) {
         Crop.pickImage(this);
+    }
+
+    @UiThread
+    void invalidateUserInfo(User user) {
+        if (user == null) {
+            return;
+        }
+        Log.d(TAG, user.avatarUrl);
+        Picasso.with(this).load(AccountHelper.getUserInfo(this).avatarUrl).into(avatarImage);
+
+        usernameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
+        weiboFragment.setContent(AccountHelper.getUserInfo(this).weiboNickname);
+        genderFragment.setContent(AccountHelper.getUserInfo(this).gender.toString());
+        locationFragment.setContent(AccountHelper.getUserInfo(this).location);
     }
 
     @Override
@@ -119,14 +127,9 @@ public class UserInfoActivity extends PickCropActivity {
         Picasso.with(this).load(uri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(avatarImage);
     }
 
-    /**
-     * return whether error occurs when update avatar.
-     *
-     * @return true if no need update or update success
-     */
     @Background
     void updateAvatar(@NonNull String userId) {
-        if (croppedProfileUri == null) return ;
+        if (croppedProfileUri == null) return;
         String uriString = croppedProfileUri.toString();
         String path = uriString.substring(uriString.indexOf(":") + 1);
         String qiNiuKey = Constants.PROFILE_PREFIX + userId + Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.PROFILE_SUFFIX;
@@ -135,7 +138,7 @@ public class UserInfoActivity extends PickCropActivity {
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(qiNiuKey);
         if (token.code <= 0) {
             Log.e(TAG, "get upload token error: " + token.msg);
-            return ;
+            return;
         }
         CountDownLatch latch = new CountDownLatch(1);
         uploadManager.put(path, qiNiuKey, token.token,
@@ -143,6 +146,7 @@ public class UserInfoActivity extends PickCropActivity {
                     Log.i(TAG, responseInfo.toString());
                     if (responseInfo.isOK()) {
                         avatarUploadOk = true;
+                        Log.d(TAG, "loaded " + responseInfo.path);
                         Log.i(TAG, "profile upload ok");
                     } else {
                         avatarUploadOk = false;
@@ -159,15 +163,16 @@ public class UserInfoActivity extends PickCropActivity {
         if (!avatarUploadOk) {
             return;
         }
-
+        Log.d(TAG, "before upload " + AccountHelper.getUserInfo(this).avatarUrl);
         Account account = OneMomentV3.createAdapter().create(Account.class);
         User user = account.updateInfo(userId, null, null, qiNiuKey, null);
         if (user.code <= 0) {
             Log.i(TAG, "update info failed: " + user.msg);
-            return ;
+            return;
         }
+        Log.d(TAG, "after upload " + user.avatarUrl);
         AccountHelper.updateOrCreateUserInfo(this, user);
-        return ;
+        Log.d(TAG, "after save " + AccountHelper.getUserInfo(this).avatarUrl);
     }
 
     public static class ItemFragment extends BaseFragment {
