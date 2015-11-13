@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -158,10 +159,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         return super.dispatchTouchEvent(event);
     }
 
-    private void invalidateUserInfo(User user) {
+    @UiThread
+    void invalidateUserInfo(User user) {
         if (user == null) {
             return;
         }
+        Log.d(TAG, "update " + user.avatarUrl + " " + user.location);
         Picasso.with(this).load(user.avatarUrl).into(profileImageView);
         usernameTextView.setText(user.nickname);
         locationTextView.setText(user.location);
@@ -268,6 +271,7 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Override
     public void onUserInfoChange(User info) {
+        Log.d(TAG, "update");
         invalidateUserInfo(info);
     }
 }

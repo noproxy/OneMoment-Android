@@ -47,7 +47,7 @@ import co.yishun.onemoment.app.ui.view.LocationChooseDialog;
  * Created by Jinge on 2015/11/12.
  */
 @EActivity(R.layout.activity_user_info)
-public class UserInfoActivity extends PickCropActivity {
+public class UserInfoActivity extends PickCropActivity implements AccountHelper.OnUserInfoChangeListener {
     private static final String TAG = "UserInfoActivity";
     @ViewById
     Toolbar toolbar;
@@ -88,9 +88,20 @@ public class UserInfoActivity extends PickCropActivity {
         Log.i("setupToolbar", "set home as up true");
     }
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AccountHelper.addOnUserInfoChangedListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AccountHelper.removeOnUserInfoChangedListener(this);
+    }
+
     @AfterViews
     void setupViews() {
-        AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
         avatarLayout.setOnClickListener(this::pickAvatar);
 
         usernameFragment.setTitle(getResources().getString(R.string.activity_user_info_username));
@@ -121,7 +132,7 @@ public class UserInfoActivity extends PickCropActivity {
         if (user == null) {
             return;
         }
-        Log.d(TAG, user.avatarUrl);
+        Log.d(TAG, "update");
         Picasso.with(this).load(AccountHelper.getUserInfo(this).avatarUrl).into(avatarImage);
 
         usernameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
@@ -193,6 +204,11 @@ public class UserInfoActivity extends PickCropActivity {
         Log.d(TAG, "after upload " + user.avatarUrl);
         AccountHelper.updateOrCreateUserInfo(this, user);
         Log.d(TAG, "after save " + AccountHelper.getUserInfo(this).avatarUrl);
+    }
+
+    @Override
+    public void onUserInfoChange(User info) {
+        invalidateUserInfo(info);
     }
 
     public static class ItemFragment extends BaseFragment {

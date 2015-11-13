@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.WeakHashMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -34,7 +35,7 @@ public class AccountHelper {
     public static AccountManager accountManager;
     public static Account account;
     private static User mUser = null;
-    private static WeakHashMap<Integer, OnUserInfoChangeListener> mListeners = new WeakHashMap<>();
+    private static HashMap<Integer, OnUserInfoChangeListener> mListeners = new HashMap<>();
 
     private static AccountManager getAccountManager(Context context) {
         if (accountManager == null) {
@@ -109,7 +110,11 @@ public class AccountHelper {
     }
 
     private static void onUserInfoChange(User user) {
-        StreamSupport.stream(mListeners.values()).filter(l -> l != null).forEach((OnUserInfoChangeListener l) -> l.onUserInfoChange(user));
+        Log.d("AH update", mListeners.size() + "");
+        for (OnUserInfoChangeListener l : mListeners.values()) {
+            l.onUserInfoChange(user);
+        }
+//        StreamSupport.stream(mListeners.values()).filter(l -> l != null).forEach((OnUserInfoChangeListener l) -> l.onUserInfoChange(user));
     }
 
     private static String getUserInfoDir(Context context) {
@@ -144,11 +149,15 @@ public class AccountHelper {
     }
 
     public static void addOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
+        Log.d("AH", "update add " + mListeners.size() +" " + listener.hashCode());
         mListeners.put(listener.hashCode(), listener);
+        Log.d("AH", "update add after " + mListeners.size());
     }
 
     public static void removeOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
+        Log.d("AH", "update before " + mListeners.size() + " " + listener.hashCode());
         mListeners.remove(listener.hashCode());
+        Log.d("AH", "update after " + mListeners.size());
     }
 
 

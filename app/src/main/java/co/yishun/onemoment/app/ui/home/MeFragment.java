@@ -39,7 +39,7 @@ import co.yishun.onemoment.app.ui.controller.MeController_;
  * Created by yyz on 7/21/15.
  */
 @EFragment(R.layout.fragment_me)
-public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag> {
+public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag>,AccountHelper.OnUserInfoChangeListener {
     private static final String TAG = "MeFragment";
     @ViewById
     TextView nickNameTextView;
@@ -55,13 +55,14 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
+        AccountHelper.addOnUserInfoChangedListener(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        AccountHelper.removeOnUserInfoChangedListener(this::invalidateUserInfo);
+        Log.d(TAG, "update detach");
+        AccountHelper.removeOnUserInfoChangedListener(this);
     }
 
     @AfterViews
@@ -141,12 +142,17 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         if (user == null) {
             return;
         }
-        Log.d(TAG, user.avatarUrl);
+        Log.d(TAG, "update");
         Picasso.with(getContext()).load(user.avatarUrl).into(profileImageView);
         nickNameTextView.setText(user.nickname);
         String voted = String.format(mContext.getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));
         votedCountTextView.setText(voted);
         String vote = String.format(mContext.getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.likedWorldVideos.length));
         voteCountTextView.setText(vote);
+    }
+
+    @Override
+    public void onUserInfoChange(User info) {
+        invalidateUserInfo(info);
     }
 }
