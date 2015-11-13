@@ -49,17 +49,19 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     TextView voteCountTextView;// "Voted 21"
     @ViewById
     ImageView profileImageView;// "Vote 3"
+    private Context mContext;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext = context;
         AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        AccountHelper.removeOnUserInforChangedListener(this::invalidateUserInfo);
+        AccountHelper.removeOnUserInfoChangedListener(this::invalidateUserInfo);
     }
 
     @AfterViews
@@ -142,9 +144,9 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         Log.d(TAG, user.avatarUrl);
         Picasso.with(getContext()).load(user.avatarUrl).into(profileImageView);
         nickNameTextView.setText(user.nickname);
-        String voted = String.format(getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));
+        String voted = String.format(mContext.getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));
         votedCountTextView.setText(voted);
-        String vote = String.format(getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.likedWorldVideos.length));
+        String vote = String.format(mContext.getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.likedWorldVideos.length));
         voteCountTextView.setText(vote);
     }
 }

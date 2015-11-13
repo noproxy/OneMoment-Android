@@ -147,7 +147,7 @@ public class AccountHelper {
         mListeners.put(listener.hashCode(), listener);
     }
 
-    public static void removeOnUserInforChangedListener(@NonNull OnUserInfoChangeListener listener) {
+    public static void removeOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
         mListeners.remove(listener.hashCode());
     }
 
