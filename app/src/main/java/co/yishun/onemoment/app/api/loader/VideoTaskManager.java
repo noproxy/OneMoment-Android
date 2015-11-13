@@ -2,7 +2,7 @@ package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +32,15 @@ public class VideoTaskManager {
         asyncTaskList = new ArrayList<>();
     }
 
-    public VideoDownload addDownloadTask(VideoDownload task, TagVideo... params) {
+    public VideoDownloadTask addDownloadTask(@Nullable VideoDownloadTask task, TagVideo... params) {
         if (asyncTaskList.contains(task)) {
-//            if (task.getStatus() != AsyncTask.Status.PENDING) {
-            task.cancel(true);
             removeTask(task);
-            task = new VideoDownload(mContext);
+            if (task != null) task.cancel(true);
+            task = new VideoDownloadTask(mContext);
             addTask(task);
-//            }
         }
         if (task == null || task.getStatus() == AsyncTask.Status.FINISHED) {
-            task = new VideoDownload(mContext);
+            task = new VideoDownloadTask(mContext);
             addTask(task);
         }
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params[0]);

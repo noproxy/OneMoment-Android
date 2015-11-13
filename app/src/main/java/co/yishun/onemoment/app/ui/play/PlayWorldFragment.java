@@ -3,11 +3,6 @@ package co.yishun.onemoment.app.ui.play;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
@@ -17,9 +12,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +27,9 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.loader.VideoDownloadTask;
+import co.yishun.onemoment.app.api.loader.VideoLoaderManager;
+import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -78,7 +73,8 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
             if (fileSynced.exists()) {
                 addVideo(oneVideo, fileSynced);
             } else {
-                downloadVideo(oneVideo, fileSynced);
+                VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
+                task.setListener(this::addVideo);
             }
         }
         getData();
@@ -86,6 +82,8 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
 
     @AfterViews
     void setupView() {
+        VideoTaskManager.getInstance().init(this.getActivity());
+
         videoPlayView.setSinglePlay(false);
         videoPlayView.setVideoChangeListener(this);
         getData();
@@ -162,6 +160,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        VideoTaskManager.getInstance().quit();
         if (videoPlayView != null) {
             videoPlayView.stop();
         }
@@ -175,42 +174,4 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         refreshUserInfo(index);
     }
 
-    @Background
-    void downloadVideo(TagVideo tagVideo, File fileSynced) {
-        try {
-            OkHttpClient httpClient = new OkHttpClient();
-            Call call = httpClient.newCall(new Request.Builder().url(tagVideo.domain + tagVideo.fileName).get().build());
-            Response response = null;
-            response = call.execute();
-
-            if (response.code() == 200) {
-                InputStream input = null;
-                FileOutputStream output = null;
-                try {
-                    input = response.body().byteStream();
-                    output = new FileOutputStream(fileSynced);
-                    long fileLength = response.body().contentLength();
-
-                    byte data[] = new byte[4096];
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        if (fileLength > 0) // only if total length is known
-                            output.write(data, 0, count);
-                    }
-                    addVideo(tagVideo, fileSynced);
-                } catch (IOException ignore) {
-                } finally {
-                    try {
-                        if (output != null)
-                            output.close();
-                        if (input != null)
-                            input.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -85,11 +85,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return null;
     }
 
-    @AfterInject void init() {
-//        VideoLoaderManager.getInstance().init(this);
-        VideoTaskManager.getInstance().init(this);
-    }
-
     void setLayout() {
         swipeRefreshLayout = ((SwipeRefreshLayout) coordinatorLayout.findViewById(R.id.ptr_layout));
         toolbar = ((Toolbar) coordinatorLayout.findViewById(R.id.toolbar));
@@ -217,6 +212,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @Override
     protected void onResume() {
         super.onResume();
+        VideoTaskManager.getInstance().init(this);
         if (transitionOver) {
             TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
         }

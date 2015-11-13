@@ -1,9 +1,5 @@
 package co.yishun.onemoment.app.ui.play;
 
-import android.content.AsyncTaskLoader;
-import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,9 +14,9 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import co.yishun.library.OnemomentPlayerView;
 import co.yishun.library.resource.BaseVideoResource;
@@ -33,6 +29,8 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.loader.VideoDownloadTask;
+import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -63,15 +61,27 @@ public class PlayTagVideoFragment extends BaseFragment {
         usernameTextView.setText(oneVideo.nickname);
 
         videoPlayView.setSinglePlay(true);
-        VideoResource vr1 = new LocalVideo(new BaseVideoResource(), FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo).getPath());
-        List<VideoTag> tags = new LinkedList<VideoTag>();
-        for (int i = 0; i < oneVideo.tags.size(); i++) {
-            tags.add(new BaseVideoTag(oneVideo.tags.get(i).name, oneVideo.tags.get(i).x / 100f, oneVideo.tags.get(i).y / 100f));
+
+        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
+        if (fileSynced.exists()) {
+            addVideo(oneVideo, fileSynced);
+        } else {
+            VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
+            task.setListener(this::addVideo);
         }
-        vr1 = new TaggedVideo(vr1, tags);
-        videoPlayView.addVideoResource(vr1);
 
         refreshUserInfo();
+    }
+
+    @UiThread
+    void addVideo(TagVideo tagVideo, File fileSynced) {
+        VideoResource videoResource = new LocalVideo(new BaseVideoResource(), fileSynced.getPath());
+        List<VideoTag> tags = new LinkedList<VideoTag>();
+        for (int i = 0; i < tagVideo.tags.size(); i++) {
+            tags.add(new BaseVideoTag(tagVideo.tags.get(i).name, tagVideo.tags.get(i).x / 100f, tagVideo.tags.get(i).y / 100f));
+        }
+        videoResource = new TaggedVideo(videoResource, tags);
+        videoPlayView.addVideoResource(videoResource);
     }
 
     @Click(R.id.videoPlayView)
