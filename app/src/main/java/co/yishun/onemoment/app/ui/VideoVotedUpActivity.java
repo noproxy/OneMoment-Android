@@ -18,6 +18,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
@@ -51,6 +52,12 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        VideoTaskManager.getInstance().init(this);
+    }
+
     @AfterViews
     void setupToolbar() {
         setSupportActionBar(toolbar);
@@ -72,6 +79,7 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     protected void onPause() {
         super.onPause();
         overridePendingTransition(0, 0);
+        VideoTaskManager.getInstance().quit();
     }
 
     @AfterViews
