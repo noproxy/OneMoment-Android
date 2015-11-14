@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.qiniu.android.storage.UploadManager;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
@@ -108,12 +110,29 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         weiboFragment.setTitle(getResources().getString(R.string.activity_user_info_weibo_id));
         genderFragment.setTitle(getResources().getString(R.string.activity_user_info_gender));
         locationFragment.setTitle(getResources().getString(R.string.activity_user_info_location));
+        genderFragment.setOnClickListener(this::genderClicked);
         locationFragment.setOnClickListener(this::locationClicked);
+
         invalidateUserInfo(AccountHelper.getUserInfo(this));
     }
 
     void pickAvatar(View view) {
         Crop.pickImage(this);
+    }
+
+    void genderClicked(View view) {
+        Account.Gender mSelectGender = Account.Gender.OTHER;
+        new MaterialDialog.Builder(this)
+                .theme(Theme.LIGHT)
+                .title(R.string.view_gender_spinner_title)
+                .items(R.array.view_gender_spinner_items)
+                .itemsCallbackSingleChoice(mSelectGender.toInt() % 2, (dialog, view1, which, text) -> {
+                    Account.Gender gender = Account.Gender.format(which);
+                    updateUserInfo(AccountHelper.getUserInfo(this)._id, null, gender, null, null);
+                    return true; // allow selection
+                })
+                .positiveText(R.string.view_gender_spinner_positive_btn)
+                .show();
     }
 
     void locationClicked(View view) {
@@ -136,7 +155,19 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
 
         usernameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
         weiboFragment.setContent(AccountHelper.getUserInfo(this).weiboNickname);
-        genderFragment.setContent(AccountHelper.getUserInfo(this).gender.toString());
+        String gender;
+        switch (AccountHelper.getUserInfo(this).gender) {
+            case FEMALE:
+                gender = "♀";
+                break;
+            case MALE:
+                gender = "♂";
+                break;
+            default:
+                gender = getResources().getString(R.string.activity_user_info_gender_unknown);
+                break;
+        }
+        genderFragment.setContent(gender);
         locationFragment.setContent(AccountHelper.getUserInfo(this).location);
     }
 

@@ -5,5 +5,6 @@
     <string name="activity_user_info_username">名字</string>
     <string name="activity_user_info_weibo_id">微博ID</string>
     <string name="activity_user_info_gender">性别</string>
+    <string name="activity_user_info_gender_unknown">未知</string>
     <string name="activity_user_info_location">地区</string>
 </resources>
