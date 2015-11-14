@@ -110,6 +110,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         weiboFragment.setTitle(getResources().getString(R.string.activity_user_info_weibo_id));
         genderFragment.setTitle(getResources().getString(R.string.activity_user_info_gender));
         locationFragment.setTitle(getResources().getString(R.string.activity_user_info_location));
+        usernameFragment.setOnClickListener(this::usernameClicked);
         genderFragment.setOnClickListener(this::genderClicked);
         locationFragment.setOnClickListener(this::locationClicked);
 
@@ -120,14 +121,29 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         Crop.pickImage(this);
     }
 
+    void usernameClicked(View view) {
+        new MaterialDialog.Builder(this)
+                .theme(Theme.LIGHT)
+                .title(getResources().getString(R.string.activity_user_info_username))
+                .input(getResources().getString(R.string.activity_user_info_username),
+                        AccountHelper.getUserInfo(this).nickname, false, (MaterialDialog dialog, CharSequence input) -> {
+                            if (TextUtils.equals(input, AccountHelper.getUserInfo(this).nickname))
+                                return;
+                            updateUserInfo(AccountHelper.getUserInfo(this)._id, input.toString(), null, null, null);
+                        })
+                .build().show();
+    }
+
     void genderClicked(View view) {
-        Account.Gender mSelectGender = Account.Gender.OTHER;
+        Account.Gender mSelectGender = AccountHelper.getUserInfo(this).gender;
         new MaterialDialog.Builder(this)
                 .theme(Theme.LIGHT)
                 .title(R.string.view_gender_spinner_title)
                 .items(R.array.view_gender_spinner_items)
                 .itemsCallbackSingleChoice(mSelectGender.toInt() % 2, (dialog, view1, which, text) -> {
                     Account.Gender gender = Account.Gender.format(which);
+                    if (gender == AccountHelper.getUserInfo(this).gender)
+                        return true;
                     updateUserInfo(AccountHelper.getUserInfo(this)._id, null, gender, null, null);
                     return true; // allow selection
                 })
@@ -136,14 +152,14 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     }
 
     void locationClicked(View view) {
-        LocationChooseDialog dialog = new LocationChooseDialog.Builder(this).build();
-        dialog.setLocationSelectedListener(this::locationSelected);
-        dialog.show();
-    }
-
-    void locationSelected(String location, Pair<String, String> provinceAndDistrict) {
-        if (TextUtils.equals(location, AccountHelper.getUserInfo(this).location)) return;
-        updateUserInfo(AccountHelper.getUserInfo(this)._id, null, null, null, location);
+        new LocationChooseDialog.Builder(this)
+                .build()
+                .setLocationSelectedListener((String location, Pair<String, String> provinceAndDistrict) -> {
+                    if (TextUtils.equals(location, AccountHelper.getUserInfo(this).location))
+                        return;
+                    updateUserInfo(AccountHelper.getUserInfo(this)._id, null, null, null, location);
+                })
+                .show();
     }
 
     @UiThread

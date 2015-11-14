@@ -106,8 +106,9 @@ public class LocationChooseDialog extends MaterialDialog {
         });
     }
 
-    public void setLocationSelectedListener(OnLocationSelectedListener listener) {
+    public LocationChooseDialog setLocationSelectedListener(OnLocationSelectedListener listener) {
         mListener = listener;
+        return this;
     }
 
     @Nullable

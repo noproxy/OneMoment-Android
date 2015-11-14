@@ -164,7 +164,6 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         if (user == null) {
             return;
         }
-        Log.d(TAG, "update " + user.avatarUrl + " " + user.location);
         Picasso.with(this).load(user.avatarUrl).into(profileImageView);
         usernameTextView.setText(user.nickname);
         locationTextView.setText(user.location);

@@ -81,7 +81,7 @@ public interface Account {
     @POST("/account/update/{account_id}")
     User updateInfo(
             @Path("account_id") @NonNull String userId,
-            @Field("weibo_nickname") @Nullable String nickname,
+            @Field("nickname") @Nullable String nickname,
             @Field("gender") @Nullable Gender gender,
             @Field("avatar_url") @Nullable String remoteUrlOrKey,
             @Field("location") @Nullable String location
