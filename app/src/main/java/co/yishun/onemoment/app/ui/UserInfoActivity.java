@@ -35,6 +35,9 @@ import java.util.concurrent.CountDownLatch;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.auth.LoginListener;
+import co.yishun.onemoment.app.account.auth.OAuthToken;
+import co.yishun.onemoment.app.account.auth.WeiboHelper;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -111,6 +114,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         genderFragment.setTitle(getResources().getString(R.string.activity_user_info_gender));
         locationFragment.setTitle(getResources().getString(R.string.activity_user_info_location));
         usernameFragment.setOnClickListener(this::usernameClicked);
+        weiboFragment.setOnClickListener(this::weiboClicked);
         genderFragment.setOnClickListener(this::genderClicked);
         locationFragment.setOnClickListener(this::locationClicked);
 
@@ -132,6 +136,25 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
                             updateUserInfo(AccountHelper.getUserInfo(this)._id, input.toString(), null, null, null);
                         })
                 .build().show();
+    }
+
+    void weiboClicked(View view) {
+        new WeiboHelper(this).login(new LoginListener() {
+            @Override
+            public void onSuccess(OAuthToken token) {
+                Log.d(TAG, "login success");
+            }
+
+            @Override
+            public void onFail() {
+                Log.d(TAG, "login fail");
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "login cancel");
+            }
+        });
     }
 
     void genderClicked(View view) {
@@ -170,7 +193,13 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         Picasso.with(this).load(AccountHelper.getUserInfo(this).avatarUrl).into(avatarImage);
 
         usernameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
-        weiboFragment.setContent(AccountHelper.getUserInfo(this).weiboNickname);
+        String weiboID;
+        if (TextUtils.isEmpty(AccountHelper.getUserInfo(this).weiboUid)){
+            weiboID = getResources().getString(R.string.activity_user_info_weibo_id_unbind);
+        } else {
+            weiboID = AccountHelper.getUserInfo(this).weixinNickname;
+        }
+        weiboFragment.setContent(weiboID);
         String gender;
         switch (AccountHelper.getUserInfo(this).gender) {
             case FEMALE:
