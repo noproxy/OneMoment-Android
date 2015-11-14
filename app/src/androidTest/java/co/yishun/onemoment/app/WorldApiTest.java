@@ -46,7 +46,7 @@ public class WorldApiTest extends AndroidTestCase {
 
     @Test
     public void testGetLikeVideo() {
-        List<Video> videos = mWorld.getLikedVideos(AccountApiTest.TEST_ACCOUNT_ID, 0, 10);
+        List<TagVideo> videos = mWorld.getLikedVideos(AccountApiTest.TEST_ACCOUNT_ID, 0, 10);
         assertNotNull(videos);
     }
 

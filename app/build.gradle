@@ -47,11 +47,11 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.releaseSignature
+            signingConfig signingConfigs.releaseSignature
         }
         debug {
             minifyEnabled false
-//            signingConfig signingConfigs.debugSignature
+            signingConfig signingConfigs.debugSignature
         }
     }
 
