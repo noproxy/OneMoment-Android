@@ -61,7 +61,6 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, "update detach");
         AccountHelper.removeOnUserInfoChangedListener(this);
     }
 
@@ -142,7 +141,6 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         if (user == null) {
             return;
         }
-        Log.d(TAG, "update");
         Picasso.with(getContext()).load(user.avatarUrl).into(profileImageView);
         nickNameTextView.setText(user.nickname);
         String voted = String.format(mContext.getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));

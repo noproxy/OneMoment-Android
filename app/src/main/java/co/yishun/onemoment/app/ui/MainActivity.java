@@ -277,7 +277,6 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
 
     @Override
     public void onUserInfoChange(User info) {
-        Log.d(TAG, "update");
         invalidateUserInfo(info);
     }
 }

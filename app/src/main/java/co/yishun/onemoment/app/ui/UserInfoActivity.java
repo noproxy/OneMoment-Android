@@ -132,7 +132,6 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         if (user == null) {
             return;
         }
-        Log.d(TAG, "update");
         Picasso.with(this).load(AccountHelper.getUserInfo(this).avatarUrl).into(avatarImage);
 
         usernameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
@@ -194,16 +193,13 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
 
     @Background
     void updateUserInfo(String userId, String nickname, Account.Gender gender, String qiNiuKey, String location) {
-        Log.d(TAG, "before upload " + AccountHelper.getUserInfo(this).avatarUrl);
         Account account = OneMomentV3.createAdapter().create(Account.class);
         User user = account.updateInfo(userId, nickname, gender, qiNiuKey, location);
         if (user.code <= 0) {
             Log.i(TAG, "update info failed: " + user.msg);
             return;
         }
-        Log.d(TAG, "after upload " + user.avatarUrl);
         AccountHelper.updateOrCreateUserInfo(this, user);
-        Log.d(TAG, "after save " + AccountHelper.getUserInfo(this).avatarUrl);
     }
 
     @Override

@@ -110,11 +110,9 @@ public class AccountHelper {
     }
 
     private static void onUserInfoChange(User user) {
-        Log.d("AH update", mListeners.size() + "");
         for (OnUserInfoChangeListener l : mListeners.values()) {
             l.onUserInfoChange(user);
         }
-//        StreamSupport.stream(mListeners.values()).filter(l -> l != null).forEach((OnUserInfoChangeListener l) -> l.onUserInfoChange(user));
     }
 
     private static String getUserInfoDir(Context context) {
@@ -149,15 +147,11 @@ public class AccountHelper {
     }
 
     public static void addOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
-        Log.d("AH", "update add " + mListeners.size() +" " + listener.hashCode());
         mListeners.put(listener.hashCode(), listener);
-        Log.d("AH", "update add after " + mListeners.size());
     }
 
     public static void removeOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
-        Log.d("AH", "update before " + mListeners.size() + " " + listener.hashCode());
         mListeners.remove(listener.hashCode());
-        Log.d("AH", "update after " + mListeners.size());
     }
 
 
