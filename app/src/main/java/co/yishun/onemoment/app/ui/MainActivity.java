@@ -230,6 +230,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AccountHelper.removeOnUserInfoChangedListener(this);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // no global option menu, but fragment would add menu
         return true;
