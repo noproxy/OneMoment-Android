@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.qiniu.android.storage.UploadManager;
+import com.qiniu.android.utils.StringUtils;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -90,7 +91,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(getResources().getString(R.string.activity_user_info_title));
+        ab.setTitle(getString(R.string.activity_user_info_title));
         Log.i("setupToolbar", "set home as up true");
     }
 
@@ -110,10 +111,10 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     void setupViews() {
         avatarLayout.setOnClickListener(this::pickAvatar);
 
-        nicknameFragment.setTitle(getResources().getString(R.string.activity_user_info_username));
-        weiboFragment.setTitle(getResources().getString(R.string.activity_user_info_weibo_id));
-        genderFragment.setTitle(getResources().getString(R.string.activity_user_info_gender));
-        locationFragment.setTitle(getResources().getString(R.string.activity_user_info_location));
+        nicknameFragment.setTitle(getString(R.string.activity_user_info_username));
+        weiboFragment.setTitle(getString(R.string.activity_user_info_weibo_id));
+        genderFragment.setTitle(getString(R.string.activity_user_info_gender));
+        locationFragment.setTitle(getString(R.string.activity_user_info_location));
         nicknameFragment.setOnClickListener(this::usernameClicked);
         weiboFragment.setOnClickListener(this::weiboClicked);
         genderFragment.setOnClickListener(this::genderClicked);
@@ -129,8 +130,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     void usernameClicked(View view) {
         new MaterialDialog.Builder(this)
                 .theme(Theme.LIGHT)
-                .title(getResources().getString(R.string.activity_user_info_username))
-                .input(getResources().getString(R.string.activity_user_info_username),
+                .title(getString(R.string.activity_user_info_username))
+                .input(getString(R.string.activity_user_info_username),
                         AccountHelper.getUserInfo(this).nickname, false, (MaterialDialog dialog, CharSequence input) -> {
                             if (TextUtils.equals(input, AccountHelper.getUserInfo(this).nickname))
                                 return;
@@ -140,7 +141,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     }
 
     void weiboClicked(View view) {
-        if (TextUtils.isEmpty(AccountHelper.getUserInfo(this).weiboUid)) {
+        User user = AccountHelper.getUserInfo(this);
+        if (TextUtils.isEmpty(user.weiboUid)) {
             new WeiboHelper(this).login(new LoginListener() {
                 @Override
                 public void onSuccess(OAuthToken token) {
@@ -159,9 +161,15 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
                 }
             });
         } else {
+            if (TextUtils.isEmpty(user.phone) && TextUtils.isEmpty(user.qqId)
+                    &&TextUtils.isEmpty(user.weiboUid) && TextUtils.isEmpty(user.weixinUid)){
+                showSnackMsg(R.string.activity_user_info_weibo_id_unbind_forbid);
+                return;
+            }
             new MaterialDialog.Builder(this)
                     .theme(Theme.LIGHT)
-                    .content("确定取消绑定吗")
+                    .content(String.format(getString(R.string.activity_user_info_weibo_id_unbind_msg),
+                            AccountHelper.getUserInfo(this).weiboNickname))
                     .positiveText(R.string.view_location_spinner_positive_btn)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -171,9 +179,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
                         }
                     })
                     .build().show();
-
         }
-
     }
 
     void genderClicked(View view) {
@@ -214,7 +220,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         nicknameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
         String weiboID;
         if (TextUtils.isEmpty(AccountHelper.getUserInfo(this).weiboUid)) {
-            weiboID = getResources().getString(R.string.activity_user_info_weibo_id_unbind);
+            weiboID = getString(R.string.activity_user_info_weibo_id_unbound);
         } else {
             weiboID = AccountHelper.getUserInfo(this).weiboNickname;
         }
@@ -228,7 +234,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
                 gender = "♂";
                 break;
             default:
-                gender = getResources().getString(R.string.activity_user_info_gender_unknown);
+                gender = getString(R.string.activity_user_info_gender_unknown);
                 break;
         }
         genderFragment.setContent(gender);
@@ -305,6 +311,9 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         User user = account.bindWeibo(AccountHelper.getUserInfo(this)._id, userInfo.id, userInfo.name);
         if (user.code <= 0) {
             Log.i(TAG, "bind weibo failed: " + user.msg);
+            if (user.errorCode == Constants.ErrorCode.ACCOUNT_EXISTS) {
+                showSnackMsg(getString(R.string.activity_user_info_weibo_id_bind_forbid));
+            }
             return;
         }
         AccountHelper.updateOrCreateUserInfo(this, user);

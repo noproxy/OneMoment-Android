@@ -38,6 +38,7 @@ public class User extends ApiModel {
     public String signUpUserAgent;
     //    public String introduction; TODO ?
     public Account.Gender gender;
+    public String qqId;
     public String weiboUid;
     public String weixinUid;
     @SerializedName("signin_ua")
