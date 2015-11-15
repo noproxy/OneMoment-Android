@@ -42,7 +42,7 @@
         android:background="@color/colorDivider"/>
 
     <fragment
-        android:id="@+id/usernameFragment"
+        android:id="@+id/nicknameFragment"
         android:layout_width="match_parent"
         android:layout_height="72dp"
         class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"

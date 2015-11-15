@@ -51,7 +51,7 @@ android {
         }
         debug {
             minifyEnabled false
-//            signingConfig signingConfigs.debugSignature
+            signingConfig signingConfigs.debugSignature
         }
     }
 

@@ -37,6 +37,7 @@ import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.account.auth.LoginListener;
 import co.yishun.onemoment.app.account.auth.OAuthToken;
+import co.yishun.onemoment.app.account.auth.UserInfo;
 import co.yishun.onemoment.app.account.auth.WeiboHelper;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.Misc;
@@ -61,7 +62,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     @ViewById
     ImageView avatarImage;
     @FragmentById
-    ItemFragment usernameFragment;
+    ItemFragment nicknameFragment;
     @FragmentById
     ItemFragment weiboFragment;
     @FragmentById
@@ -109,11 +110,11 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     void setupViews() {
         avatarLayout.setOnClickListener(this::pickAvatar);
 
-        usernameFragment.setTitle(getResources().getString(R.string.activity_user_info_username));
+        nicknameFragment.setTitle(getResources().getString(R.string.activity_user_info_username));
         weiboFragment.setTitle(getResources().getString(R.string.activity_user_info_weibo_id));
         genderFragment.setTitle(getResources().getString(R.string.activity_user_info_gender));
         locationFragment.setTitle(getResources().getString(R.string.activity_user_info_location));
-        usernameFragment.setOnClickListener(this::usernameClicked);
+        nicknameFragment.setOnClickListener(this::usernameClicked);
         weiboFragment.setOnClickListener(this::weiboClicked);
         genderFragment.setOnClickListener(this::genderClicked);
         locationFragment.setOnClickListener(this::locationClicked);
@@ -139,22 +140,40 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     }
 
     void weiboClicked(View view) {
-        new WeiboHelper(this).login(new LoginListener() {
-            @Override
-            public void onSuccess(OAuthToken token) {
-                Log.d(TAG, "login success");
-            }
+        if (TextUtils.isEmpty(AccountHelper.getUserInfo(this).weiboUid)) {
+            new WeiboHelper(this).login(new LoginListener() {
+                @Override
+                public void onSuccess(OAuthToken token) {
+                    Log.d(TAG, "login success");
+                    bindWeibo(token);
+                }
 
-            @Override
-            public void onFail() {
-                Log.d(TAG, "login fail");
-            }
+                @Override
+                public void onFail() {
+                    Log.d(TAG, "login fail");
+                }
 
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "login cancel");
-            }
-        });
+                @Override
+                public void onCancel() {
+                    Log.d(TAG, "login cancel");
+                }
+            });
+        } else {
+            new MaterialDialog.Builder(this)
+                    .theme(Theme.LIGHT)
+                    .content("确定取消绑定吗")
+                    .positiveText(R.string.view_location_spinner_positive_btn)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            super.onPositive(dialog);
+                            unbindWeibo(AccountHelper.getUserInfo(UserInfoActivity.this).weiboUid);
+                        }
+                    })
+                    .build().show();
+
+        }
+
     }
 
     void genderClicked(View view) {
@@ -192,12 +211,12 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         }
         Picasso.with(this).load(AccountHelper.getUserInfo(this).avatarUrl).into(avatarImage);
 
-        usernameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
+        nicknameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
         String weiboID;
-        if (TextUtils.isEmpty(AccountHelper.getUserInfo(this).weiboUid)){
+        if (TextUtils.isEmpty(AccountHelper.getUserInfo(this).weiboUid)) {
             weiboID = getResources().getString(R.string.activity_user_info_weibo_id_unbind);
         } else {
-            weiboID = AccountHelper.getUserInfo(this).weixinNickname;
+            weiboID = AccountHelper.getUserInfo(this).weiboNickname;
         }
         weiboFragment.setContent(weiboID);
         String gender;
@@ -273,6 +292,30 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         User user = account.updateInfo(userId, nickname, gender, qiNiuKey, location);
         if (user.code <= 0) {
             Log.i(TAG, "update info failed: " + user.msg);
+            return;
+        }
+        AccountHelper.updateOrCreateUserInfo(this, user);
+    }
+
+    @Background
+    void bindWeibo(OAuthToken token) {
+        UserInfo userInfo = new WeiboHelper(this).getUserInfo(token);
+
+        Account account = OneMomentV3.createAdapter().create(Account.class);
+        User user = account.bindWeibo(AccountHelper.getUserInfo(this)._id, userInfo.id, userInfo.name);
+        if (user.code <= 0) {
+            Log.i(TAG, "bind weibo failed: " + user.msg);
+            return;
+        }
+        AccountHelper.updateOrCreateUserInfo(this, user);
+    }
+
+    @Background
+    void unbindWeibo(String weiboUid) {
+        Account account = OneMomentV3.createAdapter().create(Account.class);
+        User user = account.unbindWeibo(AccountHelper.getUserInfo(this)._id, weiboUid);
+        if (user.code <= 0) {
+            Log.i(TAG, "unbind weibo failed: " + user.msg);
             return;
         }
         AccountHelper.updateOrCreateUserInfo(this, user);
