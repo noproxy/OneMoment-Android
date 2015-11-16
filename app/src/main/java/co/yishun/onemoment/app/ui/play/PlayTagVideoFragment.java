@@ -55,6 +55,7 @@ public class PlayTagVideoFragment extends BaseFragment {
 
     @AfterViews
     void setup() {
+        VideoTaskManager.getInstance().init(this.getActivity());
         Log.d("oneVideo", oneVideo.toString());
         Picasso.with(this.getActivity()).load(oneVideo.avatar).into(avatar);
 
@@ -136,6 +137,7 @@ public class PlayTagVideoFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        VideoTaskManager.getInstance().quit();
         if (videoPlayView != null) {
             videoPlayView.stop();
         }
