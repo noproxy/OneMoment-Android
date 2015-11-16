@@ -75,7 +75,7 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
         mIncomingWidth = width;
         mIncomingHeight = height;
 
-        float scaleHeight = mSurfaceWidth / (width * 1f / height * 1f);
+        float scaleHeight = mSurfaceHeight / (height * 1f / width * 1f);
         float surfaceHeight = mSurfaceHeight;
 
         if (mFullScreen != null) {
