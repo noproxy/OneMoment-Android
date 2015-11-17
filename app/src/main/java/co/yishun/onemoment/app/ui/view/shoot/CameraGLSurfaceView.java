@@ -211,32 +211,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
             camera = Camera.open(mIsBackCamera ? mCameraId.back : mCameraId.front);
             final Camera.Parameters parameters = camera.getParameters();
             mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
-            int[] fps = CameraUtil.getOptimalPreviewFpsRange(parameters.getSupportedPreviewFpsRange(), Constants.VIDEO_FPS);
 
-            if (parameters.isAutoExposureLockSupported()) {
-                Log.d(TAG, "support auto exposure");
-                if (parameters.getAutoExposureLock()) {
-                    Log.d(TAG, "auto exposure locked");
-                }
-                Log.d(TAG, "exposure " + parameters.getMinExposureCompensation() + "  "
-                        + parameters.getExposureCompensation() + "  "
-                        + parameters.getMaxExposureCompensation() + "  "
-                        + parameters.getExposureCompensationStep());
-                parameters.setExposureCompensation(parameters.getMaxExposureCompensation());
-            }
-            if (parameters.isAutoWhiteBalanceLockSupported()) {
-                Log.d(TAG, "support auto white balance");
-                if (parameters.getAutoExposureLock()) {
-                    Log.d(TAG, "auto white balance locked");
-                }
-                List<String> balance = parameters.getSupportedWhiteBalance();
-                for (String s : balance) {
-                    Log.d(TAG, s);
-                }
-                Log.d(TAG, parameters.getWhiteBalance());
-            }
             parameters.setPreviewSize(mSize.width, mSize.height);
-            parameters.setPreviewFpsRange(fps[0], fps[1]);
             camera.setParameters(parameters);
             camera.setDisplayOrientation(90);
             Log.i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
