@@ -35,7 +35,6 @@ import com.transitionseverywhere.Slide;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -43,7 +42,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.loader.VideoLoaderManager;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.WorldTag;
@@ -124,7 +122,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @UiThread(delay = 100)
     @AfterViews
     void sceneTransition() {
-        ViewGroup sceneRoot =coordinatorLayout;
+        ViewGroup sceneRoot = coordinatorLayout;
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
 
         ObjectAnimator animator = ObjectAnimator.ofInt(sceneRoot, "backgroundColor",

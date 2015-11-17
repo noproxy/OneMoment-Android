@@ -56,12 +56,9 @@ public class VideoTaskManager {
     }
 
     public void quit() {
-        if (mContext != null) {
-            mContext = null;
-            for (AsyncTask asyncTask : asyncTaskList) {
-                asyncTask.cancel(true);
-            }
-            asyncTaskList.clear();
+        for (AsyncTask asyncTask : asyncTaskList) {
+            asyncTask.cancel(true);
         }
+        asyncTaskList.clear();
     }
 }
