@@ -49,6 +49,7 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
+import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 import co.yishun.onemoment.app.ui.view.RoundRectImageView;
 
 /**
@@ -184,9 +185,12 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         videoImageView.setOnClickListener(this::videoImageClick);
 
-        GridLayoutManager manager = new GridLayoutManager(this, 3);
+        int spanCount = 3;
+        int spacing = (int) getResources().getDimension(R.dimen.video_grid_divider);
+        GridLayoutManager manager = new GridLayoutManager(this, spanCount);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
 
         tagAdapter = new TagAdapter(this, this);
         recyclerView.setAdapter(tagAdapter);

@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.WeakHashMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -34,7 +35,7 @@ public class AccountHelper {
     public static AccountManager accountManager;
     public static Account account;
     private static User mUser = null;
-    private static WeakHashMap<Integer, OnUserInfoChangeListener> mListeners = new WeakHashMap<>();
+    private static HashMap<Integer, OnUserInfoChangeListener> mListeners = new HashMap<>();
 
     private static AccountManager getAccountManager(Context context) {
         if (accountManager == null) {
@@ -109,7 +110,9 @@ public class AccountHelper {
     }
 
     private static void onUserInfoChange(User user) {
-        StreamSupport.stream(mListeners.values()).filter(l -> l != null).forEach((OnUserInfoChangeListener l) -> l.onUserInfoChange(user));
+        for (OnUserInfoChangeListener l : mListeners.values()) {
+            l.onUserInfoChange(user);
+        }
     }
 
     private static String getUserInfoDir(Context context) {
@@ -147,7 +150,7 @@ public class AccountHelper {
         mListeners.put(listener.hashCode(), listener);
     }
 
-    public static void removeOnUserInforChangedListener(@NonNull OnUserInfoChangeListener listener) {
+    public static void removeOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
         mListeners.remove(listener.hashCode());
     }
 

@@ -15,6 +15,7 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.api.model.TagVideo;
+import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.config.Constants;
 
 import static co.yishun.onemoment.app.config.Constants.URL_HYPHEN;
@@ -33,7 +34,7 @@ public class FileUtil {
         return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + provider.getName() + type.getSuffix());
     }
 
-    public static File getWorldVideoStoreFile(Context context, TagVideo video) {
+    public static File getWorldVideoStoreFile(Context context, Video video) {
         return new File(getMediaStoreDir(context, WORLD_STORE_DIR), video.fileName);
     }
 

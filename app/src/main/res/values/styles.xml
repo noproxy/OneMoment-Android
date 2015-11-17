@@ -21,6 +21,8 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:textColorTertiary">@color/textColorPrimary</item>
+        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
     </style>
 
     <style name="TwoWayViewBase">
@@ -89,6 +91,10 @@
     </style>
 
     <style name="AppTheme.TagCreateActivity">
+    </style>
+
+    <style name="AppTheme.UserInfoActivity">
+        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.Animation.Activity" parent="@android:style/Animation.Activity">

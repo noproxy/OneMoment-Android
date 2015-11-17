@@ -15,6 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.List;
 
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -210,10 +211,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
             camera = Camera.open(mIsBackCamera ? mCameraId.back : mCameraId.front);
             final Camera.Parameters parameters = camera.getParameters();
             mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
-            int[] fps = CameraUtil.getOptimalPreviewFpsRange(parameters.getSupportedPreviewFpsRange(), Constants.VIDEO_FPS);
 
             parameters.setPreviewSize(mSize.width, mSize.height);
-            parameters.setPreviewFpsRange(fps[0], fps[1]);
             camera.setParameters(parameters);
             camera.setDisplayOrientation(90);
             Log.i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);

@@ -81,7 +81,7 @@ public interface Account {
     @POST("/account/update/{account_id}")
     User updateInfo(
             @Path("account_id") @NonNull String userId,
-            @Field("weibo_nickname") @Nullable String nickname,
+            @Field("nickname") @Nullable String nickname,
             @Field("gender") @Nullable Gender gender,
             @Field("avatar_url") @Nullable String remoteUrlOrKey,
             @Field("location") @Nullable String location
@@ -194,16 +194,17 @@ public interface Account {
 
     }
 
-//    @FormUrlEncoded
-//    @POST("/account/bind_weibo/{account_id}")
-//    void bindWeibo(
-//            @NonNull @Path("account_id") String userId,
-//            @NonNull @Field("weibo_uid") String weiboUid
-//    );
-//
-//    @FormUrlEncoded
-//    @POST("/account/unbind_weibo/{account_id}")
-//    void unbindWeibo(@NonNull @Path("account_id") String userId,
-//                     @NonNull @Field("weibo_uid") String weiboUid);
+    @FormUrlEncoded
+    @POST("/account/bind_weibo/{account_id}")
+    User bindWeibo(
+            @NonNull @Path("account_id") String userId,
+            @NonNull @Field("weibo_uid") String weiboUid,
+            @NonNull @Field("weibo_nickname") String weiboNickname
+    );
+
+    @FormUrlEncoded
+    @POST("/account/unbind_weibo/{account_id}")
+    User unbindWeibo(@NonNull @Path("account_id") String userId,
+                     @NonNull @Field("weibo_uid") String weiboUid);
 }
 

@@ -33,6 +33,7 @@ import co.yishun.onemoment.app.api.loader.VideoDownloadTask;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.TagVideo;
+import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
 
@@ -55,6 +56,7 @@ public class PlayTagVideoFragment extends BaseFragment {
 
     @AfterViews
     void setup() {
+        VideoTaskManager.getInstance().init(this.getActivity());
         Log.d("oneVideo", oneVideo.toString());
         Picasso.with(this.getActivity()).load(oneVideo.avatar).into(avatar);
 
@@ -74,7 +76,7 @@ public class PlayTagVideoFragment extends BaseFragment {
     }
 
     @UiThread
-    void addVideo(TagVideo tagVideo, File fileSynced) {
+    void addVideo(Video tagVideo, File fileSynced) {
         VideoResource videoResource = new LocalVideo(new BaseVideoResource(), fileSynced.getPath());
         List<VideoTag> tags = new LinkedList<VideoTag>();
         for (int i = 0; i < tagVideo.tags.size(); i++) {
@@ -136,6 +138,7 @@ public class PlayTagVideoFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        VideoTaskManager.getInstance().quit();
         if (videoPlayView != null) {
             videoPlayView.stop();
         }

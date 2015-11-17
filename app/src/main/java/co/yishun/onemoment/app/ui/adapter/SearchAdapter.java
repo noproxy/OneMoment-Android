@@ -2,11 +2,8 @@ package co.yishun.onemoment.app.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.Collection;
 
@@ -50,24 +46,7 @@ public class SearchAdapter extends AbstractRecyclerViewAdapter<WorldTag, SearchA
 
     @Override
     public void onBindViewHolder(SearchAdapter.SimpleViewHolder holder, WorldTag item, int position) {
-        Picasso.with(mContext).load(item.domain + item.thumbnail).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                Log.d(TAG, "loaded " + position + " " + from);
-                holder.itemImageView.setImageBitmap(bitmap);
-                item.color = Palette.from(bitmap).generate().getMutedColor(mContext.getResources().getColor(R.color.colorPrimary));
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        });
+        Picasso.with(mContext).load(item.domain + item.thumbnail).into(holder.itemImageView);
         holder.numTextView.setText(String.valueOf(item.videosCount) + PeopleSuffix);
         holder.tagTextView.setText(item.name);
         holder.likeTextView.setText(String.valueOf(item.likeCount));

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -158,7 +159,8 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         return super.dispatchTouchEvent(event);
     }
 
-    private void invalidateUserInfo(User user) {
+    @UiThread
+    void invalidateUserInfo(User user) {
         if (user == null) {
             return;
         }
@@ -224,6 +226,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
             } else
                 supportFinishAfterTransition();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AccountHelper.removeOnUserInfoChangedListener(this);
     }
 
     @Override

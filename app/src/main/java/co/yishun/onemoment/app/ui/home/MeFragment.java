@@ -1,8 +1,10 @@
 package co.yishun.onemoment.app.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,13 +18,18 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.api.Account;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.UserInfoActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.MeAdapter;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
@@ -32,17 +39,44 @@ import co.yishun.onemoment.app.ui.controller.MeController_;
  * Created by yyz on 7/21/15.
  */
 @EFragment(R.layout.fragment_me)
-public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag> {
-    @ViewById TextView nickNameTextView;
-    @ViewById TextView votedCountTextView;
-    @ViewById TextView voteCountTextView;// "Voted 21"
-    @ViewById ImageView profileImageView;// "Vote 3"
+public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag>,AccountHelper.OnUserInfoChangeListener {
+    private static final String TAG = "MeFragment";
+    @ViewById
+    TextView nickNameTextView;
+    @ViewById
+    TextView votedCountTextView;
+    @ViewById
+    TextView voteCountTextView;// "Voted 21"
+    @ViewById
+    ImageView profileImageView;// "Vote 3"
+    private Context mContext;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+        AccountHelper.addOnUserInfoChangedListener(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        AccountHelper.removeOnUserInfoChangedListener(this);
+    }
 
     @AfterViews
     void setHeader() {
         User user = AccountHelper.getUserInfo(getContext());
         invalidateUserInfo(user);
-        AccountHelper.addOnUserInfoChangedListener(this::invalidateUserInfo);
+        updateUserInfo();
+    }
+
+    @Background
+    void updateUserInfo() {
+        Account account = OneMomentV3.createAdapter().create(Account.class);
+        User user = account.getUserInfo(AccountHelper.getAccountId(getContext()));
+        AccountHelper.updateOrCreateUserInfo(this.getActivity(), user);
+        invalidateUserInfo(user);
     }
 
     @Override
@@ -82,6 +116,7 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_me, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -89,6 +124,7 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         switch (item.getItemId()) {
             case R.id.fragment_me_action_modify_info:
                 //TODO start activity to update user info
+                UserInfoActivity_.intent(this).start();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -100,15 +136,21 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
 
     }
 
-    private void invalidateUserInfo(User user) {
+    @UiThread
+    void invalidateUserInfo(User user) {
         if (user == null) {
             return;
         }
         Picasso.with(getContext()).load(user.avatarUrl).into(profileImageView);
         nickNameTextView.setText(user.nickname);
-        String voted = String.format(getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));
+        String voted = String.format(mContext.getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));
         votedCountTextView.setText(voted);
-        String vote = String.format(getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.joinedWorld.length));
+        String vote = String.format(mContext.getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.likedWorldVideos.length));
         voteCountTextView.setText(vote);
+    }
+
+    @Override
+    public void onUserInfoChange(User info) {
+        invalidateUserInfo(info);
     }
 }

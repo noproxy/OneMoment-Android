@@ -3,6 +3,7 @@ package co.yishun.library.calendarlibrary;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,9 +14,12 @@ import java.util.Calendar;
  */
 public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener {
     private static final String TAG = "CalendarAdapter";
-    private int middleInt = Integer.MAX_VALUE / 2;
-    private MomentMonthView monthViews[] = new MomentMonthView[3];
-    private int centerPageHolderIndex = 1;
+    int cacheSize = 5;
+    // try to solve page scroll problem. change size to 65535, problem solved, not clear the reason.
+    int mSize = 0xffff;
+    private int middleInt = mSize / 2;
+    private MomentMonthView monthViews[] = new MomentMonthView[cacheSize];
+    private int centerPageHolderIndex = cacheSize / 2;
     private int centerPagePosition = middleInt;
     private MomentCalendar momentCalendar;
     private Context context;
@@ -24,14 +28,14 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
         this.context = context;
         this.momentCalendar = momentCalendar;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < cacheSize; i++) {
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MONTH, i - 1);
+            calendar.add(Calendar.MONTH, i - cacheSize / 2);
             MomentMonthView view = new MomentMonthView(context, calendar, adapter, momentCalendar);
             monthViews[i] = view;
         }
         momentCalendar.setAdapter(this);
-        momentCalendar.setOnPageChangeListener(this);
+        momentCalendar.addOnPageChangeListener(this);
         momentCalendar.setCurrentItem(middleInt);
     }
 
@@ -47,12 +51,13 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
 
     @Override
     public int getCount() {
-        return Integer.MAX_VALUE;
+        return mSize;
     }
 
     @Override
     public Object instantiateItem(ViewGroup parent, final int position) {
-        MomentMonthView currView = monthViews[(((position - centerPagePosition + centerPageHolderIndex) % 3) + 3) % 3];
+        int index = (((position - centerPagePosition + centerPageHolderIndex) % cacheSize) + cacheSize) % cacheSize;
+        MomentMonthView currView = monthViews[index];
         parent.removeView(currView);
         parent.addView(currView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         currView.setCalendar(getCalendarAt(position));
@@ -76,7 +81,7 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
         if (state == ViewPager.SCROLL_STATE_IDLE) {
             int old = centerPagePosition;
             centerPagePosition = momentCalendar.getCurrentItem();
-            centerPageHolderIndex = (centerPagePosition - old + centerPageHolderIndex) % 3;
+            centerPageHolderIndex = (centerPagePosition - old + centerPageHolderIndex) % cacheSize;
 
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MONTH, centerPagePosition - middleInt);

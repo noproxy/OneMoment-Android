@@ -32,6 +32,7 @@ import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
+import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
@@ -89,7 +90,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     }
 
     @UiThread
-    void addVideo(TagVideo tagVideo, File fileSynced) {
+    void addVideo(Video tagVideo, File fileSynced) {
         VideoResource videoResource = new LocalVideo(new BaseVideoResource(), fileSynced.getPath());
         List<VideoTag> tags = new LinkedList<VideoTag>();
         for (int i = 0; i < tagVideo.tags.size(); i++) {
@@ -97,8 +98,8 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         }
         videoResource = new TaggedVideo(videoResource, tags);
         videoPlayView.addVideoResource(videoResource);
-        tagVideos.add(tagVideo);
-        videoPlayView.addAvatarUrl(tagVideo.avatar);
+        tagVideos.add((TagVideo) tagVideo);
+        videoPlayView.addAvatarUrl(((TagVideo) tagVideo).avatar);
     }
 
     @Click(R.id.videoPlayView)
