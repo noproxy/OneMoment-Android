@@ -191,6 +191,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
                         camera.setPreviewTexture(getSurfaceTexture());
                         camera.startPreview();
                         applyTransform();
+                        // prepare contains camera.unlock(), which should after camera.setPreviewTexture()
+                        prepare();
                         Log.d(TAG, "camera set texture finish");
                     }
                 } catch (IOException e) {
@@ -228,7 +230,6 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
 
         mRecorder = new MediaRecorder();
-        Log.d(TAG, "camera unlock");
         camera.unlock();
         mRecorder.setCamera(camera);
         mRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
@@ -268,6 +269,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     public void onInfo(MediaRecorder mr, int what, int extra) {
         switch (what) {
             case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
+                mBackgroundHandler.sendEmptyMessage(RecordHandler.STOP);
                 onRecordEnd(mFile);
                 break;
         }
