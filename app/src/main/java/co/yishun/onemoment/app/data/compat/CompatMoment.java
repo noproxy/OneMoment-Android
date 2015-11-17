@@ -9,10 +9,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
-import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.model.Moment;
 
 
@@ -40,7 +37,7 @@ public class CompatMoment implements Serializable, Moment.MomentProvider {
     @DatabaseField private long timeStamp;
 
     public CompatMoment() {
-        fixTimeStampAndTime();
+//        fixTimeStampAndTime();
     /*keep for ormlite*/
     }
 
@@ -99,16 +96,5 @@ public class CompatMoment implements Serializable, Moment.MomentProvider {
                 '}';
     }
 
-    /**
-     * To fix TimeStamp from millisecond to second
-     *
-     * @return whether timestamp is wrong
-     */
-    public boolean fixTimeStampAndTime() {
-        if (String.valueOf(timeStamp).length() > 10) {
-            timeStamp = timeStamp / 1000;
-            time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(timeStamp * 1000);
-            return true;
-        } else return false;
-    }
+
 }
