@@ -18,13 +18,14 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.api.model.TagVideo;
+import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.VideoUtil;
 
 /**
  * Created by Jinge on 2015/11/13.
  */
-public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
+public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
     private static final String TAG = "VideoDownloadTask";
     private String largeThumbImage;
     private String thumbImage;
@@ -53,33 +54,33 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(TagVideo... tagVideos) {
-        final TagVideo tagVideo = tagVideos[0];
-        Log.d(TAG, "start " + tagVideo._id);
+    protected Boolean doInBackground(Video... videos) {
+        final Video video = videos[0];
+        Log.d(TAG, "start " + video.fileName);
         try {
             // if video exists
-            File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, tagVideo);
+            File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, video);
             if (fileSynced.exists()) {
                 if (mListener != null) {
-                    mListener.onDownloadOver(tagVideo, fileSynced);
+                    mListener.onDownloadOver(video, fileSynced);
                 }
                 // check whether thumbnail exists
-                File large = FileUtil.getThumbnailStoreFile(mContext, tagVideo, FileUtil.Type.LARGE_THUMB);
-                File small = FileUtil.getThumbnailStoreFile(mContext, tagVideo, FileUtil.Type.MICRO_THUMB);
+                File large = FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB);
+                File small = FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.MICRO_THUMB);
                 boolean re = true;
                 try {
                     if (large.exists()) {
                         largeThumbImage = large.getPath();
                         Log.d(TAG, "large exist " + largeThumbImage);
                     } else {
-                        largeThumbImage = VideoUtil.createLargeThumbImage(mContext, tagVideo, fileSynced.getPath());
+                        largeThumbImage = VideoUtil.createLargeThumbImage(mContext, video, fileSynced.getPath());
                         Log.d(TAG, "large not exist " + largeThumbImage);
                     }
                     if (small.exists()) {
                         thumbImage = small.getPath();
                         Log.d(TAG, "small exist " + thumbImage);
                     } else {
-                        thumbImage = VideoUtil.createThumbImage(mContext, tagVideo, fileSynced.getPath());
+                        thumbImage = VideoUtil.createThumbImage(mContext, video, fileSynced.getPath());
                         Log.d(TAG, "small not exist " + thumbImage);
                     }
                 } catch (IOException e) {
@@ -93,7 +94,7 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
                 if (re) return true;
             }
             OkHttpClient httpClient = new OkHttpClient();
-            Call call = httpClient.newCall(new Request.Builder().url(tagVideo.domain + tagVideo.fileName).get().build());
+            Call call = httpClient.newCall(new Request.Builder().url(video.domain + video.fileName).get().build());
             Response response = call.execute();
 
             if (response.code() == 200) {
@@ -122,10 +123,10 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
                             publishProgress((int) (total * 100 / fileLength));
                         output.write(data, 0, count);
                     }
-                    largeThumbImage = VideoUtil.createLargeThumbImage(mContext, tagVideo, fileSynced.getPath());
-                    thumbImage = VideoUtil.createThumbImage(mContext, tagVideo, fileSynced.getPath());
+                    largeThumbImage = VideoUtil.createLargeThumbImage(mContext, video, fileSynced.getPath());
+                    thumbImage = VideoUtil.createThumbImage(mContext, video, fileSynced.getPath());
                     if (mListener != null) {
-                        mListener.onDownloadOver(tagVideo, fileSynced);
+                        mListener.onDownloadOver(video, fileSynced);
                     }
                     return total == fileLength;
                 } catch (IOException ignore) {
@@ -171,6 +172,6 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
     }
 
     public interface VideoDownloadListener {
-        void onDownloadOver(TagVideo tagVideo, File fileSynced);
+        void onDownloadOver(Video tagVideo, File fileSynced);
     }
 }
