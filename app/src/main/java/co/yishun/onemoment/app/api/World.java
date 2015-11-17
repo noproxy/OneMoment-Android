@@ -65,6 +65,10 @@ public interface World {
                           @Field("filename") @NonNull String fileName, @Field("tags") @NonNull String tags
     );
 
+    @POST("/world/shareWorld")
+    @FormUrlEncoded
+    ApiModel shareWorld(@Field("tag_name") String tagName);
+
     @StringDef({"recommend", "time"})
     @interface Sort {
     }
