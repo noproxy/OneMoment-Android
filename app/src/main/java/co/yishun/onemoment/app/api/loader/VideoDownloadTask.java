@@ -36,7 +36,7 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
         mContext = context;
     }
 
-    public VideoDownloadTask(Context context, VideoDownloadListener listener){
+    public VideoDownloadTask(Context context, VideoDownloadListener listener) {
         mContext = context;
         mListener = listener;
     }
@@ -60,7 +60,7 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
             // if video exists
             File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, tagVideo);
             if (fileSynced.exists()) {
-                if (mListener !=null) {
+                if (mListener != null) {
                     mListener.onDownloadOver(tagVideo, fileSynced);
                 }
                 // check whether thumbnail exists
@@ -70,13 +70,17 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
                 try {
                     if (large.exists()) {
                         largeThumbImage = large.getPath();
+                        Log.d(TAG, "large exist " + largeThumbImage);
                     } else {
                         largeThumbImage = VideoUtil.createLargeThumbImage(mContext, tagVideo, fileSynced.getPath());
+                        Log.d(TAG, "large not exist " + largeThumbImage);
                     }
                     if (small.exists()) {
                         thumbImage = small.getPath();
+                        Log.d(TAG, "small exist " + thumbImage);
                     } else {
                         thumbImage = VideoUtil.createThumbImage(mContext, tagVideo, fileSynced.getPath());
+                        Log.d(TAG, "small not exist " + thumbImage);
                     }
                 } catch (IOException e) {
                     // create thumbnail failed, video file may be damaged, redownload
@@ -107,6 +111,9 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
                         // allow canceling
                         if (isCancelled()) {
                             input.close();
+                            if (fileSynced.exists()) {
+                                fileSynced.delete();
+                            }
                             return false;
                         }
                         total += count;
@@ -117,11 +124,14 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
                     }
                     largeThumbImage = VideoUtil.createLargeThumbImage(mContext, tagVideo, fileSynced.getPath());
                     thumbImage = VideoUtil.createThumbImage(mContext, tagVideo, fileSynced.getPath());
-                    if (mListener !=null) {
+                    if (mListener != null) {
                         mListener.onDownloadOver(tagVideo, fileSynced);
                     }
                     return total == fileLength;
                 } catch (IOException ignore) {
+                    if (fileSynced.exists()) {
+                        fileSynced.delete();
+                    }
                     return false;
                 } finally {
                     try {
@@ -150,7 +160,7 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
     protected void onPostExecute(Boolean result) {
         if (result) {
             Log.d(TAG, "stop");
-            if (mTargetImageView != null) {
+            if (mTargetImageView != null && mTargetImageView.get() != null) {
                 Picasso.with(mContext).load(new File(thumbImage)).into(mTargetImageView.get());
             }
         }else {
@@ -160,7 +170,7 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
         VideoTaskManager.getInstance().removeTask(this);
     }
 
-    public interface VideoDownloadListener{
+    public interface VideoDownloadListener {
         void onDownloadOver(TagVideo tagVideo, File fileSynced);
     }
 }
