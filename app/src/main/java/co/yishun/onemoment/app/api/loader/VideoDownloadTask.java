@@ -150,7 +150,7 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
     protected void onPostExecute(Boolean result) {
         if (result) {
             Log.d(TAG, "stop");
-            if (mTargetImageView != null) {
+            if (mTargetImageView != null && mTargetImageView.get() != null) {
                 Picasso.with(mContext).load(new File(thumbImage)).into(mTargetImageView.get());
             }
         }
