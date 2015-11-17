@@ -56,12 +56,14 @@ public class CameraUtil {
         int[] optimalRange = new int[]{0, Integer.MAX_VALUE};
         int averageDiff = Integer.MAX_VALUE;// ignore decimal
         for (int[] range : ranges) {
+            Log.d(TAG, range[0] + "  " + range[1]);
             int a = (range[0] + range[1]) / 2;
             if (a - targetFps < averageDiff
                     || (a == averageDiff && range[1] - targetFps < optimalRange[1] - targetFps))
                 averageDiff = a;
             optimalRange = range;
         }
+        Log.d(TAG, optimalRange[0] + "  " + optimalRange[1]);
         return optimalRange;
     }
 

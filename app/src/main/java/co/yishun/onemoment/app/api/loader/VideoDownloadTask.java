@@ -153,7 +153,10 @@ public class VideoDownloadTask extends AsyncTask<TagVideo, Integer, Boolean> {
             if (mTargetImageView != null) {
                 Picasso.with(mContext).load(new File(thumbImage)).into(mTargetImageView.get());
             }
+        }else {
+            Log.e(TAG, "error");
         }
+
         VideoTaskManager.getInstance().removeTask(this);
     }
 

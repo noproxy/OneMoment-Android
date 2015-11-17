@@ -26,8 +26,7 @@ import co.yishun.onemoment.app.ui.view.PermissionSwitch;
  */
 @EActivity(R.layout.activity_moment_create)
 public class MomentCreateActivity extends BaseActivity {
-
-
+    private static final String TAG = "MomentCreateActivity";
     @Extra String videoPath;
     @ViewById VideoView videoView;
     @ViewById Toolbar toolbar;

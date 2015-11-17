@@ -146,7 +146,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
 
         try {
             startPreview();
-            prepare();
+//            prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -181,18 +181,23 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         mHasFrontCamera = mHasFrontCamera && mCameraId.front != -1;
         Log.e(TAG, "front camera enable: " + mHasFrontCamera);
 
-        switchCamera(true);// load camera first
+        innerSwitchCamera(true);// load camera first
         this.setSurfaceTextureListener(new SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
                 try {
                     if (needPreview) {
+                        Log.d(TAG, "camera set texture");
                         camera.setPreviewTexture(getSurfaceTexture());
                         camera.startPreview();
                         applyTransform();
+                        // prepare contains camera.unlock(), which should after camera.setPreviewTexture()
+                        prepare();
+                        Log.d(TAG, "camera set texture finish");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.d(TAG, "camera set texture fail");
                 }
             }
 
@@ -264,6 +269,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     public void onInfo(MediaRecorder mr, int what, int extra) {
         switch (what) {
             case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
+                mBackgroundHandler.sendEmptyMessage(RecordHandler.STOP);
                 onRecordEnd(mFile);
                 break;
         }
