@@ -1,15 +1,12 @@
 package co.yishun.onemoment.app.api.loader;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import co.yishun.onemoment.app.api.model.TagVideo;
 
 /**
  * Created by Jinge on 2015/11/13.
@@ -18,7 +15,7 @@ public class VideoTaskManager {
     public static final OkHttpClient httpClient = new OkHttpClient();
     private static final String TAG = "VideoTaskManager";
     private static VideoTaskManager instance;
-    private List<AsyncTask> asyncTaskList  = new ArrayList<>();
+    private List<AsyncTask> asyncTaskList = new ArrayList<>();
 
     public static VideoTaskManager getInstance() {
         synchronized (VideoTaskManager.class) {
@@ -31,10 +28,15 @@ public class VideoTaskManager {
 
     public void addTask(AsyncTask task) {
         asyncTaskList.add(task);
+        Log.d(TAG, asyncTaskList.size() + "");
+        if (asyncTaskList.size() >= 96) {
+            Log.e(TAG, "size error");
+        }
     }
 
     public void removeTask(AsyncTask task) {
         asyncTaskList.remove(task);
+        Log.d(TAG, asyncTaskList.size() + "");
     }
 
     public void quit() {

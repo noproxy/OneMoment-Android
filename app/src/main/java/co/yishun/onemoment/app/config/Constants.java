@@ -8,6 +8,7 @@ package co.yishun.onemoment.app.config;
 public class Constants {
     public static final String API_KEY = "";
     public static final String API_V3_URL = "http://api.yishun.co/v3";
+//    public static final String API_V3_URL = "https://sandbox.api.yishun.co:53469/v3";//for test
     public static final String AES_KEY = "QJBBNfrwp2oN4ZBwT9qZ4MGObN8y56bEydJj48L8xVs=";
     public static final String MIME_TYPE = "video/mp4";
     public static final String VIDEO_FILE_SUFFIX = ".mp4";

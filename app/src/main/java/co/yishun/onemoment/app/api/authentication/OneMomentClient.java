@@ -5,6 +5,9 @@ import android.util.Log;
 
 import com.google.common.base.Charsets;
 
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,6 +16,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 
 import co.yishun.onemoment.app.Util;
 import retrofit.client.Header;
@@ -54,6 +60,10 @@ public class OneMomentClient extends OkClient {
         headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
+
+        HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
         try {
             Response response = super.execute(verifiedRequest);
             int statusCode = response.getStatus();
