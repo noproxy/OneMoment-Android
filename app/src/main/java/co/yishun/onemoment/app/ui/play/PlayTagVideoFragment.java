@@ -69,7 +69,7 @@ public class PlayTagVideoFragment extends BaseFragment {
             addVideo(oneVideo, fileSynced);
         } else {
             VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
-            task.setListener(this::addVideo);
+//            task.setListener(this::addVideo);
         }
 
         refreshUserInfo();

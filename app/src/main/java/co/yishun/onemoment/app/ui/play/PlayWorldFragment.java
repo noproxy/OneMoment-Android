@@ -74,7 +74,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
                 addVideo(oneVideo, fileSynced);
             } else {
                 VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
-                task.setListener(this::addVideo);
+//                task.setListener(this::addVideo);
             }
         }
         getData();

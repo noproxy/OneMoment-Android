@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.api.loader;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
@@ -24,41 +23,28 @@ import co.yishun.onemoment.app.data.FileUtil;
  */
 public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
     private static final String TAG = "VideoDownloadTask";
-    private String largeThumbImage;
-    private String thumbImage;
     private Context mContext;
-    private WeakReference<ImageView> mTargetImageView;
-    private VideoDownloadListener mListener;
+    private Video video;
+    private WeakReference<VideoTask> videoTaskReference;
 
     public VideoDownloadTask(Context context) {
         mContext = context;
     }
 
-    public VideoDownloadTask(Context context, VideoDownloadListener listener) {
+    public VideoDownloadTask(Context context, VideoTask videoTask) {
         mContext = context;
-        mListener = listener;
-    }
-
-    public void setListener(VideoDownloadListener listener) {
-        mListener = listener;
-    }
-
-    public void setImageView(ImageView imageView) {
-        if (mTargetImageView != null) {
-            mTargetImageView.clear();
-        }
-        mTargetImageView = new WeakReference<>(imageView);
+        videoTaskReference = new WeakReference<>(videoTask);
     }
 
     @Override
     protected Boolean doInBackground(Video... videos) {
-        final Video video = videos[0];
-        Log.d(TAG, "start " + video.fileName);
-        // if video exists
+        video = videos[0];
+        Log.d(TAG, "start video " + video.fileName);
         File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, video);
+
         OkHttpClient httpClient = VideoTaskManager.httpClient;
         Call call = httpClient.newCall(new Request.Builder().url(video.domain + video.fileName).get().build());
-        Response response = null;
+        Response response;
         InputStream input = null;
         FileOutputStream output = null;
         try {
@@ -69,12 +55,14 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
                 output = new FileOutputStream(fileSynced);
                 long fileLength = response.body().contentLength();
 
-                byte data[] = new byte[4096];
+                //OkHttp can't read more than 2048 bytes at a time.
+                byte data[] = new byte[2048];
                 long total = 0;
                 int count;
                 Log.d(TAG, "start while " + video.fileName);
                 while ((count = input.read(data)) != -1) {
                     if (isCancelled()) {
+                        Log.d(TAG, "cancel " + video.fileName);
                         input.close();
                         if (fileSynced.exists()) {
                             fileSynced.delete();
@@ -85,8 +73,8 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
                     output.write(data, 0, count);
                 }
                 Log.d(TAG, "end while " + video.fileName);
-                return total == fileLength;
 
+                return total == fileLength;
             } else {
                 return false;
             }
@@ -106,14 +94,16 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
         }
     }
 
-
     @Override
     protected void onPostExecute(Boolean result) {
-
-    }
-
-    public interface VideoDownloadListener {
-        void onDownloadOver(Video tagVideo, File fileSynced);
+        if (result) {
+            Log.d(TAG, "stop video");
+            if (videoTaskReference.get() != null) {
+                videoTaskReference.get().getVideo(video);
+            }
+        } else {
+            Log.e(TAG, "error");
+        }
     }
 
 }

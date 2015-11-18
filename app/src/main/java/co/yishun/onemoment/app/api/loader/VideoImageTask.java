@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -17,35 +18,36 @@ import co.yishun.onemoment.app.data.VideoUtil;
 public class VideoImageTask extends AsyncTask<Video, Integer, Boolean> {
     private static final String TAG = "VideoImageTask";
     private Context context;
-    private String largeThumbImage;
-    private String thumbImage;
+    private File large;
+    private File small;
+    private WeakReference<VideoTask> videoTaskReference;
 
     public VideoImageTask(Context context) {
         this.context = context;
     }
 
+    public VideoImageTask(Context context, VideoTask videoTask) {
+        this.context = context;
+        this.videoTaskReference = new WeakReference<>(videoTask);
+    }
+
     @Override
     protected Boolean doInBackground(Video... videos) {
         final Video video = videos[0];
+        Log.d(TAG, "start image " + video.fileName);
         File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
-        File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
-        File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
+        large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
+        small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
         try {
-            if (large.exists()) {
-                largeThumbImage = large.getPath();
-                Log.d(TAG, "large exist " + largeThumbImage);
-            } else {
-                largeThumbImage = VideoUtil.createLargeThumbImage(context, video, videoFile.getPath());
-                Log.d(TAG, "large not exist " + largeThumbImage);
+            if (!large.exists()) {
+                Log.d(TAG, "create large " + video.fileName);
+                VideoUtil.createLargeThumbImage(context, video, videoFile.getPath());
             }
-            if (small.exists()) {
-                thumbImage = small.getPath();
-                Log.d(TAG, "small exist " + thumbImage);
-            } else {
-                thumbImage = VideoUtil.createThumbImage(context, video, videoFile.getPath());
-                Log.d(TAG, "small not exist " + thumbImage);
+            if (!small.exists()) {
+                Log.d(TAG, "create small " + video.fileName);
+                VideoUtil.createThumbImage(context, video, videoFile.getPath());
             }
-            return true;
+            return large.exists() && small.exists();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,7 +55,14 @@ public class VideoImageTask extends AsyncTask<Video, Integer, Boolean> {
     }
 
     @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        super.onPostExecute(aBoolean);
+    protected void onPostExecute(Boolean result) {
+        if (result) {
+            Log.d(TAG, "stop image");
+            if (videoTaskReference.get() != null) {
+                videoTaskReference.get().getImage(large, small);
+            }
+        } else {
+            Log.e(TAG, "error");
+        }
     }
 }

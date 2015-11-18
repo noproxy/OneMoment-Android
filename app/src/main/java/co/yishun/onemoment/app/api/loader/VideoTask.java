@@ -20,12 +20,9 @@ public class VideoTask {
     private Context context;
     private Video video;
     private int type;
-    private String largeThumbImage;
-    private String thumbImage;
-    private OnLoadedListener loadedListener;
+    private OnVideoListener videoListener;
     private OnImageListener imageListener;
-
-
+    
     public VideoTask(Context context, Video video, int type) {
         this.video = video;
         this.context = context;
@@ -36,26 +33,60 @@ public class VideoTask {
         File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
         if (videoFile.exists()) {
             Log.d(TAG, "video file exist " + video.fileName);
-            loadedListener.onVideoLoad(video);
-            if (type == TYPE_VIDEO_ONLY) {
-                return;
-            }
-            // check whether thumbnail exists
-            File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
-            File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
-            if (large.exists() && small.exists()) {
-                imageListener.onImageCreate(large, small);
-            } else {
-                VideoImageTask imageTask = new VideoImageTask(context);
-                imageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, video);
-            }
+            getVideo(video);
         } else {
-            VideoDownloadTask downloadTask = new VideoDownloadTask(context, null);
+            Log.d(TAG, "video file not exist " + video.fileName);
+            VideoDownloadTask downloadTask = new VideoDownloadTask(context, this);
             downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, video);
         }
     }
 
-    public interface OnLoadedListener {
+    public VideoTask setVideoListener(OnVideoListener listener) {
+        videoListener = listener;
+        return this;
+    }
+
+    public VideoTask setImageListener(OnImageListener listener) {
+        imageListener = listener;
+        return this;
+    }
+
+    public VideoTask start() {
+        createWorker();
+        return this;
+    }
+
+    void getVideo(Video video) {
+        if (videoListener != null) {
+            videoListener.onVideoLoad(video);
+        } else {
+            Log.e(TAG, "video listener null");
+        }
+        if (type == TYPE_VIDEO_ONLY) {
+            return;
+        }
+        // check whether thumbnail exists
+        Log.d(TAG, "try to get image");
+        File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
+        File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
+        if (large.exists() && small.exists()) {
+            getImage(large, small);
+        } else {
+            VideoImageTask imageTask = new VideoImageTask(context, this);
+            imageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, video);
+        }
+    }
+
+    void getImage(File large, File small) {
+        Log.d(TAG, "get image");
+        if (imageListener != null) {
+            imageListener.onImageCreate(large, small);
+        } else {
+            Log.e(TAG, "image listener null");
+        }
+    }
+
+    public interface OnVideoListener {
         void onVideoLoad(Video video);
     }
 
