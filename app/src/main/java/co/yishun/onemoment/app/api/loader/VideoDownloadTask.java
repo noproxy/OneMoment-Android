@@ -9,7 +9,6 @@ import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,10 +16,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
-import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.VideoUtil;
+
+public interface VideoDownloadListener {
+    void onDownloadOver(Video tagVideo, File fileSynced);
+}
 
 /**
  * Created by Jinge on 2015/11/13.
@@ -57,121 +58,61 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
     protected Boolean doInBackground(Video... videos) {
         final Video video = videos[0];
         Log.d(TAG, "start " + video.fileName);
+        // if video exists
+        File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, video);
+        OkHttpClient httpClient = new OkHttpClient();
+        Call call = httpClient.newCall(new Request.Builder().url(video.domain + video.fileName).get().build());
+        Response response = null;
+        InputStream input = null;
+        FileOutputStream output = null;
         try {
-            // if video exists
-            File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, video);
-            if (fileSynced.exists()) {
-                if (mListener != null) {
-                    mListener.onDownloadOver(video, fileSynced);
-                }
-                // check whether thumbnail exists
-                File large = FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB);
-                File small = FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.MICRO_THUMB);
-                boolean re = true;
-                try {
-                    if (large.exists()) {
-                        largeThumbImage = large.getPath();
-                        Log.d(TAG, "large exist " + largeThumbImage);
-                    } else {
-                        largeThumbImage = VideoUtil.createLargeThumbImage(mContext, video, fileSynced.getPath());
-                        Log.d(TAG, "large not exist " + largeThumbImage);
-                    }
-                    if (small.exists()) {
-                        thumbImage = small.getPath();
-                        Log.d(TAG, "small exist " + thumbImage);
-                    } else {
-                        thumbImage = VideoUtil.createThumbImage(mContext, video, fileSynced.getPath());
-                        Log.d(TAG, "small not exist " + thumbImage);
-                    }
-                } catch (IOException e) {
-                    // create thumbnail failed, video file may be damaged, redownload
-                    e.printStackTrace();
-                    if (!fileSynced.delete()) {
+            response = call.execute();
+            Log.d(TAG, "start net " + video.fileName);
+            if (response.code() == 200) {
+                input = response.body().byteStream();
+                output = new FileOutputStream(fileSynced);
+                long fileLength = response.body().contentLength();
+
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                Log.d(TAG, "start while " + video.fileName);
+                while ((count = input.read(data)) != -1) {
+                    if (isCancelled()) {
+                        input.close();
+                        if (fileSynced.exists()) {
+                            fileSynced.delete();
+                        }
                         return false;
                     }
-                    re = false;
+                    total += count;
+                    output.write(data, 0, count);
                 }
-                if (re) return true;
-            }
-            OkHttpClient httpClient = new OkHttpClient();
-            Call call = httpClient.newCall(new Request.Builder().url(video.domain + video.fileName).get().build());
-            Response response = call.execute();
+                Log.d(TAG, "end while " + video.fileName);
+                return total == fileLength;
 
-            if (response.code() == 200) {
-                InputStream input = null;
-                FileOutputStream output = null;
-                try {
-                    input = response.body().byteStream();
-                    output = new FileOutputStream(fileSynced);
-                    long fileLength = response.body().contentLength();
-
-                    byte data[] = new byte[4096];
-                    long total = 0;
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        // allow canceling
-                        if (isCancelled()) {
-                            input.close();
-                            if (fileSynced.exists()) {
-                                fileSynced.delete();
-                            }
-                            return false;
-                        }
-                        total += count;
-                        // publishing the progress....
-                        if (fileLength > 0) // only if total length is known
-                            publishProgress((int) (total * 100 / fileLength));
-                        output.write(data, 0, count);
-                    }
-                    largeThumbImage = VideoUtil.createLargeThumbImage(mContext, video, fileSynced.getPath());
-                    thumbImage = VideoUtil.createThumbImage(mContext, video, fileSynced.getPath());
-                    if (mListener != null) {
-                        mListener.onDownloadOver(video, fileSynced);
-                    }
-                    return total == fileLength;
-                } catch (IOException ignore) {
-                    if (fileSynced.exists()) {
-                        fileSynced.delete();
-                    }
-                    return false;
-                } finally {
-                    try {
-                        if (output != null)
-                            output.close();
-                        if (input != null)
-                            input.close();
-                    } catch (IOException ignored) {
-                    }
-                }
             } else {
                 return false;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignore) {
+            if (fileSynced.exists()) {
+                fileSynced.delete();
+            }
             return false;
+        } finally {
+            try {
+                if (output != null)
+                    output.close();
+                if (input != null)
+                    input.close();
+            } catch (IOException ignored) {
+            }
         }
     }
 
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-
-    }
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if (result) {
-            Log.d(TAG, "stop");
-            if (mTargetImageView != null && mTargetImageView.get() != null) {
-                Picasso.with(mContext).load(new File(thumbImage)).into(mTargetImageView.get());
-            }
-        }else {
-            Log.e(TAG, "error");
-        }
 
-        VideoTaskManager.getInstance().removeTask(this);
-    }
-
-    public interface VideoDownloadListener {
-        void onDownloadOver(Video tagVideo, File fileSynced);
     }
 }
