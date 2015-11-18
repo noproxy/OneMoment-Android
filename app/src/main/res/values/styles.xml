@@ -112,10 +112,6 @@
         <item name="color">?attr/colorAccent</item>
     </style>
 
-    <style name="SwitchTextAppearance" parent="TextAppearance.AppCompat.Widget.Switch">
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
-
     <style name="AppTheme.Widget.ImageButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">@drawable/bg_btn_menu</item>
     </style>
