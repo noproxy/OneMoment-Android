@@ -18,8 +18,7 @@ public class VideoTaskManager {
     public static final OkHttpClient httpClient = new OkHttpClient();
     private static final String TAG = "VideoTaskManager";
     private static VideoTaskManager instance;
-    private List<AsyncTask> asyncTaskList;
-    private Context mContext;
+    private List<AsyncTask> asyncTaskList  = new ArrayList<>();
 
     public static VideoTaskManager getInstance() {
         synchronized (VideoTaskManager.class) {
@@ -28,26 +27,6 @@ public class VideoTaskManager {
             }
         }
         return instance;
-    }
-
-    public void init(Context context) {
-        mContext = context;
-        asyncTaskList = new ArrayList<>();
-    }
-
-    public VideoDownloadTask addDownloadTask(@Nullable VideoDownloadTask task, TagVideo... params) {
-        if (asyncTaskList.contains(task)) {
-            removeTask(task);
-            if (task != null) task.cancel(true);
-            task = new VideoDownloadTask(mContext);
-            addTask(task);
-        }
-        if (task == null || task.getStatus() == AsyncTask.Status.FINISHED) {
-            task = new VideoDownloadTask(mContext);
-            addTask(task);
-        }
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params[0]);
-        return task;
     }
 
     public void addTask(AsyncTask task) {
@@ -60,7 +39,7 @@ public class VideoTaskManager {
 
     public void quit() {
         for (AsyncTask asyncTask : asyncTaskList) {
-            asyncTask.cancel(true);
+            asyncTask.cancel(false);
         }
         asyncTaskList.clear();
     }

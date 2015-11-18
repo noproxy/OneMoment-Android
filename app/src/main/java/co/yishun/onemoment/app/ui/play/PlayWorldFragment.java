@@ -73,7 +73,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
             if (fileSynced.exists()) {
                 addVideo(oneVideo, fileSynced);
             } else {
-                VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
+//                VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
 //                task.setListener(this::addVideo);
             }
         }
@@ -82,7 +82,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
 
     @AfterViews
     void setupView() {
-        VideoTaskManager.getInstance().init(this.getActivity());
+//        VideoTaskManager.getInstance().init(this.getActivity());
 
         videoPlayView.setSinglePlay(false);
         videoPlayView.setVideoChangeListener(this);

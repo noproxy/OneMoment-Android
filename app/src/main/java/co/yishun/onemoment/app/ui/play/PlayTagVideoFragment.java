@@ -56,7 +56,7 @@ public class PlayTagVideoFragment extends BaseFragment {
 
     @AfterViews
     void setup() {
-        VideoTaskManager.getInstance().init(this.getActivity());
+//        VideoTaskManager.getInstance().init(this.getActivity());
         Log.d("oneVideo", oneVideo.toString());
         Picasso.with(this.getActivity()).load(oneVideo.avatar).into(avatar);
 
@@ -68,7 +68,7 @@ public class PlayTagVideoFragment extends BaseFragment {
         if (fileSynced.exists()) {
             addVideo(oneVideo, fileSynced);
         } else {
-            VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
+//            VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
 //            task.setListener(this::addVideo);
         }
 

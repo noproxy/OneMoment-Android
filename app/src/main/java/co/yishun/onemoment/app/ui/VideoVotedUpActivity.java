@@ -55,7 +55,7 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     @Override
     protected void onResume() {
         super.onResume();
-        VideoTaskManager.getInstance().init(this);
+//        VideoTaskManager.getInstance().init(this);
     }
 
     @AfterViews

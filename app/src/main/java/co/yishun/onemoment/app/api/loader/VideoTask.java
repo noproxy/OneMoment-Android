@@ -22,23 +22,13 @@ public class VideoTask {
     private int type;
     private OnVideoListener videoListener;
     private OnImageListener imageListener;
-    
+    private VideoDownloadTask downloadTask;
+    private VideoImageTask imageTask;
+
     public VideoTask(Context context, Video video, int type) {
         this.video = video;
         this.context = context;
         this.type = type;
-    }
-
-    private void createWorker() {
-        File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
-        if (videoFile.exists()) {
-            Log.d(TAG, "video file exist " + video.fileName);
-            getVideo(video);
-        } else {
-            Log.d(TAG, "video file not exist " + video.fileName);
-            VideoDownloadTask downloadTask = new VideoDownloadTask(context, this);
-            downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, video);
-        }
     }
 
     public VideoTask setVideoListener(OnVideoListener listener) {
@@ -52,8 +42,26 @@ public class VideoTask {
     }
 
     public VideoTask start() {
-        createWorker();
+        File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
+        if (videoFile.exists()) {
+            Log.d(TAG, "video file exist " + video.fileName);
+            getVideo(video);
+        } else {
+            Log.d(TAG, "video file not exist " + video.fileName);
+            downloadTask = new VideoDownloadTask(context, this);
+            downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, video);
+        }
         return this;
+    }
+
+    public void cancel() {
+        Log.d(TAG, "cancel task");
+        if (downloadTask != null) {
+            downloadTask.cancel(true);
+        }
+        if (imageTask != null) {
+            imageTask.cancel(true);
+        }
     }
 
     void getVideo(Video video) {
@@ -69,10 +77,10 @@ public class VideoTask {
         Log.d(TAG, "try to get image");
         File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
         File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
-        if (large.exists() && small.exists()) {
+        if (large.length() != 0 && small.length() != 0) {
             getImage(large, small);
         } else {
-            VideoImageTask imageTask = new VideoImageTask(context, this);
+            imageTask = new VideoImageTask(context, this);
             imageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, video);
         }
     }
