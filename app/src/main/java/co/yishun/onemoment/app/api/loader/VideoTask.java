@@ -49,7 +49,8 @@ public class VideoTask {
         } else {
             Log.d(TAG, "video file not exist " + video.fileName);
             downloadTask = new VideoDownloadTask(context, this);
-            downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, video);
+//            VideoTaskManager.getInstance().executTask(downloadTask, video);
+            downloadTask.executeOnExecutor(VideoTaskManager.executor, video);
         }
         return this;
     }
@@ -81,7 +82,8 @@ public class VideoTask {
             getImage(large, small);
         } else {
             imageTask = new VideoImageTask(context, this);
-            imageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, video);
+//            VideoTaskManager.getInstance().executTask(imageTask, video);
+            imageTask.executeOnExecutor(VideoTaskManager.executor, video);
         }
     }
 

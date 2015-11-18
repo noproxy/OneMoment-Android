@@ -6,7 +6,18 @@ import android.util.Log;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import co.yishun.onemoment.app.api.model.Video;
 
 /**
  * Created by Jinge on 2015/11/13.
@@ -14,8 +25,26 @@ import java.util.List;
 public class VideoTaskManager {
     public static final OkHttpClient httpClient = new OkHttpClient();
     private static final String TAG = "VideoTaskManager";
+
+    private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+    private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
+    private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+    private static final int KEEP_ALIVE = 1;
+    private static final BlockingQueue<Runnable> poolQueue =
+            new LinkedBlockingQueue<Runnable>(128);
+    private static final ThreadFactory sThreadFactory = new ThreadFactory() {
+        private final AtomicInteger mCount = new AtomicInteger(1);
+
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "VideoTaskManager #" + mCount.getAndIncrement());
+        }
+    };
+    public static final Executor executor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+            TimeUnit.SECONDS, poolQueue, sThreadFactory);
+
     private static VideoTaskManager instance;
     private List<AsyncTask> asyncTaskList = new ArrayList<>();
+    private Map<AsyncTask, Video[]> taskMap = new HashMap<>();
 
     public static VideoTaskManager getInstance() {
         synchronized (VideoTaskManager.class) {
@@ -25,6 +54,19 @@ public class VideoTaskManager {
         }
         return instance;
     }
+
+//    public void executTask(AsyncTask task, Video... params){
+//        if (poolQueue.size() > 96) {
+//            Log.d(TAG, "pool size over");
+//            taskMap.put(task, params);
+//        } else {
+//            task.executeOnExecutor(executor, params);
+//        }
+//    }
+//
+//    public void removeTask(AsyncTask task) {
+//        taskMap.remove(task);
+//    }
 
     public void addTask(AsyncTask task) {
         asyncTaskList.add(task);
