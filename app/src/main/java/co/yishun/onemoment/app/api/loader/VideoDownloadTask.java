@@ -19,10 +19,6 @@ import java.lang.ref.WeakReference;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
 
-public interface VideoDownloadListener {
-    void onDownloadOver(Video tagVideo, File fileSynced);
-}
-
 /**
  * Created by Jinge on 2015/11/13.
  */
@@ -60,7 +56,7 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
         Log.d(TAG, "start " + video.fileName);
         // if video exists
         File fileSynced = FileUtil.getWorldVideoStoreFile(mContext, video);
-        OkHttpClient httpClient = new OkHttpClient();
+        OkHttpClient httpClient = VideoTaskManager.httpClient;
         Call call = httpClient.newCall(new Request.Builder().url(video.domain + video.fileName).get().build());
         Response response = null;
         InputStream input = null;
@@ -115,4 +111,9 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
     protected void onPostExecute(Boolean result) {
 
     }
+
+    public interface VideoDownloadListener {
+        void onDownloadOver(Video tagVideo, File fileSynced);
+    }
+
 }
