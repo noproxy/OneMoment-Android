@@ -21,10 +21,10 @@ import android.os.Build;
  */
 @TargetApi(17)
 public class EncoderConfig {
-    final String mOutputFilePath;
-    final int mWidth;
-    final int mHeight;
-    final int mBitRate;
+    public final String mOutputFilePath;
+    public final int mWidth;
+    public final int mHeight;
+    public final int mBitRate;
     EGLContext mEglContext;
 
     public EncoderConfig(String outputFilePath, int width, int height, int bitRate) {
