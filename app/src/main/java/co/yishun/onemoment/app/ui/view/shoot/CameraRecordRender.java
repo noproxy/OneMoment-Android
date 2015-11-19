@@ -48,6 +48,7 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
 
     private boolean mRecordingEnabled;
     private int mRecordingStatus;
+    private EncoderConfig mEncoderConfig;
 
     private float mMvpScaleX = 1f, mMvpScaleY = 1f;
     private int mSurfaceWidth, mSurfaceHeight;
@@ -59,7 +60,8 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
         mCameraHandler = cameraHandler;
         mCurrentFilterType = mNewFilterType = FilterType.Normal;
 //        mVideoEncoder = TextureMovieEncoder.getInstance();
-        mVideoEncoder = new TextureMovieEncoder(context.getApplicationContext(), config);
+        mEncoderConfig = config;
+        mVideoEncoder = new TextureMovieEncoder(context.getApplicationContext(), mEncoderConfig);
     }
 
 
@@ -140,7 +142,7 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
             switch (mRecordingStatus) {
                 case RECORDING_OFF:
                     Log.i(TAG, "RECORDING_OFF");
-//                    mEncoderConfig.updateEglContext(EGL14.eglGetCurrentContext());
+                    mEncoderConfig.updateEglContext(EGL14.eglGetCurrentContext());
                     mVideoEncoder.startRecording();
                     mVideoEncoder.setTextureId(textureId);
                     mVideoEncoder.scaleMVPMatrix(mMvpScaleX, mMvpScaleY);

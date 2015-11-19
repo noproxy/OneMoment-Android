@@ -4,8 +4,10 @@ package co.yishun.onemoment.app.ui.view.shoot.video;
  * Created by relex on 15/6/2.
  */
 
+import android.annotation.TargetApi;
 import android.opengl.EGL14;
 import android.opengl.EGLContext;
+import android.os.Build;
 
 /**
  * Encoder configuration.
@@ -17,12 +19,13 @@ import android.opengl.EGLContext;
  * TODO: make frame rate and iframe interval configurable?  Maybe use builder pattern
  * with reasonable defaults for those and bit rate.
  */
+@TargetApi(17)
 public class EncoderConfig {
     final String mOutputFilePath;
     final int mWidth;
     final int mHeight;
     final int mBitRate;
-    private EGLContext mEglContext;
+    EGLContext mEglContext;
 
     public EncoderConfig(String outputFilePath, int width, int height, int bitRate) {
         mOutputFilePath = outputFilePath;
@@ -31,9 +34,8 @@ public class EncoderConfig {
         mBitRate = bitRate;
     }
 
-    public EGLContext getEGLContext(){
-        mEglContext = EGL14.eglGetCurrentContext();
-        return mEglContext;
+    public void updateEglContext(EGLContext context) {
+        mEglContext = context;
     }
 
     //@Override public String toString() {

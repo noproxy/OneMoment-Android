@@ -308,7 +308,7 @@ public class TextureMovieEncoder implements Runnable {
             throw new RuntimeException(ioe);
         }
 
-        mEglCore = new EglCore(mConfig.getEGLContext(), EglCore.FLAG_RECORDABLE);
+        mEglCore = new EglCore(mConfig.mEglContext, EglCore.FLAG_RECORDABLE);
         mInputWindowSurface = new WindowSurface(mEglCore, mInputSurface, true);
         mInputWindowSurface.makeCurrent();
 
@@ -327,7 +327,7 @@ public class TextureMovieEncoder implements Runnable {
      */
     private void handleFrameAvailable(float[] transform, long timestampNanos) {
         //if (VERBOSE) Log.d(TAG, "handleFrameAvailable tr=" + transform);
-        drain(false);
+        drainEncoder(false);
         mFullScreen.drawFrame(mTextureId, transform);
         mInputWindowSurface.setPresentationTime(timestampNanos);
         mInputWindowSurface.swapBuffers();
@@ -338,7 +338,7 @@ public class TextureMovieEncoder implements Runnable {
      */
     private void handleStopRecording(@Nullable Callback callback) {
         Log.d(TAG, "handleStopRecording");
-        drain(true);
+        drainEncoder(true);
         if (callback != null) {
             callback.call();
         }

@@ -249,7 +249,9 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     @Override
     public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
         Handler uiHandler = new Handler(Looper.getMainLooper());
-
+//        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
+        Log.i(TAG, file.toString());
+//        queueEvent(() -> mCameraRenderer.setEncoderConfig(new EncoderConfig(file, 480, 480, 1024 * 1024)));
         queueEvent(() -> {
             mCameraRenderer.setRecordingEnabled(true);
             uiHandler.post(recordStartCallback::call);
