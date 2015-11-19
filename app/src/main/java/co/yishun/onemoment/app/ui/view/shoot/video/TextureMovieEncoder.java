@@ -23,7 +23,6 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
-import android.opengl.EGL14;
 import android.opengl.EGLContext;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,7 +31,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Surface;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -70,6 +68,7 @@ import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.getCame
  */
 @TargetApi(18)
 public class TextureMovieEncoder implements Runnable {
+    protected static final int TIMEOUT_USEC = 10000;    // 10[msec]
     private static final String TAG = "TextureMovieEncoder";
 
     private static final int MSG_START_RECORDING = 0;
@@ -89,7 +88,7 @@ public class TextureMovieEncoder implements Runnable {
     private EglCore mEglCore;
     private FullFrameRect mFullScreen;
     private int mTextureId;
-//    private VideoEncoderCore mVideoEncoder;
+    //    private VideoEncoderCore mVideoEncoder;
     private FilterType mCurrentFilterType;
     private volatile EncoderHandler mHandler;
     private boolean mReady;
@@ -98,7 +97,7 @@ public class TextureMovieEncoder implements Runnable {
     private EncoderConfig mConfig;
     private Surface mInputSurface;
     private MediaMuxer mMuxer;
-    private MediaCodec mEncoder;
+    private MediaCodec mMediaCodec;
     private MediaCodec.BufferInfo mBufferInfo;
     private int mTrackIndex;
     private boolean mMuxerStarted;
@@ -136,10 +135,10 @@ public class TextureMovieEncoder implements Runnable {
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, IFRAME_INTERVAL);
         Log.d(TAG, "format: " + format);
 
-        mEncoder = MediaCodec.createEncoderByType(MIME_TYPE);
-        mEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-        mInputSurface = mEncoder.createInputSurface();
-        mEncoder.start();
+        mMediaCodec = MediaCodec.createEncoderByType(MIME_TYPE);
+        mMediaCodec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        mInputSurface = mMediaCodec.createInputSurface();
+        mMediaCodec.start();
 
         mMuxer = new MediaMuxer(mConfig.mOutputFilePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         mTrackIndex = -1;
@@ -328,7 +327,7 @@ public class TextureMovieEncoder implements Runnable {
      */
     private void handleFrameAvailable(float[] transform, long timestampNanos) {
         //if (VERBOSE) Log.d(TAG, "handleFrameAvailable tr=" + transform);
-        drainEncoder(false);
+        drain(false);
         mFullScreen.drawFrame(mTextureId, transform);
         mInputWindowSurface.setPresentationTime(timestampNanos);
         mInputWindowSurface.swapBuffers();
@@ -339,7 +338,7 @@ public class TextureMovieEncoder implements Runnable {
      */
     private void handleStopRecording(@Nullable Callback callback) {
         Log.d(TAG, "handleStopRecording");
-        drainEncoder(true);
+        drain(true);
         if (callback != null) {
             callback.call();
         }
@@ -391,10 +390,10 @@ public class TextureMovieEncoder implements Runnable {
 
     private void releaseEncoder() {
         Log.d(TAG, "releasing encoder objects");
-        if (mEncoder != null) {
-            mEncoder.stop();
-            mEncoder.release();
-            mEncoder = null;
+        if (mMediaCodec != null) {
+            mMediaCodec.stop();
+            mMediaCodec.release();
+            mMediaCodec = null;
         }
         if (mMuxer != null) {
             // TODO: stop() throws an exception if you haven't fed it any data.  Keep track
@@ -423,12 +422,12 @@ public class TextureMovieEncoder implements Runnable {
 
         if (endOfStream) {
             Log.d(TAG, "sending EOS to encoder");
-            mEncoder.signalEndOfInputStream();
+            mMediaCodec.signalEndOfInputStream();
         }
 
-        ByteBuffer[] encoderOutputBuffers = mEncoder.getOutputBuffers();
+        ByteBuffer[] encoderOutputBuffers = mMediaCodec.getOutputBuffers();
         while (true) {
-            int encoderStatus = mEncoder.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
+            int encoderStatus = mMediaCodec.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
             if (encoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER) {
                 // no output available yet
                 if (!endOfStream) {
@@ -438,13 +437,13 @@ public class TextureMovieEncoder implements Runnable {
                 }
             } else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
                 // not expected for an encoder
-                encoderOutputBuffers = mEncoder.getOutputBuffers();
+                encoderOutputBuffers = mMediaCodec.getOutputBuffers();
             } else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                 // should happen before receiving buffers, and should only happen once
                 if (mMuxerStarted) {
                     throw new RuntimeException("format changed twice");
                 }
-                MediaFormat newFormat = mEncoder.getOutputFormat();
+                MediaFormat newFormat = mMediaCodec.getOutputFormat();
                 Log.d(TAG, "encoder output format changed: " + newFormat);
 
                 // now that we have the Magic Goodies, start the muxer
@@ -482,7 +481,7 @@ public class TextureMovieEncoder implements Runnable {
                             mBufferInfo.presentationTimeUs);
                 }
 
-                mEncoder.releaseOutputBuffer(encoderStatus, false);
+                mMediaCodec.releaseOutputBuffer(encoderStatus, false);
 
                 if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
                     if (!endOfStream) {
@@ -490,6 +489,86 @@ public class TextureMovieEncoder implements Runnable {
                     } else {
                         Log.d(TAG, "end of stream reached");
                     }
+                    break;      // out of while
+                }
+            }
+        }
+    }
+
+    protected void drain(boolean endOfStream) {
+        if (mMediaCodec == null) return;
+        ByteBuffer[] encoderOutputBuffers = mMediaCodec.getOutputBuffers();
+        int encoderStatus, count = 0;
+        if (mMuxer == null) {
+//        	throw new NullPointerException("muxer is unexpectedly null");
+            Log.w(TAG, "muxer is unexpectedly null");
+            return;
+        }
+        LOOP:
+        while (true) {
+            // get encoded data with maximum timeout duration of TIMEOUT_USEC(=10[msec])
+            encoderStatus = mMediaCodec.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
+            if (encoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER) {
+                // wait 5 counts(=TIMEOUT_USEC x 5 = 50msec) until data/EOS come
+                if (!endOfStream) {
+                    if (++count > 5)
+                        break LOOP;        // out of while
+                }
+            } else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
+                Log.v(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
+                // this shoud not come when encoding
+                encoderOutputBuffers = mMediaCodec.getOutputBuffers();
+            } else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                Log.v(TAG, "INFO_OUTPUT_FORMAT_CHANGED");
+                // this status indicate the output format of codec is changed
+                // this should come only once before actual encoded data
+                // but this status never come on Android4.3 or less
+                // and in that case, you should treat when MediaCodec.BUFFER_FLAG_CODEC_CONFIG come.
+                if (mMuxerStarted) {    // second time request is error
+                    throw new RuntimeException("format changed twice");
+                }
+                // get output format from codec and pass them to muxer
+                // getOutputFormat should be called after INFO_OUTPUT_FORMAT_CHANGED otherwise crash.
+                final MediaFormat format = mMediaCodec.getOutputFormat(); // API >= 16
+                mTrackIndex = mMuxer.addTrack(format);
+                mMuxer.start();
+                mMuxerStarted = true;
+            } else if (encoderStatus < 0) {
+                // unexpected status
+                Log.w(TAG, "drain:unexpected result from encoder#dequeueOutputBuffer: " + encoderStatus);
+            } else {
+                final ByteBuffer encodedData = encoderOutputBuffers[encoderStatus];
+                if (encodedData == null) {
+                    // this never should come...may be a MediaCodec internal error
+                    throw new RuntimeException("encoderOutputBuffer " + encoderStatus + " was null");
+                }
+                if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+                    // You shoud set output format to muxer here when you target Android4.3 or less
+                    // but MediaCodec#getOutputFormat can not call here(because INFO_OUTPUT_FORMAT_CHANGED don't come yet)
+                    // therefor we should expand and prepare output format from buffer data.
+                    // This sample is for API>=18(>=Android 4.3), just ignore this flag here
+                    Log.d(TAG, "drain:BUFFER_FLAG_CODEC_CONFIG");
+                    mBufferInfo.size = 0;
+                }
+
+                if (mBufferInfo.size != 0) {
+                    // encoded data is ready, clear waiting counter
+                    count = 0;
+                    if (!mMuxerStarted) {
+                        // muxer is not ready...this will prrograming failure.
+                        throw new RuntimeException("drain:muxer hasn't started");
+                    }
+                    // write encoded data to muxer(need to adjust presentationTimeUs.
+//                    mBufferInfo.presentationTimeUs = getPTSUs();
+                    mMuxer.writeSampleData(mTrackIndex, encodedData, mBufferInfo);
+//                    prevOutputPTSUs = mBufferInfo.presentationTimeUs;
+                    Log.d(TAG, "sent " + mBufferInfo.size + " bytes to muxer, ts=" +
+                            mBufferInfo.presentationTimeUs);
+                }
+                // return buffer to encoder
+                mMediaCodec.releaseOutputBuffer(encoderStatus, false);
+                if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+                    // when EOS come.
                     break;      // out of while
                 }
             }
