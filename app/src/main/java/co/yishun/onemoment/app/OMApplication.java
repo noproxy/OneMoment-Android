@@ -15,7 +15,7 @@ public class OMApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        TextureMovieEncoder.initialize(getApplicationContext());
+//        TextureMovieEncoder.initialize(getApplicationContext());
     }
 
     @Override

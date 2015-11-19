@@ -15,7 +15,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.List;
 
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -104,7 +103,9 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
         setEGLContextClientVersion(2);
 
-        mCameraRenderer = new CameraRecordRender(getContext(), mBackgroundHandler);
+        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
+        mCameraRenderer = new CameraRecordRender(getContext(), mBackgroundHandler,
+                new EncoderConfig(file.getPath(), 480, 480, 1024 * 1024));
         setRenderer(mCameraRenderer);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
 
@@ -248,9 +249,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     @Override
     public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
         Handler uiHandler = new Handler(Looper.getMainLooper());
-        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
-        Log.i(TAG, file.toString());
-        queueEvent(() -> mCameraRenderer.setEncoderConfig(new EncoderConfig(file, 480, 480, 1024 * 1024)));
+
         queueEvent(() -> {
             mCameraRenderer.setRecordingEnabled(true);
             uiHandler.post(recordStartCallback::call);

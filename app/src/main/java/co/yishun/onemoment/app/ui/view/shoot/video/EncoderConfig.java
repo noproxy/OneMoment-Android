@@ -4,9 +4,8 @@ package co.yishun.onemoment.app.ui.view.shoot.video;
  * Created by relex on 15/6/2.
  */
 
+import android.opengl.EGL14;
 import android.opengl.EGLContext;
-
-import java.io.File;
 
 /**
  * Encoder configuration.
@@ -19,25 +18,27 @@ import java.io.File;
  * with reasonable defaults for those and bit rate.
  */
 public class EncoderConfig {
-    final File mOutputFile;
+    final String mOutputFilePath;
     final int mWidth;
     final int mHeight;
     final int mBitRate;
-    EGLContext mEglContext;
+    private EGLContext mEglContext;
 
-    public EncoderConfig(File outputFile, int width, int height, int bitRate) {
-        mOutputFile = outputFile;
+    public EncoderConfig(String outputFilePath, int width, int height, int bitRate) {
+        mOutputFilePath = outputFilePath;
         mWidth = width;
         mHeight = height;
         mBitRate = bitRate;
     }
 
-    public void updateEglContext(EGLContext eglContext) {
-        mEglContext = eglContext;
+    public EGLContext getEGLContext(){
+        mEglContext = EGL14.eglGetCurrentContext();
+        return mEglContext;
     }
+
     //@Override public String toString() {
     //    return "EncoderConfig: " + mWidth + "x" + mHeight + " @" + mBitRate +
-    //            " to '" + mOutputFile.toString() + "' ctxt=" + mEglContext;
+    //            " to '" + mOutputFilePath.toString() + "' ctxt=" + mEglContext;
     //}
 }
 
