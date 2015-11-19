@@ -34,7 +34,7 @@ public class VideoDownloadTask extends LoaderTask {
     public VideoDownloadTask(Context context, VideoTask videoTask) {
         mContext = context;
         videoTaskReference = new WeakReference<>(videoTask);
-        VideoTaskManager.getInstance().addTask(this);
+//        VideoTaskManager.getInstance().addTask(this);
 //        VideoTaskManager.getInstance().
     }
 

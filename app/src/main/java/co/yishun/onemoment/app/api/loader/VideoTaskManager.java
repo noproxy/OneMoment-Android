@@ -6,7 +6,6 @@ import android.util.Log;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -45,7 +44,7 @@ public class VideoTaskManager {
 
     private static VideoTaskManager instance;
     private List<AsyncTask> asyncTaskList = new ArrayList<>();
-    private Map<LoaderTask, Video[]> taskMap = new HashMap<>();
+    private List<TaskEntry<LoaderTask, Video[]>> taskMap = new ArrayList<>();
 
     public static VideoTaskManager getInstance() {
         synchronized (VideoTaskManager.class) {
@@ -56,52 +55,81 @@ public class VideoTaskManager {
         return instance;
     }
 
-//    public void executTask(LoaderTask task, Video... params) {
-//        asyncTaskList.add(task);
-//        Log.d(TAG, asyncTaskList.size() + "");
-//
-//        if (poolQueue.size() >= 96) {
-//            Log.d(TAG, "pool size over");
-//            taskMap.put(task, params);
-//        } else {
-//            task.executeOnExecutor(executor, params);
-//        }
-//    }
-//
-//    public void removeTask(LoaderTask task) {
-//        asyncTaskList.remove(task);
-//        Log.d(TAG, asyncTaskList.size() + "");
-//        StreamSupport.stream(taskMap.entrySet())
-//                .filter(e -> e.getKey() == task)
-//                .forEach(e -> taskMap.remove(e.getKey()));
-//
-//        if (poolQueue.size() < 96) {
-//            Log.d(TAG, "pool size ok");
-//            if (taskMap.size() > 0) {
-//                Map.Entry<LoaderTask, Video[]> e = StreamSupport.stream(taskMap.entrySet()).findFirst().get();
-//                taskMap.remove(e.getKey());
-//                executTask(e.getKey(), e.getValue());
-//            }
-//        }
-//    }
-
-    public void addTask(AsyncTask task) {
+    public void executeTask(LoaderTask task, Video... params) {
         asyncTaskList.add(task);
         Log.d(TAG, asyncTaskList.size() + "");
-        if (asyncTaskList.size() >= 96) {
-            Log.e(TAG, "size error");
+
+        if (poolQueue.size() >= 96) {
+            Log.d(TAG, "pool size over");
+//            taskMap.put(task, params);
+            taskMap.add(new TaskEntry<>(task, params));
+        } else {
+            task.executeOnExecutor(executor, params);
         }
     }
 
-    public void removeTask(AsyncTask task) {
+    public void removeTask(LoaderTask task) {
         asyncTaskList.remove(task);
         Log.d(TAG, asyncTaskList.size() + "");
+        for (int i = 0; i < taskMap.size(); ) {
+            if (taskMap.get(i).key == task) {
+                taskMap.remove(i);
+                break;
+            } else i++;
+        }
+        if (poolQueue.size() < 96) {
+            Log.d(TAG, "pool size ok");
+            if (taskMap.size() > 0) {
+                TaskEntry<LoaderTask, Video[]> e = taskMap.get(0);
+                taskMap.remove(0);
+                executeTask(e.getKey(), e.getValue());
+            }
+        }
     }
+
+//    public void addTask(AsyncTask task) {
+//        asyncTaskList.add(task);
+//        Log.d(TAG, asyncTaskList.size() + "");
+//        if (asyncTaskList.size() >= 96) {
+//            Log.e(TAG, "size error");
+//        }
+//    }
+//
+//    public void removeTask(AsyncTask task) {
+//        asyncTaskList.remove(task);
+//        Log.d(TAG, asyncTaskList.size() + "");
+//    }
 
     public void quit() {
         for (AsyncTask asyncTask : asyncTaskList) {
             asyncTask.cancel(false);
         }
         asyncTaskList.clear();
+    }
+
+    class TaskEntry<K, V> {
+        public K key;
+        public V value;
+
+        public TaskEntry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public boolean equals(Object object) {
+            if (!(object instanceof TaskEntry)) {
+                return false;
+            }
+            TaskEntry e = (TaskEntry) object;
+            return value == e.getValue();
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
     }
 }

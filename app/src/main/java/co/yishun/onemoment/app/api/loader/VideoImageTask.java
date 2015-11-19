@@ -15,7 +15,7 @@ import co.yishun.onemoment.app.data.VideoUtil;
 /**
  * Created by Jinge on 2015/11/18.
  */
-public class VideoImageTask extends AsyncTask<Video, Integer, Boolean> {
+public class VideoImageTask extends LoaderTask {
     private static final String TAG = "VideoImageTask";
     private Context context;
     private File large;
@@ -31,7 +31,7 @@ public class VideoImageTask extends AsyncTask<Video, Integer, Boolean> {
     public VideoImageTask(Context context, VideoTask videoTask) {
         this.context = context;
         this.videoTaskReference = new WeakReference<>(videoTask);
-        VideoTaskManager.getInstance().addTask(this);
+//        VideoTaskManager.getInstance().addTask(this);
     }
 
     @Override
