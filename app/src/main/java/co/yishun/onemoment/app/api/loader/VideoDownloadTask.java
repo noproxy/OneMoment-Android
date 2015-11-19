@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.squareup.okhttp.Call;
@@ -21,7 +20,7 @@ import co.yishun.onemoment.app.data.FileUtil;
 /**
  * Created by Jinge on 2015/11/13.
  */
-public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
+public class VideoDownloadTask extends LoaderTask {
     private static final String TAG = "VideoDownloadTask";
     private Context mContext;
     private File videoFile;
@@ -36,6 +35,7 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
         mContext = context;
         videoTaskReference = new WeakReference<>(videoTask);
         VideoTaskManager.getInstance().addTask(this);
+//        VideoTaskManager.getInstance().
     }
 
     @Override
@@ -56,12 +56,15 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
                 input = response.body().byteStream();
                 output = new FileOutputStream(videoFile);
                 long fileLength = response.body().contentLength();
+                if (fileLength == 0) {
+                    Log.e(TAG, "error file length " + this.toString());
+                }
 
                 //OkHttp can't read more than 2048 bytes at a time.
                 byte data[] = new byte[2048];
                 long total = 0;
                 int count;
-                Log.d(TAG, "start while " + video.fileName + " " + this.toString());
+                Log.d(TAG, "start while " + fileLength + " " + video.fileName + " " + this.toString());
                 while ((count = input.read(data)) != -1) {
                     if (isCancelled()) {
                         Log.d(TAG, "cancel " + video.fileName + " " + this.toString());
@@ -71,7 +74,7 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
                     total += count;
                     output.write(data, 0, count);
                 }
-                Log.d(TAG, "end while " + video.fileName + " " + this.toString());
+                Log.d(TAG, "end while " + video.fileName + " " + videoFile.length() + " " + fileLength + " " + this.toString());
 
                 return total == fileLength;
             } else {
@@ -98,8 +101,10 @@ public class VideoDownloadTask extends AsyncTask<Video, Integer, Boolean> {
                 videoTaskReference.get().getVideo(video);
             }
         } else {
-            onCancelled(false);
-            Log.e(TAG, "error");
+            Log.d(TAG, "error video " + result + " " + this.toString());
+            if (videoFile != null && videoFile.exists()) {
+                videoFile.delete();
+            }
         }
         VideoTaskManager.getInstance().removeTask(this);
     }

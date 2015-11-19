@@ -43,7 +43,8 @@ public class VideoTask {
 
     public VideoTask start() {
         File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
-        if (videoFile.exists()) {
+        //the file exist, but size is 0.
+        if (videoFile.length() != 0) {
             Log.d(TAG, "video file exist " + video.fileName);
             getVideo(video);
         } else {
@@ -53,6 +54,18 @@ public class VideoTask {
             downloadTask.executeOnExecutor(VideoTaskManager.executor, video);
         }
         return this;
+    }
+
+    public VideoTask startForce() {
+        //the file exists, but is error.
+        File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
+        File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
+        File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
+        videoFile.delete();
+        large.delete();
+        small.delete();
+
+        return start();
     }
 
     public void cancel() {

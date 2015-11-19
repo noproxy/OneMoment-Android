@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import co.yishun.onemoment.app.api.model.Video;
+import java8.util.stream.StreamSupport;
 
 /**
  * Created by Jinge on 2015/11/13.
@@ -44,7 +45,7 @@ public class VideoTaskManager {
 
     private static VideoTaskManager instance;
     private List<AsyncTask> asyncTaskList = new ArrayList<>();
-    private Map<AsyncTask, Video[]> taskMap = new HashMap<>();
+    private Map<LoaderTask, Video[]> taskMap = new HashMap<>();
 
     public static VideoTaskManager getInstance() {
         synchronized (VideoTaskManager.class) {
@@ -55,8 +56,11 @@ public class VideoTaskManager {
         return instance;
     }
 
-//    public void executTask(AsyncTask task, Video... params){
-//        if (poolQueue.size() > 96) {
+//    public void executTask(LoaderTask task, Video... params) {
+//        asyncTaskList.add(task);
+//        Log.d(TAG, asyncTaskList.size() + "");
+//
+//        if (poolQueue.size() >= 96) {
 //            Log.d(TAG, "pool size over");
 //            taskMap.put(task, params);
 //        } else {
@@ -64,8 +68,21 @@ public class VideoTaskManager {
 //        }
 //    }
 //
-//    public void removeTask(AsyncTask task) {
-//        taskMap.remove(task);
+//    public void removeTask(LoaderTask task) {
+//        asyncTaskList.remove(task);
+//        Log.d(TAG, asyncTaskList.size() + "");
+//        StreamSupport.stream(taskMap.entrySet())
+//                .filter(e -> e.getKey() == task)
+//                .forEach(e -> taskMap.remove(e.getKey()));
+//
+//        if (poolQueue.size() < 96) {
+//            Log.d(TAG, "pool size ok");
+//            if (taskMap.size() > 0) {
+//                Map.Entry<LoaderTask, Video[]> e = StreamSupport.stream(taskMap.entrySet()).findFirst().get();
+//                taskMap.remove(e.getKey());
+//                executTask(e.getKey(), e.getValue());
+//            }
+//        }
 //    }
 
     public void addTask(AsyncTask task) {

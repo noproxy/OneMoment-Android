@@ -56,6 +56,11 @@ public class VideoImageTask extends AsyncTask<Video, Integer, Boolean> {
                 }
                 if (small.length() > 0) break;
             }
+            //maybe the video file is error, download again.
+            if (small.length() == 0){
+                videoTaskReference.get().startForce();
+                return false;
+            }
             return large.exists() && small.exists();
         } catch (IOException e) {
             e.printStackTrace();
