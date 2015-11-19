@@ -30,6 +30,7 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoDownloadTask;
+import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -56,7 +57,6 @@ public class PlayTagVideoFragment extends BaseFragment {
 
     @AfterViews
     void setup() {
-//        VideoTaskManager.getInstance().init(this.getActivity());
         Log.d("oneVideo", oneVideo.toString());
         Picasso.with(this.getActivity()).load(oneVideo.avatar).into(avatar);
 
@@ -64,19 +64,23 @@ public class PlayTagVideoFragment extends BaseFragment {
 
         videoPlayView.setSinglePlay(true);
 
-        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
-        if (fileSynced.exists()) {
-            addVideo(oneVideo, fileSynced);
-        } else {
-//            VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
-//            task.setListener(this::addVideo);
-        }
+//        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
+//        if (fileSynced.exists()) {
+//            addVideo(oneVideo, fileSynced);
+//        } else {
+////            VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
+////            task.setListener(this::addVideo);
+//        }
+
+        new VideoTask(this.getActivity(), oneVideo, VideoTask.TYPE_VIDEO_ONLY)
+                .setVideoListener(this::addVideo).start();
 
         refreshUserInfo();
     }
 
     @UiThread
-    void addVideo(Video tagVideo, File fileSynced) {
+    void addVideo(Video tagVideo) {
+        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
         VideoResource videoResource = new LocalVideo(new BaseVideoResource(), fileSynced.getPath());
         List<VideoTag> tags = new LinkedList<VideoTag>();
         for (int i = 0; i < tagVideo.tags.size(); i++) {

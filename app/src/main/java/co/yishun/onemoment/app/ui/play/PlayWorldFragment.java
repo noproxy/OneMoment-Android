@@ -28,6 +28,7 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoDownloadTask;
+import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Seed;
@@ -69,13 +70,15 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
             if (this.getActivity() == null) {
                 return;
             }
-            File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
-            if (fileSynced.exists()) {
-                addVideo(oneVideo, fileSynced);
-            } else {
-//                VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
-//                task.setListener(this::addVideo);
-            }
+
+//            if (fileSynced.exists()) {
+//                addVideo(oneVideo, fileSynced);
+//            } else {
+////                VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
+////                task.setListener(this::addVideo);
+//            }
+            new VideoTask(this.getActivity(), oneVideo, VideoTask.TYPE_VIDEO_ONLY)
+                    .setVideoListener(this::addVideo).start();
         }
         getData();
     }
@@ -90,7 +93,8 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     }
 
     @UiThread
-    void addVideo(Video tagVideo, File fileSynced) {
+    void addVideo(Video tagVideo) {
+        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), tagVideo);
         VideoResource videoResource = new LocalVideo(new BaseVideoResource(), fileSynced.getPath());
         List<VideoTag> tags = new LinkedList<VideoTag>();
         for (int i = 0; i < tagVideo.tags.size(); i++) {
