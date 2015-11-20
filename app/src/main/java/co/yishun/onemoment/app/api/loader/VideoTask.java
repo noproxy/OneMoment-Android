@@ -15,6 +15,7 @@ import co.yishun.onemoment.app.data.FileUtil;
 public class VideoTask {
     public static final int TYPE_VIDEO_IMAGE = 0;
     public static final int TYPE_VIDEO_ONLY = 1;
+    public static final int TYPE_IAMGE_ONLY = 2;
     private static final String TAG = "VideoTask";
 
     private Context context;
@@ -51,7 +52,6 @@ public class VideoTask {
             Log.d(TAG, "video file not exist " + video.fileName);
             downloadTask = new VideoDownloadTask(context, this);
             VideoTaskManager.getInstance().executeTask(downloadTask, video);
-//            downloadTask.executeOnExecutor(VideoTaskManager.executor, video);
         }
         return this;
     }

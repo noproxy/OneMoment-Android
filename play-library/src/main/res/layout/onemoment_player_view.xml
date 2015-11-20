@@ -17,6 +17,12 @@
             android:layout_height="wrap_content"
             android:keepScreenOn="true"/>
 
+        <co.yishun.library.RoundRectImageView
+            android:id="@+id/om_video_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:rrim_forceSquare="true"/>
+
         <ImageView
             android:id="@+id/om_play_btn"
             android:layout_width="64dp"

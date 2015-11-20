@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.play;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,7 +55,14 @@ public class PlayTagVideoFragment extends BaseFragment {
     OnemomentPlayerView videoPlayView;
     @ViewById
     TextView voteCountTextView;
+    private Context mContext;
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @AfterViews
     void setup() {
@@ -64,14 +72,6 @@ public class PlayTagVideoFragment extends BaseFragment {
         usernameTextView.setText(oneVideo.nickname);
 
         videoPlayView.setSinglePlay(true);
-
-//        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
-//        if (fileSynced.exists()) {
-//            addVideo(oneVideo, fileSynced);
-//        } else {
-////            VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
-////            task.setListener(this::addVideo);
-//        }
 
         new VideoTask(this.getActivity(), oneVideo, VideoTask.TYPE_VIDEO_ONLY)
                 .setVideoListener(this::addVideo).start();
@@ -89,6 +89,7 @@ public class PlayTagVideoFragment extends BaseFragment {
         NetworkVideo videoResource = new NetworkVideo(video.domain + video.fileName, tags);
         videoResource.setPath(videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);
+        videoPlayView.setPreview(FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB));
         videoPlayView.addAvatarUrl(((TagVideo)video).avatar);
     }
 

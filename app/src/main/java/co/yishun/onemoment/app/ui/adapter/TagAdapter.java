@@ -35,16 +35,16 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
     }
 
     public void addItems(List<? extends TagVideo> collection, int offset) {
-        int preSize = mItems.size();
+//        int preSize = mItems.size();
         for (int i = 0; i < collection.size(); i++) {
             if (mItems.size() < offset) {
                 mItems.add(collection.get(i));
             } else {
-                mItems.get(i + offset - collection.size()).likeNum = collection.get(i).likeNum;
-                mItems.get(i + offset - collection.size()).liked = collection.get(i).liked;
+                mItems.set(i + offset - collection.size(), collection.get(i));
             }
         }
-        notifyItemRangeInserted(preSize, mItems.size() - preSize);
+        notifyItemRangeChanged(offset - collection.size(), collection.size());
+//        notifyItemRangeInserted(preSize, mItems.size() - preSize);
     }
 
     @Override

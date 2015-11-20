@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,6 +28,7 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
 
     private OnemomentPlaySurfaceView mPlaySurface;
     private AvatarRecyclerView mAvatarView;
+    private ImageView mVideoPreview;
     private ImageView mPlayBtn;
     private PlayTagContainer mTagContainer;
     private List<NetworkVideo> mVideoResources = new LinkedList<>();
@@ -72,6 +76,7 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
         // get views
         mPlaySurface = (OnemomentPlaySurfaceView) findViewById(R.id.om_video_surface);
         mPlayBtn = (ImageView) findViewById(R.id.om_play_btn);
+        mVideoPreview = (ImageView) findViewById(R.id.om_video_preview);
         mTagContainer = (PlayTagContainer) findViewById(R.id.om_tags_container);
         mAvatarView = (AvatarRecyclerView) findViewById(R.id.om_avatar_recycler_view);
 
@@ -96,12 +101,17 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
         mPlaySurface.prepareFirst();
     }
 
+    public void setPreview(File largeThumb) {
+        Picasso.with(getContext()).load(largeThumb).into(mVideoPreview);
+    }
+
     public void start() {
         if (mVideoResources.size() >= 1) {
             Log.d(TAG, "start");
             mPlaySurface.start();
             if (mShowPlayBtn) {
                 mPlayBtn.setVisibility(View.INVISIBLE);
+                mVideoPreview.setVisibility(INVISIBLE);
             }
         }
     }
@@ -122,6 +132,7 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
 
     public void reset() {
         stop();
+        mVideoPreview.setVisibility(VISIBLE);
         if (mVideoResources.size() >= 1) {
             if (mVideoChangeListener != null) {
                 mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());

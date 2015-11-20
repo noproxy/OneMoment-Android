@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.ui.play;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -12,23 +14,19 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import co.yishun.library.OnemomentPlayerView;
-import co.yishun.library.resource.BaseVideoResource;
-import co.yishun.library.resource.LocalVideo;
 import co.yishun.library.resource.NetworkVideo;
-import co.yishun.library.resource.TaggedVideo;
-import co.yishun.library.resource.VideoResource;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
-import co.yishun.onemoment.app.api.loader.VideoDownloadTask;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
@@ -37,13 +35,16 @@ import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.VideoUtil;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
 
 /**
  * Created on 2015/10/28.
  */
 @EFragment(R.layout.fragment_play_world)
-public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerView.OnVideoChangeListener {
+public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerView.OnVideoChangeListener,
+        VideoTask.OnVideoListener {
+    private static final String TAG = "platworld";
     @FragmentArg
     WorldTag worldTag;
     @ViewById
@@ -57,6 +58,14 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     private int voteIndex;
     private Seed seed;
     private int offset = 0;
+    private Context mContext;
+    private boolean mReady = false;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @Background
     void getData() {
@@ -68,19 +77,10 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         seed = videos.get(0).seed;
 
         for (TagVideo oneVideo : videos) {
-            if (this.getActivity() == null) {
+            if (mContext == null) {
                 return;
             }
-
-//            File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
-//            if (fileSynced.exists()) {
-//                addVideo(oneVideo);
-//            } else {
-                addNetworkVideo(oneVideo);
-//            }
-//            new VideoTask(this.getActivity(), oneVideo, VideoTask.TYPE_VIDEO_ONLY)
-//                    .setVideoListener(this::addVideo).start();
-
+            addVideo(oneVideo);
         }
         getData();
     }
@@ -92,14 +92,26 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         getData();
     }
 
-    @UiThread
-    void addVideo(Video video) {
+    @Override
+    public void onVideoLoad(Video video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(this.getActivity(), video);
         videoPlayView.setToLocal(video.domain + video.fileName, videoFile.getPath());
+        if (!mReady) {
+            backgroundGetThumb(video, videoFile.getPath());
+        }
     }
 
     @UiThread
-    void addNetworkVideo(TagVideo video) {
+    void getThumb(File large) {
+        Log.d(TAG, "set preview");
+        if (large.length() == 0) {
+            Log.e(TAG, "file error");
+        }
+        videoPlayView.setPreview(large);
+    }
+
+    @UiThread
+    void addVideo(TagVideo video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(this.getActivity(), video);
         List<VideoTag> tags = new LinkedList<>();
         for (int i = 0; i < video.tags.size(); i++) {
@@ -108,13 +120,32 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         NetworkVideo videoResource = new NetworkVideo(video.domain + video.fileName, tags);
         if (videoFile.length() > 0) {
             videoResource.setPath(videoFile.getPath());
+            if (!mReady) {
+                backgroundGetThumb(video, videoFile.getPath());
+            }
         } else {
             new VideoTask(this.getActivity(), video, VideoTask.TYPE_VIDEO_ONLY)
-                    .setVideoListener(this::addVideo).start();
+                    .setVideoListener(this).start();
         }
+
         videoPlayView.addVideoResource(videoResource);
         tagVideos.add(video);
         videoPlayView.addAvatarUrl((video).avatar);
+    }
+
+    @Background
+    void backgroundGetThumb(Video video, String path) {
+        mReady = true;
+        File thumb = FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB);
+        try {
+            for (int i = 0; i < 3; i++) {
+                if (thumb.length() > 0) break;
+                VideoUtil.createLargeThumbImage(mContext, video, path);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        getThumb(thumb);
     }
 
     @Click(R.id.videoPlayView)
