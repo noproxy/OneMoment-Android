@@ -1,4 +1,3 @@
-package co.yishun.onemoment.app.ui.view.shoot.video;
 /*
  * AudioVideoRecordingSample
  * Sample project to cature audio and video from internal mic/camera and save as MPEG4 file.
@@ -21,21 +20,16 @@ package co.yishun.onemoment.app.ui.view.shoot.video;
  *
  * All files in the folder are under this Apache License, Version 2.0.
 */
+package co.yishun.onemoment.app.ui.view.shoot.video;
 
 import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
-import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import co.yishun.onemoment.app.function.Callback;
 
@@ -44,10 +38,7 @@ public class MediaMuxerWrapper {
     private static final boolean DEBUG = true;    // TODO set false on release
     private static final String TAG = "MediaMuxerWrapper";
 
-    private static final String DIR_NAME = "AVRecSample";
-    private static final SimpleDateFormat mDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US);
     private final MediaMuxer mMediaMuxer;    // API >= 18
-    private String mOutputPath;
     private int mEncoderCount, mStatredCount;
     private boolean mIsStarted;
     private MediaEncoder mAudioEncoder;
@@ -60,41 +51,9 @@ public class MediaMuxerWrapper {
      * @throws IOException
      */
     public MediaMuxerWrapper(String path) throws IOException {
-        mOutputPath = path;
-        mMediaMuxer = new MediaMuxer(mOutputPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+        mMediaMuxer = new MediaMuxer(path, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         mEncoderCount = mStatredCount = 0;
         mIsStarted = false;
-    }
-
-    /**
-     * generate output file
-     *
-     * @param type Environment.DIRECTORY_MOVIES / Environment.DIRECTORY_DCIM etc.
-     * @param ext  .mp4(.m4a for audio) or .png
-     * @return return null when this app has no writing permission to external storage.
-     */
-    public static final File getCaptureFile(final String type, final String ext) {
-        final File dir = new File(Environment.getExternalStoragePublicDirectory(type), DIR_NAME);
-        Log.d(TAG, "path=" + dir.toString());
-        dir.mkdirs();
-        if (dir.canWrite()) {
-            return new File(dir, getDateTimeString() + ext);
-        }
-        return null;
-    }
-
-    /**
-     * get current date and time as String
-     *
-     * @return
-     */
-    private static final String getDateTimeString() {
-        final GregorianCalendar now = new GregorianCalendar();
-        return mDateTimeFormat.format(now.getTime());
-    }
-
-    public String getOutputPath() {
-        return mOutputPath;
     }
 
     public void prepare() throws IOException {
@@ -124,22 +83,7 @@ public class MediaMuxerWrapper {
         return mIsStarted;
     }
 
-    /**
-     * assign encoder to this calss. this is called from encoder.
-     *
-     * @param encoder instance of MediaVideoEncoder or MediaAudioEncoder
-     */
-    /*package*/ void addEncoder(final MediaEncoder encoder) {
-        if (encoder instanceof MediaAudioEncoder) {
-            if (mAudioEncoder != null)
-                throw new IllegalArgumentException("Video encoder already added.");
-            mAudioEncoder = encoder;
-        } else
-            throw new IllegalArgumentException("unsupported encoder");
-        mEncoderCount = (mVideoEncoder != null ? 1 : 0) + 1;
-    }
-
-    public void setAudioEncoder(MediaAudioEncoder encoder){
+    public void setAudioEncoder(MediaAudioEncoder encoder) {
         mAudioEncoder = encoder;
         mEncoderCount = (mVideoEncoder != null ? 1 : 0) + (mAudioEncoder != null ? 1 : 0);
     }
@@ -170,7 +114,7 @@ public class MediaMuxerWrapper {
     /**
      * request stop recording from encoder when encoder received EOS
      */
-	/*package*/
+    /*package*/
     synchronized void stop() {
         if (DEBUG) Log.v(TAG, "stop:mStatredCount=" + mStatredCount);
         mStatredCount--;
@@ -181,9 +125,6 @@ public class MediaMuxerWrapper {
             if (DEBUG) Log.v(TAG, "MediaMuxer stopped:");
         }
     }
-
-//**********************************************************************
-//**********************************************************************
 
     /**
      * assign encoder to muxer

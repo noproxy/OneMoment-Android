@@ -68,7 +68,6 @@ import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.getCame
  */
 @TargetApi(18)
 public class TextureMovieEncoder implements Runnable {
-    protected static final int TIMEOUT_USEC = 10000;    // 10[msec]
     private static final String TAG = "TextureMovieEncoder";
 
     private static final int MSG_START_RECORDING = 0;
@@ -82,13 +81,11 @@ public class TextureMovieEncoder implements Runnable {
     private static final String MIME_TYPE = "video/avc";    // H.264 Advanced Video Coding
     private static final int FRAME_RATE = 30;               // 30fps
     private static final int IFRAME_INTERVAL = 5;           // 5 seconds between I-frames
-    private volatile static TextureMovieEncoder sInstance;
     private final Object mReadyFence = new Object();      // guards ready/running
     private WindowSurface mInputWindowSurface;
     private EglCore mEglCore;
     private FullFrameRect mFullScreen;
     private int mTextureId;
-    //    private VideoEncoderCore mVideoEncoder;
     private FilterType mCurrentFilterType;
     private volatile EncoderHandler mHandler;
     private boolean mReady;
@@ -96,7 +93,6 @@ public class TextureMovieEncoder implements Runnable {
     private Context mContext;
     private EncoderConfig mConfig;
     private Surface mInputSurface;
-//    private MediaMuxer mMuxer;
     private WeakReference<MediaMuxerWrapper> mWeakMuxer;
     private MediaCodec mMediaCodec;
     private MediaCodec.BufferInfo mBufferInfo;
@@ -114,8 +110,6 @@ public class TextureMovieEncoder implements Runnable {
 
         MediaFormat format = MediaFormat.createVideoFormat(MIME_TYPE, mConfig.mWidth, mConfig.mHeight);
 
-        // Set some properties.  Failing to specify some of these can cause the MediaCodec
-        // configure() call to throw an unhelpful exception.
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT,
                 MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         format.setInteger(MediaFormat.KEY_BIT_RATE, mConfig.mBitRate);
@@ -128,7 +122,6 @@ public class TextureMovieEncoder implements Runnable {
         mInputSurface = mMediaCodec.createInputSurface();
         mMediaCodec.start();
 
-//        mMuxer = new MediaMuxer(mConfig.mOutputFilePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         mTrackIndex = -1;
         mMuxerStarted = false;
     }
@@ -378,13 +371,6 @@ public class TextureMovieEncoder implements Runnable {
             mMediaCodec.release();
             mMediaCodec = null;
         }
-//        if (mMuxer != null) {
-//            // TODO: stop() throws an exception if you haven't fed it any data.  Keep track
-//            //       of frames submitted, and don't call stop() if we haven't written anything.
-//            mMuxer.stop();
-//            mMuxer.release();
-//            mMuxer = null;
-//        }
         if (mMuxerStarted) {
             final MediaMuxerWrapper muxer = mWeakMuxer.get();
             if (muxer != null) {
@@ -504,87 +490,6 @@ public class TextureMovieEncoder implements Runnable {
         }
     }
 
-//    protected void drain(boolean endOfStream) {
-//        if (mMediaCodec == null) return;
-//        ByteBuffer[] encoderOutputBuffers = mMediaCodec.getOutputBuffers();
-//        int encoderStatus, count = 0;
-//        if (mMuxer == null) {
-////        	throw new NullPointerException("muxer is unexpectedly null");
-//            Log.w(TAG, "muxer is unexpectedly null");
-//            return;
-//        }
-//        LOOP:
-//        while (true) {
-//            // get encoded data with maximum timeout duration of TIMEOUT_USEC(=10[msec])
-//            encoderStatus = mMediaCodec.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
-//            if (encoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER) {
-//                // wait 5 counts(=TIMEOUT_USEC x 5 = 50msec) until data/EOS come
-//                if (!endOfStream) {
-//                    if (++count > 5)
-//                        break LOOP;        // out of while
-//                }
-//            } else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-//                Log.v(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
-//                // this shoud not come when encoding
-//                encoderOutputBuffers = mMediaCodec.getOutputBuffers();
-//            } else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-//                Log.v(TAG, "INFO_OUTPUT_FORMAT_CHANGED");
-//                // this status indicate the output format of codec is changed
-//                // this should come only once before actual encoded data
-//                // but this status never come on Android4.3 or less
-//                // and in that case, you should treat when MediaCodec.BUFFER_FLAG_CODEC_CONFIG come.
-//                if (mMuxerStarted) {    // second time request is error
-//                    throw new RuntimeException("format changed twice");
-//                }
-//                // get output format from codec and pass them to muxer
-//                // getOutputFormat should be called after INFO_OUTPUT_FORMAT_CHANGED otherwise crash.
-//                final MediaFormat format = mMediaCodec.getOutputFormat(); // API >= 16
-//                mTrackIndex = mMuxer.addTrack(format);
-//                mMuxer.start();
-//                mMuxerStarted = true;
-//            } else if (encoderStatus < 0) {
-//                // unexpected status
-//                Log.w(TAG, "drain:unexpected result from encoder#dequeueOutputBuffer: " + encoderStatus);
-//            } else {
-//                final ByteBuffer encodedData = encoderOutputBuffers[encoderStatus];
-//                if (encodedData == null) {
-//                    // this never should come...may be a MediaCodec internal error
-//                    throw new RuntimeException("encoderOutputBuffer " + encoderStatus + " was null");
-//                }
-//                if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
-//                    // You shoud set output format to muxer here when you target Android4.3 or less
-//                    // but MediaCodec#getOutputFormat can not call here(because INFO_OUTPUT_FORMAT_CHANGED don't come yet)
-//                    // therefor we should expand and prepare output format from buffer data.
-//                    // This sample is for API>=18(>=Android 4.3), just ignore this flag here
-//                    Log.d(TAG, "drain:BUFFER_FLAG_CODEC_CONFIG");
-//                    mBufferInfo.size = 0;
-//                }
-//
-//                if (mBufferInfo.size != 0) {
-//                    // encoded data is ready, clear waiting counter
-//                    count = 0;
-//                    if (!mMuxerStarted) {
-//                        // muxer is not ready...this will prrograming failure.
-//                        throw new RuntimeException("drain:muxer hasn't started");
-//                    }
-//                    // write encoded data to muxer(need to adjust presentationTimeUs.
-////                    mBufferInfo.presentationTimeUs = getPTSUs();
-//                    mMuxer.writeSampleData(mTrackIndex, encodedData, mBufferInfo);
-////                    prevOutputPTSUs = mBufferInfo.presentationTimeUs;
-//                    Log.d(TAG, "sent " + mBufferInfo.size + " bytes to muxer, ts=" +
-//                            mBufferInfo.presentationTimeUs);
-//                }
-//                // return buffer to encoder
-//                mMediaCodec.releaseOutputBuffer(encoderStatus, false);
-//                if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
-//                    // when EOS come.
-//                    break;      // out of while
-//                }
-//            }
-//        }
-//    }
-
-
     /**
      * Handles encoder state change requests.  The handler is created on the encoder thread.
      */
@@ -601,7 +506,7 @@ public class TextureMovieEncoder implements Runnable {
             Object obj = inputMessage.obj;
 
             TextureMovieEncoder encoder = mWeakEncoder.get();
-            if (encoder == null) {
+            if (encoder == null || !encoder.mRunning) {
                 Log.w(TAG, "EncoderHandler.handleMessage: encoder is null");
                 return;
             }
