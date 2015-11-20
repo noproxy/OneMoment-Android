@@ -21,6 +21,7 @@ import java.util.List;
 import co.yishun.library.OnemomentPlayerView;
 import co.yishun.library.resource.BaseVideoResource;
 import co.yishun.library.resource.LocalVideo;
+import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.resource.TaggedVideo;
 import co.yishun.library.resource.VideoResource;
 import co.yishun.library.tag.BaseVideoTag;
@@ -79,15 +80,16 @@ public class PlayTagVideoFragment extends BaseFragment {
     }
 
     @UiThread
-    void addVideo(Video tagVideo) {
-        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
-        VideoResource videoResource = new LocalVideo(new BaseVideoResource(), fileSynced.getPath());
-        List<VideoTag> tags = new LinkedList<VideoTag>();
-        for (int i = 0; i < tagVideo.tags.size(); i++) {
-            tags.add(new BaseVideoTag(tagVideo.tags.get(i).name, tagVideo.tags.get(i).x / 100f, tagVideo.tags.get(i).y / 100f));
+    void addVideo(Video video) {
+        File videoFile = FileUtil.getWorldVideoStoreFile(this.getActivity(), video);
+        List<VideoTag> tags = new LinkedList<>();
+        for (int i = 0; i < video.tags.size(); i++) {
+            tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x / 100f, video.tags.get(i).y / 100f));
         }
-        videoResource = new TaggedVideo(videoResource, tags);
+        NetworkVideo videoResource = new NetworkVideo(video.domain + video.fileName, tags);
+        videoResource.setPath(videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);
+        videoPlayView.addAvatarUrl(((TagVideo)video).avatar);
     }
 
     @Click(R.id.videoPlayView)

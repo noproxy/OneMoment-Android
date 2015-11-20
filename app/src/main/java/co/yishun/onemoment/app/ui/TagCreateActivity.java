@@ -25,6 +25,7 @@ import com.baidu.location.LocationClientOption;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -195,6 +196,11 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
 
     @Click
     void nextBtnClicked(View view) {
+
+    }
+
+    @Background
+    void upload(){
 
     }
 

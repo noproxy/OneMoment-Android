@@ -19,6 +19,7 @@ import java.util.List;
 import co.yishun.library.OnemomentPlayerView;
 import co.yishun.library.resource.BaseVideoResource;
 import co.yishun.library.resource.LocalVideo;
+import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.resource.TaggedVideo;
 import co.yishun.library.resource.VideoResource;
 import co.yishun.library.tag.BaseVideoTag;
@@ -71,39 +72,49 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
                 return;
             }
 
+//            File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
 //            if (fileSynced.exists()) {
-//                addVideo(oneVideo, fileSynced);
+//                addVideo(oneVideo);
 //            } else {
-////                VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
-////                task.setListener(this::addVideo);
+                addNetworkVideo(oneVideo);
 //            }
-            new VideoTask(this.getActivity(), oneVideo, VideoTask.TYPE_VIDEO_ONLY)
-                    .setVideoListener(this::addVideo).start();
+//            new VideoTask(this.getActivity(), oneVideo, VideoTask.TYPE_VIDEO_ONLY)
+//                    .setVideoListener(this::addVideo).start();
+
         }
         getData();
     }
 
     @AfterViews
     void setupView() {
-//        VideoTaskManager.getInstance().init(this.getActivity());
-
         videoPlayView.setSinglePlay(false);
         videoPlayView.setVideoChangeListener(this);
         getData();
     }
 
     @UiThread
-    void addVideo(Video tagVideo) {
-        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), tagVideo);
-        VideoResource videoResource = new LocalVideo(new BaseVideoResource(), fileSynced.getPath());
-        List<VideoTag> tags = new LinkedList<VideoTag>();
-        for (int i = 0; i < tagVideo.tags.size(); i++) {
-            tags.add(new BaseVideoTag(tagVideo.tags.get(i).name, tagVideo.tags.get(i).x / 100f, tagVideo.tags.get(i).y / 100f));
+    void addVideo(Video video) {
+        File videoFile = FileUtil.getWorldVideoStoreFile(this.getActivity(), video);
+        videoPlayView.setToLocal(video.domain + video.fileName, videoFile.getPath());
+    }
+
+    @UiThread
+    void addNetworkVideo(TagVideo video) {
+        File videoFile = FileUtil.getWorldVideoStoreFile(this.getActivity(), video);
+        List<VideoTag> tags = new LinkedList<>();
+        for (int i = 0; i < video.tags.size(); i++) {
+            tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x / 100f, video.tags.get(i).y / 100f));
         }
-        videoResource = new TaggedVideo(videoResource, tags);
+        NetworkVideo videoResource = new NetworkVideo(video.domain + video.fileName, tags);
+        if (videoFile.length() > 0) {
+            videoResource.setPath(videoFile.getPath());
+        } else {
+            new VideoTask(this.getActivity(), video, VideoTask.TYPE_VIDEO_ONLY)
+                    .setVideoListener(this::addVideo).start();
+        }
         videoPlayView.addVideoResource(videoResource);
-        tagVideos.add((TagVideo) tagVideo);
-        videoPlayView.addAvatarUrl(((TagVideo) tagVideo).avatar);
+        tagVideos.add(video);
+        videoPlayView.addAvatarUrl((video).avatar);
     }
 
     @Click(R.id.videoPlayView)

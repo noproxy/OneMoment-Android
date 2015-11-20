@@ -16,8 +16,9 @@ import co.yishun.library.resource.VideoResource;
 /**
  * Created on 2015/10/29.
  */
-public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHolder.Callback, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
-    private static final String TAG = "[OPO]";
+public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHolder.Callback,
+        MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
+    private static final String TAG = "PlaySurfaceView";
     private SurfaceHolder mHolder;
     private MediaPlayer mMediaPlayer;
     private MediaPlayer mNextPlayer;
@@ -25,9 +26,10 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     private VideoResource mNextVideoResource;
     private boolean mHolderCreated = false;
     private boolean mHolderDestroyed = false;
-    private boolean mMediaError = false;
-    private boolean mStop;
-    private PlayOneListener mOneListener;
+    private PlayListener mPlayListener;
+
+    private State mMediaState;
+    private State mNextState;
 
     public OnemomentPlaySurfaceView(Context context) {
         super(context);
@@ -55,7 +57,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         mHolder.addCallback(this);
     }
 
-    public void fistPrepare() {
+    public void prepareFirst() {
         if (mVideoResource == null) {
             return;
         }
@@ -66,7 +68,9 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
                 mMediaPlayer.setDisplay(mHolder);
             }
             mMediaPlayer.setDataSource(getContext(), mVideoResource.getVideoUri());
-            mMediaPlayer.prepare();
+            mMediaState = State.PREPARING;
+            mMediaPlayer.prepareAsync();
+            mMediaPlayer.setOnPreparedListener(this::firstPrepared);
             mMediaPlayer.setScreenOnWhilePlaying(true);
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,7 +79,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         mMediaPlayer.setOnErrorListener(this);
     }
 
-    public void nextPrepare() {
+    public void prepareNext() {
         if (mNextVideoResource == null) {
             mNextPlayer = null;
             return;
@@ -84,8 +88,9 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
             Log.d(TAG, "create next");
             mNextPlayer = new MediaPlayer();
             mNextPlayer.setDataSource(getContext(), mNextVideoResource.getVideoUri());
+            mNextState = State.PREPARING;
             mNextPlayer.prepareAsync();
-            mNextPlayer.setOnPreparedListener(this);
+            mNextPlayer.setOnPreparedListener(this::nextPrepared);
             mNextPlayer.setOnCompletionListener(this);
             mNextPlayer.setOnErrorListener(this);
             mNextPlayer.setScreenOnWhilePlaying(true);
@@ -95,35 +100,48 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     }
 
     public void start() {
-        if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
+        if (mMediaState == State.PREPARED || mMediaState == State.PAUSE){
+            Log.d(TAG, "start");
             mMediaPlayer.start();
+            mMediaState = State.STARTED;
         }
     }
 
     public void pause() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+        if (mMediaState == State.STARTED) {
             mMediaPlayer.pause();
+            mMediaState = State.PAUSE;
         }
     }
 
-    public void stop() {
-        mStop = true;
+    public void reset() {
+        release();
+        mMediaPlayer = null;
+        mNextPlayer = null;
+        mMediaState = State.IDLE;
+        prepareFirst();
     }
 
-    public void reset() {
+    void release() {
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
         }
         if (mNextPlayer != null) {
             mNextPlayer.release();
         }
+    }
+
+    void moveToNext() {
+        Log.d(TAG, "move to next");
+        mMediaPlayer.release();
         mMediaPlayer = null;
-        mNextPlayer = null;
-        fistPrepare();
+        mMediaPlayer = mNextPlayer;
+        mMediaPlayer.setDisplay(mHolder);
+        mMediaState = State.PREPARED;
     }
 
     public boolean isPlaying() {
-        return mMediaPlayer != null && mMediaPlayer.isPlaying();
+        return mMediaState == State.STARTED;
     }
 
     public void setVideoResource(VideoResource videoResource) {
@@ -134,48 +152,67 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         mNextVideoResource = videoResource;
     }
 
-    public void setOneListener(PlayOneListener oneListener) {
-        mOneListener = oneListener;
+    public void setOneListener(PlayListener oneListener) {
+        mPlayListener = oneListener;
     }
 
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-//        mp.seekTo(0);
-        Log.d(TAG, "set next");
-        mMediaPlayer.setNextMediaPlayer(mNextPlayer);
+    void firstPrepared(MediaPlayer mp) {
+        mMediaState = State.PREPARED;
+        Log.d(TAG, "first prepared");
+        if (mPlayListener != null) {
+            mPlayListener.onFirstPrepared();
+        }
+    }
+
+    void nextPrepared(MediaPlayer mp) {
+        mNextState = State.PREPARED;
+        Log.d(TAG, "next prepared");
+        if (mMediaState == State.COMPLETED) {
+            Log.d(TAG, "completed and start");
+            moveToNext();
+            if (mPlayListener != null) {
+                mPlayListener.onOneCompletion();
+            }
+            start();
+            prepareNext();
+        } else {
+            Log.d(TAG, "set next");
+            mMediaPlayer.setNextMediaPlayer(mNextPlayer);
+        }
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.e(TAG, "complete");
-        mp.release();
+        mMediaState = State.COMPLETED;
         if (mNextPlayer == null || mp == mNextPlayer) {
             Log.d(TAG, "end");
-            if (mOneListener != null) {
-                mOneListener.onOneCompletion();
+            if (mPlayListener != null) {
+                mPlayListener.onOneCompletion();
             }
         } else {
-            mMediaPlayer = null;
             Log.d(TAG, "to next");
-            mMediaPlayer = mNextPlayer;
-            if (mHolderDestroyed) {
-                mMediaPlayer.release();
-                return;
+            if (mNextState == State.PREPARED) {
+                moveToNext();
+                mMediaState = State.STARTED;
+                if (mPlayListener != null) {
+                    mPlayListener.onOneCompletion();
+                }
+                prepareNext();
+            } else {
+                //if next media not prepared, wait.
+                if (mPlayListener != null) {
+                    mPlayListener.onPreparing();
+                }
             }
-            mMediaPlayer.setDisplay(mHolder);
-            if (mOneListener != null) {
-                mOneListener.onOneCompletion();
-            }
-            nextPrepare();
         }
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Log.e(TAG, what + " " + extra);
-        mMediaError = true;
         reset();
-        nextPrepare();
+        prepareNext();
         return true;
     }
 
@@ -185,6 +222,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         mHolderCreated = true;
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(holder);
+            mMediaPlayer.seekTo(500);
         }
     }
 
@@ -196,8 +234,8 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d(TAG, "surface destroy");
-        mHolderDestroyed = true;
         mHolderCreated = false;
+        release();
     }
 
     @Override
@@ -205,7 +243,20 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 
-    public interface PlayOneListener {
+    enum State {
+        IDLE,
+        PREPARING,
+        PREPARED,
+        STARTED,
+        PAUSE,
+        COMPLETED
+    }
+
+    public interface PlayListener {
+        void onFirstPrepared();
+
+        void onPreparing();
+
         void onOneCompletion();
     }
 }
