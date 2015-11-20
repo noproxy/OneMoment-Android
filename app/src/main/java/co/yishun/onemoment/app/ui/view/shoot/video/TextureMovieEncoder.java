@@ -22,7 +22,6 @@ import android.graphics.PointF;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
-import android.media.MediaMuxer;
 import android.opengl.EGLContext;
 import android.os.Handler;
 import android.os.Looper;

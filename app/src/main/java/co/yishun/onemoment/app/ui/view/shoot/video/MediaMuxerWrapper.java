@@ -132,7 +132,7 @@ public class MediaMuxerWrapper {
      * @param format
      * @return minus value indicate error
      */
-	/*package*/
+    /*package*/
     synchronized int addTrack(final MediaFormat format) {
         if (mIsStarted)
             throw new IllegalStateException("muxer already started");
