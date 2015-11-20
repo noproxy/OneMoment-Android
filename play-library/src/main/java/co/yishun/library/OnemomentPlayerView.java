@@ -35,6 +35,7 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
     private boolean mAutoplay = false;
     private boolean mShowTags = true;
     private boolean mSinglePlay = true;
+    private boolean mLoading = false;
 
     public OnemomentPlayerView(Context context) {
         super(context);
@@ -156,9 +157,14 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
     }
 
     public void setToLocal(String url, String path) {
-        for (NetworkVideo n : mVideoResources) {
-            if (TextUtils.equals(n.getUrl(), url)){
-                n.setPath(path);
+        for (int i= 0; i<mVideoResources.size(); i ++) {
+            if (TextUtils.equals(mVideoResources.get(i).getUrl(), url)) {
+                mVideoResources.get(i).setPath(path);
+                if (i == mPreparedIndex && mLoading) {
+                    mPlaySurface.setNextVideoResource(mVideoResources.get(mPreparedIndex));
+                    mPlaySurface.prepareNext();
+                }
+                break;
             }
         }
     }
@@ -205,13 +211,15 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
     }
 
     @Override
-    public void onFirstPrepared() {
-
+    public void onPrepared() {
+        Log.d(TAG, "loaded");
+        mLoading = false;
     }
 
     @Override
     public void onPreparing() {
-
+        Log.d(TAG, "loading");
+        mLoading = true;
     }
 
     @Override

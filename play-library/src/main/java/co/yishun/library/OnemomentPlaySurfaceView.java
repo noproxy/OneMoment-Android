@@ -160,7 +160,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         mMediaState = State.PREPARED;
         Log.d(TAG, "first prepared");
         if (mPlayListener != null) {
-            mPlayListener.onFirstPrepared();
+            mPlayListener.onPrepared();
         }
     }
 
@@ -172,6 +172,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
             moveToNext();
             if (mPlayListener != null) {
                 mPlayListener.onOneCompletion();
+                mPlayListener.onPrepared();
             }
             start();
             prepareNext();
@@ -253,7 +254,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     }
 
     public interface PlayListener {
-        void onFirstPrepared();
+        void onPrepared();
 
         void onPreparing();
 
