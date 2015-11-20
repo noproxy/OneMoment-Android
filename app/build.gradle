@@ -22,7 +22,7 @@ android {
     }
 
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "co.yishun.onemoment.app"
