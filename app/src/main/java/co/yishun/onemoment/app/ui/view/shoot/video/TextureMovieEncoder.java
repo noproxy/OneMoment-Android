@@ -19,16 +19,20 @@ package co.yishun.onemoment.app.ui.view.shoot.video;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PointF;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
+import android.media.MediaFormat;
 import android.opengl.EGLContext;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Surface;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.nio.ByteBuffer;
 
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.ui.view.shoot.gles.FullFrameRect;
@@ -61,7 +65,7 @@ import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.getCame
  * <p>
  * TODO: tweak the API (esp. textureId) so it's less awkward for simple use cases.
  */
-@TargetApi(17)
+@TargetApi(18)
 public class TextureMovieEncoder implements Runnable {
     private static final String TAG = "TextureMovieEncoder";
 
@@ -73,38 +77,52 @@ public class TextureMovieEncoder implements Runnable {
     private static final int MSG_UPDATE_SHARED_CONTEXT = 6;
     private static final int MSG_UPDATE_FILTER = 7;
     private static final int MSG_QUIT = 8;
-    private volatile static TextureMovieEncoder sInstance;
+    private static final String MIME_TYPE = "video/avc";    // H.264 Advanced Video Coding
+    private static final int FRAME_RATE = 30;               // 30fps
+    private static final int IFRAME_INTERVAL = 5;           // 5 seconds between I-frames
     private final Object mReadyFence = new Object();      // guards ready/running
-    // ----- accessed exclusively by encoder thread -----
     private WindowSurface mInputWindowSurface;
     private EglCore mEglCore;
     private FullFrameRect mFullScreen;
     private int mTextureId;
-    private VideoEncoderCore mVideoEncoder;
     private FilterType mCurrentFilterType;
-    // ----- accessed by multiple threads -----
     private volatile EncoderHandler mHandler;
     private boolean mReady;
     private boolean mRunning;
-    // ----- Instance-----
     private Context mContext;
+    private EncoderConfig mConfig;
+    private Surface mInputSurface;
+    private WeakReference<MediaMuxerWrapper> mWeakMuxer;
+    private MediaCodec mMediaCodec;
+    private MediaCodec.BufferInfo mBufferInfo;
+    private int mTrackIndex;
+    private boolean mMuxerStarted;
 
-    private TextureMovieEncoder(Context applicationContext) {
+    public TextureMovieEncoder(Context applicationContext, EncoderConfig config, MediaMuxerWrapper mediaMuxerWrapper) {
         mContext = applicationContext;
+        mConfig = config;
+        mWeakMuxer = new WeakReference<>(mediaMuxerWrapper);
     }
 
-    public static void initialize(Context applicationContext) {
-        if (sInstance == null) {
-            synchronized (TextureMovieEncoder.class) {
-                if (sInstance == null) {
-                    sInstance = new TextureMovieEncoder(applicationContext);
-                }
-            }
-        }
-    }
+    void prepare() throws IOException {
+        mBufferInfo = new MediaCodec.BufferInfo();
 
-    public static TextureMovieEncoder getInstance() {
-        return sInstance;
+        MediaFormat format = MediaFormat.createVideoFormat(MIME_TYPE, mConfig.mWidth, mConfig.mHeight);
+
+        format.setInteger(MediaFormat.KEY_COLOR_FORMAT,
+                MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+        format.setInteger(MediaFormat.KEY_BIT_RATE, mConfig.mBitRate);
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, FRAME_RATE);
+        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, IFRAME_INTERVAL);
+        Log.d(TAG, "format: " + format);
+
+        mMediaCodec = MediaCodec.createEncoderByType(MIME_TYPE);
+        mMediaCodec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        mInputSurface = mMediaCodec.createInputSurface();
+        mMediaCodec.start();
+
+        mTrackIndex = -1;
+        mMuxerStarted = false;
     }
 
     /**
@@ -115,7 +133,7 @@ public class TextureMovieEncoder implements Runnable {
      * Returns after the recorder thread has started and is ready to accept Messages.  The
      * encoder may not yet be fully configured.
      */
-    public void startRecording(EncoderConfig config) {
+    public void startRecording() {
         Log.d(TAG, "Encoder: startRecording()");
         synchronized (mReadyFence) {
             if (mRunning) {
@@ -133,7 +151,7 @@ public class TextureMovieEncoder implements Runnable {
             }
         }
 
-        mHandler.sendMessage(mHandler.obtainMessage(MSG_START_RECORDING, config));
+        mHandler.sendMessage(mHandler.obtainMessage(MSG_START_RECORDING));
     }
 
     public void scaleMVPMatrix(float x, float y) {
@@ -262,10 +280,14 @@ public class TextureMovieEncoder implements Runnable {
     /**
      * Starts recording.
      */
-    private void handleStartRecording(EncoderConfig config) {
-        Log.d(TAG, "handleStartRecording " + config);
-        prepareEncoder(config.mEglContext, config.mWidth, config.mHeight, config.mBitRate,
-                config.mOutputFile);
+    private void handleStartRecording() {
+        Log.d(TAG, "handleStartRecording " + mConfig);
+
+        mEglCore = new EglCore(mConfig.mEglContext, EglCore.FLAG_RECORDABLE);
+        mInputWindowSurface = new WindowSurface(mEglCore, mInputSurface, true);
+        mInputWindowSurface.makeCurrent();
+
+        mFullScreen = new FullFrameRect(getCameraFilter(mCurrentFilterType, mContext));
     }
 
     /**
@@ -280,7 +302,7 @@ public class TextureMovieEncoder implements Runnable {
      */
     private void handleFrameAvailable(float[] transform, long timestampNanos) {
         //if (VERBOSE) Log.d(TAG, "handleFrameAvailable tr=" + transform);
-        mVideoEncoder.drainEncoder(false);
+        drainEncoder(false);
         mFullScreen.drawFrame(mTextureId, transform);
         mInputWindowSurface.setPresentationTime(timestampNanos);
         mInputWindowSurface.swapBuffers();
@@ -291,7 +313,7 @@ public class TextureMovieEncoder implements Runnable {
      */
     private void handleStopRecording(@Nullable Callback callback) {
         Log.d(TAG, "handleStopRecording");
-        mVideoEncoder.drainEncoder(true);
+        drainEncoder(true);
         if (callback != null) {
             callback.call();
         }
@@ -334,21 +356,6 @@ public class TextureMovieEncoder implements Runnable {
         mFullScreen = new FullFrameRect(getCameraFilter(mCurrentFilterType, mContext));
     }
 
-    private void prepareEncoder(EGLContext sharedContext, int width, int height, int bitRate,
-                                File outputFile) {
-        try {
-            mVideoEncoder = new VideoEncoderCore(width, height, bitRate, outputFile);
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
-        }
-
-        mEglCore = new EglCore(sharedContext, EglCore.FLAG_RECORDABLE);
-        mInputWindowSurface = new WindowSurface(mEglCore, mVideoEncoder.getInputSurface(), true);
-        mInputWindowSurface.makeCurrent();
-
-        mFullScreen = new FullFrameRect(getCameraFilter(mCurrentFilterType, mContext));
-    }
-
     private void handleUpdateFilter(FilterType filterType) {
         if (mFullScreen != null && filterType != mCurrentFilterType) {
             mFullScreen.changeProgram(getCameraFilter(filterType, mContext));
@@ -357,7 +364,23 @@ public class TextureMovieEncoder implements Runnable {
     }
 
     private void releaseEncoder() {
-        mVideoEncoder.release();
+        Log.d(TAG, "releasing encoder objects");
+        if (mMediaCodec != null) {
+            mMediaCodec.stop();
+            mMediaCodec.release();
+            mMediaCodec = null;
+        }
+        if (mMuxerStarted) {
+            final MediaMuxerWrapper muxer = mWeakMuxer.get();
+            if (muxer != null) {
+                Log.d(TAG, "not null try to release");
+                try {
+                    muxer.stop();
+                } catch (final Exception e) {
+                    Log.e(TAG, "failed stopping muxer", e);
+                }
+            }
+        }
         if (mInputWindowSurface != null) {
             mInputWindowSurface.release();
             mInputWindowSurface = null;
@@ -369,6 +392,100 @@ public class TextureMovieEncoder implements Runnable {
         if (mEglCore != null) {
             mEglCore.release();
             mEglCore = null;
+        }
+    }
+
+    public void drainEncoder(boolean endOfStream) {
+        final int TIMEOUT_USEC = 10000;
+        Log.d(TAG, "drainEncoder(" + endOfStream + ")");
+        final MediaMuxerWrapper muxer = mWeakMuxer.get();
+        if (endOfStream) {
+            Log.d(TAG, "sending EOS to encoder");
+            mMediaCodec.signalEndOfInputStream();
+        }
+
+        ByteBuffer[] encoderOutputBuffers = mMediaCodec.getOutputBuffers();
+        LOOP:
+        while (true) {
+            int encoderStatus = mMediaCodec.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
+            if (encoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER) {
+                // no output available yet
+                if (!endOfStream) {
+                    break;      // out of while
+                } else {
+                    Log.d(TAG, "no output available, spinning to await EOS");
+                }
+            } else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
+                // not expected for an encoder
+                encoderOutputBuffers = mMediaCodec.getOutputBuffers();
+            } else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                // should happen before receiving buffers, and should only happen once
+                if (mMuxerStarted) {
+                    throw new RuntimeException("format changed twice");
+                }
+                MediaFormat newFormat = mMediaCodec.getOutputFormat();
+                Log.d(TAG, "encoder output format changed: " + newFormat);
+
+                // now that we have the Magic Goodies, start the muxer
+
+//                mTrackIndex = mMuxer.addTrack(newFormat);
+//                mMuxer.start();
+                mTrackIndex = muxer.addTrack(newFormat);
+                if (!muxer.start()) {
+                    // we should wait until muxer is ready
+                    synchronized (muxer) {
+                        while (!muxer.isStarted())
+                            try {
+                                muxer.wait(100);
+                            } catch (final InterruptedException e) {
+                                break LOOP;
+                            }
+                    }
+                }
+                mMuxerStarted = true;
+            } else if (encoderStatus < 0) {
+                Log.w(TAG, "unexpected result from encoder.dequeueOutputBuffer: " + encoderStatus);
+                // let's ignore it
+            } else {
+                ByteBuffer encodedData = encoderOutputBuffers[encoderStatus];
+                if (encodedData == null) {
+                    throw new RuntimeException("encoderOutputBuffer " + encoderStatus +
+                            " was null");
+                }
+
+                if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+                    // The codec config data was pulled out and fed to the muxer when we got
+                    // the INFO_OUTPUT_FORMAT_CHANGED status.  Ignore it.
+                    Log.d(TAG, "ignoring BUFFER_FLAG_CODEC_CONFIG");
+                    mBufferInfo.size = 0;
+                }
+
+                if (mBufferInfo.size != 0) {
+                    if (!mMuxerStarted) {
+                        throw new RuntimeException("muxer hasn't started");
+                    }
+
+                    // adjust the ByteBuffer values to match BufferInfo (not needed?)
+                    encodedData.position(mBufferInfo.offset);
+                    encodedData.limit(mBufferInfo.offset + mBufferInfo.size);
+
+//                    mMuxer.writeSampleData(mTrackIndex, encodedData, mBufferInfo);
+                    mWeakMuxer.get().writeSampleData(mTrackIndex, encodedData, mBufferInfo);
+                    Log.d(TAG, "sent " + mBufferInfo.size + " bytes to muxer, ts=" +
+                            mBufferInfo.presentationTimeUs);
+                }
+
+                mMediaCodec.releaseOutputBuffer(encoderStatus, false);
+
+                if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+                    if (!endOfStream) {
+                        Log.w(TAG, "reached end of stream unexpectedly");
+                    } else {
+                        Log.d(TAG, "end of stream reached");
+                    }
+                    break;      // out of while
+                }
+            }
         }
     }
 
@@ -388,7 +505,7 @@ public class TextureMovieEncoder implements Runnable {
             Object obj = inputMessage.obj;
 
             TextureMovieEncoder encoder = mWeakEncoder.get();
-            if (encoder == null) {
+            if (encoder == null || !encoder.mRunning) {
                 Log.w(TAG, "EncoderHandler.handleMessage: encoder is null");
                 return;
             }
@@ -396,7 +513,7 @@ public class TextureMovieEncoder implements Runnable {
             switch (what) {
                 case MSG_START_RECORDING:
                     Log.i(TAG, "MSG_START_RECORDING");
-                    encoder.handleStartRecording((EncoderConfig) obj);
+                    encoder.handleStartRecording();
                     break;
                 case MSG_STOP_RECORDING:
                     Log.i(TAG, "MSG_STOP_RECORDING");
@@ -404,7 +521,7 @@ public class TextureMovieEncoder implements Runnable {
                     break;
 
                 case MSG_SCALE_MVP_MATRIX:
-                    Log.i(TAG,"MSG_SCALE_MVP_MATRIX" );
+                    Log.i(TAG, "MSG_SCALE_MVP_MATRIX");
                     encoder.handleSaleMVPMatrix((PointF) obj);
                     break;
 
@@ -441,4 +558,5 @@ public class TextureMovieEncoder implements Runnable {
             }
         }
     }
+
 }
