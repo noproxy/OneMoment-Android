@@ -135,6 +135,11 @@ public class PlayTagVideoFragment extends BaseFragment {
     }
 
     @Override
+    public void setPageInfo() {
+        mIsPage = false;
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         if (videoPlayView != null) {

@@ -275,6 +275,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     }
 
     @Override
+    public void setPageInfo() {
+        mIsPage = false;
+        mPageName = "MainActivity";
+    }
+
+    @Override
     public void onUserInfoChange(User info) {
         invalidateUserInfo(info);
     }

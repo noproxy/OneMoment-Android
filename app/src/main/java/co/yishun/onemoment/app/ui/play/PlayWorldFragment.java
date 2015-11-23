@@ -195,6 +195,11 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
 
 
     @Override
+    public void setPageInfo() {
+        mIsPage = false;
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         if (videoPlayView != null) {

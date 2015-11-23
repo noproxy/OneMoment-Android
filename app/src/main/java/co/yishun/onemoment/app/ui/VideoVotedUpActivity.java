@@ -76,6 +76,11 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     }
 
     @Override
+    public void setPageInfo() {
+        mPageName = "VideoVotedUpActivity";
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         overridePendingTransition(0, 0);

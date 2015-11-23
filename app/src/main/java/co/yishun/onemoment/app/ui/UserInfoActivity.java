@@ -81,6 +81,11 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         return null;
     }
 
+    @Override
+    public void setPageInfo() {
+        mPageName = "UserInfoActivity";
+    }
+
     @AfterViews
     void setupToolbar() {
         if (toolbar == null)
@@ -360,6 +365,11 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
 
         void setOnClickListener(View.OnClickListener listener) {
             rootView.setOnClickListener(listener);
+        }
+
+        @Override
+        public void setPageInfo() {
+            mIsPage = false;
         }
     }
 

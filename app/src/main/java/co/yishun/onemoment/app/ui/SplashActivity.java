@@ -83,4 +83,10 @@ public class SplashActivity extends BaseActivity {
     public View getSnackbarAnchorWithView(@Nullable View view) {
         throw new UnsupportedOperationException("not implement");
     }
+
+    @Override
+    public void setPageInfo() {
+        mIsPage = true;
+        mPageName = "SplashActivity";
+    }
 }

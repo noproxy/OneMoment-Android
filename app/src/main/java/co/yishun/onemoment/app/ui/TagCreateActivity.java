@@ -93,6 +93,11 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         return null;
     }
 
+    @Override
+    public void setPageInfo() {
+        mPageName = "TagCreateActivity";
+    }
+
     @AfterViews
     void setupViews() {
         queryText.setVisibility(View.GONE);

@@ -30,4 +30,8 @@ public class PhoneSignUpFragment extends PhonePasswordFragment {
         mActivity.openFragment(VerifyFragment_.builder().phoneNum(getPhoneNum()).password(getPassword()).type(VerifyFragment.EXTRA_TYPE_SIGN_UP).build());
     }
 
+    @Override
+    public void setPageInfo() {
+        mPageName = "PhoneSignUpFragment";
+    }
 }

@@ -62,4 +62,9 @@ public class DiaryFragment extends ToolbarFragment {
     protected int getTitleDrawableRes() {
         return R.drawable.pic_diary_tittle;
     }
+
+    @Override
+    public void setPageInfo() {
+        mPageName = "DiaryFragment";
+    }
 }

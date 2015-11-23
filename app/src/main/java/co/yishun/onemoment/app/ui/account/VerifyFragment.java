@@ -117,4 +117,9 @@ public class VerifyFragment extends AccountFragment {
     void next() {
         mActivity.openFragment(IntegrateInfoFragment_.builder().phoneNum(phoneNum).password(password).build());
     }
+
+    @Override
+    public void setPageInfo() {
+
+    }
 }

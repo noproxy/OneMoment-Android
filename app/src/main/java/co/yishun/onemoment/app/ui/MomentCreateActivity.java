@@ -42,6 +42,11 @@ public class MomentCreateActivity extends BaseActivity {
         return null;
     }
 
+    @Override
+    public void setPageInfo() {
+        
+    }
+
     @AfterViews
     void addView() {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

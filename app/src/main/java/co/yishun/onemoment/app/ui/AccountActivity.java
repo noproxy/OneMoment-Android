@@ -109,6 +109,11 @@ public class AccountActivity extends PickCropActivity {
     }
 
     @Override
+    public void setPageInfo() {
+
+    }
+
+    @Override
     public void onPictureSelectedFailed(Exception e) {
         if (mCurrentFragment instanceof PictureCroppedHandler) {
             ((PictureCroppedHandler) mCurrentFragment).onPictureSelectedFailed(e);

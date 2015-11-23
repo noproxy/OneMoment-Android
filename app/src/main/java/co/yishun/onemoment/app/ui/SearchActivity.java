@@ -174,6 +174,11 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
     }
 
     @Override
+    public void setPageInfo() {
+        mPageName = "SearchActivity";
+    }
+
+    @Override
     public void onClick(View view, WorldTag item) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);

@@ -83,4 +83,8 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
     }
 
 
+    @Override
+    public void setPageInfo() {
+        mPageName = "WorldFragment";
+    }
 }
