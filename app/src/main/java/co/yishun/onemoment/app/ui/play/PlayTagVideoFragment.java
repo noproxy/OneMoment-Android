@@ -67,13 +67,13 @@ public class PlayTagVideoFragment extends BaseFragment {
     @AfterViews
     void setup() {
         Log.d("oneVideo", oneVideo.toString());
-        Picasso.with(this.getActivity()).load(oneVideo.avatar).into(avatar);
+        Picasso.with(mContext).load(oneVideo.avatar).into(avatar);
 
         usernameTextView.setText(oneVideo.nickname);
 
         videoPlayView.setSinglePlay(true);
 
-        new VideoTask(this.getActivity(), oneVideo, VideoTask.TYPE_VIDEO_ONLY)
+        new VideoTask(mContext, oneVideo, VideoTask.TYPE_VIDEO_ONLY)
                 .setVideoListener(this::addVideo).start();
 
         refreshUserInfo();
@@ -81,7 +81,7 @@ public class PlayTagVideoFragment extends BaseFragment {
 
     @UiThread
     void addVideo(Video video) {
-        File videoFile = FileUtil.getWorldVideoStoreFile(this.getActivity(), video);
+        File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         List<VideoTag> tags = new LinkedList<>();
         for (int i = 0; i < video.tags.size(); i++) {
             tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x / 100f, video.tags.get(i).y / 100f));
@@ -107,9 +107,9 @@ public class PlayTagVideoFragment extends BaseFragment {
     void voteClick() {
         ApiModel model;
         if (oneVideo.liked) {
-            model = mWorld.unlikeVideo(oneVideo._id, AccountHelper.getUserInfo(this.getActivity())._id);
+            model = mWorld.unlikeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
         } else {
-            model = mWorld.likeVideo(oneVideo._id, AccountHelper.getUserInfo(this.getActivity())._id);
+            model = mWorld.likeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
         }
         if (model.code == 1) {
             oneVideo.liked = !oneVideo.liked;
@@ -125,10 +125,10 @@ public class PlayTagVideoFragment extends BaseFragment {
     @UiThread
     void refreshUserInfo() {
         if (oneVideo.liked) {
-            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
+            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall_Inverse);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
         } else {
-            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
+            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
         }
         voteCountTextView.setText(oneVideo.likeNum + "");

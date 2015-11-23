@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ public class TagSearchAdapter extends AbstractRecyclerViewAdapter<String, TagSea
     }
 
     public void replaceItem(int position, String item) {
-        if (position >= mItems.size() || mItems.get(position).equals(item)) {
+        if (position >= mItems.size() || TextUtils.equals(mItems.get(position), item)) {
             return;
         }
         mItems.remove(position);

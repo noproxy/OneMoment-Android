@@ -69,7 +69,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
 
     @Background
     void getData() {
-        List<TagVideo> videos = mWorld.getVideoOfTag(worldTag.name, offset, 10, AccountHelper.getUserInfo(this.getActivity())._id, seed);
+        List<TagVideo> videos = mWorld.getVideoOfTag(worldTag.name, offset, 10, AccountHelper.getUserInfo(mContext)._id, seed);
         if (videos.size() == 0) {
             return;
         }
@@ -94,7 +94,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
 
     @Override
     public void onVideoLoad(Video video) {
-        File videoFile = FileUtil.getWorldVideoStoreFile(this.getActivity(), video);
+        File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         videoPlayView.setToLocal(video.domain + video.fileName, videoFile.getPath());
         if (!mReady) {
             backgroundGetThumb(video, videoFile.getPath());
@@ -112,7 +112,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
 
     @UiThread
     void addVideo(TagVideo video) {
-        File videoFile = FileUtil.getWorldVideoStoreFile(this.getActivity(), video);
+        File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         List<VideoTag> tags = new LinkedList<>();
         for (int i = 0; i < video.tags.size(); i++) {
             tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x / 100f, video.tags.get(i).y / 100f));
@@ -124,7 +124,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
                 backgroundGetThumb(video, videoFile.getPath());
             }
         } else {
-            new VideoTask(this.getActivity(), video, VideoTask.TYPE_VIDEO_ONLY)
+            new VideoTask(mContext, video, VideoTask.TYPE_VIDEO_ONLY)
                     .setVideoListener(this).start();
         }
 
@@ -165,9 +165,9 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         voteIndex = videoPlayView.getCurrentIndex();
         ApiModel model;
         if (tagVideos.get(voteIndex).liked) {
-            model = mWorld.unlikeVideo(tagVideos.get(voteIndex)._id, AccountHelper.getUserInfo(this.getActivity())._id);
+            model = mWorld.unlikeVideo(tagVideos.get(voteIndex)._id, AccountHelper.getUserInfo(mContext)._id);
         } else {
-            model = mWorld.likeVideo(tagVideos.get(voteIndex)._id, AccountHelper.getUserInfo(this.getActivity())._id);
+            model = mWorld.likeVideo(tagVideos.get(voteIndex)._id, AccountHelper.getUserInfo(mContext)._id);
         }
         if (model.code == 1) {
             tagVideos.get(voteIndex).liked = !tagVideos.get(voteIndex).liked;
@@ -183,10 +183,10 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     @UiThread
     void refreshUserInfo(int index) {
         if (tagVideos.get(index).liked) {
-            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
+            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall_Inverse);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
         } else {
-            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
+            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
         }
         voteCountTextView.setText(tagVideos.get(index).likeNum + "");
