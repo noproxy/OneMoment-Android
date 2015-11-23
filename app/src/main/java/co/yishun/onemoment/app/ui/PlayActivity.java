@@ -59,7 +59,7 @@ public class PlayActivity extends BaseActivity {
 
     @Override
     public void setPageInfo() {
-
+        mPageName = "PlayActivity";
     }
 
     @AfterViews

@@ -110,7 +110,7 @@ public class AccountActivity extends PickCropActivity {
 
     @Override
     public void setPageInfo() {
-
+        mIsPage = false;
     }
 
     @Override

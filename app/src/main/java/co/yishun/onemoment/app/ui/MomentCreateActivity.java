@@ -44,7 +44,7 @@ public class MomentCreateActivity extends BaseActivity {
 
     @Override
     public void setPageInfo() {
-        
+        mPageName = "MomentCreateActivity";
     }
 
     @AfterViews
