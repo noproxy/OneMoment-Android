@@ -141,4 +141,10 @@ public class Constants {
         public static final int QQ_NICKNAME_FORMAT_ERROR = -103;
         public static final int QQ_NUMBER_NOT_MATCH = -104;
     }
+
+    public static class UmengData{
+        public static final String FAB_WORLD_CLICK = "fab_world_click";
+        public static final String FAB_DIARY_CLICK = "fab_diary_click";
+
+    }
 }
