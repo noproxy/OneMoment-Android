@@ -15,10 +15,6 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:fitsSystemWindows="true"
-        app:collapsedTitleGravity="bottom"
-        app:contentScrim="@android:color/transparent"
-        app:expandedTitleMarginEnd="64dp"
-        app:expandedTitleMarginStart="42dp"
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
         >
 

@@ -14,6 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -94,7 +97,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         toolbar = ((Toolbar) coordinatorLayout.findViewById(R.id.toolbar));
         videoImageView = ((ImageView) coordinatorLayout.findViewById(R.id.videoImageView));
         recyclerView = ((SuperRecyclerView) coordinatorLayout.findViewById(R.id.recyclerView));
-        collapsingToolbarLayout = ((CollapsingToolbarLayout) coordinatorLayout.findViewById(R.id.collapsingToolbarLayout));
+//        collapsingToolbarLayout = ((CollapsingToolbarLayout) coordinatorLayout.findViewById(R.id.collapsingToolbarLayout));
     }
 
     @AfterViews
@@ -121,8 +124,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         videoImageView.setLayoutParams(params);
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
-        collapsingToolbarLayout.setTitle("");
-        collapsingToolbarLayout.setTitleEnabled(false);
+//        collapsingToolbarLayout.setTitleEnabled(false);
     }
 
     @UiThread(delay = 100)
@@ -207,13 +209,13 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @UiThread(delay = 600)
     void afterTransition() {
         toolbar = ((Toolbar) findViewById(R.id.toolbar));
-        collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
+//        collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
         setupToolbar(this, toolbar);
-        collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.colorPrimary));
-        collapsingToolbarLayout.setTitleEnabled(true);
-        collapsingToolbarLayout.setTitle(tag.name);
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.textColorPrimary));
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.textColorPrimaryInverse));
+//        collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.colorPrimary));
+//        collapsingToolbarLayout.setTitleEnabled(false);
+//        collapsingToolbarLayout.setTitle(tag.name);
+//        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.textColorPrimary));
+//        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.textColorPrimaryInverse));
     }
 
     @Override
@@ -240,6 +242,11 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
+        ab.setTitle(tag.name);
+        String num = String.valueOf(tag.videosCount);
+        SpannableString ss = new SpannableString(num + "人加入");
+        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        toolbar.setSubtitle(ss);
         ab.setDisplayHomeAsUpEnabled(true);
         Log.i("setupToolbar", "set home as up true");
         return ab;
