@@ -217,6 +217,10 @@ dependencies {
     compile project(':play-library')
     compile project(':calendar-library')
 }
+
+dependencies {
+    compile 'com.umeng.analytics:analytics:latest.integration'
+}
 // https://www.reddit.com/r/androiddev/comments/3dnibt/support_library_2221_released/
 configurations.all() {
     // Currently espresso is dependent on support-annotations:22.2.0

@@ -248,4 +248,9 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
         // if uri not null( user set avatar replace image from three-party), it will update after sign up
         Picasso.with(mActivity).load(userInfo.avatar_large).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
     }
+
+    @Override
+    public void setPageInfo() {
+        mPageName = "IntegrateInfoFragment";
+    }
 }

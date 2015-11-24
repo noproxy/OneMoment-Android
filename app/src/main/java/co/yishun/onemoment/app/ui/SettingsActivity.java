@@ -128,6 +128,11 @@ public class SettingsActivity extends BaseActivity {
         throw new UnsupportedOperationException("not implement");
     }
 
+    @Override
+    public void setPageInfo() {
+        mPageName = "SettingsActivity";
+    }
+
     public static class SettingsFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {

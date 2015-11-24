@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -90,6 +91,11 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return null;
+    }
+
+    @Override
+    public void setPageInfo() {
+        mPageName = "TagCreateActivity";
     }
 
     @AfterViews
@@ -229,6 +235,15 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
             recoverSearch();
         else
             super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     void search() {

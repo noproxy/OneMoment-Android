@@ -84,6 +84,11 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return null;
     }
 
+    @Override
+    public void setPageInfo() {
+        mPageName = "TagActivity";
+    }
+
     void setLayout() {
         swipeRefreshLayout = ((SwipeRefreshLayout) coordinatorLayout.findViewById(R.id.ptr_layout));
         toolbar = ((Toolbar) coordinatorLayout.findViewById(R.id.toolbar));

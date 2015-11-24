@@ -5,6 +5,8 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.umeng.analytics.MobclickAgent;
+
 import co.yishun.onemoment.app.ui.view.shoot.video.TextureMovieEncoder;
 
 /**
@@ -15,7 +17,7 @@ public class OMApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        TextureMovieEncoder.initialize(getApplicationContext());
+        MobclickAgent.openActivityDurationTrack(false);
     }
 
     @Override

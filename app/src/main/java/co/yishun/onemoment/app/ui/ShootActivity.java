@@ -66,6 +66,11 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     @Override
+    public void setPageInfo() {
+        mPageName = "ShootActivity";
+    }
+
+    @Override
     protected void onResume() {
         if (mCameraGLSurfaceView != null) {
             mCameraGLSurfaceView.onResume();

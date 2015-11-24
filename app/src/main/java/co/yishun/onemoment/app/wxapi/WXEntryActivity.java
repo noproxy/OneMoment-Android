@@ -89,6 +89,11 @@ public class WXEntryActivity extends BaseActivity implements LoginListener {
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return null;
     }
+
+    @Override
+    public void setPageInfo() {
+
+    }
 }
 
 @EBean
