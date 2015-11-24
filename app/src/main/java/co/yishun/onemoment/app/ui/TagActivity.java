@@ -6,8 +6,10 @@ import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -63,6 +65,7 @@ import co.yishun.onemoment.app.ui.view.RoundRectImageView;
 public class TagActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
     public static final int FROM_WORLD_FRAGMENT = 0;
     public static final int FROM_SEARCH_ACTIVITY = 1;
+    private static final String TAG = "TagActivity";
     @Extra
     int top;
     @Extra
@@ -80,6 +83,11 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     ImageView addImageView;
     private boolean transitionOver = false;
     private TagAdapter tagAdapter;
+    private int statusBarHeight;
+    private int collapsedTitleColor;
+    private int collapsedSubTitleColor;
+    private int expendedTitleColor;
+    private int expendedSubTitleColor;
 
     @Nullable
     @Override
@@ -97,7 +105,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         toolbar = ((Toolbar) coordinatorLayout.findViewById(R.id.toolbar));
         videoImageView = ((ImageView) coordinatorLayout.findViewById(R.id.videoImageView));
         recyclerView = ((SuperRecyclerView) coordinatorLayout.findViewById(R.id.recyclerView));
-//        collapsingToolbarLayout = ((CollapsingToolbarLayout) coordinatorLayout.findViewById(R.id.collapsingToolbarLayout));
     }
 
     @AfterViews
@@ -112,19 +119,17 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         setLayout();
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
         // before lollipop, the topMargin start below statusBar
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-            if (resourceId > 0) {
-                int result = getResources().getDimensionPixelSize(resourceId);
-                top -= result;
-
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                top -= statusBarHeight;
             }
         }
         params.topMargin += top;
         videoImageView.setLayoutParams(params);
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
-//        collapsingToolbarLayout.setTitleEnabled(false);
     }
 
     @UiThread(delay = 100)
@@ -208,20 +213,21 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 
     @UiThread(delay = 600)
     void afterTransition() {
+        AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBar);
         toolbar = ((Toolbar) findViewById(R.id.toolbar));
-//        collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
+        collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
+        expendedTitleColor = getResources().getColor(R.color.colorPrimary);
+        expendedSubTitleColor = getResources().getColor(R.color.colorPrimary);
+        collapsedTitleColor = getResources().getColor(R.color.textColorPrimary);
+        collapsedSubTitleColor = getResources().getColor(R.color.textColorPrimaryDark);
+
         setupToolbar(this, toolbar);
-//        collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.colorPrimary));
-//        collapsingToolbarLayout.setTitleEnabled(false);
-//        collapsingToolbarLayout.setTitle(tag.name);
-//        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.textColorPrimary));
-//        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.textColorPrimaryInverse));
+        appbar.addOnOffsetChangedListener(new OffsetChangeListener());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        VideoTaskManager.getInstance().init(this);
         if (transitionOver) {
             TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
         }
@@ -242,7 +248,9 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
-        ab.setTitle(tag.name);
+        toolbar.setTitle(tag.name);
+        toolbar.setTitleTextColor(expendedTitleColor);
+        toolbar.setSubtitleTextColor(expendedSubTitleColor);
         String num = String.valueOf(tag.videosCount);
         SpannableString ss = new SpannableString(num + "人加入");
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -250,6 +258,43 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         ab.setDisplayHomeAsUpEnabled(true);
         Log.i("setupToolbar", "set home as up true");
         return ab;
+    }
+
+    void changeTitleColor(float fraction) {
+        int startInt = expendedTitleColor;
+        int startA = (startInt >> 24) & 0xff;
+        int startR = (startInt >> 16) & 0xff;
+        int startG = (startInt >> 8) & 0xff;
+        int startB = startInt & 0xff;
+
+        int endInt = collapsedTitleColor;
+        int endA = (endInt >> 24) & 0xff;
+        int endR = (endInt >> 16) & 0xff;
+        int endG = (endInt >> 8) & 0xff;
+        int endB = endInt & 0xff;
+
+        toolbar.setTitleTextColor((startA + (int) (fraction * (endA - startA))) << 24 |
+                ((startR + (int) (fraction * (endR - startR))) << 16) |
+                ((startG + (int) (fraction * (endG - startG))) << 8) |
+                ((startB + (int) (fraction * (endB - startB)))));
+
+
+        startInt = expendedSubTitleColor;
+        startA = (startInt >> 24) & 0xff;
+        startR = (startInt >> 16) & 0xff;
+        startG = (startInt >> 8) & 0xff;
+        startB = startInt & 0xff;
+
+        endInt = collapsedSubTitleColor;
+        endA = (endInt >> 24) & 0xff;
+        endR = (endInt >> 16) & 0xff;
+        endG = (endInt >> 8) & 0xff;
+        endB = endInt & 0xff;
+
+        toolbar.setSubtitleTextColor((startA + (int) (fraction * (endA - startA))) << 24 |
+                ((startR + (int) (fraction * (endR - startR))) << 16) |
+                ((startG + (int) (fraction * (endG - startG))) << 8) |
+                ((startB + (int) (fraction * (endB - startB)))));
     }
 
     @Override
@@ -275,5 +320,17 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @Override
     public void onClick(View view, TagVideo item) {
         PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
+    }
+
+    private class OffsetChangeListener implements AppBarLayout.OnOffsetChangedListener {
+
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+            int insetTop = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ? 0 : statusBarHeight;
+            float fraction = Math.abs(verticalOffset) /
+                    (float) (appBarLayout.getHeight() -
+                            ViewCompat.getMinimumHeight(collapsingToolbarLayout) - insetTop);
+            changeTitleColor(fraction);
+        }
     }
 }
