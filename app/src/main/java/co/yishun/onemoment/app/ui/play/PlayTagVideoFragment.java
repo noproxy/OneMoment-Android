@@ -20,18 +20,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import co.yishun.library.OnemomentPlayerView;
-import co.yishun.library.resource.BaseVideoResource;
-import co.yishun.library.resource.LocalVideo;
 import co.yishun.library.resource.NetworkVideo;
-import co.yishun.library.resource.TaggedVideo;
-import co.yishun.library.resource.VideoResource;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
-import co.yishun.onemoment.app.api.loader.VideoDownloadTask;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
@@ -90,7 +85,7 @@ public class PlayTagVideoFragment extends BaseFragment {
         videoResource.setPath(videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);
         videoPlayView.setPreview(FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB));
-        videoPlayView.addAvatarUrl(((TagVideo)video).avatar);
+        videoPlayView.addAvatarUrl(((TagVideo) video).avatar);
     }
 
     @Click(R.id.videoPlayView)
@@ -105,20 +100,13 @@ public class PlayTagVideoFragment extends BaseFragment {
     @Click(R.id.voteCountTextView)
     @Background
     void voteClick() {
-        ApiModel model;
+        oneVideo.liked = !oneVideo.liked;
+        oneVideo.likeNum += oneVideo.liked ? 1 : -1;
+        refreshUserInfo();
         if (oneVideo.liked) {
-            model = mWorld.unlikeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
+            mWorld.likeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
         } else {
-            model = mWorld.likeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
-        }
-        if (model.code == 1) {
-            oneVideo.liked = !oneVideo.liked;
-            if (oneVideo.liked) {
-                oneVideo.likeNum++;
-            } else {
-                oneVideo.likeNum--;
-            }
-            refreshUserInfo();
+            mWorld.unlikeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
         }
     }
 

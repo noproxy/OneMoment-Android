@@ -29,7 +29,6 @@ import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
-import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
@@ -163,20 +162,13 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
     @Background
     void voteClick() {
         voteIndex = videoPlayView.getCurrentIndex();
-        ApiModel model;
+        tagVideos.get(voteIndex).liked = !tagVideos.get(voteIndex).liked;
+        tagVideos.get(voteIndex).likeNum += tagVideos.get(voteIndex).liked ? 1 : -1;
+        refreshUserInfo(videoPlayView.getCurrentIndex());
         if (tagVideos.get(voteIndex).liked) {
-            model = mWorld.unlikeVideo(tagVideos.get(voteIndex)._id, AccountHelper.getUserInfo(mContext)._id);
+            mWorld.likeVideo(tagVideos.get(voteIndex)._id, AccountHelper.getUserInfo(mContext)._id);
         } else {
-            model = mWorld.likeVideo(tagVideos.get(voteIndex)._id, AccountHelper.getUserInfo(mContext)._id);
-        }
-        if (model.code == 1) {
-            tagVideos.get(voteIndex).liked = !tagVideos.get(voteIndex).liked;
-            if (tagVideos.get(voteIndex).liked) {
-                tagVideos.get(voteIndex).likeNum++;
-            } else {
-                tagVideos.get(voteIndex).likeNum--;
-            }
-            refreshUserInfo(videoPlayView.getCurrentIndex());
+            mWorld.unlikeVideo(tagVideos.get(voteIndex)._id, AccountHelper.getUserInfo(mContext)._id);
         }
     }
 
