@@ -25,14 +25,14 @@
             android:text="@string/activity_user_info_avatar"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
-        <co.yishun.onemoment.app.ui.view.RoundRectImageView
+        <co.yishun.onemoment.app.ui.view.RadioCornerImageView
             android:id="@+id/avatarImage"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            app:round_rate='1'/>
+            app:rc_cornerRadio="1"/>
 
     </RelativeLayout>
 

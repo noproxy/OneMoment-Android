@@ -55,7 +55,7 @@ import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
-import co.yishun.onemoment.app.ui.view.RoundRectImageView;
+import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 
 /**
  * Created by Carlos on 2015/8/17.
@@ -176,12 +176,12 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
         set.setDuration(800);
 
-        float oldRadiusRate = ((RoundRectImageView) sceneRoot.findViewById(R.id.videoImageView)).getRoundRate();
+        float oldRadiusRate = ((RadioCornerImageView) sceneRoot.findViewById(R.id.videoImageView)).getCornerRadio();
         TransitionManager.go(scene, set);
         sceneRoot.setFitsSystemWindows(true);
-        float newRadiusRate = ((RoundRectImageView) sceneRoot.findViewById(R.id.videoImageView)).getRoundRate();
+        float newRadiusRate = ((RadioCornerImageView) sceneRoot.findViewById(R.id.videoImageView)).getCornerRadio();
         ObjectAnimator radiusAnimator = ObjectAnimator.ofFloat(sceneRoot.findViewById(R.id.videoImageView),
-                "roundRate", oldRadiusRate, newRadiusRate).setDuration(500);
+                "cornerRadio", oldRadiusRate, newRadiusRate).setDuration(500);
         radiusAnimator.setEvaluator(new FloatEvaluator());
         radiusAnimator.setInterpolator(new AccelerateInterpolator());
         radiusAnimator.start();

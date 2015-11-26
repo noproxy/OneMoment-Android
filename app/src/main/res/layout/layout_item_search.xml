@@ -15,13 +15,13 @@
         android:paddingRight="16dp"
         android:orientation="horizontal">
 
-        <co.yishun.onemoment.app.ui.view.RoundRectImageView
+        <co.yishun.onemoment.app.ui.view.RadioCornerImageView
             android:id="@+id/itemImageView"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/pic_profile_tmp"
-            app:round_rate="1"/>
+            app:rc_cornerRadio="1"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

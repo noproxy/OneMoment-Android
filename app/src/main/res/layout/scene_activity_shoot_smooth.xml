@@ -4,12 +4,11 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
-    <co.yishun.onemoment.app.ui.view.RoundRectImageView
+    <co.yishun.onemoment.app.ui.view.RadioCornerImageView
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:force_square="true"
-        app:round_rate="0"/>
+        app:rc_cornerRadio="0"/>
 
     <include layout="@layout/layout_record_btn"/>
 </merge>

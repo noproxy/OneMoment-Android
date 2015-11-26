@@ -14,13 +14,13 @@
     app:cardMaxElevation="@dimen/card_elevation_pressed"
     >
 
-    <co.yishun.onemoment.app.ui.view.RoundRectImageView
+    <co.yishun.onemoment.app.ui.view.RadioCornerImageView
         android:id="@+id/itemImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/pic_world_item_test_1"
-        app:round_radius="4dp"
+        app:rc_corner="4dp"
         />
 
     <RelativeLayout

@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
-    <co.yishun.onemoment.app.ui.view.RoundRectImageView
+    <co.yishun.onemoment.app.ui.view.RadioCornerImageView
         android:id="@+id/avatar"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,6 +12,5 @@
         android:layout_height="wrap_content"
         android:src="@drawable/pic_profile_tmp"
         android:layout_centerVertical="true"
-        app:force_square="true"
-        app:round_rate="1"/>
+        app:rc_cornerRadio="1"/>
 </RelativeLayout>

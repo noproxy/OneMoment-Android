@@ -1,25 +1,18 @@
 package co.yishun.onemoment.app.ui.view;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PathEffect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -28,57 +21,45 @@ import co.yishun.onemoment.app.R;
 /**
  * Created on 2015/10/20.
  */
-public class RoundRectImageView extends ImageView {
+public class RadioCornerImageView extends ImageView {
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
-    private static final int COLORDRAWABLE_DIMENSION = 2;
+    private static final int COLOR_DRAWABLE_DIMENSION = 2;
 
     private final RectF mDrawableRect = new RectF();
-
+    int mWidthRadio;
+    int mHeightRadio;
+    float mCorner;
+    float mCornerRadio;
     private Matrix mShaderMatrix;
     private Paint mBitmapPaint;
-
     private Bitmap mBitmap;
     private BitmapShader mBitmapShader;
-
-    private float mRoundRadius;
-    private float mRoundRadiusX;
-    private float mRoundRadiusY;
-    private float mRoundRate;
-    private boolean mForceSquare;
-
     private ColorFilter mColorFilter;
 
-    public RoundRectImageView(Context context) {
-        super(context);
-        super.setScaleType(ScaleType.CENTER_CROP);
-
-        mRoundRadius = 0;
-        mRoundRate = 0;
-        mForceSquare = false;
-
-        init();
+    public RadioCornerImageView(Context context) {
+        this(context, null);
     }
 
-    public RoundRectImageView(Context context, AttributeSet attrs) {
+    public RadioCornerImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public RoundRectImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RadioCornerImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         super.setScaleType(ScaleType.CENTER_CROP);
+        mWidthRadio = 1;
+        mHeightRadio = 1;
+        mCorner = 0;
+        mCornerRadio = 0;
 
-        mRoundRadius = 0;
-        mRoundRate = 0;
-        mForceSquare = false;
-
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RoundRectImageView, defStyleAttr, 0);
-        mRoundRadius = a.getDimension(R.styleable.RoundRectImageView_round_radius, mRoundRadius);
-        mRoundRadiusX = a.getDimension(R.styleable.RoundRectImageView_round_radius_x, mRoundRadius);
-        mRoundRadiusY = a.getDimension(R.styleable.RoundRectImageView_round_radius_y, mRoundRadius);
-        mRoundRate = a.getFloat(R.styleable.RoundRectImageView_round_rate, mRoundRate);
-        mForceSquare = a.getBoolean(R.styleable.RoundRectImageView_force_square, mForceSquare);
-        a.recycle();
-
+        if (attrs != null) {
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RadioCornerImageView, defStyleAttr, 0);
+            mWidthRadio = a.getInt(R.styleable.RadioCornerImageView_rc_widthRadio, mWidthRadio);
+            mHeightRadio = a.getInt(R.styleable.RadioCornerImageView_rc_heightRadio, mHeightRadio);
+            mCorner = a.getDimension(R.styleable.RadioCornerImageView_rc_corner, mCorner);
+            mCornerRadio = a.getFloat(R.styleable.RadioCornerImageView_rc_cornerRadio, mCornerRadio);
+            a.recycle();
+        }
         init();
     }
 
@@ -100,12 +81,7 @@ public class RoundRectImageView extends ImageView {
         updateShaderMatrix();
 
         mDrawableRect.set(0, 0, getWidth(), getHeight());
-        if (mRoundRadius > 0 ) {
-            canvas.drawRoundRect(mDrawableRect, mRoundRadius, mRoundRadius, mBitmapPaint);
-        } else {
-            canvas.drawRoundRect(mDrawableRect, getWidth() / 2.0f * mRoundRate,
-                    getHeight() / 2.0f * mRoundRate, mBitmapPaint);
-        }
+        canvas.drawRoundRect(mDrawableRect, mCorner, mCorner, mBitmapPaint);
     }
 
     private void updateShaderMatrix() {
@@ -136,20 +112,21 @@ public class RoundRectImageView extends ImageView {
         mBitmapShader.setLocalMatrix(mShaderMatrix);
     }
 
-    public float getRoundRadius() {
-        return mRoundRadius;
+    public float getCorner() {
+        return mCorner;
     }
 
-    public void setRoundRadius(float mRoundRadius) {
-        this.mRoundRadius = mRoundRadius;
+    public void setCorner(float corner) {
+        this.mCorner = corner;
     }
 
-    public float getRoundRate() {
-        return mRoundRate;
+    public float getCornerRadio() {
+        return mCornerRadio;
     }
 
-    public void setRoundRate(float mRoundRate) {
-        this.mRoundRate = mRoundRate;
+    public void setCornerRadio(float cornerRadio) {
+        this.mCornerRadio = cornerRadio;
+        mCorner = (getHeight() < getWidth() ? getHeight() : getWidth()) / 2 * mCornerRadio;
     }
 
     @Override
@@ -176,7 +153,7 @@ public class RoundRectImageView extends ImageView {
             Bitmap bitmap;
 
             if (drawable instanceof ColorDrawable) {
-                bitmap = Bitmap.createBitmap(COLORDRAWABLE_DIMENSION, COLORDRAWABLE_DIMENSION, BITMAP_CONFIG);
+                bitmap = Bitmap.createBitmap(COLOR_DRAWABLE_DIMENSION, COLOR_DRAWABLE_DIMENSION, BITMAP_CONFIG);
             } else {
                 bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), BITMAP_CONFIG);
             }
@@ -192,20 +169,19 @@ public class RoundRectImageView extends ImageView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mForceSquare) {
-            final int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
-            setMeasuredDimension(width, width);
-        } else {
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        if (heightMode == MeasureSpec.EXACTLY) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } else {
+            height = (int) (width * mHeightRadio * 1.0f / mWidthRadio);
+            super.onMeasure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+        }
+        if (mCorner == 0 && mCornerRadio != 0) {
+            mCorner = (height < width ? height : width) / 2 * mCornerRadio;
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (mForceSquare)
-            super.onSizeChanged(w, w, oldw, oldh);
-        else
-            super.onSizeChanged(w, h, oldw, oldh);
-
-    }
 }
