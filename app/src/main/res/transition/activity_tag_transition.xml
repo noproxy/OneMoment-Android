@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<transitionSet xmlns:app="http://schemas.android.com/apk/res-auto"
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:interpolator="@interpolator/tag_decelerate"
     app:duration="800">
-    <changeBounds
-        app:duration="500"
-        app:interpolator="@android:interpolator/decelerate_quad">
+    <changeBounds app:duration="500">
         <targets>
             <target app:targetId="@id/videoImageView" />
             <target app:targetId="@id/collapsingToolbarLayout" />
@@ -12,17 +12,13 @@
         </targets>
     </changeBounds>
 
-    <changeImageTransform
-        app:duration="500"
-        app:interpolator="@android:interpolator/decelerate_quad">
+    <changeImageTransform app:duration="500">
         <targets>
             <target app:targetId="@id/videoImageView" />
         </targets>
     </changeImageTransform>
 
-    <fade
-        app:duration="500"
-        app:interpolator="@android:interpolator/decelerate_quad">
+    <fade app:duration="500">
         <targets>
             <target app:targetId="@id/recyclerView" />
             <target app:targetId="@id/toolbar" />
