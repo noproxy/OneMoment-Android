@@ -37,6 +37,7 @@ import com.transitionseverywhere.ChangeImageTransform;
 import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.Slide;
+import com.transitionseverywhere.TransitionInflater;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
@@ -54,6 +55,7 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
+import co.yishun.onemoment.app.ui.view.CornerTransition;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 
@@ -143,48 +145,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         animator.setEvaluator(new ArgbEvaluator());
         animator.start();
 
-        TransitionSet set = new TransitionSet();
-
-        ChangeBounds changeBounds = new ChangeBounds();
-        changeBounds.addTarget(R.id.videoImageView);
-        changeBounds.addTarget(R.id.collapsingToolbarLayout);
-        changeBounds.addTarget(R.id.appBar);
-        changeBounds.addTarget(R.id.videoFrame);
-        changeBounds.setDuration(500);
-        changeBounds.setInterpolator(new DecelerateInterpolator(2.0f));
-        set.addTransition(changeBounds);
-
-        ChangeImageTransform changeImageTransform = new ChangeImageTransform();
-        changeImageTransform.addTarget(R.id.videoImageView);
-        changeImageTransform.setDuration(500);
-        set.addTransition(changeImageTransform);
-
-        Fade fadeIn = new Fade(Fade.IN);
-        fadeIn.addTarget(R.id.recyclerView);
-        fadeIn.addTarget(R.id.toolbar);
-        fadeIn.addTarget(R.id.addImageView);
-        fadeIn.addTarget(R.id.videoMask);
-        fadeIn.addTarget(R.id.collapsingToolbarLayout);
-        fadeIn.setStartDelay(500);
-        set.addTransition(fadeIn);
-
-        Slide slide = new Slide(Gravity.BOTTOM);
-        slide.addTarget(R.id.recyclerView);
-        slide.setDuration(500);
-        set.addTransition(slide);
-
-        set.setOrdering(TransitionSet.ORDERING_TOGETHER);
-        set.setDuration(800);
-
-        float oldRadiusRate = ((RadioCornerImageView) sceneRoot.findViewById(R.id.videoImageView)).getCornerRadio();
+        TransitionSet set =(TransitionSet) TransitionInflater.from(this).inflateTransition(R.transition.activity_tag_transition);
         TransitionManager.go(scene, set);
-        sceneRoot.setFitsSystemWindows(true);
-        float newRadiusRate = ((RadioCornerImageView) sceneRoot.findViewById(R.id.videoImageView)).getCornerRadio();
-        ObjectAnimator radiusAnimator = ObjectAnimator.ofFloat(sceneRoot.findViewById(R.id.videoImageView),
-                "cornerRadio", oldRadiusRate, newRadiusRate).setDuration(500);
-        radiusAnimator.setEvaluator(new FloatEvaluator());
-        radiusAnimator.setInterpolator(new AccelerateInterpolator());
-        radiusAnimator.start();
 
         afterTransition();
 
