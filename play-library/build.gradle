@@ -24,7 +24,7 @@ android {
     }
 }
 
-def SUPPORT_VERSION = '23.1.0'
+def SUPPORT_VERSION = '23.1.1'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
