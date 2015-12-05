@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.play;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,17 +20,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import co.yishun.library.OnemomentPlayerView;
-import co.yishun.library.resource.BaseVideoResource;
-import co.yishun.library.resource.LocalVideo;
-import co.yishun.library.resource.TaggedVideo;
-import co.yishun.library.resource.VideoResource;
+import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
-import co.yishun.onemoment.app.api.loader.VideoDownloadTask;
+import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -52,38 +50,42 @@ public class PlayTagVideoFragment extends BaseFragment {
     OnemomentPlayerView videoPlayView;
     @ViewById
     TextView voteCountTextView;
+    private Context mContext;
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @AfterViews
     void setup() {
-        VideoTaskManager.getInstance().init(this.getActivity());
         Log.d("oneVideo", oneVideo.toString());
-        Picasso.with(this.getActivity()).load(oneVideo.avatar).into(avatar);
+        Picasso.with(mContext).load(oneVideo.avatar).into(avatar);
 
         usernameTextView.setText(oneVideo.nickname);
 
         videoPlayView.setSinglePlay(true);
 
-        File fileSynced = FileUtil.getWorldVideoStoreFile(this.getActivity(), oneVideo);
-        if (fileSynced.exists()) {
-            addVideo(oneVideo, fileSynced);
-        } else {
-            VideoDownloadTask task = VideoTaskManager.getInstance().addDownloadTask(null, oneVideo);
-            task.setListener(this::addVideo);
-        }
+        new VideoTask(mContext, oneVideo, VideoTask.TYPE_VIDEO_ONLY)
+                .setVideoListener(this::addVideo).start();
 
         refreshUserInfo();
     }
 
     @UiThread
-    void addVideo(Video tagVideo, File fileSynced) {
-        VideoResource videoResource = new LocalVideo(new BaseVideoResource(), fileSynced.getPath());
-        List<VideoTag> tags = new LinkedList<VideoTag>();
-        for (int i = 0; i < tagVideo.tags.size(); i++) {
-            tags.add(new BaseVideoTag(tagVideo.tags.get(i).name, tagVideo.tags.get(i).x / 100f, tagVideo.tags.get(i).y / 100f));
+    void addVideo(Video video) {
+        File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
+        List<VideoTag> tags = new LinkedList<>();
+        for (int i = 0; i < video.tags.size(); i++) {
+            tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x / 100f, video.tags.get(i).y / 100f));
         }
-        videoResource = new TaggedVideo(videoResource, tags);
+        NetworkVideo videoResource = new NetworkVideo(video.domain + video.fileName, tags);
+        videoResource.setPath(videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);
+        videoPlayView.setPreview(FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB));
+        videoPlayView.addAvatarUrl(((TagVideo) video).avatar);
     }
 
     @Click(R.id.videoPlayView)
@@ -98,33 +100,31 @@ public class PlayTagVideoFragment extends BaseFragment {
     @Click(R.id.voteCountTextView)
     @Background
     void voteClick() {
-        ApiModel model;
+        oneVideo.liked = !oneVideo.liked;
+        oneVideo.likeNum += oneVideo.liked ? 1 : -1;
+        refreshUserInfo();
         if (oneVideo.liked) {
-            model = mWorld.unlikeVideo(oneVideo._id, AccountHelper.getUserInfo(this.getActivity())._id);
+            mWorld.likeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
         } else {
-            model = mWorld.likeVideo(oneVideo._id, AccountHelper.getUserInfo(this.getActivity())._id);
-        }
-        if (model.code == 1) {
-            oneVideo.liked = !oneVideo.liked;
-            if (oneVideo.liked) {
-                oneVideo.likeNum++;
-            } else {
-                oneVideo.likeNum--;
-            }
-            refreshUserInfo();
+            mWorld.unlikeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
         }
     }
 
     @UiThread
     void refreshUserInfo() {
         if (oneVideo.liked) {
-            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall_Inverse);
+            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall_Inverse);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
         } else {
-            voteCountTextView.setTextAppearance(this.getActivity(), R.style.TextAppearance_PlaySmall);
+            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
         }
         voteCountTextView.setText(oneVideo.likeNum + "");
+    }
+
+    @Override
+    public void setPageInfo() {
+        mIsPage = false;
     }
 
     @Override

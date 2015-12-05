@@ -55,7 +55,7 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     @Override
     protected void onResume() {
         super.onResume();
-        VideoTaskManager.getInstance().init(this);
+//        VideoTaskManager.getInstance().init(this);
     }
 
     @AfterViews
@@ -73,6 +73,11 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return null;
+    }
+
+    @Override
+    public void setPageInfo() {
+        mPageName = "VideoVotedUpActivity";
     }
 
     @Override

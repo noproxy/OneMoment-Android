@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
+import com.umeng.analytics.MobclickAgent;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
@@ -35,6 +36,7 @@ import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
+import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.home.DiaryFragment_;
@@ -132,10 +134,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
         floatingActionMenu = new WeakReference<>(fam);
         fam.findViewById(R.id.worldFABBtn).setOnClickListener(v -> {
+            MobclickAgent.onEvent(this, Constants.UmengData.FAB_WORLD_CLICK);
             startShoot(v, true);
             fam.close(false);
         });
         fam.findViewById(R.id.diaryFABBtn).setOnClickListener(v -> {
+            MobclickAgent.onEvent(this, Constants.UmengData.FAB_DIARY_CLICK);
             startShoot(v, false);
             fam.close(false);
         });
@@ -272,6 +276,12 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return floatingActionMenu.get();
+    }
+
+    @Override
+    public void setPageInfo() {
+        mIsPage = false;
+        mPageName = "MainActivity";
     }
 
     @Override

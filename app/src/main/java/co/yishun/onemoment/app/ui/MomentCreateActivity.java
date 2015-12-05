@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.VideoView;
 
@@ -33,11 +34,17 @@ public class MomentCreateActivity extends BaseActivity {
     @Extra boolean forWorld = false;
     @ViewById FrameLayout containerFrameLayout;
     @Extra WorldTag worldTag;
+    private boolean isPrivate;
 
     @Nullable
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return null;
+    }
+
+    @Override
+    public void setPageInfo() {
+        mPageName = "MomentCreateActivity";
     }
 
     @AfterViews
@@ -46,6 +53,10 @@ public class MomentCreateActivity extends BaseActivity {
         View child;
         if (forWorld) {
             child = new PermissionSwitch(this);
+            ((PermissionSwitch)child).setOnCheckedChangeListener((buttonView, isChecked) -> {
+                isPrivate = isChecked;
+                ((PermissionSwitch)child).setChecked(isChecked);
+            });
         } else {
             child = new MomentCountDateView(this);
             setCountTextView();

@@ -222,6 +222,7 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="kCbiUVqj0L2QAo3vHgMefShZ"/>
+        <meta-data android:value="549e2c80fd98c5e4cf000f64" android:name="UMENG_APPKEY"/>
     </application>
 
 </manifest>

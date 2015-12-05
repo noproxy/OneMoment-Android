@@ -42,4 +42,9 @@ public class DiscoveryFragment extends ToolbarFragment implements View.OnClickLi
     @Override protected int getTitleDrawableRes() {
         return R.drawable.pic_explore_tittle;
     }
+
+    @Override
+    public void setPageInfo() {
+        mPageName = "DiscoveryFragment";
+    }
 }

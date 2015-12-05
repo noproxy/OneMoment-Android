@@ -153,4 +153,9 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     public void onUserInfoChange(User info) {
         invalidateUserInfo(info);
     }
+
+    @Override
+    public void setPageInfo() {
+        mPageName = "MeFragment";
+    }
 }

@@ -2,6 +2,7 @@ package co.yishun.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,24 +10,28 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import co.yishun.library.resource.VideoResource;
+import co.yishun.library.resource.NetworkVideo;
 
 /**
  * OnemomentPlayerView
  *
  * @author ZhihaoJun
  */
-public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlaySurfaceView.PlayOneListener {
-    public final static String VIDEO_TAG_VIEW_TAG = "video_tag";
+public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlaySurfaceView.PlayListener {
+    public final static String TAG = "OnemomentPlayerView";
 
     private OnemomentPlaySurfaceView mPlaySurface;
     private AvatarRecyclerView mAvatarView;
+    private ImageView mVideoPreview;
     private ImageView mPlayBtn;
     private PlayTagContainer mTagContainer;
-    private List<VideoResource> mVideoResources = new LinkedList<VideoResource>();
+    private List<NetworkVideo> mVideoResources = new LinkedList<>();
     private OnVideoChangeListener mVideoChangeListener;
     private int mPreparedIndex = 0;
     private int mCompletionIndex = 0;
@@ -34,6 +39,7 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
     private boolean mAutoplay = false;
     private boolean mShowTags = true;
     private boolean mSinglePlay = true;
+    private boolean mLoading = false;
 
     public OnemomentPlayerView(Context context) {
         super(context);
@@ -70,6 +76,7 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
         // get views
         mPlaySurface = (OnemomentPlaySurfaceView) findViewById(R.id.om_video_surface);
         mPlayBtn = (ImageView) findViewById(R.id.om_play_btn);
+        mVideoPreview = (ImageView) findViewById(R.id.om_video_preview);
         mTagContainer = (PlayTagContainer) findViewById(R.id.om_tags_container);
         mAvatarView = (AvatarRecyclerView) findViewById(R.id.om_avatar_recycler_view);
 
@@ -91,14 +98,20 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
             mPlaySurface.setNextVideoResource(mVideoResources.get(1));
             mPreparedIndex = 1;
         }
-        mPlaySurface.fistPrepare();
+        mPlaySurface.prepareFirst();
+    }
+
+    public void setPreview(File largeThumb) {
+        Picasso.with(getContext()).load(largeThumb).into(mVideoPreview);
     }
 
     public void start() {
         if (mVideoResources.size() >= 1) {
+            Log.d(TAG, "start");
             mPlaySurface.start();
             if (mShowPlayBtn) {
                 mPlayBtn.setVisibility(View.INVISIBLE);
+                mVideoPreview.setVisibility(INVISIBLE);
             }
         }
     }
@@ -111,29 +124,31 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
     }
 
     public void stop() {
-        mPlaySurface.stop();
-    }
-
-    public void reset() {
+        mPlaySurface.release();
         if (mShowPlayBtn) {
             mPlayBtn.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void reset() {
+        stop();
+        mVideoPreview.setVisibility(VISIBLE);
         if (mVideoResources.size() >= 1) {
             if (mVideoChangeListener != null) {
                 mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
             }
             mPlaySurface.setVideoResource(mVideoResources.get(0));
             mPreparedIndex = 0;
-            mPlaySurface.fistPrepare();
+            mPlaySurface.prepareFirst();
         }
         if (mVideoResources.size() >= 2) {
             mPlaySurface.setNextVideoResource(mVideoResources.get(1));
             mPreparedIndex = 1;
-            mPlaySurface.nextPrepare();
+            mPlaySurface.prepareNext();
         }
     }
 
-    public void addVideoResource(VideoResource videoResource) {
+    public void addVideoResource(NetworkVideo videoResource) {
         Log.i("[OPV]", "add resource " + videoResource);
         mVideoResources.add(videoResource);
         if (mVideoResources.size() == 1) {
@@ -143,12 +158,25 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
             mPlaySurface.setVideoResource(mVideoResources.get(0));
             mPreparedIndex = 0;
             mTagContainer.setVideoTags(mVideoResources.get(0).getVideoTags());
-            mPlaySurface.fistPrepare();
+            mPlaySurface.prepareFirst();
         }
         if (mVideoResources.size() == 2) {
             mPlaySurface.setNextVideoResource(mVideoResources.get(1));
             mPreparedIndex = 1;
-            mPlaySurface.nextPrepare();
+            mPlaySurface.prepareNext();
+        }
+    }
+
+    public void setToLocal(String url, String path) {
+        for (int i= 0; i<mVideoResources.size(); i ++) {
+            if (TextUtils.equals(mVideoResources.get(i).getUrl(), url)) {
+                mVideoResources.get(i).setPath(path);
+                if (i == mPreparedIndex && mLoading) {
+                    mPlaySurface.setNextVideoResource(mVideoResources.get(mPreparedIndex));
+                    mPlaySurface.prepareNext();
+                }
+                break;
+            }
         }
     }
 
@@ -191,6 +219,18 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
         if (singlePlay) {
             mAvatarView.setVisibility(GONE);
         }
+    }
+
+    @Override
+    public void onPrepared() {
+        Log.d(TAG, "loaded");
+        mLoading = false;
+    }
+
+    @Override
+    public void onPreparing() {
+        Log.d(TAG, "loading");
+        mLoading = true;
     }
 
     @Override

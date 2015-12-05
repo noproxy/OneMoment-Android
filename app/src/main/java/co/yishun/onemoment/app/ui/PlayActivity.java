@@ -57,6 +57,11 @@ public class PlayActivity extends BaseActivity {
         return null;
     }
 
+    @Override
+    public void setPageInfo() {
+        mPageName = "PlayActivity";
+    }
+
     @AfterViews
     void setupView() {
         fragmentManager = getSupportFragmentManager();

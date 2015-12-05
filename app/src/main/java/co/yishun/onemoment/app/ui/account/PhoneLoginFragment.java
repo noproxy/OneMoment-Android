@@ -73,4 +73,8 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
         mActivity.openFragment(PhoneSignUpFragment_.builder().build());
     }
 
+    @Override
+    public void setPageInfo() {
+        mPageName = "PhoneLoginFragment";
+    }
 }

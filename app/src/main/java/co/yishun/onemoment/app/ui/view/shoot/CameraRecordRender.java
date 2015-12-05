@@ -3,11 +3,16 @@ package co.yishun.onemoment.app.ui.view.shoot;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
+import android.media.MediaRecorder;
 import android.opengl.EGL14;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.Message;
 import android.util.Log;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -15,6 +20,8 @@ import javax.microedition.khronos.opengles.GL10;
 import co.yishun.onemoment.app.ui.view.shoot.gles.FullFrameRect;
 import co.yishun.onemoment.app.ui.view.shoot.gles.GlUtil;
 import co.yishun.onemoment.app.ui.view.shoot.video.EncoderConfig;
+import co.yishun.onemoment.app.ui.view.shoot.video.MediaAudioEncoder;
+import co.yishun.onemoment.app.ui.view.shoot.video.MediaMuxerWrapper;
 import co.yishun.onemoment.app.ui.view.shoot.video.TextureMovieEncoder;
 
 import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.FilterType;
@@ -29,6 +36,8 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
     private static final int RECORDING_ON = 1;
     private static final int RECORDING_RESUMED = 2;
     private static final String TAG = "CameraRecordRender";
+    private static final String DIR_NAME = "AVRecSample";
+    private static final SimpleDateFormat mDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault());
 
     private final Context mApplicationContext;
     private final CameraGLSurfaceView.CameraHandler mCameraHandler;
@@ -48,14 +57,27 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
     private float mMvpScaleX = 1f, mMvpScaleY = 1f;
     private int mSurfaceWidth, mSurfaceHeight;
     private int mIncomingWidth, mIncomingHeight;
+    private MediaMuxerWrapper mMediaMuxerWrapper;
+    private MediaAudioEncoder mAudioEncoder;
     private FilterType[] types = FilterType.values();
 
-    public CameraRecordRender(Context context, CameraGLSurfaceView.CameraHandler cameraHandler) {
+    public CameraRecordRender(Context context, CameraGLSurfaceView.CameraHandler cameraHandler, EncoderConfig config) {
         mApplicationContext = context.getApplicationContext();
         mCameraHandler = cameraHandler;
         mCurrentFilterType = mNewFilterType = FilterType.Normal;
-        mVideoEncoder = TextureMovieEncoder.getInstance();
+//        mVideoEncoder = TextureMovieEncoder.getInstance();
+        mEncoderConfig = config;
+        try {
+            mMediaMuxerWrapper = new MediaMuxerWrapper(config.mOutputFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mVideoEncoder = new TextureMovieEncoder(context.getApplicationContext(), mEncoderConfig, mMediaMuxerWrapper);
+        mAudioEncoder = new MediaAudioEncoder(mMediaMuxerWrapper);
+        mMediaMuxerWrapper.setAudioEncoder(mAudioEncoder);
+        mMediaMuxerWrapper.setVideoEncoder(mVideoEncoder);
     }
+
 
     public void setRecordingEnabled(boolean recordingEnabled) {
         mRecordingEnabled = recordingEnabled;
@@ -84,11 +106,6 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
             mFullScreen.scaleMVPMatrix(mMvpScaleX, mMvpScaleY);
         }
     }
-
-    public void setEncoderConfig(EncoderConfig encoderConfig) {
-        mEncoderConfig = encoderConfig;
-    }
-
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -135,12 +152,18 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
     }
 
     private void videoOnDrawFrame(int textureId, float[] texMatrix, long timestamp) {
-        if (mRecordingEnabled && mEncoderConfig != null) {
+        if (mRecordingEnabled) {
             switch (mRecordingStatus) {
                 case RECORDING_OFF:
                     Log.i(TAG, "RECORDING_OFF");
                     mEncoderConfig.updateEglContext(EGL14.eglGetCurrentContext());
-                    mVideoEncoder.startRecording(mEncoderConfig);
+//                    mVideoEncoder.startRecording();
+                    try {
+                        mMediaMuxerWrapper.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mMediaMuxerWrapper.startRecording();
                     mVideoEncoder.setTextureId(textureId);
                     mVideoEncoder.scaleMVPMatrix(mMvpScaleX, mMvpScaleY);
                     mRecordingStatus = RECORDING_ON;
@@ -165,7 +188,8 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
                 case RECORDING_ON:
                 case RECORDING_RESUMED:
                     Log.i(TAG, "else RECORDING_RESUME");
-                    mVideoEncoder.stopRecording(() -> mCameraHandler.sendEmptyMessage(CameraGLSurfaceView.CameraHandler.END));
+//                    mVideoEncoder.stopRecording(() -> mCameraHandler.sendEmptyMessage(CameraGLSurfaceView.CameraHandler.END));
+                    mMediaMuxerWrapper.stopRecording(() -> mCameraHandler.sendEmptyMessage(CameraGLSurfaceView.CameraHandler.END));
                     mRecordingStatus = RECORDING_OFF;
                     break;
                 case RECORDING_OFF:
