@@ -77,7 +77,7 @@ android {
     }
 }
 
-def SUPPORT_VERSION = '23.1.0'
+def SUPPORT_VERSION = '23.1.1'
 
 dependencies {
     // avoid method number limit
