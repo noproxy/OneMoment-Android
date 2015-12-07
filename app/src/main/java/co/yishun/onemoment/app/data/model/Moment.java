@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.data.model;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -10,9 +11,11 @@ import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.Contract;
@@ -24,7 +27,7 @@ import co.yishun.onemoment.app.data.compat.Contract;
  * Created by Carlos on 2/13/15.
  */
 @DatabaseTable(tableName = Contract.Moment.TABLE_NAME)
-public class Moment implements Serializable {
+public class Moment implements Serializable, QiniuKeyProvider {
     private static final String TAG = "CompatMoment";
     private static FileChannel channel;
 
@@ -115,6 +118,10 @@ public class Moment implements Serializable {
         } else return false;
     }
 
+    @Override public String getName() {
+        return;
+    }
+
     public interface MomentProvider {
         String getPath();
 
@@ -123,5 +130,67 @@ public class Moment implements Serializable {
         String getOwnerID();
 
         long getUnixTimeStamp();
+    }
+
+    public static class MomentBuilder {
+        private static final String TAG = "MomentBuilder";
+        private String mPath;
+        private String mThumbPath = null;
+        private String mLargeThumbPath = null;
+        private String mOwner = "LOC";//have default value
+
+        public MomentBuilder setPath(String path) {
+            mPath = path;
+            return this;
+        }
+
+        public MomentBuilder setThumbPath(String path) {
+            mThumbPath = path;
+            return this;
+        }
+
+        public MomentBuilder setLargeThumbPath(String path) {
+            mLargeThumbPath = path;
+            return this;
+        }
+
+        /**
+         * set owner of the moment, null to set public
+         *
+         * @param userId
+         * @return
+         */
+        public MomentBuilder setOwner(@Nullable String userId) {
+            if (userId == null) {
+                mOwner = "LOC";
+            } else
+                mOwner = userId;
+            return this;
+        }
+
+        public Moment build() {
+            check();
+            Moment m = new Moment();
+            m.time = new SimpleDateFormat(Constants.TIME_FORMAT).format(new Date());
+            m.path = mPath;
+            m.thumbPath = mThumbPath;
+            m.largeThumbPath = mLargeThumbPath;
+            m.owner = mOwner;
+            m.timeStamp = m.getUnixTimeStamp();
+            return m;
+        }
+
+        private void check() {
+            if (mPath == null)
+                throw new IllegalStateException("field value is error");
+            if (mThumbPath == null)
+                Log.w(TAG, "null thumb path");
+            if (mLargeThumbPath == null)
+                Log.w(TAG, "null large thumb path");
+            if (mOwner == null) {
+                Log.e(TAG, "null owner, has set LOC");
+                mOwner = "LOC";
+            }
+        }
     }
 }
