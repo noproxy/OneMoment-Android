@@ -195,7 +195,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
 
     @Background
     void upload(){
-
+        //TODO what this method is used for? by Carlos
     }
 
     @Override
