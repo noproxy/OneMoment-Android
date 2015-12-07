@@ -1,56 +1,72 @@
 package co.yishun.onemoment.app.data.model;
 
-import java.util.List;
+import android.support.annotation.Nullable;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+import java.io.File;
+import java.io.Serializable;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
+
+import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.RealmHelper;
-import io.realm.RealmObject;
+import co.yishun.onemoment.app.data.compat.Contract;
+
 
 /**
- * This is local moment stored at Database.
+ * This bean is used in Ormlite and OrmliteProvider.
  * <p>
- * Created by Carlos on 2015/10/3.
+ * Created by Carlos on 2/13/15.
  */
-public class Moment extends RealmObject {
+@DatabaseTable(tableName = Contract.Moment.TABLE_NAME)
+public class Moment implements Serializable {
     private static final String TAG = "CompatMoment";
-    private String thumbPath;
-    private String largeThumbPath;
-    private String path;
-//    @PrimaryKey private int id;// old
+    private static FileChannel channel;
+
+    //    public final static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static FileLock lock;
+    @DatabaseField String path;
+    @DatabaseField String thumbPath;
+    @DatabaseField String largeThumbPath;
+    @DatabaseField(columnName = Contract.Moment._ID, generatedId = true) private int id;
     /**
      * add at database version 2.0
      */
-    private String owner;
-    private String time;
-    private long timeStamp;
+    @DatabaseField private String owner;
+    @DatabaseField private String time;
+    @DatabaseField private long timeStamp;
 
-    public static Moment fromMomentProvider(MomentProvider momentProvider) {
-        Moment moment = new Moment();
-        moment.path = momentProvider.getPath();
-        moment.timeStamp = momentProvider.getUnixTimeStamp();
-        moment.time = momentProvider.getTime();
-        moment.owner = momentProvider.getOwnerID();
-
-        return moment;
+    public Moment() {
+        fixTimeStampAndTime();
+    /*keep for ormlite*/
     }
 
     public static List<OMLocalVideoTag> readTags(Moment moment) {
         return RealmHelper.getTags(moment.getTime());
     }
 
-    public String getThumbPath() {
-        return thumbPath;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setThumbPath(String thumbPath) {
-        this.thumbPath = thumbPath;
+    /**
+     * Set the owner of the moment, null to set it public.
+     *
+     * @param owner id of the owner
+     */
+    public void setOwner(@Nullable String owner) {
+        if (owner == null) {
+            this.owner = "LOC";
+        } else this.owner = owner;
     }
 
-    public String getLargeThumbPath() {
-        return largeThumbPath;
-    }
-
-    public void setLargeThumbPath(String largeThumbPath) {
-        this.largeThumbPath = largeThumbPath;
+    public boolean isPublic() {
+        return owner.startsWith("LOC");
     }
 
     public String getPath() {
@@ -61,31 +77,43 @@ public class Moment extends RealmObject {
         this.path = path;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public File getFile() {
+        return new File(path);
     }
 
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public String getOwnerID() {
+        return owner;
     }
 
-    public long getTimeStamp() {
+    public long getUnixTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
+    @Override
+    public String toString() {
+        return "CompatMoment{" +
+                "path='" + path + '\'' +
+                ", owner='" + owner + '\'' +
+                ", time='" + time + '\'' +
+                '}';
     }
 
-    //TODO handle thumb path
+    /**
+     * To fix TimeStamp from millisecond to second
+     *
+     * @return whether timestamp is wrong
+     */
+    public boolean fixTimeStampAndTime() {
+        if (String.valueOf(timeStamp).length() > 10) {
+            timeStamp = timeStamp / 1000;
+            time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(timeStamp * 1000);
+            return true;
+        } else return false;
+    }
 
     public interface MomentProvider {
         String getPath();
