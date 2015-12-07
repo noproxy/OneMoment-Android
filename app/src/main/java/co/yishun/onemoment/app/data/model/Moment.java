@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.data.model;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -103,6 +102,14 @@ public class Moment implements Serializable, QiniuKeyProvider {
         return this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp();
     }
 
+    public void setThumbPath(String thumbPath) {
+        this.thumbPath = thumbPath;
+    }
+
+    public void setLargeThumbPath(String largeThumbPath) {
+        this.largeThumbPath = largeThumbPath;
+    }
+
     public interface MomentProvider {
         String getPath();
 
@@ -116,8 +123,6 @@ public class Moment implements Serializable, QiniuKeyProvider {
     public static class MomentBuilder {
         private static final String TAG = "MomentBuilder";
         private String mPath;
-        private String mThumbPath = null;
-        private String mLargeThumbPath = null;
         private Context mContext;
 
         public MomentBuilder(Context context) {
@@ -129,23 +134,11 @@ public class Moment implements Serializable, QiniuKeyProvider {
             return this;
         }
 
-        public MomentBuilder setThumbPath(String path) {
-            mThumbPath = path;
-            return this;
-        }
-
-        public MomentBuilder setLargeThumbPath(String path) {
-            mLargeThumbPath = path;
-            return this;
-        }
-
         public Moment build() {
             check();
             Moment m = new Moment();
             m.time = new SimpleDateFormat(Constants.TIME_FORMAT).format(new Date());
             m.path = mPath;
-            m.thumbPath = mThumbPath;
-            m.largeThumbPath = mLargeThumbPath;
             m.owner = AccountHelper.getAccountId(mContext);
             m.timeStamp = m.getUnixTimeStamp();
             return m;
@@ -153,11 +146,7 @@ public class Moment implements Serializable, QiniuKeyProvider {
 
         private void check() {
             if (mPath == null)
-                throw new IllegalStateException("field value is error");
-            if (mThumbPath == null)
-                Log.w(TAG, "null thumb path");
-            if (mLargeThumbPath == null)
-                Log.w(TAG, "null large thumb path");
+                throw new IllegalStateException("field mPath is error");
         }
     }
 }
