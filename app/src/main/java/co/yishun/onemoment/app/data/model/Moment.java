@@ -1,6 +1,6 @@
 package co.yishun.onemoment.app.data.model;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
 import android.util.Log;
 
 import com.j256.ormlite.field.DatabaseField;
@@ -8,13 +8,13 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.File;
 import java.io.Serializable;
-import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.RealmHelper;
@@ -26,11 +26,10 @@ import co.yishun.onemoment.app.data.compat.Contract;
  * <p>
  * Created by Carlos on 2/13/15.
  */
-//TODO solve owner issue, because new version don't need LOC any more.
 @DatabaseTable(tableName = Contract.Moment.TABLE_NAME)
 public class Moment implements Serializable, QiniuKeyProvider {
-    private static final String TAG = "CompatMoment";
-    private static FileChannel channel;
+    private static final String TAG = "Moment";
+    //    private static FileChannel channel;
 
     //    public final static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private static FileLock lock;
@@ -52,25 +51,6 @@ public class Moment implements Serializable, QiniuKeyProvider {
 
     public static List<OMLocalVideoTag> readTags(Moment moment) {
         return RealmHelper.getTags(moment.getTime());
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    /**
-     * Set the owner of the moment, null to set it public.
-     *
-     * @param owner id of the owner
-     */
-    public void setOwner(@Nullable String owner) {
-        if (owner == null) {
-            this.owner = "LOC";
-        } else this.owner = owner;
-    }
-
-    public boolean isPublic() {
-        return owner.startsWith("LOC");
     }
 
     public String getPath() {
@@ -120,7 +100,7 @@ public class Moment implements Serializable, QiniuKeyProvider {
     }
 
     @Override public String getName() {
-        return;
+        return this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp();
     }
 
     public interface MomentProvider {
@@ -138,7 +118,11 @@ public class Moment implements Serializable, QiniuKeyProvider {
         private String mPath;
         private String mThumbPath = null;
         private String mLargeThumbPath = null;
-        private String mOwner = "LOC";//have default value
+        private Context mContext;
+
+        public MomentBuilder(Context context) {
+            mContext = context;
+        }
 
         public MomentBuilder setPath(String path) {
             mPath = path;
@@ -155,20 +139,6 @@ public class Moment implements Serializable, QiniuKeyProvider {
             return this;
         }
 
-        /**
-         * set owner of the moment, null to set public
-         *
-         * @param userId
-         * @return
-         */
-        public MomentBuilder setOwner(@Nullable String userId) {
-            if (userId == null) {
-                mOwner = "LOC";
-            } else
-                mOwner = userId;
-            return this;
-        }
-
         public Moment build() {
             check();
             Moment m = new Moment();
@@ -176,7 +146,7 @@ public class Moment implements Serializable, QiniuKeyProvider {
             m.path = mPath;
             m.thumbPath = mThumbPath;
             m.largeThumbPath = mLargeThumbPath;
-            m.owner = mOwner;
+            m.owner = AccountHelper.getAccountId(mContext);
             m.timeStamp = m.getUnixTimeStamp();
             return m;
         }
@@ -188,10 +158,6 @@ public class Moment implements Serializable, QiniuKeyProvider {
                 Log.w(TAG, "null thumb path");
             if (mLargeThumbPath == null)
                 Log.w(TAG, "null large thumb path");
-            if (mOwner == null) {
-                Log.e(TAG, "null owner, has set LOC");
-                mOwner = "LOC";
-            }
         }
     }
 }
