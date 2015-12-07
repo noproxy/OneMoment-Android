@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.Where;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -30,12 +32,17 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -45,6 +52,11 @@ import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.VideoUtil;
+import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
+import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -70,9 +82,9 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
     @ViewById Button nextBtn;
 
     TagSearchAdapter adapter;
+    @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
     private boolean searching = false;
     private LocationClient locationClient;
-
     private float tagX;
     private float tagY;
 
@@ -188,9 +200,38 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         return true;
     }
 
-    @Click
-    void nextBtnClicked(View view) {
+    @Click void nextBtnClicked(View view) {
+        Moment moment = new Moment.MomentBuilder(this).setPath(videoPath).build();
+        try {
+            String thumbPath = VideoUtil.createThumbImage(this, moment, videoPath);
+            moment.setThumbPath(thumbPath);
+            String largeThumbPath = VideoUtil.createLargeThumbImage(this, moment, videoPath);
+            moment.setLargeThumbPath(largeThumbPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Calendar.getInstance().getTime());
+        List<Moment> result;
+        Where<Moment, Integer> w = momentDao.queryBuilder().where();
+        try {
+            result = w.and(w.eq("time", time), w.eq("owner", AccountHelper.getUserInfo(this)._id)).query();
+
+            Log.i(TAG, "delete old today moment: " + Arrays.toString(result.toArray()));
+
+            if (1 == momentDao.create(moment)) {
+                Log.i(TAG, "new moment: " + moment);
+                momentDao.delete(result);
+                for (Moment mToDe : result) {
+                    FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.LARGE_THUMB).delete();
+                    FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.MICRO_THUMB).delete();
+                    mToDe.getFile().delete();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //TODO need any longer? Moment.unlock();
     }
 
     @Background
