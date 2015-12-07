@@ -26,6 +26,7 @@ import co.yishun.onemoment.app.data.compat.Contract;
  * <p>
  * Created by Carlos on 2/13/15.
  */
+//TODO solve owner issue, because new version don't need LOC any more.
 @DatabaseTable(tableName = Contract.Moment.TABLE_NAME)
 public class Moment implements Serializable, QiniuKeyProvider {
     private static final String TAG = "CompatMoment";
