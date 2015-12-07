@@ -57,28 +57,17 @@ import co.yishun.onemoment.app.ui.controller.TagSearchController_;
 public class TagCreateActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<String>, TextView.OnEditorActionListener, TextWatcher {
     public static final int REQUEST_CODE_SEARCH = 1;
     private static final String TAG = "TagCreateActivity";
-    @ViewById
-    Toolbar toolbar;
-    @ViewById
-    EditText queryText;
-    @ViewById
-    ImageView addView;
-    @Extra
-    WorldTag worldTag;
-    @Extra
-    boolean forWorld = false;
-    @Extra
-    String videoPath;
-    @ViewById
-    EditTagContainer editTagContainer;
-    @ViewById
-    ImageView momentPreviewImageView;
-    @ViewById
-    FrameLayout searchFrame;
-    @ViewById
-    RecyclerView recyclerView;
-    @ViewById
-    Button nextBtn;
+    @ViewById Toolbar toolbar;
+    @ViewById EditText queryText;
+    @ViewById ImageView addView;
+    @Extra WorldTag worldTag;
+    @Extra boolean forWorld = false;
+    @Extra String videoPath;
+    @ViewById EditTagContainer editTagContainer;
+    @ViewById ImageView momentPreviewImageView;
+    @ViewById FrameLayout searchFrame;
+    @ViewById RecyclerView recyclerView;
+    @ViewById Button nextBtn;
 
     TagSearchAdapter adapter;
     private boolean searching = false;
@@ -87,8 +76,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
     private float tagX;
     private float tagY;
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return null;
     }
