@@ -52,13 +52,6 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         init();
     }
 
-
-
-
-    void onRecordEnd() {
-
-    }
-
     private void init() {
         initHandler();
 
