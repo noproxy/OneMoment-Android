@@ -1,7 +1,6 @@
 package co.yishun.library.calendarlibrary;
 
 import android.animation.AnimatorInflater;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -13,7 +12,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -39,22 +37,6 @@ public class DayView extends ImageView implements View.OnClickListener {
     public DayView(Context context, int day) {
         super(context);
         init(day);
-    }
-
-    public DayView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(12);
-    }
-
-    public DayView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(12);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DayView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(12);
     }
 
     private static void setSelectedDayView(DayView dayView) {
