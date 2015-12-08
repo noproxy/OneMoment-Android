@@ -118,7 +118,7 @@ dependencies {
     compile 'com.github.clans:fab:1.6.1'
 
     compile 'com.google.guava:guava:18.0'
-    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'com.google.code.gson:gson:2.4'
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile 'com.squareup.retrofit:retrofit:1.9.0'
