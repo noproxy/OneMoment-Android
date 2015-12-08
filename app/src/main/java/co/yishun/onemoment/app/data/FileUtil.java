@@ -87,8 +87,11 @@ public class FileUtil {
     }
 
     private static File getMediaStoreFile(Context context, File dir, Type type, @Nullable Long unixTimeStamp) {
+        if (unixTimeStamp == null) {
+            unixTimeStamp = new Date().getTime() / 1000;
+        }
         Log.i(TAG, "timestamp: " + unixTimeStamp);
-        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(unixTimeStamp == null ? new Date() : unixTimeStamp * 1000);
+        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(unixTimeStamp * 1000);
         Log.i(TAG, "formatted time: " + time);
         return new File(dir, type.getPrefix(context) + time + URL_HYPHEN + unixTimeStamp + type.getSuffix());
     }
@@ -152,7 +155,7 @@ public class FileUtil {
     }
 
     public static File getVideoCacheFile(Context context) {
-        return new File(getCacheDirectory(context, true), "video-" + System.currentTimeMillis() + ".mp4");
+        return new File(getCacheDirectory(context, false), "video-" + System.currentTimeMillis() + ".mp4");
     }
 
     private static File getCacheDirectory(Context context, boolean preferExternal) {
