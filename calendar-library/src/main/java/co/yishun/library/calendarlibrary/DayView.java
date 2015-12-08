@@ -133,6 +133,8 @@ public class DayView extends ImageView implements View.OnClickListener {
         canvas.drawText(day, x, y, mTextPaint);
     }
 
+    //TODO  test performance
+    //TODO change selected effect
     @Override public void setImageBitmap(@NonNull Bitmap bitmap) {
 
         Bitmap circleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
