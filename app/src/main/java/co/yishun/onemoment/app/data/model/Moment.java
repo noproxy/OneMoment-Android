@@ -77,12 +77,15 @@ public class Moment implements Serializable, QiniuKeyProvider {
         return timeStamp;
     }
 
-    @Override
-    public String toString() {
-        return "CompatMoment{" +
+    @Override public String toString() {
+        return "Moment{" +
                 "path='" + path + '\'' +
+                ", thumbPath='" + thumbPath + '\'' +
+                ", largeThumbPath='" + largeThumbPath + '\'' +
+                ", id=" + id +
                 ", owner='" + owner + '\'' +
                 ", time='" + time + '\'' +
+                ", timeStamp=" + timeStamp +
                 '}';
     }
 
