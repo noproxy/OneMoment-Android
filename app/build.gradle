@@ -219,7 +219,7 @@ dependencies {
 }
 
 dependencies {
-    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.umeng.analytics:analytics:5.6.1'
 }
 // https://www.reddit.com/r/androiddev/comments/3dnibt/support_library_2221_released/
 configurations.all() {
