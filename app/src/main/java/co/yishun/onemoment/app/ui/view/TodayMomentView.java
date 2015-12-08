@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -72,6 +73,7 @@ public class TodayMomentView extends RelativeLayout {
     }
 
     public static class TodayMoment {
+        private static final String TAG = "TodayMoment";
         private String date;
         private Moment moment;
         private String tag;
@@ -80,6 +82,7 @@ public class TodayMomentView extends RelativeLayout {
         }
 
         public static TodayMoment noMomentToday(Date date) {
+            Log.i(TAG, "no moment today: " + date);
             TodayMoment todayMoment = new TodayMoment();
             todayMoment.date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(date);
             todayMoment.tag = null;
@@ -87,6 +90,7 @@ public class TodayMomentView extends RelativeLayout {
         }
 
         public static TodayMoment momentTodayIs(Moment moment) {
+            Log.i(TAG, "momentTodayIs: " + moment);
             TodayMoment todayMoment = new TodayMoment();
             todayMoment.moment = moment;
             todayMoment.date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(moment.getUnixTimeStamp() * 1000);
