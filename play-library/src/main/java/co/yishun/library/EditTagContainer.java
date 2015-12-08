@@ -5,11 +5,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import co.yishun.library.tag.VideoTag;
 
@@ -51,6 +49,10 @@ public class EditTagContainer extends TagContainer {
                         videoTags.remove(tagViews.indexOf(v));
                         tagViews.remove(v);
                         removeView(v);
+                    } else {
+                        int index = tagViews.indexOf(v);
+                        videoTags.get(index).setX(v.getX() / mSize * 100);
+                        videoTags.get(index).setY(v.getY() / mSize * 100);
                     }
                     return true;
             }
