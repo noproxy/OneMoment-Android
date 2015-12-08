@@ -26,6 +26,7 @@ import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import co.yishun.library.calendarlibrary.DayView;
@@ -36,21 +37,24 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
+import co.yishun.onemoment.app.ui.view.TodayMomentView;
 
 /**
  * Created by yyz on 7/25/15.
  */
 
 @EFragment
-public class DiaryFragment extends ToolbarFragment implements MomentMonthView.MonthAdapter {
+public class DiaryFragment extends ToolbarFragment implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
     private static final String TAG = "DiaryFragment";
     @ViewById MomentCalendar momentCalendar;
+    @ViewById TodayMomentView todayMomentView;
 
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
 
     @AfterViews
     void setCalendar() {
         momentCalendar.setAdapter(this);
+        DayView.setOnMomentSelectedListener(this);
     }
 
     @Nullable
@@ -93,6 +97,7 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
         try {
             Moment moment = momentDao.queryBuilder().where().eq("time", time).queryForFirst();
             if (moment != null) {
+                dayView.setTag(moment);
                 Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(new Target() {
                     @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         dayView.setImageBitmap(bitmap);
@@ -110,6 +115,16 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override public void onSelected(DayView dayView) {
+        Moment moment = (Moment) dayView.getTag();
+        if (moment != null) {
+            todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.momentTodayIs(moment));
+        } else {
+            todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.noMomentToday(new Date()));
+            // TODO everyday can be select, update calendar selection.
         }
     }
 }
