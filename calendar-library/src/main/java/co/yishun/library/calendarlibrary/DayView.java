@@ -3,19 +3,23 @@ package co.yishun.library.calendarlibrary;
 import android.animation.AnimatorInflater;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 /**
  * Created by yyz on 7/19/15.
  */
-public class DayView extends View implements View.OnClickListener {
+public class DayView extends ImageView implements View.OnClickListener {
 
     private static final String TAG = "DayView";
     private static DayView mSelectedDayView = null;
@@ -99,16 +103,12 @@ public class DayView extends View implements View.OnClickListener {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int h = getMeasuredHeight();
-        int w = getMeasuredWidth();
-        Log.i(TAG, "h: " + h + ", w: " + w);
-
         mTextPaint.getTextBounds(day, 0, day.length(), mTextRect);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
         final float ox = canvas.getWidth() / 2;
         final float oy = canvas.getHeight() / 2;
         final float r = Math.min(ox, oy);
@@ -131,6 +131,20 @@ public class DayView extends View implements View.OnClickListener {
         final float y = oy + mTextRect.height() / 2;
 
         canvas.drawText(day, x, y, mTextPaint);
+    }
+
+    @Override public void setImageBitmap(@NonNull Bitmap bitmap) {
+
+        Bitmap circleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        Paint paint = new Paint();
+        paint.setShader(shader);
+        paint.setAntiAlias(true);
+        Canvas c = new Canvas(circleBitmap);
+        c.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
+
+        super.setImageBitmap(circleBitmap);
     }
 
     @Override

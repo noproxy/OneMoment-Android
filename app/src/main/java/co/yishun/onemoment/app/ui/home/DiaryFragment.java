@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.ui.home;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.j256.ormlite.dao.Dao;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -90,7 +93,19 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
         try {
             Moment moment = momentDao.queryBuilder().where().eq("time", time).queryForFirst();
             if (moment != null) {
-                Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(dayView);
+                Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(new Target() {
+                    @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        dayView.setImageBitmap(bitmap);
+                    }
+
+                    @Override public void onBitmapFailed(Drawable errorDrawable) {
+
+                    }
+
+                    @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
                 Log.i(TAG, "moment found: " + moment.getTime());
             }
         } catch (SQLException e) {
