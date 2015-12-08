@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -23,6 +24,7 @@ public class DayView extends ImageView implements View.OnClickListener {
 
     private static final String TAG = "DayView";
     private static DayView mSelectedDayView = null;
+    private static OnMomentSelectedListener mMomentSelectedListener;
     private Paint mBackgroundPaint;
     private TextPaint mTextPaint;
     private String day;
@@ -55,8 +57,18 @@ public class DayView extends ImageView implements View.OnClickListener {
         init(12);
     }
 
-    public static DayView getSelectedDayView() {
-        return mSelectedDayView;
+    private static void setSelectedDayView(DayView dayView) {
+        if (mSelectedDayView != null) {
+            mSelectedDayView.setSelected(false);
+        }
+        mSelectedDayView = dayView;
+        if (mMomentSelectedListener != null) {
+            mMomentSelectedListener.onSelected(dayView);
+        }
+    }
+
+    public static void setOnMomentSelectedListener(@Nullable OnMomentSelectedListener listener) {
+        mMomentSelectedListener = listener;
     }
 
     @Override
@@ -65,10 +77,7 @@ public class DayView extends ImageView implements View.OnClickListener {
         if (selected) {
             // avoid circular
             if (!isEnabled() || mTimeStatus == TimeStatus.FUTURE) return;
-            if (mSelectedDayView != null) {
-                mSelectedDayView.setSelected(false);
-            }
-            mSelectedDayView = this;
+            setSelectedDayView(this);
         }
         super.setSelected(selected);
     }
@@ -100,8 +109,7 @@ public class DayView extends ImageView implements View.OnClickListener {
         super.setOnClickListener(this);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mTextPaint.getTextBounds(day, 0, day.length(), mTextRect);
     }
@@ -149,8 +157,7 @@ public class DayView extends ImageView implements View.OnClickListener {
         super.setImageBitmap(circleBitmap);
     }
 
-    @Override
-    public void setOnClickListener(OnClickListener l) {
+    @Override public void setOnClickListener(OnClickListener l) {
         throw new UnsupportedOperationException("You cannot call this");
     }
 
@@ -161,5 +168,9 @@ public class DayView extends ImageView implements View.OnClickListener {
 
     public enum TimeStatus {
         TODAY, PAST, FUTURE
+    }
+
+    public interface OnMomentSelectedListener {
+        void onSelected(DayView dayView);
     }
 }
