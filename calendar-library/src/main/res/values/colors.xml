@@ -10,6 +10,7 @@
     <color name="bgCheckedColor">#ff9f3e</color>
 
     <color name="colorOrange">#ff9f3e</color>
+    <color name="colorOrangeTransparent">#60ff9f3e</color>
     <color name="colorWhite">#fff</color>
     <color name="colorBlack">#000</color>
     <color name="colorGray">#bfbfbf</color>

@@ -32,6 +32,7 @@ public class DayView extends ImageView implements View.OnClickListener {
     private int WHITE = getResources().getColor(R.color.colorWhite);
     private int GRAY = getResources().getColor(R.color.colorGray);
     private int ORANGE = getResources().getColor(R.color.colorOrange);
+    private int ORANGE_TRANSPARENT = getResources().getColor(R.color.colorOrangeTransparent);
     private float mTextSize = getResources().getDimension(R.dimen.MMV_dayNumTextSize);
 
     public DayView(Context context, int day) {
@@ -77,7 +78,7 @@ public class DayView extends ImageView implements View.OnClickListener {
     private void init(int day) {
         setWillNotDraw(false);
         mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBackgroundPaint.setColor(ORANGE);
+        mBackgroundPaint.setColor(ORANGE_TRANSPARENT);
 
         this.day = String.valueOf(day);
 
