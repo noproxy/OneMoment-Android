@@ -76,22 +76,19 @@ public class EditTagContainer extends TagContainer {
     private void init() {
         tagViews = new ArrayList<>();
         videoTags = new ArrayList<>();
-        this.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        return event.getY() <= mSize;
-                    case MotionEvent.ACTION_MOVE:
+        this.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    return event.getY() <= mSize;
+                case MotionEvent.ACTION_MOVE:
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (event.getY() > mSize)
                         return true;
-                    case MotionEvent.ACTION_UP:
-                        if (event.getY() > mSize)
-                            return true;
-                        onAddTag(event.getX() / mSize, event.getY() / mSize);
-                        return true;
-                }
-                return false;
+                    onAddTag(event.getX() / mSize * 100, event.getY() / mSize * 100);
+                    return true;
             }
+            return false;
         });
     }
 

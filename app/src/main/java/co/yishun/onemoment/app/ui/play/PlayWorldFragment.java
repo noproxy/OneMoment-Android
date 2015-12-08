@@ -114,7 +114,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         List<VideoTag> tags = new LinkedList<>();
         for (int i = 0; i < video.tags.size(); i++) {
-            tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x / 100f, video.tags.get(i).y / 100f));
+            tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x, video.tags.get(i).y));
         }
         NetworkVideo videoResource = new NetworkVideo(video.domain + video.fileName, tags);
         if (videoFile.length() > 0) {

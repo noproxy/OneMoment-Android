@@ -48,8 +48,8 @@ public class TagContainer extends RelativeLayout{
         TextView textView = new TextView(getContext());
         textView.setTag(VIDEO_TAG_VIEW_TAG);
         textView.setText(tag.getText());
-        int left = (int) (tag.getX() * getSize());
-        int top = (int) (tag.getY() * getSize());
+        int left = (int) (tag.getX() * getSize() / 100);
+        int top = (int) (tag.getY() * getSize() / 100);
         textView.setSingleLine(true);
         textView.setX(left);
         textView.setY(top);
