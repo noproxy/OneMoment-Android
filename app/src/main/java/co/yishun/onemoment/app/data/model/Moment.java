@@ -103,8 +103,16 @@ public class Moment implements Serializable, QiniuKeyProvider {
         return this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp();
     }
 
+    public String getThumbPath() {
+        return thumbPath;
+    }
+
     public void setThumbPath(String thumbPath) {
         this.thumbPath = thumbPath;
+    }
+
+    public String getLargeThumbPath() {
+        return largeThumbPath;
     }
 
     public void setLargeThumbPath(String largeThumbPath) {
