@@ -55,7 +55,7 @@ public class FileUtil {
      * @return path of the Video, it may not exist.
      */
     public static File getWorldVideoStoreFile(Context context, Video video) {
-        return new File(getMediaStoreDir(context, WORLD_STORE_DIR), video.getName());
+        return new File(getMediaStoreDir(context, WORLD_STORE_DIR), video.getName() + Constants.VIDEO_FILE_SUFFIX);
     }
 
     /**
