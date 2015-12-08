@@ -30,6 +30,7 @@ import static co.yishun.onemoment.app.config.Constants.URL_HYPHEN;
 public class FileUtil {
     public static final String MOMENT_STORE_DIR = "moment";
     public static final String WORLD_STORE_DIR = "world";
+    public static final String THUMB_STORE_DIR = "thumb";
 
     private static final String TAG = "FileUtil";
 
@@ -42,7 +43,7 @@ public class FileUtil {
      * @return path of the thumbnail, it may not exist.
      */
     public static File getThumbnailStoreFile(Context context, QiniuKeyProvider provider, Type type) {
-        String dir = provider instanceof ApiMoment ? MOMENT_STORE_DIR : WORLD_STORE_DIR;
+        String dir = THUMB_STORE_DIR;
         return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + provider.getName() + type.getSuffix());
     }
 
@@ -265,7 +266,7 @@ public class FileUtil {
         public abstract String getSuffix();
     }
 
-    @StringDef({MOMENT_STORE_DIR, WORLD_STORE_DIR})
+    @StringDef({MOMENT_STORE_DIR, WORLD_STORE_DIR, THUMB_STORE_DIR})
     public @interface MediaDir {
     }
 }
