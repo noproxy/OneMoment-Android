@@ -89,7 +89,7 @@ public class TodayMomentView extends RelativeLayout {
         public static TodayMoment momentTodayIs(Moment moment) {
             TodayMoment todayMoment = new TodayMoment();
             todayMoment.moment = moment;
-            todayMoment.date = new SimpleDateFormat("yyyy/MM/DD", Locale.getDefault()).format(moment.getUnixTimeStamp() * 1000);
+            todayMoment.date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(moment.getUnixTimeStamp() * 1000);
             List<OMLocalVideoTag> tags = Moment.readTags(moment);
             if (tags != null && tags.size() > 0) {
                 todayMoment.tag = tags.get(0).getTagText();
