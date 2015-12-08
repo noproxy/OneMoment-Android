@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -65,8 +66,7 @@ public class TodayMomentView extends RelativeLayout {
         mTagTextView.setText(todayMoment.tag == null ? NO_MOMENT : todayMoment.tag);
         if (todayMoment.moment != null) {
             Moment moment = todayMoment.moment;
-            Picasso.with(getContext()).load(moment.getPath()//TODO  add "file://" ?
-            ).into(mMomentImageView);
+            Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(mMomentImageView);
         } else {
             Picasso.with(getContext()).load(R.drawable.pic_diary_none).resize(64 * 3, 64 * 3).centerInside().into(mMomentImageView);
         }
@@ -97,6 +97,8 @@ public class TodayMomentView extends RelativeLayout {
             List<OMLocalVideoTag> tags = Moment.readTags(moment);
             if (tags != null && tags.size() > 0) {
                 todayMoment.tag = tags.get(0).getTagText();
+            } else {
+                todayMoment.tag = "";
             }
             return todayMoment;
         }
