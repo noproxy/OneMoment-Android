@@ -58,12 +58,22 @@ public class FileUtil {
     }
 
     /**
+     * Retrieve the moment file path.
+     *
+     * @return file of the moment shot at this time.
+     */
+    public static File getMomentStoreFile(Context context) {
+        File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
+        return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, null);
+    }
+
+    /**
      * Retrieve the moment file path by unix timestamp.
      *
      * @param unixTimeStamp when the moment is shot. Null if use now.
      * @return file of the moment shot at sometime.
      */
-    public static File getMomentStoreFile(Context context, @Nullable Long unixTimeStamp) {
+    public static File getMomentStoreFile(Context context, long unixTimeStamp) {
         File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
         return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, unixTimeStamp);
     }
