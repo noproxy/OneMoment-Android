@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:interpolator="@interpolator/tag_decelerate"
+    app:duration="800">
+    <changeBounds app:duration="500">
+        <targets>
+            <target app:targetId="@id/videoImageView" />
+            <target app:targetId="@id/collapsingToolbarLayout" />
+            <target app:targetId="@id/appBar" />
+            <target app:targetId="@id/videoFrame" />
+        </targets>
+    </changeBounds>
+
+    <changeImageTransform app:duration="500">
+        <targets>
+            <target app:targetId="@id/videoImageView" />
+        </targets>
+    </changeImageTransform>
+
+    <fade app:duration="500">
+        <targets>
+            <target app:targetId="@id/recyclerView" />
+            <target app:targetId="@id/toolbar" />
+            <target app:targetId="@id/addImageView" />
+            <target app:targetId="@id/videoMask" />
+            <target app:targetId="@id/collapsingToolbarLayout" />
+        </targets>
+    </fade>
+
+    <transition class="co.yishun.onemoment.app.ui.view.CornerTransition">
+        <targets>
+            <target app:targetId="@id/videoImageView" />
+        </targets>
+    </transition>
+</transitionSet>
