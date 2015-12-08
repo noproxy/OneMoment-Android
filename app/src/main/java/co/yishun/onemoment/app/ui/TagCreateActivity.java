@@ -74,6 +74,9 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
     @ViewById ImageView addView;
     @Extra WorldTag worldTag;
     @Extra boolean forWorld = false;
+    /**
+     * Just for read extra. if need read to do something, be careful that {@link #nextBtnClicked(View)} will move file to new place.
+     */
     @Extra String videoPath;
     @ViewById EditTagContainer editTagContainer;
     @ViewById ImageView momentPreviewImageView;
@@ -201,7 +204,8 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
     }
 
     @Click void nextBtnClicked(View view) {
-        Moment moment = new Moment.MomentBuilder(this).setPath(videoPath).build();
+        Moment moment = new Moment.MomentBuilder(this).fromPath(videoPath).build();
+        videoPath = moment.getPath();
         try {
             String thumbPath = VideoUtil.createThumbImage(this, moment, videoPath);
             moment.setThumbPath(thumbPath);
@@ -231,6 +235,8 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        this.finish();
+        showSnackMsg(R.string.activity_tag_create_moment_success);
         //TODO need any longer? Moment.unlock();
     }
 
