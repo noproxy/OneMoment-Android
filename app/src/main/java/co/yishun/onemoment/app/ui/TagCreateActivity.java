@@ -240,6 +240,9 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         //TODO need any longer? Moment.unlock();
     }
 
+    /**
+    * Upload the video file to qiniu, if this video is for a world
+    */
     @Background
     void upload(){
         //TODO what this method is used for? by Carlos
