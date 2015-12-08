@@ -14,13 +14,16 @@ import java.util.Locale;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
-import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.config.Constants;
 
 import static co.yishun.onemoment.app.config.Constants.URL_HYPHEN;
 
 /**
+ * Util to create storing paths of videos, images and read information from those file name.
+ *
+ * You should always give a {@link QiniuKeyProvider} to provide a standard naming part for images and videos.
+ *
  * Created by Carlos on 2015/8/21.
  */
 public class FileUtil {
@@ -29,28 +32,45 @@ public class FileUtil {
 
     private static final String TAG = "FileUtil";
 
+    /**
+     * Retrieve the corresponding thumbnail path of an {@link QiniuKeyProvider}
+     *
+     * @param context  to retrieve application private store space.
+     * @param provider to provide standard naming part.
+     * @param type     of the thumbnail
+     * @return path of the thumbnail, it may not exist.
+     */
     public static File getThumbnailStoreFile(Context context, QiniuKeyProvider provider, Type type) {
         String dir = provider instanceof ApiMoment ? MOMENT_STORE_DIR : WORLD_STORE_DIR;
         return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + provider.getName() + type.getSuffix());
     }
 
+    /**
+     * Retrieve the video file path of an {@link Video}
+     *
+     * @param context to retrieve application private store space.
+     * @param video to provide standard naming part.
+     * @return path of the Video, it may not exist.
+     */
     public static File getWorldVideoStoreFile(Context context, Video video) {
-        return new File(getMediaStoreDir(context, WORLD_STORE_DIR), video.fileName);
+        return new File(getMediaStoreDir(context, WORLD_STORE_DIR), video.getName());
     }
 
     /**
+     * Retrieve the moment file path by unix timestamp.
+     *
      * @param unixTimeStamp when the moment is shot. Null if use now.
-     * @return file of the local moment shot at sometime.
+     * @return file of the moment shot at sometime.
      */
-    public static File getLocalMomentStoreFile(Context context, @Nullable Long unixTimeStamp) {
+    public static File getMomentStoreFile(Context context, @Nullable Long unixTimeStamp) {
         File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
-        return getMediaStoreFile(context, mediaStorageDir, Type.LOCAL, unixTimeStamp);
+        return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, unixTimeStamp);
     }
 
     /**
-     * Return supposing name of synced type of a video on server
+     * Retrieve the moment file path by {@link ApiMoment}.
      */
-    public static File getSyncedMomentStoreFile(Context context, @NonNull ApiMoment apiMoment) {
+    public static File getMomentStoreFile(Context context, @NonNull ApiMoment apiMoment) {
         File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
         return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, apiMoment.getUnixTimeStamp());
     }
@@ -66,10 +86,22 @@ public class FileUtil {
         return context.getDir(dirType, Context.MODE_PRIVATE);
     }
 
+    /**
+     * Retrieve unix timestamp from file.
+     *
+     * @param file to retrieve.
+     * @return unix timestamp in filename.
+     */
     public static long parseTimeStamp(File file) {
         return parseTimeStamp(file.getPath());
     }
 
+    /**
+     * Retrieve unix timestamp from string.
+     *
+     * @param pathOrFileName to retrieve.
+     * @return unix timestamp in filename.
+     */
     public static long parseTimeStamp(String pathOrFileName) {
         return Long.parseLong(pathOrFileName.substring(pathOrFileName.lastIndexOf(URL_HYPHEN) + 1, pathOrFileName.lastIndexOf(".")));
     }
@@ -131,6 +163,11 @@ public class FileUtil {
                 return Constants.VIDEO_FILE_SUFFIX;
             }
         },
+
+        /**
+         * @deprecated User is always login, prefix video name with user id.
+         */
+        @Deprecated
         LOCAL {
             @Override
             public String getPrefix(Context context) {
