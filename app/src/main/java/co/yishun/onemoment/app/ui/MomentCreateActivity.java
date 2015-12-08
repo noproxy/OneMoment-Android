@@ -6,7 +6,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.VideoView;
 
@@ -89,6 +88,7 @@ public class MomentCreateActivity extends BaseActivity {
     @Click
     void nextBtnClicked(View view) {
         TagCreateActivity_.intent(this).worldTag(worldTag).forWorld(forWorld).videoPath(videoPath).start();
+        this.finish();
     }
 
 }
