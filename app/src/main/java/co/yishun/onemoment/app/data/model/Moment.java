@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.data.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -9,13 +10,13 @@ import java.io.File;
 import java.io.Serializable;
 import java.nio.channels.FileLock;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.Contract;
 
@@ -129,6 +130,20 @@ public class Moment implements Serializable, QiniuKeyProvider {
             mContext = context;
         }
 
+        public MomentBuilder fromPath(String filePath) {
+            return fromFile(new File(filePath));
+        }
+
+        public MomentBuilder fromFile(File cacheFile) {
+            File file = FileUtil.getMomentStoreFile(mContext);
+            if (!cacheFile.renameTo(file)) {
+                Log.e(TAG, "mv file failed");
+                throw new UnsupportedOperationException("Unable to move video");
+            }
+            mPath = file.getPath();
+            return this;
+        }
+
         public MomentBuilder setPath(String path) {
             mPath = path;
             return this;
@@ -137,10 +152,10 @@ public class Moment implements Serializable, QiniuKeyProvider {
         public Moment build() {
             check();
             Moment m = new Moment();
-            m.time = new SimpleDateFormat(Constants.TIME_FORMAT).format(new Date());
             m.path = mPath;
             m.owner = AccountHelper.getAccountId(mContext);
-            m.timeStamp = m.getUnixTimeStamp();
+            m.timeStamp = FileUtil.parseTimeStamp(mPath);
+            m.time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(m.getUnixTimeStamp() * 1000);
             return m;
         }
 
