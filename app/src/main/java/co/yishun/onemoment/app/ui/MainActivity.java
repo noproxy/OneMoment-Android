@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -73,6 +72,14 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         if (fab != null) {
             return fab;
         } else return view;
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        // refresh diary in case moment update
+        if (currentItemId == R.id.navigation_item_1) {
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, DiaryFragment_.builder().build()).commit();
+        }
     }
 
     private void startShoot(View view, boolean forWorld) {
