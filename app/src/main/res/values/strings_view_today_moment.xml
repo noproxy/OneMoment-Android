@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="view_today_moment_no_moment">No moment today</string>
+    <string name="view_today_moment_no_tag">No Tag</string>
 </resources>

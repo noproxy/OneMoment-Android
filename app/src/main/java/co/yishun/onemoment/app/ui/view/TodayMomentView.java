@@ -27,6 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class TodayMomentView extends RelativeLayout {
     private final String NO_MOMENT = getResources().getString(R.string.view_today_moment_no_moment);
+    private final String NO_TAG = getResources().getString(R.string.view_today_moment_no_tag);
     private TextView mDateTextView;
     private TextView mTagTextView;
     private CircleImageView mMomentImageView;
@@ -63,12 +64,13 @@ public class TodayMomentView extends RelativeLayout {
 
     public void setTodayMoment(@NonNull TodayMoment todayMoment) {
         mDateTextView.setText(todayMoment.date);
-        mTagTextView.setText(todayMoment.tag == null ? NO_MOMENT : todayMoment.tag);
         if (todayMoment.moment != null) {
             Moment moment = todayMoment.moment;
             Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(mMomentImageView);
+            mTagTextView.setText(todayMoment.tag == null ? NO_TAG : todayMoment.tag);
         } else {
             Picasso.with(getContext()).load(R.drawable.pic_diary_none).resize(64 * 3, 64 * 3).centerInside().into(mMomentImageView);
+            mTagTextView.setText(NO_MOMENT);
         }
     }
 
@@ -98,7 +100,7 @@ public class TodayMomentView extends RelativeLayout {
             if (tags != null && tags.size() > 0) {
                 todayMoment.tag = tags.get(0).getTagText();
             } else {
-                todayMoment.tag = "";
+                todayMoment.tag = null;
             }
             return todayMoment;
         }
