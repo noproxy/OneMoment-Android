@@ -97,6 +97,7 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
         try {
             Moment moment = momentDao.queryBuilder().where().eq("time", time).queryForFirst();
             if (moment != null) {
+                dayView.setEnabled(true);
                 dayView.setTag(moment);
                 Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(new Target() {
                     @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -112,6 +113,8 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
                     }
                 });
                 Log.i(TAG, "moment found: " + moment.getTime());
+            } else {
+                dayView.setEnabled(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
