@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -53,46 +52,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         init();
     }
 
-    public static File getCacheDirectory(Context context, boolean preferExternal) {
-        File appCacheDir = null;
 
-        if (preferExternal && Environment.MEDIA_MOUNTED.equals(
-                Environment.getExternalStorageState())) {
-            appCacheDir = getExternalDirectory(context);
-        }
 
-        if (appCacheDir == null) {
-            appCacheDir = context.getCacheDir();
-        }
-
-        if (appCacheDir == null) {
-            String cacheDirPath = "/data/data/" + context.getPackageName() + "/cache/";
-            Log.d(FileUtil.class.getName(),
-                    "Can't define system cache directory! use " + cacheDirPath);
-            appCacheDir = new File(cacheDirPath);
-        }
-
-        return appCacheDir;
-    }
-
-    private static File getExternalDirectory(Context context) {
-
-        File cacheDir = context.getExternalCacheDir();
-        if (cacheDir != null && !cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                Log.d(FileUtil.class.getName(), "无法创建SDCard cache");
-                return null;
-            }
-
-            //try {
-            //    new File(cacheDir, ".nomedia").createNewFile();
-            //} catch (IOException e) {
-            //    Log.d(FileUtil.class.getName(), "无法创建 .nomedia 文件");
-            //}
-        }
-
-        return cacheDir;
-    }
 
     void onRecordEnd() {
 
@@ -103,7 +64,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
         setEGLContextClientVersion(2);
 
-        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
+        file = FileUtil.getVideoCacheFile(getContext());
         mCameraRenderer = new CameraRecordRender(getContext(), mBackgroundHandler,
                 new EncoderConfig(file.getPath(), 480, 480, 1024 * 1024));
         setRenderer(mCameraRenderer);

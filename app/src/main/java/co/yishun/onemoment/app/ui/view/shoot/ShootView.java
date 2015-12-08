@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
 
@@ -40,7 +41,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     private boolean mIsBackCamera = true;
     private Consumer<File> mRecordEndConsumer;
     private Callback mRecordStartCallback;
-    private File mFile = new File(CameraGLSurfaceView.getCacheDirectory(getContext(), true), System.currentTimeMillis() + "test.mp4");
+    private File mFile = FileUtil.getVideoCacheFile(getContext());
     private HandlerThread mHandlerThread;
     private RecordHandler mBackgroundHandler;
 
