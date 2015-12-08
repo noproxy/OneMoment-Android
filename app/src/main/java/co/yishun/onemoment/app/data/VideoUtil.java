@@ -13,6 +13,8 @@ import java.io.IOException;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 
 /**
+ * Util to create thumbnail of a video.
+ *
  * Created by Carlos on 2015/8/22.
  */
 public class VideoUtil {
