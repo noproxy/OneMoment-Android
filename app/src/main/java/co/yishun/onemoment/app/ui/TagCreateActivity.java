@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -106,7 +107,7 @@ public class TagCreateActivity extends BaseActivity
 
     @Nullable @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
+        return editTagContainer;
     }
 
     @Override
@@ -204,11 +205,11 @@ public class TagCreateActivity extends BaseActivity
     }
 
     boolean addTag(String tag) {
-        if ("".equals(tag)) {
-            showSnackMsg("empty tag not permitted");
-            return false;
+        if (TextUtils.isEmpty(tag)) {
+            showSnackMsg(R.string.activity_tag_create_tag_empty_error);
+            return true;
         } else if (editTagContainer.getVideoTags().size() == 3) {
-            showSnackMsg("3 tags at most");
+            showSnackMsg(R.string.activity_tag_create_tag_number_error);
             return false;
         }
         VideoTag videoTag = new VideoTag();
@@ -222,7 +223,11 @@ public class TagCreateActivity extends BaseActivity
 
     @Click void nextBtnClicked(View view) {
         if (forWorld) {
-            upload();
+            if (editTagContainer.getVideoTags().size() == 0) {
+                showSnackMsg(R.string.activity_tag_create_no_tag_error);
+            } else {
+                upload();
+            }
         } else {
             Moment moment = new Moment.MomentBuilder(this).fromPath(videoPath).build();
             videoPath = moment.getPath();
@@ -271,6 +276,7 @@ public class TagCreateActivity extends BaseActivity
         File tmp = new File(videoPath);
         File videoFile = FileUtil.getWorldVideoStoreFile(this, video);
         tmp.renameTo(videoFile);
+        videoPath = videoFile.getPath();
 
         UploadManager uploadManager = new UploadManager();
         Log.d(TAG, "upload " + videoFile.getName());
