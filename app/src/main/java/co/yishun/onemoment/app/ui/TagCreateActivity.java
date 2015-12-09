@@ -52,7 +52,6 @@ import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 import co.yishun.library.EditTagContainer;
-import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountHelper;
@@ -91,6 +90,7 @@ public class TagCreateActivity extends BaseActivity
      * Just for read extra. if need read to do something, be careful that {@link #nextBtnClicked(View)} will move file to new place.
      */
     @Extra String videoPath;
+    @Extra boolean isPrivate;
     @ViewById EditTagContainer editTagContainer;
     @ViewById ImageView momentPreviewImageView;
     @ViewById FrameLayout searchFrame;
@@ -212,7 +212,7 @@ public class TagCreateActivity extends BaseActivity
             return false;
         }
         VideoTag videoTag = new VideoTag();
-        videoTag.name=tag;
+        videoTag.name = tag;
         videoTag.setX(tagX);
         videoTag.setY(tagY);
         videoTag.type = "words";
@@ -267,9 +267,9 @@ public class TagCreateActivity extends BaseActivity
      * Upload the video file to qiniu, if this video is for a world
      */
     @Background void upload() {
-        Video  video = new Video();
+        Video video = new Video();
         //TODO need world id or not?
-        video.fileName = "videoworld-world2-" + AccountHelper.getUserInfo(this)._id+ "-"+Util.unixTimeStamp()+".mp4";
+        video.fileName = "videoworld-world2-" + AccountHelper.getUserInfo(this)._id + "-" + Util.unixTimeStamp() + ".mp4";
         File tmp = new File(videoPath);
         File videoFile = FileUtil.getWorldVideoStoreFile(this, video);
         tmp.renameTo(videoFile);
@@ -305,8 +305,8 @@ public class TagCreateActivity extends BaseActivity
         Log.d(TAG, tags);
 
         World world = OneMomentV3.createAdapter().create(World.class);
-        //TODO receive type from MomentCreateActivity
-        world.addVideoToWorld(AccountHelper.getUserInfo(this)._id, "public", videoFile.getName(), tags);
+        world.addVideoToWorld(AccountHelper.getUserInfo(this)._id,
+                isPrivate ? "private" : "public", videoFile.getName(), tags);
 
     }
 
