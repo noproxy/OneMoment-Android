@@ -9,14 +9,21 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.VideoView;
 
+import com.j256.ormlite.dao.Dao;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
+
+import java.sql.SQLException;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
+import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.view.MomentCountDateView;
 import co.yishun.onemoment.app.ui.view.PermissionSwitch;
@@ -33,7 +40,8 @@ public class MomentCreateActivity extends BaseActivity {
     @Extra boolean forWorld = false;
     @ViewById FrameLayout containerFrameLayout;
     @Extra WorldTag worldTag;
-    private boolean isPrivate;
+    @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
+    private boolean isPrivate;//TODO use it
 
     @Nullable
     @Override
@@ -58,13 +66,14 @@ public class MomentCreateActivity extends BaseActivity {
             });
         } else {
             child = new MomentCountDateView(this);
-            setCountTextView();
+            try {
+                long count = momentDao.countOf();
+                ((MomentCountDateView) child).setMomentCount((int) count + 1);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         containerFrameLayout.addView(child, params);
-    }
-
-    private void setCountTextView() {
-        int count = 110;//TODO get it from database and set it
     }
 
     @AfterViews
