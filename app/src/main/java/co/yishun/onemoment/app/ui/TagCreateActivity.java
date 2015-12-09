@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
 import com.qiniu.android.storage.UploadManager;
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -104,6 +105,7 @@ public class TagCreateActivity extends BaseActivity
     private LocationClient locationClient;
     private float tagX;
     private float tagY;
+    private Moment momentToSave;
 
     @Nullable @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
@@ -129,6 +131,21 @@ public class TagCreateActivity extends BaseActivity
 
         adapter = new TagSearchAdapter(this, this);
         recyclerView.setAdapter(adapter);
+        setPreviewImage();
+    }
+
+    private void setPreviewImage() {
+        // alert! fromFile will move video file
+        momentToSave = new Moment.MomentBuilder(this).fromFile(new File(videoPath)).build();
+        videoPath = momentToSave.getPath();
+        try {
+            String largeThumbImage = VideoUtil.createLargeThumbImage(this, momentToSave, videoPath);
+            momentToSave.setLargeThumbPath(largeThumbImage);
+            Picasso.with(this).load(new File(largeThumbImage)).into(momentPreviewImageView);
+        } catch (IOException e) {
+            Log.e(TAG, "create thumb failed");
+            e.printStackTrace();
+        }
     }
 
     @AfterViews void setupToolbar() {
@@ -229,13 +246,10 @@ public class TagCreateActivity extends BaseActivity
                 upload();
             }
         } else {
-            Moment moment = new Moment.MomentBuilder(this).fromPath(videoPath).build();
-            videoPath = moment.getPath();
+            final Moment moment = momentToSave;
             try {
-                String thumbPath = VideoUtil.createThumbImage(this, moment, videoPath);
-                moment.setThumbPath(thumbPath);
-                String largeThumbPath = VideoUtil.createLargeThumbImage(this, moment, videoPath);
-                moment.setLargeThumbPath(largeThumbPath);
+                String thumbImage = VideoUtil.createThumbImage(this, moment, videoPath);
+                moment.setThumbPath(thumbImage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
