@@ -39,13 +39,12 @@
             />
     </ImageSwitcher>
 
-    <Button
+    <me.toxz.circularprogressview.library.CircularProgressView
         android:id="@+id/shootBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minHeight="64dp"
-        android:minWidth="64dp"
-        />
+        android:minWidth="64dp"/>
 
     <ImageSwitcher
         android:id="@+id/cameraSwitch"
