@@ -103,14 +103,12 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
         mAdapter.addAll(list);
         mRecyclerView.loadEnd();
         mRecyclerView.getSwipeToRefresh().setRefreshing(false);
-        Log.d(TAG, "load tags ");
         if (isRecommend)
             mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
     public void onRefresh() {
-        Log.d(TAG, "refresh");
         mAdapter.clear();
         ranking = "";
         loadTags();
