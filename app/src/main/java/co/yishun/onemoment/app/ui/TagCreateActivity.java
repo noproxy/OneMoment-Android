@@ -284,6 +284,7 @@ public class TagCreateActivity extends BaseActivity
      * Upload the video file to qiniu, if this video is for a world
      */
     @Background void upload() {
+        showProgress();
         Video video = new Video();
         video.fileName = Constants.WORLD_VIDEO_PREFIX + AccountHelper.getUserInfo(this)._id +
                 Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
@@ -323,9 +324,12 @@ public class TagCreateActivity extends BaseActivity
         Log.d(TAG, tags);
 
         World world = OneMomentV3.createAdapter().create(World.class);
-        world.addVideoToWorld(AccountHelper.getUserInfo(this)._id,
+        Video uploadVideo = world.addVideoToWorld(AccountHelper.getUserInfo(this)._id,
                 isPrivate ? "private" : "public", videoFile.getName(), tags);
-
+        if (uploadVideo.code == Constants.CODE_SUCCESS){
+            hideProgress();
+            this.finish();
+        }
     }
 
     @Override
