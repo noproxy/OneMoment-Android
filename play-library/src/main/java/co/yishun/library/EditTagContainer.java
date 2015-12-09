@@ -5,11 +5,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import co.yishun.library.tag.VideoTag;
 
@@ -51,6 +49,10 @@ public class EditTagContainer extends TagContainer {
                         videoTags.remove(tagViews.indexOf(v));
                         tagViews.remove(v);
                         removeView(v);
+                    } else {
+                        int index = tagViews.indexOf(v);
+                        videoTags.get(index).setX(v.getX() / mSize * 100);
+                        videoTags.get(index).setY(v.getY() / mSize * 100);
                     }
                     return true;
             }
@@ -76,22 +78,19 @@ public class EditTagContainer extends TagContainer {
     private void init() {
         tagViews = new ArrayList<>();
         videoTags = new ArrayList<>();
-        this.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        return event.getY() <= mSize;
-                    case MotionEvent.ACTION_MOVE:
+        this.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    return event.getY() <= mSize;
+                case MotionEvent.ACTION_MOVE:
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (event.getY() > mSize)
                         return true;
-                    case MotionEvent.ACTION_UP:
-                        if (event.getY() > mSize)
-                            return true;
-                        onAddTag(event.getX() / mSize, event.getY() / mSize);
-                        return true;
-                }
-                return false;
+                    onAddTag(event.getX() / mSize * 100, event.getY() / mSize * 100);
+                    return true;
             }
+            return false;
         });
     }
 
