@@ -10,14 +10,10 @@ import co.yishun.onemoment.app.api.model.WorldTag;
 /**
  * Created by Carlos on 2015/8/17.
  */
-public class MeAdapter extends WorldAdapter {
+public class MeAdapter extends SearchAdapter {
 
     public MeAdapter(Context context, OnItemClickListener<WorldTag> listener) {
         super(context, listener);
     }
 
-    @Override
-    public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new SimpleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.layout_item_me, parent, false));
-    }
 }

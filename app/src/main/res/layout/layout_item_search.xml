@@ -58,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:drawableLeft="@drawable/ic_me_world_like"
                 android:layout_marginTop="10dp"
                 android:drawablePadding="8dp"
                 android:gravity="center"

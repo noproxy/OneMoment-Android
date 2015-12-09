@@ -29,9 +29,9 @@ public class SearchAdapter extends AbstractRecyclerViewAdapter<WorldTag, SearchA
         super(context, listener);
         Resources resource = context.getResources();
         mTagDrawable = new Drawable[]{
-                resource.getDrawable(R.drawable.ic_world_tag_time),
-                resource.getDrawable(R.drawable.ic_world_tag_location),
-                resource.getDrawable(R.drawable.ic_world_tag_msg)
+                resource.getDrawable(R.drawable.ic_me_tag_time),
+                resource.getDrawable(R.drawable.ic_me_tag_location),
+                resource.getDrawable(R.drawable.ic_me_tag_msg)
         };
         PeopleSuffix = " " + context.getString(R.string.fragment_world_suffix_people_count);
     }

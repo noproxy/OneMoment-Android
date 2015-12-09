@@ -13,13 +13,14 @@ import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
+import co.yishun.onemoment.app.ui.adapter.SearchAdapter;
 import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
 
 /**
  * Created by Carlos on 2015/8/17.
  */
 @EBean
-public class MeController extends IntOffsetRefreshableRecyclerController<SuperRecyclerView, WorldTag, WorldAdapter.SimpleViewHolder> {
+public class MeController extends IntOffsetRefreshableRecyclerController<SuperRecyclerView, WorldTag, SearchAdapter.SimpleViewHolder> {
     public static final int COUNT_EVERY_PAGE = 5;
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
     private boolean isPublic = true;
@@ -39,7 +40,7 @@ public class MeController extends IntOffsetRefreshableRecyclerController<SuperRe
         return list;
     }
 
-    public void setUp(AbstractRecyclerViewAdapter<WorldTag, WorldAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, boolean isPublic) {
+    public void setUp(AbstractRecyclerViewAdapter<WorldTag, SearchAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, boolean isPublic) {
         this.isPublic = isPublic;// must first!
         super.setUp(adapter, recyclerView);
     }
