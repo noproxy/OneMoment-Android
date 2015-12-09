@@ -1,9 +1,7 @@
 package co.yishun.onemoment.app.ui.controller;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
