@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,8 +24,10 @@ import android.widget.TextView;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.google.gson.Gson;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
+import com.qiniu.android.storage.UploadManager;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -37,6 +40,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -46,11 +50,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
 
 import co.yishun.library.EditTagContainer;
-import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.api.Misc;
+import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.UploadToken;
+import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.model.VideoTag;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -66,7 +77,9 @@ import co.yishun.onemoment.app.ui.controller.TagSearchController_;
  * Created by Carlos on 2015/11/2.
  */
 @EActivity(R.layout.activity_tag_create)
-public class TagCreateActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<String>, TextView.OnEditorActionListener, TextWatcher {
+public class TagCreateActivity extends BaseActivity
+        implements AbstractRecyclerViewAdapter.OnItemClickListener<String>,
+                   TextView.OnEditorActionListener, TextWatcher {
     public static final int REQUEST_CODE_SEARCH = 1;
     private static final String TAG = "TagCreateActivity";
     @ViewById Toolbar toolbar;
@@ -78,6 +91,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
      * Just for read extra. if need read to do something, be careful that {@link #nextBtnClicked(View)} will move file to new place.
      */
     @Extra String videoPath;
+    @Extra boolean isPrivate;
     @ViewById EditTagContainer editTagContainer;
     @ViewById ImageView momentPreviewImageView;
     @ViewById FrameLayout searchFrame;
@@ -93,7 +107,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
 
     @Nullable @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
+        return editTagContainer;
     }
 
     @Override
@@ -101,8 +115,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         mPageName = "TagCreateActivity";
     }
 
-    @AfterViews
-    void setupViews() {
+    @AfterViews void setupViews() {
         queryText.setVisibility(View.GONE);
         queryText.setOnEditorActionListener(this);
         queryText.addTextChangedListener(this);
@@ -118,8 +131,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         recyclerView.setAdapter(adapter);
     }
 
-    @AfterViews
-    void setupToolbar() {
+    @AfterViews void setupToolbar() {
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
@@ -176,8 +188,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         locationClient.stop();
     }
 
-    @UiThread(delay = 200)
-    void viewChange(){
+    @UiThread(delay = 200) void viewChange() {
         searchFrame.setVisibility(View.GONE);
         queryText.setVisibility(View.GONE);
         addView.setVisibility(View.GONE);
@@ -185,8 +196,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         nextBtn.setVisibility(View.VISIBLE);
     }
 
-    @AfterViews
-    void setEditTagContainer() {
+    @AfterViews void setEditTagContainer() {
         editTagContainer.setOnAddTagListener((x, y) -> {
             tagX = x;
             tagY = y;
@@ -195,57 +205,113 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
     }
 
     boolean addTag(String tag) {
-        if ("".equals(tag)) {
-            showSnackMsg("empty tag not permitted");
+        if (TextUtils.isEmpty(tag)) {
+            showSnackMsg(R.string.activity_tag_create_tag_empty_error);
+            return true;
+        } else if (editTagContainer.getVideoTags().size() == 3) {
+            showSnackMsg(R.string.activity_tag_create_tag_number_error);
             return false;
         }
-        editTagContainer.addTag(new BaseVideoTag(tag, tagX, tagY));
+        VideoTag videoTag = new VideoTag();
+        videoTag.name = tag;
+        videoTag.setX(tagX);
+        videoTag.setY(tagY);
+        videoTag.type = "words";
+        editTagContainer.addTag(videoTag);
         return true;
     }
 
     @Click void nextBtnClicked(View view) {
-        Moment moment = new Moment.MomentBuilder(this).fromPath(videoPath).build();
-        videoPath = moment.getPath();
-        try {
-            String thumbPath = VideoUtil.createThumbImage(this, moment, videoPath);
-            moment.setThumbPath(thumbPath);
-            String largeThumbPath = VideoUtil.createLargeThumbImage(this, moment, videoPath);
-            moment.setLargeThumbPath(largeThumbPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Calendar.getInstance().getTime());
-        List<Moment> result;
-        Where<Moment, Integer> w = momentDao.queryBuilder().where();
-        try {
-            result = w.and(w.eq("time", time), w.eq("owner", AccountHelper.getUserInfo(this)._id)).query();
-
-            Log.i(TAG, "delete old today moment: " + Arrays.toString(result.toArray()));
-
-            if (1 == momentDao.create(moment)) {
-                Log.i(TAG, "new moment: " + moment);
-                momentDao.delete(result);
-                for (Moment mToDe : result) {
-                    FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.LARGE_THUMB).delete();
-                    FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.MICRO_THUMB).delete();
-                    mToDe.getFile().delete();
-                }
+        if (forWorld) {
+            if (editTagContainer.getVideoTags().size() == 0) {
+                showSnackMsg(R.string.activity_tag_create_no_tag_error);
+            } else {
+                upload();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            Moment moment = new Moment.MomentBuilder(this).fromPath(videoPath).build();
+            videoPath = moment.getPath();
+            try {
+                String thumbPath = VideoUtil.createThumbImage(this, moment, videoPath);
+                moment.setThumbPath(thumbPath);
+                String largeThumbPath = VideoUtil.createLargeThumbImage(this, moment, videoPath);
+                moment.setLargeThumbPath(largeThumbPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Calendar.getInstance().getTime());
+            List<Moment> result;
+            Where<Moment, Integer> w = momentDao.queryBuilder().where();
+            try {
+                result = w.and(w.eq("time", time), w.eq("owner", AccountHelper.getUserInfo(this)._id)).query();
+
+                Log.i(TAG, "delete old today moment: " + Arrays.toString(result.toArray()));
+
+                if (1 == momentDao.create(moment)) {
+                    Log.i(TAG, "new moment: " + moment);
+                    momentDao.delete(result);
+                    for (Moment mToDe : result) {
+                        FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.LARGE_THUMB).delete();
+                        FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.MICRO_THUMB).delete();
+                        mToDe.getFile().delete();
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            this.finish();
+            showSnackMsg(R.string.activity_tag_create_moment_success);
+            //TODO need any longer? Moment.unlock();
         }
-        this.finish();
-        showSnackMsg(R.string.activity_tag_create_moment_success);
-        //TODO need any longer? Moment.unlock();
     }
 
     /**
-    * Upload the video file to qiniu, if this video is for a world
-    */
-    @Background
-    void upload(){
-        //TODO what this method is used for? by Carlos
+     * Upload the video file to qiniu, if this video is for a world
+     */
+    @Background void upload() {
+        Video video = new Video();
+        //TODO need world id or not?
+        video.fileName = "videoworld-world2-" + AccountHelper.getUserInfo(this)._id + "-" + Util.unixTimeStamp() + ".mp4";
+        File tmp = new File(videoPath);
+        File videoFile = FileUtil.getWorldVideoStoreFile(this, video);
+        tmp.renameTo(videoFile);
+        videoPath = videoFile.getPath();
+
+        UploadManager uploadManager = new UploadManager();
+        Log.d(TAG, "upload " + videoFile.getName());
+        UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoFile.getName());
+        if (token.code <= 0) {
+            Log.e(TAG, "get upload token error: " + token.msg);
+            return;
+        }
+        CountDownLatch latch = new CountDownLatch(1);
+        uploadManager.put(videoFile, videoFile.getName(), token.token,
+                (s, responseInfo, jsonObject) -> {
+                    Log.i(TAG, responseInfo.toString());
+                    if (responseInfo.isOK()) {
+                        Log.d(TAG, "loaded " + responseInfo.path);
+                        Log.i(TAG, "profile upload ok");
+                    } else {
+                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                    }
+                    latch.countDown();
+                }, null
+        );
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Gson gson = new Gson();
+        String tags = gson.toJson(editTagContainer.getVideoTags());
+        Log.d(TAG, tags);
+
+        World world = OneMomentV3.createAdapter().create(World.class);
+        world.addVideoToWorld(AccountHelper.getUserInfo(this)._id,
+                isPrivate ? "private" : "public", videoFile.getName(), tags);
+
     }
 
     @Override
@@ -255,13 +321,11 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         }
     }
 
-    @Click
-    void searchFrameClicked(View view) {
+    @Click void searchFrameClicked(View view) {
         recoverSearch();
     }
 
-    @Click
-    void addViewClicked(View view) {
+    @Click void addViewClicked(View view) {
         if (addTag(queryText.getText().toString())) {
             recoverSearch();
         }
@@ -277,7 +341,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }
@@ -291,8 +355,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         TagSearchController_.getInstance_(this).setUp(adapter, recyclerView, queryText.getText().toString());
     }
 
-    @AfterInject
-    void setupLocation() {
+    @AfterInject void setupLocation() {
         locationClient = new LocationClient(getApplicationContext());
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);
@@ -304,7 +367,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         option.setEnableSimulateGps(false);
         locationClient.setLocOption(option);
         locationClient.registerLocationListener(bdLocation -> {
-            if ("".equals(formatLocation(bdLocation))){
+            if ("".equals(formatLocation(bdLocation))) {
                 return;
             }
             addItem(0, formatLocation(bdLocation));
@@ -317,7 +380,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         }
         String province = location.getProvince();
         String city = location.getCity();
-        if (province == null || city == null || province.equals("") || city.equals("")){
+        if (province == null || city == null || province.equals("") || city.equals("")) {
             return null;
         }
         if (province.endsWith("省")) {
@@ -329,8 +392,7 @@ public class TagCreateActivity extends BaseActivity implements AbstractRecyclerV
         return province + " " + city;
     }
 
-    @UiThread
-    void addItem(int position, String item) {
+    @UiThread void addItem(int position, String item) {
         if (position < 0) {
             adapter.add(item);
         } else {
