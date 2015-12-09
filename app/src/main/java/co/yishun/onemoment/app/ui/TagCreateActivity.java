@@ -271,8 +271,8 @@ public class TagCreateActivity extends BaseActivity
      */
     @Background void upload() {
         Video video = new Video();
-        //TODO need world id or not?
-        video.fileName = "videoworld-world2-" + AccountHelper.getUserInfo(this)._id + "-" + Util.unixTimeStamp() + ".mp4";
+        video.fileName = Constants.WORLD_VIDEO_PREFIX + AccountHelper.getUserInfo(this)._id +
+                Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
         File tmp = new File(videoPath);
         File videoFile = FileUtil.getWorldVideoStoreFile(this, video);
         tmp.renameTo(videoFile);
