@@ -191,7 +191,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         this.finish();
     }
 
-    @UiThread(delay = 1000)
+    // comment this, fix the problem when MainActivity resume to DiaryFragment
+//    @UiThread(delay = 1000)
     void delayStart(File file) {
         MomentCreateActivity_.intent(this).videoPath(file.getPath()).forWorld(forWorld).worldTag(worldTag).start();
     }
