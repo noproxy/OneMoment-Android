@@ -41,10 +41,15 @@
 
     <me.toxz.circularprogressview.library.CircularProgressView
         android:id="@+id/shootBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:minHeight="64dp"
-        android:minWidth="64dp"/>
+        android:minWidth="64dp"
+        app:cpv_clickAnimationDelayMillis="0"
+        app:cpv_endDrawableMargins="0dp"
+        app:cpv_progressDrawableMargins="0dp"
+        app:cpv_startDrawableMargins="0dp"
+        app:cpv_strokeSize="3dp"/>
 
     <ImageSwitcher
         android:id="@+id/cameraSwitch"
