@@ -36,7 +36,6 @@
                 android:layout_marginTop="24dp"
                 android:drawablePadding="8dp"
                 android:gravity="center"
-                android:text="Happy Hongkong"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/textColorPrimary"/>
 
@@ -48,7 +47,6 @@
                 android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp"
                 android:gravity="center"
-                android:text="50人加入"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/textColorPrimary"/>
 
@@ -59,10 +57,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:drawableLeft="@drawable/ic_me_world_like"
+                android:drawableStart="@drawable/ic_me_world_like"
                 android:layout_marginTop="10dp"
                 android:drawablePadding="8dp"
                 android:gravity="center"
-                android:text="23"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/textColorPrimary"/>
 

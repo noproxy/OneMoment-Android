@@ -3,6 +3,8 @@ package co.yishun.onemoment.app.ui.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +22,8 @@ import co.yishun.onemoment.app.api.model.WorldTag;
 /**
  * Created on 2015/10/19.
  */
-public class SearchAdapter extends AbstractRecyclerViewAdapter<WorldTag, SearchAdapter.SimpleViewHolder> {
+public class SearchAdapter
+        extends AbstractRecyclerViewAdapter<WorldTag, SearchAdapter.SimpleViewHolder> {
     private static final String TAG = "SearchAdapter";
     private final String PeopleSuffix;
     private final Drawable[] mTagDrawable;
@@ -50,7 +53,18 @@ public class SearchAdapter extends AbstractRecyclerViewAdapter<WorldTag, SearchA
         holder.numTextView.setText(String.format(PeopleSuffix, item.videosCount));
         holder.tagTextView.setText(item.name);
         holder.likeTextView.setText(String.valueOf(item.likeCount));
-        holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(getDrawableByType(item.type), null, null, null);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Drawable drawable = getDrawableByType(item.type);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, mContext.getResources().getColor(R.color.colorAccent));
+            holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(getDrawableByType(item.type), null, null, null);
+
+            drawable = holder.likeTextView.getCompoundDrawables()[0];
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, mContext.getResources().getColor(R.color.textColorPrimary));
+            holder.likeTextView.setCompoundDrawables(drawable, null, null, null);
+        } else
+            holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(getDrawableByType(item.type), null, null, null);
     }
 
     private Drawable getDrawableByType(String type) {
