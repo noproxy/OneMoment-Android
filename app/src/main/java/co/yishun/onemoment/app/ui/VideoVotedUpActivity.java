@@ -126,9 +126,8 @@ public class VideoVotedUpActivity extends BaseActivity
     public void onClick(View view, TagVideo item) {
         preview = true;
         previewFragment = PlayTagVideoFragment_.builder().oneVideo(item).build();
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out)
                 .replace(R.id.containerFrameLayout, previewFragment).commit();
-        //        PlayActivity_.intent(this).type(PlayActivity.TYPE_VIDEO).oneVideo(item).start();
     }
 
 
