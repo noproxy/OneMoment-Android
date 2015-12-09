@@ -157,6 +157,7 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.7.8.1'
     compile 'com.malinskiy:superrecyclerview:1.1.1'
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
+    compile 'me.toxz.circularprogressview:library:1.0.3'
 }
 
 apply plugin: 'aar-link-sources'

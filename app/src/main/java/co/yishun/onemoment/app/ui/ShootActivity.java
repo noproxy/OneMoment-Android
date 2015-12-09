@@ -29,6 +29,7 @@ import co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView;
 import co.yishun.onemoment.app.ui.view.shoot.IShootView;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
+import me.toxz.circularprogressview.library.CircularProgressView;
 
 /**
  * Created by Carlos on 2015/10/4.
@@ -124,7 +125,15 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
         recordFlashSwitch = (ImageSwitcher) findViewById(R.id.recordFlashSwitch);
         cameraSwitch = (ImageSwitcher) findViewById(R.id.cameraSwitch);
-        findViewById(R.id.shootBtn).setOnClickListener(this::shootBtnClicked);
+        CircularProgressView shootBtn = ((CircularProgressView) findViewById(R.id.shootBtn));
+        shootBtn.setOnStateListener(status -> {
+            switch (status) {
+                case START:
+                    shootBtn.setDuration(1100);
+                    shootView.record(this, this);
+                    break;
+            }
+        });
 
         setControllerBtn();
 
@@ -136,9 +145,9 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     //    @Click unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
-    void shootBtnClicked(View v) {
-        shootView.record(this, this);
-    }
+    //    void shootBtnClicked(View v) {
+    //        shootView.record(this, this);
+    //    }
 
     @Override
     protected void onPause() {
@@ -191,8 +200,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         this.finish();
     }
 
-    // comment this, fix the problem when MainActivity resume to DiaryFragment
-//    @UiThread(delay = 1000)
+    @UiThread(delay = 200)
     void delayStart(File file) {
         MomentCreateActivity_.intent(this).videoPath(file.getPath()).forWorld(forWorld).worldTag(worldTag).start();
     }
