@@ -24,41 +24,6 @@
         android:textColor="@color/textColorPrimaryInverse"
         />
 
-    <LinearLayout
-        android:id="@+id/hintTextContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/nextBtn"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="18dp"
-        android:layout_marginBottom="18dp"
-        android:alpha="20"
-        android:background="@drawable/bg_hint_tag_create"
-        android:orientation="vertical"
-        android:paddingBottom="12dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="12dp">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/activity_tag_create_tag_hint0"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/activity_tag_create_tag_hint1"
-            />
-    </LinearLayout>
-
-
     <co.yishun.library.EditTagContainer
         android:id="@+id/editTagContainer"
         android:layout_width="match_parent"
@@ -73,6 +38,29 @@
             android:layout_height="wrap_content"
             android:src="@drawable/pic_world_empty"
             />
+
+        <LinearLayout
+            android:id="@+id/hintTextContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/momentPreviewImageView"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/activity_tag_create_tag_hint"
+                android:background="@drawable/bg_hint_tag_create"
+                android:paddingBottom="12dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="12dp"/>
+
+        </LinearLayout>
 
     </co.yishun.library.EditTagContainer>
 

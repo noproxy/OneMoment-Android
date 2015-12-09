@@ -22,7 +22,6 @@ import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
-import co.yishun.onemoment.app.ui.adapter.VideoLikeAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.VotedUpController_;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
