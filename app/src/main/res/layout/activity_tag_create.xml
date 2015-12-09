@@ -2,7 +2,7 @@
 <RelativeLayout
     android:id="@+id/relativeLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -11,6 +11,7 @@
         android:id="@+id/toolbar"
         layout="@layout/layout_toolbar_search"
         />
+
 
     <Button
         android:id="@+id/nextBtn"
@@ -22,6 +23,41 @@
         android:text="@string/activity_moment_create_next_btn_text"
         android:textColor="@color/textColorPrimaryInverse"
         />
+
+    <LinearLayout
+        android:id="@+id/hintTextContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/nextBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="18dp"
+        android:layout_marginBottom="18dp"
+        android:alpha="20"
+        android:background="@drawable/bg_hint_tag_create"
+        android:orientation="vertical"
+        android:paddingBottom="12dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="12dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/activity_tag_create_tag_hint0"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/activity_tag_create_tag_hint1"
+            />
+    </LinearLayout>
+
 
     <co.yishun.library.EditTagContainer
         android:id="@+id/editTagContainer"
@@ -45,7 +81,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        android:background="@color/colorWindowTranslucentBlack">
+        android:background="@color/colorWindowTranslucentBlack"
+        tools:visibility="invisible">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"

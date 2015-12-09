@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="activity_tag_create_moment_success">Save Success!</string>
+    <string name="activity_tag_create_tag_hint0">Touch anywhere to create tag!</string>
+    <string name="activity_tag_create_tag_hint1">Draw tag to here to delete</string>
 </resources>
