@@ -28,6 +28,8 @@ import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.TagActivity;
+import co.yishun.onemoment.app.ui.TagActivity_;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.MeAdapter;
@@ -132,7 +134,9 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
 
     @Override
     public void onClick(View view, WorldTag item) {
-
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        TagActivity_.intent(this).tag(item).top(location[1]).from(TagActivity.FROM_SEARCH_ACTIVITY).start();
     }
 
     @UiThread
