@@ -18,6 +18,8 @@
     </style>
 
     <style name="AppTheme.VideoVoteUpActivity">
+        <item name="android:textColorTertiary">@color/textColorPrimary</item>
+        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
     </style>
 
     <style name="TwoWayViewBase">
