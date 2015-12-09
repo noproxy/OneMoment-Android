@@ -497,6 +497,7 @@ public class AnimationViewPager extends ViewPager {
                 break;
             case FlipHorizontal:
                 animateFlipHorizontal(mLeft, mRight, effectOffset, positionOffsetPixels);
+                break;
             case Stack:
                 animateStack(mLeft, mRight, effectOffset, positionOffsetPixels);
                 break;
