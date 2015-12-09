@@ -34,7 +34,7 @@ public class WorldAdapter extends AbstractRecyclerViewAdapter<WorldTag, WorldAda
                 resource.getDrawable(R.drawable.ic_world_tag_location),
                 resource.getDrawable(R.drawable.ic_world_tag_msg)
         };
-        PeopleSuffix = " " + context.getString(R.string.fragment_world_suffix_people_count);
+        PeopleSuffix = context.getString(R.string.fragment_world_suffix_people_count);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class WorldAdapter extends AbstractRecyclerViewAdapter<WorldTag, WorldAda
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, WorldTag item, int position) {
         Picasso.with(mContext).load(item.domain + item.thumbnail).into(holder.itemImageView);
-        holder.numTextView.setText(String.valueOf(item.videosCount) + PeopleSuffix);
+        holder.numTextView.setText(String.format(PeopleSuffix, item.videosCount));
         holder.tagTextView.setText(item.name);
         holder.likeTextView.setText(String.valueOf(item.likeCount));
         holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(getDrawableByType(item.type), null, null, null);

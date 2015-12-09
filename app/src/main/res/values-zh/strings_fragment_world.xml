@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fragment_world_suffix_people_count">人加入</string>
+    <string name="fragment_world_suffix_people_count">%d 人加入</string>
 </resources>
