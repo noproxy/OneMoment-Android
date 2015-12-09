@@ -31,9 +31,7 @@ public class DiscoveryFragment extends ToolbarFragment implements View.OnClickLi
     @Override public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnVideoLike:
-                Intent intent = new Intent(v.getContext(), VideoVotedUpActivity_.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(intent);
+                VideoVotedUpActivity_.intent(this).start();
                 break;
         }
     }

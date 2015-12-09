@@ -34,7 +34,8 @@ import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
  */
 //TODO handle not extend BaseActivity
 @EActivity(R.layout.activity_video_voted_up)
-public class VideoVotedUpActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
+public class VideoVotedUpActivity extends BaseActivity
+        implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
     private static final String TAG = "VideoVotedUpActivity";
     @ViewById
     Toolbar toolbar;
@@ -48,18 +49,15 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(0, 0);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        VideoTaskManager.getInstance().init(this);
     }
 
-    @AfterViews
-    void setupToolbar() {
+    @AfterViews void setupToolbar() {
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
@@ -83,12 +81,10 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
     @Override
     protected void onPause() {
         super.onPause();
-        overridePendingTransition(0, 0);
         VideoTaskManager.getInstance().quit();
     }
 
-    @AfterViews
-    void setView() {
+    @AfterViews void setView() {
         //TODO solve sliding conflict
         int spanCount = 3;
         int spacing = (int) getResources().getDimension(R.dimen.video_grid_divider);
@@ -97,7 +93,6 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
         recyclerView.setLayoutManager(manager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
 
-//        AbstractRecyclerViewAdapter<TagVideo, VideoLikeAdapter.SimpleViewHolder> adapter = new VideoLikeAdapter(this, this, recyclerView);
         TagAdapter adapter = new TagAdapter(this, this);
         recyclerView.setAdapter(adapter);
         VotedUpController_.getInstance_(this).setUp(adapter, recyclerView);
@@ -133,7 +128,7 @@ public class VideoVotedUpActivity extends BaseActivity implements AbstractRecycl
         previewFragment = PlayTagVideoFragment_.builder().oneVideo(item).build();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, previewFragment).commit();
-//        PlayActivity_.intent(this).type(PlayActivity.TYPE_VIDEO).oneVideo(item).start();
+        //        PlayActivity_.intent(this).type(PlayActivity.TYPE_VIDEO).oneVideo(item).start();
     }
 
 

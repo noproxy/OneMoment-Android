@@ -17,12 +17,7 @@
         <item name="colorControlNormal">?attr/colorAccent</item>
     </style>
 
-    <style name="AppTheme.Dragger">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:textColorTertiary">@color/textColorPrimary</item>
-        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
+    <style name="AppTheme.VideoVoteUpActivity">
     </style>
 
     <style name="TwoWayViewBase">

@@ -68,7 +68,7 @@
         <activity
             android:name=".ui.VideoVotedUpActivity_"
             android:label="@string/discovery_title"
-            android:theme="@style/AppTheme.Dragger"
+            android:theme="@style/AppTheme.VideoVoteUpActivity"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
