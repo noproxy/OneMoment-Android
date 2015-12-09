@@ -227,12 +227,10 @@ public class TagCreateActivity extends BaseActivity
             Moment moment = new Moment.MomentBuilder(this).fromPath(videoPath).build();
             videoPath = moment.getPath();
             try {
-                Log.d(TAG, "time ");
                 String thumbPath = VideoUtil.createThumbImage(this, moment, videoPath);
                 moment.setThumbPath(thumbPath);
                 String largeThumbPath = VideoUtil.createLargeThumbImage(this, moment, videoPath);
                 moment.setLargeThumbPath(largeThumbPath);
-                Log.d(TAG, "time ");
             } catch (IOException e) {
                 e.printStackTrace();
             }
