@@ -66,9 +66,11 @@ import co.yishun.onemoment.app.api.model.VideoTag;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.VideoUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
+import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -264,6 +266,12 @@ public class TagCreateActivity extends BaseActivity
 
                 if (1 == momentDao.create(moment)) {
                     Log.i(TAG, "new moment: " + moment);
+
+                    RealmHelper.removeTags(moment.getTime());
+                    for (co.yishun.library.tag.VideoTag tag : editTagContainer.getVideoTags()){
+                        RealmHelper.addTodayTag(tag.getText(), tag.getX(), tag.getY());
+                    }
+
                     momentDao.delete(result);
                     for (Moment mToDe : result) {
                         FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.LARGE_THUMB).delete();

@@ -1,11 +1,8 @@
 package co.yishun.onemoment.app.data;
 
 import android.content.Context;
-import android.util.Log;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -41,9 +38,13 @@ public class RealmHelper {
         realm.commitTransaction();
     }
 
-    public static void addTag(String text, float x, float y) {
-        addTag(text, new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault())
-                .format(new Date()), String.valueOf(x) + " " + String.valueOf(y));
+    public static void addTodayTag(String text, float x, float y) {
+        addTag(new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault())
+                .format(new Date()), text, String.valueOf(x) + " " + String.valueOf(y));
+    }
+
+    public static void addTag(String date, String text, float x, float y) {
+        addTag(date, text, String.valueOf(x) + " " + String.valueOf(y));
     }
 
     public static void addTag(String date, String text, String position) {
@@ -55,9 +56,8 @@ public class RealmHelper {
         tag.setTagPosition(position);
 
         realm.where(OMDataBase.class).findFirst()
-                .setUpdateTime(new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault())
-                        .format(new Date()) + "-"
-                        + Util.unixTimeStamp());
+                .setUpdateTime(new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(new Date())
+                        + Constants.URL_HYPHEN + Util.unixTimeStamp());
         realm.commitTransaction();
     }
 
@@ -68,5 +68,16 @@ public class RealmHelper {
     public static RealmResults<OMLocalVideoTag> getTags(String date) {
         Realm realm = Realm.getDefaultInstance();
         return realm.where(OMLocalVideoTag.class).equalTo("tagDate", date).findAll();
+    }
+
+    public static void removeTodayTags(){
+        removeTags(new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(new Date()));
+    }
+
+    public static void removeTags(String date){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        getTags(date).clear();
+        realm.commitTransaction();
     }
 }
