@@ -241,8 +241,10 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
             userInfo = new UserInfo();
         }
         nickNameEditText.setText(userInfo.name);
+        if (userInfo.gender == null)
+            userInfo.gender = Account.Gender.MALE.toString();
         genderSpinner.setSelectedGender(Account.Gender.format(userInfo.gender));
-        if (TextUtils.isEmpty(userInfo.location))
+        if (!TextUtils.isEmpty(userInfo.location))
             locationSpinner.setSelectedLocation(userInfo.location);
         // not set uri, because three party image don't need upload
         // if uri not null( user set avatar replace image from three-party), it will update after sign up
