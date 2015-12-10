@@ -59,6 +59,7 @@ public class DiaryFragment extends ToolbarFragment
     @AfterViews void setCalendar() {
         momentCalendar.setAdapter(this);
         DayView.setOnMomentSelectedListener(this);
+        DayView.setMultiSelection(false);
     }
 
     @Nullable

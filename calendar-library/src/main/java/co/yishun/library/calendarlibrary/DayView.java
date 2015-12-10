@@ -27,6 +27,7 @@ public class DayView extends ImageView implements View.OnClickListener {
     private static final String TAG = "DayView";
     private static DayView mSelectedDayView = null;
     private static OnMomentSelectedListener mMomentSelectedListener;
+    private static boolean mMultiSelection = false;
     private Paint mBackgroundPaint;
     private TextPaint mTextPaint;
     private String day;
@@ -38,7 +39,6 @@ public class DayView extends ImageView implements View.OnClickListener {
     private int ORANGE = getResources().getColor(R.color.colorOrange);
     private int ORANGE_TRANSPARENT = getResources().getColor(R.color.colorOrangeTransparent);
     private float mTextSize = getResources().getDimension(R.dimen.MMV_dayNumTextSize);
-
     private BitmapShader mBitmapShader;
     private Paint mBitmapPaint;
 
@@ -47,14 +47,11 @@ public class DayView extends ImageView implements View.OnClickListener {
         init(day);
     }
 
+    public static void setMultiSelection(boolean multiSelection) {
+        mMultiSelection = multiSelection;
+    }
+
     private static void setSelectedDayView(DayView dayView) {
-        if (mSelectedDayView != null) {
-            mSelectedDayView.setSelected(false);
-        }
-        mSelectedDayView = dayView;
-        if (mMomentSelectedListener != null) {
-            mMomentSelectedListener.onSelected(dayView);
-        }
     }
 
     public static void setOnMomentSelectedListener(@Nullable OnMomentSelectedListener listener) {
@@ -67,7 +64,10 @@ public class DayView extends ImageView implements View.OnClickListener {
         if (selected) {
             // avoid circular
             if (!isEnabled() || mTimeStatus == TimeStatus.FUTURE) return;
-            setSelectedDayView(this);
+            if (mSelectedDayView != null && !mMultiSelection) {
+                mSelectedDayView.setSelected(false);
+            }
+            mSelectedDayView = this;
         }
         super.setSelected(selected);
     }
@@ -185,7 +185,13 @@ public class DayView extends ImageView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        setSelected(true);
+        if (mMomentSelectedListener != null) {
+            mMomentSelectedListener.onSelected(this);
+        }
+        if (mMultiSelection)
+            setSelected(!isSelected());
+        else
+            setSelected(true);
     }
 
     public enum TimeStatus {

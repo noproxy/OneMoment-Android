@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.widget.TextView;
@@ -62,18 +63,19 @@ public class ShareExportActivity extends AppCompatActivity
 
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
 
-    private int totalMoments;
-    private List<Moment> selectedMoment;
+    private List<Moment> allMoments;
+    private List<Moment> selectedMoments;
 
     @AfterViews void setupViews() {
         momentCalendar.setAdapter(this);
         DayView.setOnMomentSelectedListener(this);
+        DayView.setMultiSelection(true);
         try {
-            totalMoments = (int) momentDao.queryBuilder().countOf();
+            allMoments = momentDao.queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        selectedMoment = new ArrayList<>();
+        selectedMoments = new ArrayList<>();
         updateSelectedText();
     }
 
@@ -87,15 +89,12 @@ public class ShareExportActivity extends AppCompatActivity
     }
 
     @Click(R.id.shareText) void shareTextClicked() {
-        try {
-            List<String> s = new ArrayList<>();
-            for(Moment moment :momentDao.queryBuilder().query()){
-                s.add(moment.getPath());
-            }
-            appendVideos(s);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        List<String> s = new ArrayList<>();
+        for (Moment moment : selectedMoments) {
+            s.add(moment.getPath());
         }
+        appendVideos(s);
+
     }
 
     @Click(R.id.exportText) void exportTextClicked() {
@@ -112,7 +111,7 @@ public class ShareExportActivity extends AppCompatActivity
 
     void updateSelectedText() {
         String content = String.format(getResources().getString(R.string.activity_share_export_selected),
-                selectedMoment.size(), totalMoments);
+                selectedMoments.size(), allMoments.size());
         SpannableString ss = new SpannableString(content);
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 2,
                 content.indexOf("/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -123,10 +122,19 @@ public class ShareExportActivity extends AppCompatActivity
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(calendar.getTime());
         try {
             Moment moment = momentDao.queryBuilder().where().eq("time", time).queryForFirst();
+            for (Moment m : allMoments) {
+                if (TextUtils.equals(m.getTime(), time)) {
+                    moment = m;
+                    break;
+                }
+            }
             if (moment != null) {
                 dayView.setEnabled(true);
                 dayView.setTag(moment);
                 Picasso.with(this).load(new File(moment.getThumbPath())).into(dayView);
+                if (selectedMoments.contains(moment))
+                    dayView.setSelected(true);
+                else dayView.setSelected(false);
                 Log.i(TAG, "moment found: " + moment.getTime());
             } else {
                 dayView.setEnabled(false);
@@ -139,10 +147,13 @@ public class ShareExportActivity extends AppCompatActivity
     @Override public void onSelected(DayView dayView) {
         Moment moment = (Moment) dayView.getTag();
         if (moment != null) {
-            //            todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.momentTodayIs(moment));
+            if (selectedMoments.contains(moment)) {
+                selectedMoments.remove(moment);
+            } else {
+                selectedMoments.add(moment);
+            }
         } else {
-            //            todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.noMomentToday(new Date()));
-            // TODO everyday can be select, update calendar selection.
+
         }
     }
 
