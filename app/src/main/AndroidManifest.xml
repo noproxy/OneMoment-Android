@@ -2,8 +2,9 @@
 <manifest
     package="co.yishun.onemoment.app"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-sdk tools:overrideLibrary="com.github.hiteshsondhi88.libffmpeg"/>
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -17,8 +18,6 @@
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false"/>
-
-    <uses-sdk tools:overrideLibrary="com.github.hiteshsondhi88.libffmpeg"/>
 
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
@@ -34,13 +33,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
-    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <!-- 用于读取手机当前的状态-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <!-- SD卡读取权限，用户写入离线定位数据-->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <application
@@ -221,7 +216,15 @@
                 android:value=".ui.MainActivity_"/>
         </activity>
 
-        <!-- baidu location service-->
+        <activity
+            android:name=".ui.ShareOutputActivity_"
+            android:theme="@style/AppTheme.ShareOutputActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity_"/>
+        </activity>
+
+        <!-- baidu location service -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -230,7 +233,10 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="kCbiUVqj0L2QAo3vHgMefShZ"/>
-        <meta-data android:value="549e2c80fd98c5e4cf000f64" android:name="UMENG_APPKEY"/>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="549e2c80fd98c5e4cf000f64"/>
+
     </application>
 
 </manifest>
