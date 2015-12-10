@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
@@ -56,6 +57,8 @@ public class DiaryFragment extends ToolbarFragment
 
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
 
+    private Moment selectMoment;
+
     @AfterViews void setCalendar() {
         momentCalendar.setAdapter(this);
         DayView.setOnMomentSelectedListener(this);
@@ -73,6 +76,11 @@ public class DiaryFragment extends ToolbarFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_diary, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Click(R.id.momentPreviewImageView) void previewClick() {
+        if (selectMoment != null)
+            PlayMomentActivity_.intent(this.getActivity()).startDate(selectMoment.getTime()).endDate(selectMoment.getTime()).start();
     }
 
     @Override
@@ -141,6 +149,7 @@ public class DiaryFragment extends ToolbarFragment
 
     @Override public void onSelected(DayView dayView) {
         Moment moment = (Moment) dayView.getTag();
+        selectMoment = moment;
         if (moment != null) {
             todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.momentTodayIs(moment));
         } else {
