@@ -12,6 +12,7 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class PlayMomentFragment extends BaseFragment
         videoPlayView.setVideoChangeListener(this);
         try {
             List<Moment> momentList = momentDao.queryBuilder().where().between("time", startDate, endDate).query();
+            videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
             for (Moment moment : momentList) {
                 List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());
                 List<VideoTag> videoTags = new ArrayList<>();
