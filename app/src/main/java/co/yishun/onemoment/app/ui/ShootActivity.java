@@ -197,11 +197,11 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         Log.i(TAG, "accept: " + file);
         Toast.makeText(ShootActivity.this, "success: " + file.getPath(), Toast.LENGTH_SHORT).show();
         delayStart(file);
-        this.finish();
     }
 
     @UiThread(delay = 200)
     void delayStart(File file) {
         MomentCreateActivity_.intent(this).videoPath(file.getPath()).forWorld(forWorld).worldTag(worldTag).start();
+        this.finish();
     }
 }
