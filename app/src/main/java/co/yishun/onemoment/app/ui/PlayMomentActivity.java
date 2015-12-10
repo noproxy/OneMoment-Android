@@ -1,6 +1,11 @@
 package co.yishun.onemoment.app.ui;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import org.androidannotations.annotations.AfterViews;
@@ -18,12 +23,34 @@ public class PlayMomentActivity extends AppCompatActivity {
     @Extra String startDate;
     @Extra String endDate;
 
+    @ViewById Toolbar toolbar;
     @ViewById FrameLayout containerFrameLayout;
 
     private PlayMomentFragment playMomentFragment;
 
-    @AfterViews void setUpViews(){
+    @AfterViews void setUpViews() {
         playMomentFragment = PlayMomentFragment_.builder().startDate(startDate).endDate(endDate).build();
         getSupportFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, playMomentFragment).commit();
+    }
+
+    @AfterViews void setupToolbar() {
+        setSupportActionBar(toolbar);
+        final ActionBar ab = getSupportActionBar();
+        assert ab != null;
+        ab.setDisplayHomeAsUpEnabled(true);
+        Log.i("setupToolbar", "set home as up true");
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_play_moment, menu);
+        return true;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.activity_play_moment_share){
+            //TODO add share moment here
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

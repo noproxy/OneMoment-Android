@@ -213,7 +213,12 @@
                 android:value=".ui.MainActivity_"/>
         </activity>
 
-        <activity android:name=".ui.PlayMomentActivity_">
+        <activity
+            android:name=".ui.PlayMomentActivity_"
+            android:theme="@style/AppTheme.PlayMomentActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity_"/>
         </activity>
 
         <!-- baidu location service-->
