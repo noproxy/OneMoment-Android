@@ -9,20 +9,32 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.googlecode.mp4parser.BasicContainer;
+import com.googlecode.mp4parser.authoring.Movie;
+import com.googlecode.mp4parser.authoring.Track;
+import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
+import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
+import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
 import com.j256.ormlite.dao.Dao;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +43,7 @@ import co.yishun.library.calendarlibrary.MomentCalendar;
 import co.yishun.library.calendarlibrary.MomentMonthView;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 
@@ -74,7 +87,15 @@ public class ShareExportActivity extends AppCompatActivity
     }
 
     @Click(R.id.shareText) void shareTextClicked() {
-
+        try {
+            List<Moment> momentList = momentDao.queryBuilder().query();
+            String[] s = new String[2];
+            s[0] = momentList.get(0).getPath();
+            s[1] = momentList.get(1).getPath();
+            appendVideos(s);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Click(R.id.exportText) void exportTextClicked() {
@@ -122,6 +143,52 @@ public class ShareExportActivity extends AppCompatActivity
         } else {
             //            todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.noMomentToday(new Date()));
             // TODO everyday can be select, update calendar selection.
+        }
+    }
+
+    @Background void appendVideos(List<String> paths) {
+        try {
+            int count = paths.size();
+            Movie[] inMovies = new Movie[count];
+            for (int i = 0; i < count; i++) {
+                inMovies[i] = MovieCreator.build(paths.get(i));
+            }
+            List<Track> videoTracks = new LinkedList<Track>();
+            List<Track> audioTracks = new LinkedList<Track>();
+            for (Movie m : inMovies) {
+                for (Track t : m.getTracks()) {
+                    if (t.getHandler().equals("soun")) {
+                        audioTracks.add(t);
+                    }
+                    if (t.getHandler().equals("vide")) {
+                        videoTracks.add(t);
+                    }
+                }
+            }
+
+            Movie result = new Movie();
+
+            if (audioTracks.size() > 0) {
+                result.addTrack(new AppendTrack(audioTracks
+                        .toArray(new Track[audioTracks.size()])));
+            }
+            if (videoTracks.size() > 0) {
+                result.addTrack(new AppendTrack(videoTracks
+                        .toArray(new Track[videoTracks.size()])));
+            }
+
+            BasicContainer out = (BasicContainer) new DefaultMp4Builder()
+                    .build(result);
+
+            FileChannel fc = new RandomAccessFile(FileUtil.getVideoCacheFile(this), "rw").getChannel();
+            out.writeContainer(fc);
+            fc.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }
