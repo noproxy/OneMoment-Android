@@ -124,20 +124,8 @@ public class DiaryFragment extends ToolbarFragment
             if (moment != null) {
                 dayView.setEnabled(true);
                 dayView.setTag(moment);
-                //TODO The Target cause bug. Recommend into(dayView) if not more operations after bitmap loaded.
-                Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(new Target() {
-                    @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        dayView.setImageBitmap(bitmap);
-                    }
-
-                    @Override public void onBitmapFailed(Drawable errorDrawable) {
-
-                    }
-
-                    @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
+                //fix DayView, change to into(dayView)
+                Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(dayView);
                 Log.i(TAG, "moment found: " + moment.getTime());
             } else {
                 dayView.setEnabled(false);

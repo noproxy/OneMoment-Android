@@ -5,9 +5,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,6 +38,9 @@ public class DayView extends ImageView implements View.OnClickListener {
     private int ORANGE = getResources().getColor(R.color.colorOrange);
     private int ORANGE_TRANSPARENT = getResources().getColor(R.color.colorOrangeTransparent);
     private float mTextSize = getResources().getDimension(R.dimen.MMV_dayNumTextSize);
+
+    private BitmapShader mBitmapShader;
+    private Paint mBitmapPaint;
 
     public DayView(Context context, int day) {
         super(context);
@@ -86,6 +93,9 @@ public class DayView extends ImageView implements View.OnClickListener {
         mTextPaint.setTextSize(mTextSize);
         mTextRect = new Rect();
 
+        mBitmapPaint = new Paint();
+        mBitmapPaint.setAntiAlias(true);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             this.setStateListAnimator(AnimatorInflater.loadStateListAnimator(getContext(), R.anim.btn_elevation));
         }
@@ -99,10 +109,13 @@ public class DayView extends ImageView implements View.OnClickListener {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        //        super.onDraw(canvas);
         final float ox = canvas.getWidth() / 2;
         final float oy = canvas.getHeight() / 2;
         final float r = Math.min(ox, oy);
+
+        updatePaint(getBitmapFromDrawable(getDrawable()));
+        canvas.drawCircle(ox, oy, r, mBitmapPaint);
 
         if (!isEnabled() || mTimeStatus == TimeStatus.FUTURE) {
             // today should be enable
@@ -127,17 +140,43 @@ public class DayView extends ImageView implements View.OnClickListener {
     //TODO  test performance
     //TODO change selected effect
     @Override public void setImageBitmap(@NonNull Bitmap bitmap) {
+        super.setImageBitmap(bitmap);
+    }
 
-        Bitmap circleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+    private void updatePaint(Bitmap mBitmap) {
+        if (mBitmap == null) {
+            mBitmapPaint.setColor(Color.TRANSPARENT);
+            return;
+        }
+        mBitmapShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        mBitmapPaint.setShader(mBitmapShader);
+    }
 
-        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        Paint paint = new Paint();
-        paint.setShader(shader);
-        paint.setAntiAlias(true);
-        Canvas c = new Canvas(circleBitmap);
-        c.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
+    private Bitmap getBitmapFromDrawable(Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
 
-        super.setImageBitmap(circleBitmap);
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        try {
+            Bitmap bitmap;
+
+            if (drawable instanceof ColorDrawable) {
+                bitmap = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
+            } else {
+                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            }
+
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        } catch (OutOfMemoryError e) {
+            return null;
+        }
     }
 
     @Override public void setOnClickListener(OnClickListener l) {
