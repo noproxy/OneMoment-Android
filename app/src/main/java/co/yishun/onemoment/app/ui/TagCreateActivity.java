@@ -25,6 +25,8 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
 import com.qiniu.android.storage.UploadManager;
@@ -328,7 +330,12 @@ public class TagCreateActivity extends BaseActivity
         }
 
         Gson gson = new Gson();
-        String tags = gson.toJson(editTagContainer.getVideoTags());
+        JsonArray tagArray = gson.toJsonTree(editTagContainer.getVideoTags()).getAsJsonArray();
+        for (JsonElement element : tagArray){
+            element.getAsJsonObject().remove("code");
+            element.getAsJsonObject().remove("errorCode");
+        }
+        String tags = gson.toJson(tagArray);
         Log.d(TAG, tags);
 
         World world = OneMomentV3.createAdapter().create(World.class);
