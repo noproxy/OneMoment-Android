@@ -86,7 +86,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
 
     @AfterViews
     void setupView() {
-        videoPlayView.setSinglePlay(false);
+        videoPlayView.setWithAvatar(true);
         videoPlayView.setVideoChangeListener(this);
         getData();
     }

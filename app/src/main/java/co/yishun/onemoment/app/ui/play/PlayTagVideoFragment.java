@@ -29,7 +29,6 @@ import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
-import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -66,7 +65,7 @@ public class PlayTagVideoFragment extends BaseFragment {
 
         usernameTextView.setText(oneVideo.nickname);
 
-        videoPlayView.setSinglePlay(true);
+        videoPlayView.setWithAvatar(false);
 
         new VideoTask(mContext, oneVideo, VideoTask.TYPE_VIDEO_ONLY)
                 .setVideoListener(this::addVideo).start();
