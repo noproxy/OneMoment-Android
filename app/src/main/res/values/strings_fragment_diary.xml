@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="fragment_diary_action_share">Share</string>
+    <string name="fragment_diary_action_all_play">All play</string>
 </resources>

@@ -37,10 +37,9 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
-import co.yishun.onemoment.app.ui.PlayMomentActivity;
+import co.yishun.onemoment.app.ui.MainActivity;
 import co.yishun.onemoment.app.ui.PlayMomentActivity_;
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
-import co.yishun.onemoment.app.ui.play.PlayMomentFragment_;
 import co.yishun.onemoment.app.ui.view.TodayMomentView;
 
 /**
@@ -48,15 +47,15 @@ import co.yishun.onemoment.app.ui.view.TodayMomentView;
  */
 
 @EFragment
-public class DiaryFragment extends ToolbarFragment implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
+public class DiaryFragment extends ToolbarFragment
+        implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
     private static final String TAG = "DiaryFragment";
     @ViewById MomentCalendar momentCalendar;
     @ViewById TodayMomentView todayMomentView;
 
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
 
-    @AfterViews
-    void setCalendar() {
+    @AfterViews void setCalendar() {
         momentCalendar.setAdapter(this);
         DayView.setOnMomentSelectedListener(this);
     }
@@ -80,7 +79,18 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
         switch (item.getItemId()) {
             case R.id.fragment_diary_action_share:
                 //TODO add share function
-                PlayMomentActivity_.intent(this.getActivity()).startDate("20151209").endDate("20151210").start();
+                return true;
+            case R.id.fragment_diary_action_all_play:
+                try {
+                    List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true).query();
+                    if (momentList.size() == 0)
+                        ((MainActivity) this.getActivity()).showSnackMsg("No moment");
+                    else
+                        PlayMomentActivity_.intent(this.getActivity()).startDate(momentList.get(0).getTime())
+                                .endDate(momentList.get(momentList.size() - 1).getTime()).start();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
