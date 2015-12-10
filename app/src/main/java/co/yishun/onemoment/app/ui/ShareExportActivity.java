@@ -88,10 +88,10 @@ public class ShareExportActivity extends AppCompatActivity
 
     @Click(R.id.shareText) void shareTextClicked() {
         try {
-            List<Moment> momentList = momentDao.queryBuilder().query();
-            String[] s = new String[2];
-            s[0] = momentList.get(0).getPath();
-            s[1] = momentList.get(1).getPath();
+            List<String> s = new ArrayList<>();
+            for(Moment moment :momentDao.queryBuilder().query()){
+                s.add(moment.getPath());
+            }
             appendVideos(s);
         } catch (SQLException e) {
             e.printStackTrace();
