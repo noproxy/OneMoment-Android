@@ -23,7 +23,8 @@ import co.yishun.library.resource.NetworkVideo;
  *
  * @author ZhihaoJun
  */
-public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlaySurfaceView.PlayListener {
+public class OnemomentPlayerView extends RelativeLayout
+        implements OnemomentPlaySurfaceView.PlayListener {
     public final static String TAG = "OnemomentPlayerView";
 
     private OnemomentPlaySurfaceView mPlaySurface;
@@ -38,7 +39,7 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
     private boolean mShowPlayBtn = true;
     private boolean mAutoplay = false;
     private boolean mShowTags = true;
-    private boolean mSinglePlay = true;
+    private boolean mWithAvatar = false;
     private boolean mLoading = false;
 
     public OnemomentPlayerView(Context context) {
@@ -168,7 +169,7 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
     }
 
     public void setToLocal(String url, String path) {
-        for (int i= 0; i<mVideoResources.size(); i ++) {
+        for (int i = 0; i < mVideoResources.size(); i++) {
             if (TextUtils.equals(mVideoResources.get(i).getUrl(), url)) {
                 mVideoResources.get(i).setPath(path);
                 if (i == mPreparedIndex && mLoading) {
@@ -214,9 +215,9 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
         return (mCompletionIndex + 1) % mVideoResources.size();
     }
 
-    public void setSinglePlay(boolean singlePlay) {
-        this.mSinglePlay = singlePlay;
-        if (singlePlay) {
+    public void setWithAvatar(boolean withAvatar) {
+        this.mWithAvatar = withAvatar;
+        if (!withAvatar) {
             mAvatarView.setVisibility(GONE);
         }
     }
@@ -238,10 +239,12 @@ public class OnemomentPlayerView extends RelativeLayout implements OnemomentPlay
         mCompletionIndex++;
         mCompletionIndex %= mVideoResources.size();
 
-        if (mSinglePlay || mVideoResources.size() == 1) {
+        if (mVideoResources.size() == 1) {
             reset();
         } else {
-            mAvatarView.scrollToNext();
+            if (mWithAvatar)
+                mAvatarView.scrollToNext();
+
             if (mVideoChangeListener != null) {
                 mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
             }
