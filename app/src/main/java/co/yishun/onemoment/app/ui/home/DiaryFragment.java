@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import co.yishun.library.calendarlibrary.DayView;
@@ -36,7 +37,10 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
+import co.yishun.onemoment.app.ui.PlayMomentActivity;
+import co.yishun.onemoment.app.ui.PlayMomentActivity_;
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
+import co.yishun.onemoment.app.ui.play.PlayMomentFragment_;
 import co.yishun.onemoment.app.ui.view.TodayMomentView;
 
 /**
@@ -76,6 +80,7 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
         switch (item.getItemId()) {
             case R.id.fragment_diary_action_share:
                 //TODO add share function
+                PlayMomentActivity_.intent(this.getActivity()).startDate("20151209").endDate("20151210").start();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

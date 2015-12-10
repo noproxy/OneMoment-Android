@@ -213,6 +213,9 @@
                 android:value=".ui.MainActivity_"/>
         </activity>
 
+        <activity android:name=".ui.PlayMomentActivity_">
+        </activity>
+
         <!-- baidu location service-->
         <service
             android:name="com.baidu.location.f"
