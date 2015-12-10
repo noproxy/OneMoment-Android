@@ -1,7 +1,5 @@
 package co.yishun.onemoment.app.ui.home;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.j256.ormlite.dao.Dao;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -40,7 +37,7 @@ import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.MainActivity;
 import co.yishun.onemoment.app.ui.PlayMomentActivity_;
-import co.yishun.onemoment.app.ui.ShareOutputActivity_;
+import co.yishun.onemoment.app.ui.ShareExportActivity_;
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
 import co.yishun.onemoment.app.ui.view.TodayMomentView;
 
@@ -88,7 +85,7 @@ public class DiaryFragment extends ToolbarFragment
         switch (item.getItemId()) {
             case R.id.fragment_diary_action_share:
                 //TODO add share function
-                ShareOutputActivity_.intent(this.getActivity()).start();
+                ShareExportActivity_.intent(this.getActivity()).start();
                 return true;
             case R.id.fragment_diary_action_all_play:
                 try {

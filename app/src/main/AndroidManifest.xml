@@ -217,7 +217,7 @@
         </activity>
 
         <activity
-            android:name=".ui.ShareOutputActivity_"
+            android:name=".ui.ShareExportActivity_"
             android:theme="@style/AppTheme.ShareOutputActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

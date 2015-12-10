@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="co.yishun.onemoment.app.ui.ShareOutputActivity">
+    tools:context=".ui.ShareExportActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
@@ -19,6 +19,7 @@
 
     <co.yishun.library.calendarlibrary.MomentCalendar
         android:id="@+id/momentCalendar"
+        android:layout_below="@id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -29,5 +30,25 @@
         android:paddingTop="4dp"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center">
+
+        <Button
+            android:background="@drawable/bg_btn_share"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:text=""
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+
+    </LinearLayout>
 
 </RelativeLayout>

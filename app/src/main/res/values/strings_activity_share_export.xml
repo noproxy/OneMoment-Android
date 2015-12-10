@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_share_export_title">Share/Export</string>
+    <string name="activity_share_export_share">Share</string>
+    <string name="activity_share_export_export">Export</string>
+    <string name="activity_share_export_selected">Selected%1$d/%2$d</string>
+    <string name="activity_share_export_select_all">Select all</string>
+    <string name="activity_share_export_clear">Clear</string>
+</resources>
