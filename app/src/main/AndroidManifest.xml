@@ -224,6 +224,16 @@
                 android:value=".ui.MainActivity_"/>
         </activity>
 
+        <!--分享编辑页-->
+        <!--<activity-->
+            <!--android:name="com.umeng.socialize.view.ShareActivity"-->
+            <!--android:configChanges="orientation|keyboard"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:noHistory="true"-->
+            <!--android:theme="@style/Theme.UMDialog"-->
+            <!--android:windowSoftInputMode="stateVisible|adjustResize" >-->
+        <!--</activity>-->
+
         <!-- baidu location service -->
         <service
             android:name="com.baidu.location.f"

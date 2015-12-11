@@ -217,6 +217,7 @@ dependencies {
     compile project(':play-library')
     compile project(':calendar-library')
     compile project(':transition-library')
+//    compile project(':umeng-res-library')
 }
 
 dependencies {
