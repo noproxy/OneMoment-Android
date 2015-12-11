@@ -114,8 +114,10 @@ public class DayView extends ImageView implements View.OnClickListener {
         final float oy = canvas.getHeight() / 2;
         final float r = Math.min(ox, oy);
 
-        updatePaint(getBitmapFromDrawable(getDrawable()));
-        canvas.drawCircle(ox, oy, r, mBitmapPaint);
+        if(getDrawable() != null) {
+            updatePaint(getBitmapFromDrawable(getDrawable()));
+            canvas.drawCircle(ox, oy, r, mBitmapPaint);
+        }
 
         if (!isEnabled() || mTimeStatus == TimeStatus.FUTURE) {
             // today should be enable
