@@ -158,6 +158,10 @@ public class FileUtil {
         }
         return type;
     }
+    
+    public static File getCacheFile(Context context, String fileName) {
+        return new File(getCacheDirectory(context, false), fileName);
+    }
 
     public static File getVideoCacheFile(Context context) {
         return new File(getCacheDirectory(context, false), "video-" + System.currentTimeMillis() + ".mp4");
