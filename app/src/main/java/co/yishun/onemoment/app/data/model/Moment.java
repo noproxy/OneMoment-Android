@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.data.model;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.j256.ormlite.field.DatabaseField;
@@ -27,7 +28,7 @@ import co.yishun.onemoment.app.data.compat.Contract;
  * Created by Carlos on 2/13/15.
  */
 @DatabaseTable(tableName = Contract.Moment.TABLE_NAME)
-public class Moment implements Serializable, QiniuKeyProvider {
+public class Moment implements Serializable, QiniuKeyProvider, Comparable {
     private static final String TAG = "Moment";
     //    private static FileChannel channel;
 
@@ -120,6 +121,29 @@ public class Moment implements Serializable, QiniuKeyProvider {
 
     public void setLargeThumbPath(String largeThumbPath) {
         this.largeThumbPath = largeThumbPath;
+    }
+
+    /**
+     * Compare time of the Moment, use {@link java.util.Collections#sort(List)}
+     * to make a list of moment in time order.
+     *
+     * @return a negative integer if this instance is less than {@code another};
+     *         a positive integer if this instance is greater than
+     *         {@code another}; 0 if this instance has the same order as
+     *         {@code another}.
+     */
+    @Override public int compareTo(@NonNull Object another) {
+        if (!(another instanceof Moment)){
+            return 1;
+        }
+        Moment anotherMoment = (Moment)another;
+        int thisTime = Integer.valueOf(this.getTime());
+        int anotherTime = Integer.valueOf(anotherMoment.getTime());
+        if (thisTime > anotherTime){
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
     public interface MomentProvider {

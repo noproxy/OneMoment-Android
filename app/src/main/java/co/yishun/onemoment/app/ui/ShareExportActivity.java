@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -75,7 +76,7 @@ public class ShareExportActivity extends AppCompatActivity
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        selectedMoments = new ArrayList<>();
+        selectedMoments = new LinkedList<>();
         updateSelectedText();
     }
 
@@ -90,6 +91,7 @@ public class ShareExportActivity extends AppCompatActivity
 
     @Click(R.id.shareText) void shareTextClicked() {
         List<String> s = new ArrayList<>();
+        Collections.sort(selectedMoments);
         for (Moment moment : selectedMoments) {
             s.add(moment.getPath());
         }
@@ -152,8 +154,6 @@ public class ShareExportActivity extends AppCompatActivity
             } else {
                 selectedMoments.add(moment);
             }
-        } else {
-
         }
     }
 
