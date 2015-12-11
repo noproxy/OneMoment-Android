@@ -27,9 +27,7 @@ import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -46,6 +44,8 @@ import co.yishun.library.calendarlibrary.DayView;
 import co.yishun.library.calendarlibrary.MomentCalendar;
 import co.yishun.library.calendarlibrary.MomentMonthView;
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.Util;
+import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -94,11 +94,20 @@ public class ShareExportActivity extends AppCompatActivity
     }
 
     @Click(R.id.shareText) void shareTextClicked() {
+        appendSelectedVideos();
+        if (videoCacheFile == null) {
+            //TODO check append videos failed
+            return;
+        }
     }
 
     @Click(R.id.exportText) void exportTextClicked() {
         appendSelectedVideos();
-        File outFile = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES), videoCacheFile.getName());
+        if (videoCacheFile == null) {
+            //TODO check append videos failed
+            return;
+        }
+        File outFile = FileUtil.getExportVideoFile();
         Log.d(TAG, "out : " + outFile.getPath());
         Log.d(TAG, "origin : " + videoCacheFile.getPath());
         FileUtil.copyFile(videoCacheFile, outFile);
@@ -222,7 +231,10 @@ public class ShareExportActivity extends AppCompatActivity
             BasicContainer out = (BasicContainer) new DefaultMp4Builder()
                     .build(result);
 
-            videoCacheFile = FileUtil.getVideoCacheFile(this);
+            videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX
+                    + AccountHelper.getUserInfo(this)._id
+                    + Constants.URL_HYPHEN + count + Constants.URL_HYPHEN
+                    + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
             FileChannel fc = new RandomAccessFile(videoCacheFile, "rw").getChannel();
             out.writeContainer(fc);
             fc.close();

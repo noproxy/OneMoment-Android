@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
@@ -204,6 +205,13 @@ public class FileUtil {
         }
 
         return cacheDir;
+    }
+
+    public static File getExportVideoFile() {
+        File dir = new File(Environment.getExternalStorageDirectory() + "/" +
+                Environment.DIRECTORY_DCIM + "/yishun");
+        if (!dir.exists()) dir.mkdir();
+        return new File(dir.getPath(), Constants.EXPORT_VIDEO_PREFIX + Util.unixTimeStamp()+Constants.VIDEO_FILE_SUFFIX);
     }
 
     /**

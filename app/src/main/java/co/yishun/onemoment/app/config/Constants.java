@@ -18,6 +18,7 @@ public class Constants {
     public static final String PROFILE_PREFIX = "avatar-";
     public static final String PROFILE_SUFFIX = ".png";
     public static final String WORLD_VIDEO_PREFIX = "videoworld-world2-";
+    public static final String EXPORT_VIDEO_PREFIX = "yishunExport-";
 
     public static final String IDENTITY_DIR = "identity";
     public static final String IDENTITY_INFO_FILE_NAME = "info";
