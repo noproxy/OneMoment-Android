@@ -96,7 +96,6 @@ public class ShareExportActivity extends AppCompatActivity
             s.add(moment.getPath());
         }
         appendVideos(s);
-
     }
 
     @Click(R.id.exportText) void exportTextClicked() {
@@ -104,11 +103,34 @@ public class ShareExportActivity extends AppCompatActivity
     }
 
     @Click(R.id.selectAllText) void selectAllTextClicked() {
-
+        selectedMoments.clear();
+        selectedMoments.addAll(allMoments);
+        setAllSelect(true);
+        updateSelectedText();
     }
 
     @Click(R.id.clearText) void clearTextClicked() {
+        selectedMoments.clear();
+        momentCalendar.getAdapter().notifyDataSetChanged();
+        setAllSelect(false);
+        updateSelectedText();
+    }
 
+    /**
+     * invalidate() and notifyDataSetChanged() don't work.
+     */
+    void setAllSelect(boolean select) {
+        for (int monthIndex = 0; monthIndex < momentCalendar.getChildCount(); monthIndex++) {
+            if (momentCalendar.getChildAt(monthIndex) instanceof MomentMonthView) {
+                MomentMonthView monthView = (MomentMonthView) momentCalendar.getChildAt(monthIndex);
+                for (int dayIndex = 0; dayIndex < monthView.getChildCount(); dayIndex++) {
+                    if (monthView.getChildAt(dayIndex) instanceof DayView) {
+                        DayView dayView = (DayView) monthView.getChildAt(dayIndex);
+                        if (dayView.isEnabled()) dayView.setSelected(select);
+                    }
+                }
+            }
+        }
     }
 
     void updateSelectedText() {
@@ -154,6 +176,7 @@ public class ShareExportActivity extends AppCompatActivity
             } else {
                 selectedMoments.add(moment);
             }
+            updateSelectedText();
         }
     }
 
