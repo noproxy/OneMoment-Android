@@ -1,11 +1,13 @@
 package co.yishun.onemoment.app.ui;
 
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import org.androidannotations.annotations.AfterViews;
@@ -14,11 +16,12 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.play.PlayMomentFragment;
 import co.yishun.onemoment.app.ui.play.PlayMomentFragment_;
 
 @EActivity(R.layout.activity_play_moment)
-public class PlayMomentActivity extends AppCompatActivity {
+public class PlayMomentActivity extends BaseActivity {
 
     @Extra String startDate;
     @Extra String endDate;
@@ -52,5 +55,13 @@ public class PlayMomentActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Nullable @Override public View getSnackbarAnchorWithView(@Nullable View view) {
+        return null;
+    }
+
+    @Override public void setPageInfo() {
+        mPageName = "PlayMomentActivity";
     }
 }

@@ -23,6 +23,7 @@ import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.Seed;
+import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.User;
@@ -83,7 +84,10 @@ public class OneMomentConverter implements Converter {
 
 
         if (code == 1) {
-            if (rawType == User.class) {
+            if (rawType == ShareInfo.class) {
+                JsonObject data = jsonObject.get("data").getAsJsonObject();
+                model = mGson.fromJson(data, type);
+            } else if (rawType == User.class) {
                 JsonObject data = jsonObject.get("data").getAsJsonObject();
                 model = mGson.fromJson(data.get("account"), type);
             } else if (rawType == Link.class | rawType == UploadToken.class | rawType == Domain.class) {
@@ -124,7 +128,9 @@ public class OneMomentConverter implements Converter {
                 }
             }
         } else {
-            if (rawType == User.class) {
+            if (rawType == ShareInfo.class) {
+                model = new ShareInfo();
+            } else if (rawType == User.class) {
                 model = new User();
             } else if (rawType == Link.class) {
                 model = new Link();

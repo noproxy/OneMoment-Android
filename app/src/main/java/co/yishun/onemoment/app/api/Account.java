@@ -10,6 +10,7 @@ import java.util.List;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.Link;
+import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.User;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -206,5 +207,12 @@ public interface Account {
     @POST("/account/unbind_weibo/{account_id}")
     User unbindWeibo(@NonNull @Path("account_id") String userId,
                      @NonNull @Field("weibo_uid") String weiboUid);
+
+    @FormUrlEncoded
+    @POST("/account/share")
+    ShareInfo share(
+            @NonNull @Field("filename") String filename,
+            @NonNull @Field("account_id") String userId,
+            @Nullable @Field("tags") String tags);
 }
 

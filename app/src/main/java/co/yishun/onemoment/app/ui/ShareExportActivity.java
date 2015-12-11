@@ -1,16 +1,19 @@
 package co.yishun.onemoment.app.ui;
 
-import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.googlecode.mp4parser.BasicContainer;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
@@ -18,12 +21,15 @@ import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
 import com.j256.ormlite.dao.Dao;
+import com.qiniu.android.storage.UploadManager;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OrmLiteDao;
+import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
@@ -39,6 +45,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
 
 import co.yishun.library.calendarlibrary.DayView;
 import co.yishun.library.calendarlibrary.MomentCalendar;
@@ -46,13 +53,21 @@ import co.yishun.library.calendarlibrary.MomentMonthView;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.api.Account;
+import co.yishun.onemoment.app.api.Misc;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.ShareInfo;
+import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
+import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 @EActivity(R.layout.activity_share_export)
-public class ShareExportActivity extends AppCompatActivity
+public class ShareExportActivity extends BaseActivity
         implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
 
     private static final String TAG = "ShareExportActivity";
@@ -93,12 +108,13 @@ public class ShareExportActivity extends AppCompatActivity
         ab.setHomeAsUpIndicator(R.drawable.ic_action_back_close);
     }
 
-    @Click(R.id.shareText) void shareTextClicked() {
+    @Click(R.id.shareText) @Background void shareTextClicked() {
         appendSelectedVideos();
         if (videoCacheFile == null) {
             //TODO check append videos failed
             return;
         }
+        upload();
     }
 
     @Click(R.id.exportText) void exportTextClicked() {
@@ -245,5 +261,66 @@ public class ShareExportActivity extends AppCompatActivity
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    @SupposeBackground void upload() {
+        showProgress();
+        UploadManager uploadManager = new UploadManager();
+        Log.d(TAG, "upload " + videoCacheFile.getName());
+        UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoCacheFile.getName());
+        if (token.code <= 0) {
+            Log.e(TAG, "get upload token error: " + token.msg);
+            return;
+        }
+        CountDownLatch latch = new CountDownLatch(1);
+        uploadManager.put(videoCacheFile, videoCacheFile.getName(), token.token,
+                (s, responseInfo, jsonObject) -> {
+                    Log.i(TAG, responseInfo.toString());
+                    if (responseInfo.isOK()) {
+                        Log.d(TAG, "loaded " + responseInfo.path);
+                        Log.i(TAG, "profile upload ok");
+                    } else {
+                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                    }
+                    latch.countDown();
+                }, null
+        );
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Gson gson = new Gson();
+        JsonArray allTagArray = new JsonArray();
+        for (Moment m : selectedMoments) {
+            JsonArray momentTags = new JsonArray();
+            for (OMLocalVideoTag tag : RealmHelper.getTags(m.getTime())) {
+                JsonObject element = new JsonObject();
+                String[] position = tag.getTagPosition().split(" ");
+                element.addProperty("name", tag.getTagText());
+                element.addProperty("x", Float.valueOf(position[0]));
+                element.addProperty("y", Float.valueOf(position[1]));
+                momentTags.add(element);
+            }
+            allTagArray.add(momentTags);
+        }
+        String tags = gson.toJson(allTagArray);
+        Log.d(TAG, tags);
+
+        Account account = OneMomentV3.createAdapter().create(Account.class);
+        ShareInfo shareInfo = account.share(videoCacheFile.getName(), AccountHelper.getUserInfo(this)._id, tags);
+
+        videoCacheFile.delete();
+        hideProgress();
+    }
+
+    @Nullable @Override public View getSnackbarAnchorWithView(@Nullable View view) {
+        return null;
+    }
+
+    @Override public void setPageInfo() {
+        mIsPage = true;
+        mPageName = "ShareExportActivity";
     }
 }
