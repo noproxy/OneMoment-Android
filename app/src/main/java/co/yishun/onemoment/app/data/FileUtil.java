@@ -8,6 +8,10 @@ import android.support.annotation.StringDef;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -22,9 +26,9 @@ import static co.yishun.onemoment.app.config.Constants.URL_HYPHEN;
 
 /**
  * Util to create storing paths of videos, images and read information from those file name.
- *
+ * <p>
  * You should always give a {@link QiniuKeyProvider} to provide a standard naming part for images and videos.
- *
+ * <p>
  * Created by Carlos on 2015/8/21.
  */
 public class FileUtil {
@@ -51,7 +55,7 @@ public class FileUtil {
      * Retrieve the video file path of an {@link Video}
      *
      * @param context to retrieve application private store space.
-     * @param video to provide standard naming part.
+     * @param video   to provide standard naming part.
      * @return path of the Video, it may not exist.
      */
     public static File getWorldVideoStoreFile(Context context, Video video) {
@@ -196,6 +200,38 @@ public class FileUtil {
         }
 
         return cacheDir;
+    }
+
+    /**
+     * Copy file from {@code src} to {@code dst}.
+     * {@link File#renameTo(File)} cannot move file from internal storage to external storage.
+     * This method won't delete the {@code src} file.
+     * If you want to move instead of copy, you should delete the {@code src} file.
+     *
+     * @return true, if the copy success; false, otherwise.
+     */
+    public static boolean copyFile(File src, File dst) {
+        FileChannel inChannel = null;
+        FileChannel outChannel = null;
+        try {
+            inChannel = new FileInputStream(src).getChannel();
+            outChannel = new FileOutputStream(dst).getChannel();
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (inChannel != null)
+                    inChannel.close();
+                if (outChannel != null) {
+                    outChannel.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
