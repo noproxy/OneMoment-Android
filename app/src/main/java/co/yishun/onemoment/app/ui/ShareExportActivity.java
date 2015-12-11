@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,14 +21,15 @@ import com.j256.ormlite.dao.Dao;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -66,6 +68,8 @@ public class ShareExportActivity extends AppCompatActivity
 
     private List<Moment> allMoments;
     private List<Moment> selectedMoments;
+    private File videoCacheFile;
+
 
     @AfterViews void setupViews() {
         momentCalendar.setAdapter(this);
@@ -90,16 +94,15 @@ public class ShareExportActivity extends AppCompatActivity
     }
 
     @Click(R.id.shareText) void shareTextClicked() {
-        List<String> s = new ArrayList<>();
-        Collections.sort(selectedMoments);
-        for (Moment moment : selectedMoments) {
-            s.add(moment.getPath());
-        }
-        appendVideos(s);
     }
 
     @Click(R.id.exportText) void exportTextClicked() {
-
+        appendSelectedVideos();
+        File outFile = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES), videoCacheFile.getName());
+        Log.d(TAG, "out : " + outFile.getPath());
+        Log.d(TAG, "origin : " + videoCacheFile.getPath());
+        FileUtil.copyFile(videoCacheFile, outFile);
+        videoCacheFile.delete();
     }
 
     @Click(R.id.selectAllText) void selectAllTextClicked() {
@@ -180,7 +183,12 @@ public class ShareExportActivity extends AppCompatActivity
         }
     }
 
-    @Background void appendVideos(List<String> paths) {
+    void appendSelectedVideos() {
+        List<String> paths = new ArrayList<>();
+        Collections.sort(selectedMoments);
+        for (Moment moment : selectedMoments) {
+            paths.add(moment.getPath());
+        }
         try {
             int count = paths.size();
             Movie[] inMovies = new Movie[count];
@@ -214,7 +222,8 @@ public class ShareExportActivity extends AppCompatActivity
             BasicContainer out = (BasicContainer) new DefaultMp4Builder()
                     .build(result);
 
-            FileChannel fc = new RandomAccessFile(FileUtil.getVideoCacheFile(this), "rw").getChannel();
+            videoCacheFile = FileUtil.getVideoCacheFile(this);
+            FileChannel fc = new RandomAccessFile(videoCacheFile, "rw").getChannel();
             out.writeContainer(fc);
             fc.close();
         } catch (FileNotFoundException e) {
