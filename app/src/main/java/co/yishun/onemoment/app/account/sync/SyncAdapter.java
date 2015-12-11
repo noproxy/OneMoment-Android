@@ -5,24 +5,51 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.Pair;
 
+import com.j256.ormlite.dao.Dao;
+import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
+import com.qiniu.android.storage.UploadOptions;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.SystemService;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.api.Misc;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiMoment;
+import co.yishun.onemoment.app.api.model.Domain;
+import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.VideoUtil;
+import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
+import co.yishun.onemoment.app.data.model.Moment;
+import retrofit.RestAdapter;
 
 
 /**
@@ -47,120 +74,29 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int PROGRESS_NOT_AVAILABLE = -1;
     public static final int PROGRESS_ERROR = -2;
     private static final String TAG = "SyncAdapter";
+    private final static UploadManager mUploadManager;
+    private static Misc mMiscService = OneMomentV3.createAdapter().create(Misc.class);
+
+    static {
+        mUploadManager = new UploadManager();
+    }
+
     ContentResolver mContentResolver;
-    @SystemService
-    ConnectivityManager connectivityManager;
-    //    @OrmLiteDao(helper = MomentDatabaseHelper.class, model = ApiMoment.class)
-//    Dao<ApiMoment, Integer> dao;
-    int databaseNum = 0;
     /**
      * whether local data update while sync. if true, need to notify some ui update
      */
     boolean isUploadChanged = false;
     boolean isDownloadChanged = false;
-    private UploadManager mUploadManager;
+    @SystemService ConnectivityManager connectivityManager;
+    @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> dao;
+    List<Moment> toUpload;
+    List<Pair<ApiMoment, Moment>> toDownload;
+    List<ApiMoment> toDelete;
 
     public SyncAdapter(Context context) {
         super(context, true);
         mContentResolver = context.getContentResolver();
-    }
 
-    /**
-     * check apiMoment file integrity.
-     */
-    public static void checkAndSolveBadMoment(@NonNull ApiMoment apiMoment, Context context, OnCheckedListener listener) throws SQLException {
-//        Dao<ApiMoment, Integer> dao = OpenHelperManager.getHelper(context, MomentDatabaseHelper.class).getDao(ApiMoment.class);
-//        try {
-//            if (!repairVideo(dao, apiMoment, context, listener)) {
-//                listener.onMomentDelete(apiMoment);
-//                return;
-//            }
-//            if (!new File(apiMoment.getLargeThumbPath()).exists()) {
-//                listener.onMomentStartRepairing(apiMoment);
-//                String laP = CameraHelper.createLargeThumbImage(context, apiMoment.getPath());
-//                apiMoment.setPath(laP);
-//                Log.e(TAG, "repair apiMoment large thumb");
-//                dao.update(apiMoment);
-//            }
-//            if (!new File(apiMoment.getThumbPath()).exists()) {
-//                listener.onMomentStartRepairing(apiMoment);
-//                String p = CameraHelper.createThumbImage(context, apiMoment.getPath());
-//                apiMoment.setPath(p);
-//                Log.e(TAG, "repair apiMoment thumb");
-//                dao.update(apiMoment);
-//            }
-//            listener.onMomentOk(apiMoment);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            dao.delete(apiMoment);
-//            Log.e(TAG, "repair apiMoment failed: IOException");
-//            listener.onMomentDelete(apiMoment);
-//        }
-    }
-
-//    private static boolean repairVideo(@NonNull Dao<ApiMoment, Integer> dao, @NonNull ApiMoment moment, Context context, OnCheckedListener listener) throws SQLException {
-//        File video = new File(moment.getPath());
-//        if (!video.exists()) {
-//            listener.onMomentStartRepairing(moment);
-//            if (moment.isPublic()) {
-//                CameraHelper.Type type = CameraHelper.whatTypeOf(video.getPath());
-//                File mayVideo = CameraHelper.getOutputMediaFile(context, CameraHelper.Type.LOCAL, video);
-//                if (type == CameraHelper.Type.SYNCED && mayVideo.exists()) {
-//                    //repair public path video is wrong recorded with private path
-//                    moment.setPath(mayVideo.getPath());
-//                    dao.update(moment);
-//                    Log.d(TAG, "repair a moment, which is public but have wrong private path.");
-//                    return true;
-//                } else {
-//                    dao.delete(moment);
-//                    Log.e(TAG, "unable repair a moment, which is public but have wrong private path.");
-//                    return false;
-//                }
-//            } else {
-//                //moment is private
-//                if (AccountHelper.isLogin(context)) {
-//                    CameraHelper.Type type = CameraHelper.whatTypeOf(video.getPath());
-//                    File mayVideo = CameraHelper.getOutputMediaFile(context, CameraHelper.Type.SYNCED, video);
-//                    if (type == CameraHelper.Type.LOCAL && mayVideo.exists()) {
-//                        moment.setPath(mayVideo.getPath());
-//                        dao.update(moment);
-//                        Log.d(TAG, "repair a moment, which is private but have wrong public path.");
-//                        return true;
-//                    } else {
-//                        //if login, try repair by download from server
-//                        try {
-//                            File downloaded = Ion.with(context).load(Constants.getResourceUrl(context) + getQiniuVideoFileName(context, moment)).write(mayVideo).get();
-//                            if (downloaded.exists()) {
-//                                String pathToThumb = CameraHelper.createThumbImage(context, downloaded.getPath());
-//                                String pathToLargeThumb = CameraHelper.createLargeThumbImage(context, downloaded.getPath());
-//                                moment.setPath(downloaded.getPath());
-//                                moment.setThumbPath(pathToThumb);
-//                                moment.setLargeThumbPath(pathToLargeThumb);
-//                                dao.update(moment);
-//                                return true;
-//                            } else throw new Exception("download failed");
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                            dao.delete(moment);
-//                            return false;
-//                        }
-//                    }
-//                } else {
-//                    Log.e(TAG, "assert failed! Check bad private moment when not log in, you must avoid read private when not login");
-//                    dao.delete(moment);
-//                    return false;
-//                }
-//            }
-//        } else
-//            return true;
-//    }
-
-    private static String getQiniuVideoFileName(Context context, ApiMoment apiMoment) {
-        String re = AccountHelper.getUserInfo(context)._id + Constants.URL_HYPHEN +
-//                apiMoment.getTime() + Constants.URL_HYPHEN + apiMoment.getUnixTimeStamp() +
-                Constants.VIDEO_FILE_SUFFIX;
-        Log.i(TAG, "qiniu filename: " + re);
-        return re;
     }
 
     /**
@@ -199,521 +135,284 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         return map;
     }
 
-    //    /**
-//     * To execute sync. When sync end, it will call {@link #syncDone(boolean)} to send broadcast notify sync process ending. And in syncing process, it calls {@link #syncUpdate(UpdateType, int, int, int)} to broadcast progress.
-//     */
+    /**
+     * To execute sync. When sync end, it will call {@link #onSyncEnd()} to send broadcast notify sync process ending. And in syncing process, it calls {@link #syncUpdate(UpdateType, int, int, int)} to broadcast progress.
+     */
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.i(TAG, "onPerformSync, account: " + account.name + ", Bundle: " + extras);
-//        try {
-//            if (!AccountHelper.isLogin(getContext())) {
-//                Log.i(TAG, "onPerformSync, but account has been logout, stop sync with notify syncDone");
-//                ContentResolver.setSyncAutomatically(account, Contract.AUTHORITY, false);
-//                return;
-//            }
-//
-//            if (!extras.getBoolean(BUNLDE_IGNORE_NETWORK, false) && !connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
-//                Log.i(TAG, "cancel sync because network is not wifi");
-//                return;
-//            }
-//            //see:http://developer.android.com/training/sync-adapters/creating-sync-adapter.html
-//
-//            new GetVideoList().with(getContext()).setCallback((e, result) -> {
-//                if (e != null) {
-//                    e.printStackTrace();
-//                    syncDone(false);
-//                } else if (result.getCode() == ErrorCode.SUCCESS) {
-//                    sync(toMap(result.getData()));
-//                } else {
-//                    Log.e(TAG, "get video list failed: " + result.getCode());
-//                    syncDone(false);
-//                }
-//            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Log.e(TAG, "some uncatched exception in SyncAdapter");
-//        }
+
+        if (!extras.getBoolean(BUNLDE_IGNORE_NETWORK, false) && !connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
+            Log.i(TAG, "cancel sync because network is not wifi");
+            return;
+        }
+        //see:http://developer.android.com/training/sync-adapters/creating-sync-adapter.html
+
+        RestAdapter restAdapter = OneMomentV3.createAdapter();
+        co.yishun.onemoment.app.api.Account service = restAdapter.create(co.yishun.onemoment.app.api.Account.class);
+        final List<ApiMoment> momentsOnServer = service.getVideoList(AccountHelper.getAccountId(getContext()));
+        Collections.sort(momentsOnServer);
+        List<Moment> momentsOnDevice = null;
+        try {
+            momentsOnDevice = dao.queryBuilder().where().eq("owner", AccountHelper.getAccountId(getContext())).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        divideTask(momentsOnServer, momentsOnDevice);
+        digestTask();
 
     }
 
-    @Override
-    public void onSyncCanceled() {
-        //TODO how to handle cancel
-        Log.i(TAG, "onSyncCanceled");
-        super.onSyncCanceled();
+    private void divideTask(List<ApiMoment> momentsOnServer, List<Moment> momentsOnDevice) {
+        final HashMap<String, ApiMoment> apiMomentHashMap = new HashMap<>(momentsOnServer.size());
+        for (ApiMoment apiMoment : momentsOnServer)
+            apiMomentHashMap.put(apiMoment.getTime(), apiMoment);
+
+        for (Moment moment : momentsOnDevice) {
+            ApiMoment momentOnServer = apiMomentHashMap.get(moment.getTime());
+            if (momentOnServer == null) {
+                toUpload.add(moment);
+            } else if (moment.getUnixTimeStamp() > momentOnServer.getUnixTimeStamp()) {
+                toUpload.add(moment);
+                toDelete.add(momentOnServer);
+            } else {
+                toDownload.add(Pair.create(momentOnServer, moment));
+            }
+        }
+    }
+
+    private void digestTask() {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        onSyncStart();
+        for (Moment moment : toUpload) {
+            executor.submit(new UploadTask(moment));
+        }
+
+        for (Pair<ApiMoment, Moment> pair : toDownload) {
+            executor.submit(new DownloadTask(pair.first, pair.second));
+        }
+
+        for (ApiMoment apiMoment : toDelete)
+            executor.submit(new DeleteTask(apiMoment));
+
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            Log.i(TAG, "executor is interrupted!");
+            executor.shutdownNow();
+        }
+        onSyncEnd();
+        cleanFile();
+    }
+
+    private void cleanFile() {
+    }
+
+
+    /**
+     * send broadcast to notify syncing progress update.
+     * <p>
+     * progress is from 0 to 100.
+     * <p>
+     * {@link #PROGRESS_NOT_AVAILABLE} means no progress data available.
+     * {@link #PROGRESS_ERROR} means error occurred.
+     */
+    private void onSyncUpdate(int thisProgress, int thisTypeProgress, int allProgress) {
+        Intent intent = new Intent(SYNC_BROADCAST_UPDATE_DOWNLOAD);
+        intent.putExtra(SYNC_BROADCAST_EXTRA_THIS_PROGRESS, thisProgress);
+        intent.putExtra(SYNC_BROADCAST_EXTRA_TYPE_PROGRESS, thisTypeProgress);
+        intent.putExtra(SYNC_BROADCAST_EXTRA_ALL_PROGRESS, allProgress);
+        Log.i(TAG, "sync update progress, send a broadcast. type: " + // type.name() +
+                ", this progress: " + thisProgress + ", type progress: " + thisTypeProgress + ", all progress: " + allProgress);
+        getContext().sendBroadcast(intent);
     }
 
     /**
-     * compare local video with server's, and determine whether upload or download.
-     * <p>
-     * TODO Refactor: just determine which action to take, and commit the action task to a queue
-     * <p>
-     * //     * @param videosOnServer map of server's videos
+     * Sync end, to check result and send broadcast.
      */
-//    private void sync(Map<Integer, Data> videosOnServer) {
-//        try {
-//            Log.v(TAG, "video on server: " + videosOnServer.toString());
-//            Log.i(TAG, "video got, start sync");
-//            List<ApiMoment> toSyncedMoments = dao.queryBuilder().where().eq("owner", "LOC").or().eq("owner", AccountHelper.getIdentityInfo(getContext()).get_id()).query();
-//
-////            Log.d(TAG, "copy " + databaseNum + " to sdcard");
-////            File database = new File("/data/data/co.yishun.onemoment.app/databases/OneDataBase.db");
-////            File copyed;
-////            do {
-////                copyed = new File("/sdcard/copyed" + databaseNum + ".db");
-////                databaseNum++;
-////
-////            } while (copyed.exists());
-////
-////            FileUtils.copyFile(database, copyed);
-//
-//
-//            Log.v(TAG, "queried moments: " + Arrays.toString(toSyncedMoments.toArray()));
-//
-//
-//            for (ApiMoment moment : toSyncedMoments) {
-//                Integer key = Integer.parseInt(moment.getTime());
-//                Data video = videosOnServer.get(key);
-//
-//                if (Thread.interrupted()) {
-//                    Log.e("TAG", "interrupted");
-//                    syncDone(false);
-//                    return;
-//                }
-//
-//                Log.v(TAG, "sync iter: " + moment.toString());
-//                if (video != null) {
-//                    Log.v(TAG, "on server: " + video.toString());
-//                    //if server has today moment
-//                    if (video.getUnixTimeStamp() > moment.getUnixTimeStamp()) {
-//                        //if server is newer, download and delete older
-//                        Log.v(TAG, "download: " + video.toString());
-//                        CountDownLatch latch = new CountDownLatch(1);
-//                        downloadVideo(video, moment, latch);
-//                        latch.await();
-//                    } else if (video.getUnixTimeStamp() < moment.getUnixTimeStamp()) {
-//                        //if local is newer, upload and delete older
-//                        Log.v(TAG, "upload: " + video.toString());
-//                        CountDownLatch latch = new CountDownLatch(1);
-//                        uploadMoment(moment, video, latch);
-//                        latch.await();
-//                    } else {
-//                        Log.v(TAG, "same, do nothing");
-//                        checkMomentOwnerPrivate(moment);
-//                        syncUpdate(UpdateType.RECOVER, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//                    }
-//                    //the video sync ok, remove
-//                    videosOnServer.remove(key);
-//                } else {
-//                    CountDownLatch latch = new CountDownLatch(1);
-//                    uploadMoment(moment, null, latch);//server not have today moment, upload
-//                    latch.await();
-//                }
-//            }
-//            for (Data data : videosOnServer.values()) {
-//                if (Thread.interrupted()) {
-//                    Log.e("TAG", "interrupted");
-//                    return;
-//                }
-//                CountDownLatch latch = new CountDownLatch(1);
-//                downloadVideo(data, null, latch);//other unhandled video mean they need download
-//                latch.await();
-//            }
-//            syncDone(true);
-//        } catch (Exception e) {
-//            //catch all to avoid crash background
-//            e.printStackTrace();
-//            syncDone(false);
-//        }
-//    }
 
-//    /**
-//     * Ensure a moment and it's file is user private. if not, it will be change private.
-//     */
-//    private void checkMomentOwnerPrivate(@NonNull ApiMoment moment) {
-//        ApiMoment.lock(getContext());
-//        try {
-//            //set file name
-//            String path = moment.getPath();
-//            if (CameraHelper.whatTypeOf(path) == CameraHelper.Type.LOCAL) {
-//                File file = new File(path);
-//                File syncedFile = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, file);
-//                Log.d(TAG, "check private: " + file);
-//                Log.d(TAG, "syncedFile: " + syncedFile);
-//                if (file.renameTo(syncedFile)) {
-//                    moment.setPath(syncedFile.getPath());
-//                    dao.update(moment);
-//                    Log.v(TAG, "update path");
-//                } else
-//                    Log.e(TAG, "unable to rename when checkMomentOwnerPrivate, from " + file.getPath() + " to " + syncedFile.getPath());
-//            }
-//            //set database owner
-//            if (moment.isPublic()) {
-//                moment.setOwner(AccountHelper.getIdentityInfo(getContext()).get_id());
-//                dao.update(moment);
-//                Log.v(TAG, "update owner");
-//            }
-//            Log.i(TAG, "succeed in setting moment[ " + moment + "] private");
-//
-//            boolean isNeedUpdateThumb = false;
-//            //check timestamp, because in v1.3.0 I use millisecond instead second
-//            if (String.valueOf(moment.getUnixTimeStamp()).length() > 10) {
-//                File wrongTimeVideo = new File(moment.getPath());
-//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getUnixTimeStamp() / 1000);
-//                Log.d(TAG, "check timeStamp, case 0: " + moment.toString());
-//                Log.d(TAG, "correct path: " + correctTimeVideo);
-//                if (wrongTimeVideo.renameTo(correctTimeVideo)) {
-//                    moment.fixTimeStampAndTime();
-//                    moment.setPath(correctTimeVideo.getPath());
-//                    dao.update(moment);
-//                    isNeedUpdateThumb = true;
-//                    Log.i(TAG, "correct moment time: " + moment);
-//                }
-//            }
-//            if (!(new SimpleDateFormat(Constants.TIME_FORMAT).format(moment.getUnixTimeStamp() * 1000).equals(moment.getTime()))) {
-//                File wrongTimeVideo = new File(moment.getPath());
-//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getUnixTimeStamp());
-//                Log.d(TAG, "check timeStamp, case 1: " + moment.toString());
-//                Log.d(TAG, "correct path: " + correctTimeVideo);
-//                if (wrongTimeVideo.renameTo(correctTimeVideo)) {
-//                    moment.fixTime();
-//                    moment.setPath(correctTimeVideo.getPath());
-//                    dao.update(moment);
-//                    isNeedUpdateThumb = true;
-//                    Log.i(TAG, "correct moment time: " + moment);
-//                }
-//            }
-//            if (!getTimeFromPath(moment).equals(moment.getTime())) {
-//                File wrongTimeVideo = new File(moment.getPath());
-//                File correctTimeVideo = CameraHelper.getOutputMediaFile(getContext(), CameraHelper.Type.SYNCED, moment.getUnixTimeStamp());
-//                Log.d(TAG, "check timeStamp, case 2: " + moment.toString());
-//                Log.d(TAG, "correct path: " + correctTimeVideo);
-//                if (wrongTimeVideo.renameTo(correctTimeVideo)) {
-//                    moment.setPath(correctTimeVideo.getPath());
-//                    dao.update(moment);
-//                    isNeedUpdateThumb = true;
-//                    Log.i(TAG, "correct moment time: " + moment);
-//                }
-//            }
-//
-//            if (isNeedUpdateThumb) {
-//                new File(moment.getThumbPath()).delete();
-//                new File(moment.getLargeThumbPath()).delete();
-//                moment.setThumbPath(CameraHelper.createThumbImage(getContext(), moment.getPath()));
-//                moment.setLargeThumbPath(CameraHelper.createLargeThumbImage(getContext(), moment.getPath()));
-//                dao.update(moment);
-//                Log.i(TAG, "update thumb");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            ApiMoment.unlock();
-//        }
-//    }
-//
-//    private String getTimeFromPath(ApiMoment moment) {
-//        String key = moment.getPath();
-//        return key.substring(key.indexOf(Constants.URL_HYPHEN) + 1, key.lastIndexOf(Constants.URL_HYPHEN));
-//    }
-//
-//    /**
-//     * send broadcast to notify finishing syncing
-//     */
-//    private void syncDone(boolean isSuccess) {
-//        Intent intent = new Intent(SYNC_BROADCAST_DONE);
-//        intent.putExtra(SYNC_BROADCAST_EXTRA_IS_UPLOAD_CHANGED, isUploadChanged);
-//        intent.putExtra(SYNC_BROADCAST_EXTRA_IS_DOWNLOAD_CHANGED, isDownloadChanged);
-//        intent.putExtra(SYNC_BROADCAST_EXTRA_IS_SUCCESS, isSuccess);
-//        Log.i(TAG, "sync done, send a broadcast. isUploadChanged: " + isUploadChanged + ", isDownloadChanged: " + isDownloadChanged + ", isSuccess " + isSuccess);
-//        getContext().sendBroadcast(intent);
-//        isUploadChanged = false;
-//        isDownloadChanged = false;
-//
-//        cleanFile();
-//    }
-//
-//    private void cleanFile() {
-//        try {
-//            //delete useless video
-//            File mediaDir = CameraHelper.getMediaStoreDir(getContext());
-//            for (String s : mediaDir.list((dir, filename) -> filename.startsWith(CameraHelper.Type.RECORDED.getPrefix(getContext())))) {
-//                File toDeleted = new File(mediaDir, s);
-//                Log.i(TAG, "delete: " + toDeleted);
-//                if (Thread.interrupted()) {
-//                    Log.e("TAG", "interrupted");
-//                    return;
-//                }
-//                if (toDeleted.exists()) toDeleted.delete();
-//            }
-//
-//            //delete unregistered local video
-//            for (String s : mediaDir.list((dir, filename) -> {
-//                try {
-//                    if (filename.startsWith(CameraHelper.Type.LOCAL.getPrefix(getContext()))) {
-//                        Map<String, Object> map = new HashMap<>();
-//                        map.put("path", dir.getPath() + File.pathSeparator + filename);
-//                        Log.v(TAG, "query for path: " + map.get("path").toString());
-//                        return (dao.queryBuilder().where().eq("path", new File(dir, filename).getPath()).countOf() == 0);
-//                    } else return false;
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                    return false;
-//                }
-//            })) {
-//                File toDeleted = new File(mediaDir, s);
-//                if (Thread.interrupted()) {
-//                    Log.e("TAG", "interrupted");
-//                    return;
-//                }
-//                Log.i(TAG, "delete: " + toDeleted);
-//                if (toDeleted.exists()) toDeleted.delete();
-//            }
-//        } catch (Exception e) {
-//            Log.e(TAG, "Exception when clean useless video");
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * send broadcast to notify syncing progress update.
-//     * <p>
-//     * progress is from 0 to 100.
-//     * <p>
-//     * {@link #PROGRESS_NOT_AVAILABLE} means no progress data available.
-//     * {@link #PROGRESS_ERROR} means error occurred.
-//     */
-//    private void syncUpdate(UpdateType type, int thisProgress, int thisTypeProgress, int allProgress) {
-//        Intent intent = new Intent(type.getAction());
-//        intent.putExtra(SYNC_BROADCAST_EXTRA_THIS_PROGRESS, thisProgress);
-//        intent.putExtra(SYNC_BROADCAST_EXTRA_TYPE_PROGRESS, thisTypeProgress);
-//        intent.putExtra(SYNC_BROADCAST_EXTRA_ALL_PROGRESS, allProgress);
-//        Log.i(TAG, "sync update progress, send a broadcast. type: " + type.name() + ", this progress: " + thisProgress + ", type progress: " + thisTypeProgress + ", all progress: " + allProgress);
-//        getContext().sendBroadcast(intent);
-//    }
-//
-//    private UploadManager getUploadManager() {
-//        if (mUploadManager == null) {
-//            mUploadManager = new UploadManager();
-//        }
-//        return mUploadManager;
-//    }
-//
-//    /**
-//     * upload a moment to server. if success, make moment private.
-//     *
-//     * @param moment        to upload
-//     * @param videoToDelete old version on server
-//     */
-//    private void uploadMoment(@NonNull ApiMoment moment, @Nullable Data videoToDelete, @Nullable CountDownLatch latch) {
-//        Log.i(TAG, "upload a moment: " + moment.getPath());
-//        String qiNiuKey = getQiniuVideoFileName(moment);
-//        syncUpdate(UpdateType.UPLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//        new GetToken().setFileName(qiNiuKey).with(getContext()).setCallback((e, result) -> {
-//            if (e != null) {
-//                e.printStackTrace();
-//                if (latch != null) {
-//                    latch.countDown();
-//                }
-//            } else if (result.getCode() != ErrorCode.SUCCESS) {
-//                Log.e(TAG, "get token failed: " + result.getCode());
-//                syncUpdate(UpdateType.UPLOAD, PROGRESS_ERROR, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//                if (latch != null) {
-//                    latch.countDown();
-//                }
-//            } else {
-//                getUploadManager().put(moment.getPath(),
-//                        qiNiuKey,
-//                        result.getData().getToken(),
-//                        (s, responseInfo, jsonObject) -> {
-//                            Log.i(TAG, responseInfo.toString());
-//                            if (responseInfo.isOK()) {
-//                                if (videoToDelete != null) deleteVideo(videoToDelete);
-//                                Log.i(TAG, "a moment upload ok: " + moment.getPath());
-//                                checkMomentOwnerPrivate(moment);
-//                                isUploadChanged = true;
-//                                syncUpdate(UpdateType.UPLOAD, 100, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//                                if (latch != null) {
-//                                    latch.countDown();
-//                                }
-//                            } else {
-//                                Log.i(TAG, "a moment upload failed: " + moment.getPath());
-//                                syncUpdate(UpdateType.UPLOAD, PROGRESS_ERROR, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//                                if (latch != null) {
-//                                    latch.countDown();
-//                                }
-//                            }
-//                        },
-//                        new UploadOptions(null, Constants.MIME_TYPE, true, null, null)
-//                );
-//            }
-//        });
-//    }
-//
-//    @Background
-//    void deleteVideo(@NonNull Data videoOnServer) {
-//        Log.i(TAG, "delete a video: " + videoOnServer.getQiuniuKey());
-//        new DeleteVideo().setFileName(videoOnServer.getQiuniuKey()).with(getContext()).setCallback((e, result) -> {
-//            if (e != null) {
-//                e.printStackTrace();
-//            } else if (result.getCode() != ErrorCode.SUCCESS)
-//                Log.e(TAG, "delete video token failed: " + result.getCode());
-//        });
-//
-//    }
-//
-//    private boolean deleteMoment(@NonNull ApiMoment moment) {
-//        Log.i(TAG, "delete a moment: " + moment.getPath());
-//        boolean re = false;
-//
-//        ApiMoment.lock(getContext());
-//        try {
-//            re = dao.delete(moment) == 1;
-//            if (re) {
-//                File momentFile = moment.getFile();
-//                File thumb = new File(moment.getThumbPath());
-//                File thumbL = new File(moment.getLargeThumbPath());
-//
-//                if (momentFile.exists()) momentFile.delete();
-//                if (thumb.exists()) thumb.delete();
-//                if (thumbL.exists()) thumbL.delete();
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            re = false;
-//        } finally {
-//            ApiMoment.unlock();
-//        }
-//
-//
-//        return re;
-//    }
-//
-//    /**
-//     * download a video from server, then register private moment in database.
-//     *
-//     * @param aVideoOnServer video to download.
-//     * @param momentOld      old local moment. It will do nothing if it is null.
-//     */
-//    private void downloadVideo(Data aVideoOnServer, @Nullable ApiMoment momentOld, @Nullable CountDownLatch latch) {
-//        Log.i(TAG, "download a video: " + aVideoOnServer.getQiuniuKey());
-//        File fileSynced = CameraHelper.getOutputMediaFile(getContext(), aVideoOnServer);
-////            OkHttpClient client = new OkHttpClient();
-////            Request request = new Request.Builder().url(Constants.getResourceUrl(getContext()) + aVideoOnServer.getQiuniuKey()).get().build();
-////            Response response = client.newCall(request).execute();
-////            response.body().
-//        syncUpdate(UpdateType.DOWNLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//
-//        //if file exist, just register private moment at database
-//        try {
-//            if (fileSynced.exists()) {
-//                if (Etag.file(fileSynced).equals(aVideoOnServer.getHash())) {
-//                    String pathToThumb = CameraHelper.createThumbImage(getContext(), fileSynced.getPath());
-//                    String pathToLargeThumb = CameraHelper.createLargeThumbImage(getContext(), fileSynced.getPath());
-//                    //don't need lock
-//                    //if file exist, just register/update private moment at database
-//                    if (momentOld == null) {
-//                        ApiMoment moment = ApiMoment.from(aVideoOnServer, fileSynced.getPath(), pathToThumb, pathToLargeThumb);
-//                        Log.v(TAG, "create a recovered moment: " + moment);
-//                        dao.create(moment);
-//                        isDownloadChanged = true;
-//                    } else {
-//                        momentOld.setLargeThumbPath(pathToLargeThumb);
-//                        momentOld.setThumbPath(pathToThumb);
-//                        Log.v(TAG, "update a recovered moment: " + momentOld);
-//                        dao.update(momentOld);
-//                        isDownloadChanged = true;
-//
-//                    }
-//                    syncUpdate(UpdateType.DOWNLOAD, 100, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//                    if (latch != null) {
-//                        latch.countDown();
-//                    }
-//                    return;
-//                } else {
-//                    fileSynced.delete();
-//                }
-//            }
-//
-//            //download and register
-//            Ion.with(getContext()).load(Constants.getResourceUrl(getContext()) + aVideoOnServer.getQiuniuKey())
-//                    .write(fileSynced).setCallback((e, result) -> {
-//                try {
-//                    if (e != null) {
-//                        throw e;
-//                    }
-//                    if (momentOld != null && !deleteMoment(momentOld)) {
-//                        Log.e(TAG, "delete old local moment failed: " + momentOld.getPath());
-//                    }
-//
-//                    String pathToThumb = CameraHelper.createThumbImage(getContext(), fileSynced.getPath());
-//                    String pathToLargeThumb = CameraHelper.createLargeThumbImage(getContext(), fileSynced.getPath());
-//
-//                    dao.create(ApiMoment.from(aVideoOnServer, fileSynced.getPath(), pathToThumb, pathToLargeThumb));
-//
-//                    Log.i(TAG, "a video download ok: " + aVideoOnServer.getQiuniuKey());
-//                    isDownloadChanged = true;
-//                    syncUpdate(UpdateType.DOWNLOAD, 100, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//                    if (latch != null) {
-//                        latch.countDown();
-//                    }
-//                } catch (Exception e1) {
-//                    syncUpdate(UpdateType.DOWNLOAD, PROGRESS_ERROR, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-//                    if (latch != null) {
-//                        latch.countDown();
-//                    }
-//                    e1.printStackTrace();
-//                }
-//            });
-//
-//        } catch (IOException | SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//    }
-//
-//    private String getQiniuVideoFileName(ApiMoment moment) {
-//        return getQiniuVideoFileName(getContext(), moment);
-//    }
-//
-//    enum UpdateType {
-//        UPLOAD {
-//            @Override
-//            String getAction() {
-//                return SYNC_BROADCAST_UPDATE_UPLOAD;
-//            }
-//        },
-//        DOWNLOAD {
-//            @Override
-//            String getAction() {
-//                return SYNC_BROADCAST_UPDATE_DOWNLOAD;
-//            }
-//        },
-//        RECOVER {
-//            @Override
-//            String getAction() {
-//                return SYNC_BROADCAST_UPDATE_RECOVER;
-//            }
-//        };
-//
-//        abstract String getAction();
-//
-//    }
-//
-    public interface OnCheckedListener {
-        /**
-         * ApiMoment is intact to use.
-         */
-        void onMomentOk(ApiMoment apiMoment);
+    private void onSyncEnd() {
+        Log.i(TAG, "sync end");
+    }
 
-        /**
-         * ApiMoment is not intact. And try to repair it.
-         */
-        void onMomentStartRepairing(ApiMoment apiMoment);
+    private void onSyncStart() {
+        Log.i(TAG, "sync start");
+    }
 
-        /**
-         * ApiMoment is unable to be repaired, and has been deleted from database, you should stop use this apiMoment.
-         */
-        void onMomentDelete(ApiMoment apiMoment);
+    private UploadManager getUploadManager() {
+        return mUploadManager;
+    }
+
+    private class UploadTask implements Runnable {
+
+
+        private final Moment mMoment;
+
+        public UploadTask(Moment moment) {
+            mMoment = moment;
+        }
+
+
+        @Override public void run() {
+            Log.i(TAG, "upload a moment: " + mMoment);
+            String qiNiuKey = mMoment.getName();
+            //            syncUpdate(UpdateType.UPLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
+            UploadToken token = mMiscService.getUploadToken(mMoment.getName());
+            if (!token.isSuccess()) {
+                //TODO failed
+                return;
+            }
+            getUploadManager().put(mMoment.getPath(), qiNiuKey, token.token, newHandler(), newOptions());
+        }
+
+        private UploadOptions newOptions() {
+            return new UploadOptions(null, Constants.MIME_TYPE, true, null, null);
+        }
+
+        private UpCompletionHandler newHandler() {
+            return (key, responseInfo, response) -> {
+                Log.i(TAG, responseInfo.toString());
+                if (responseInfo.isOK()) {
+                    Log.i(TAG, "a moment upload ok: " + mMoment);
+                    //                    syncUpdate(UpdateType.UPLOAD, 100, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
+                } else {
+                    Log.i(TAG, "a moment upload failed: " + mMoment);
+                    //                    syncUpdate(UpdateType.UPLOAD, PROGRESS_ERROR, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
+                }
+            };
+        }
+    }
+
+    private class DownloadTask implements Runnable {
+        private final ApiMoment mApiMoment;
+        private Moment mMoment;
+
+        private DownloadTask(@NonNull ApiMoment mApiMoment, @Nullable Moment moment) {
+            this.mApiMoment = mApiMoment;
+            mMoment = moment;
+        }
+
+        @Override public void run() {
+            Log.i(TAG, "download a moment: " + mApiMoment);
+            //            syncUpdate(UpdateType.DOWNLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
+            Domain domain = mMiscService.getResourceDomain("video");
+            if (!domain.isSuccess()) {
+                //TODO failed
+                return;
+            }
+
+
+            File fileSynced = FileUtil.getMomentStoreFile(getContext());
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(domain.domain + mApiMoment.getName()).get().build();
+            try {
+                Response response = client.newCall(request).execute();
+                if (response.code() == 200) {
+                    InputStream inputStream = null;
+                    try {
+                        inputStream = response.body().byteStream();
+                        byte[] buff = new byte[1024 * 4];
+                        long downloaded = 0;
+                        long target = response.body().contentLength();
+
+                        //TODO progress
+                        while (true) {
+                            int readed = inputStream.read(buff);
+                            if (readed == -1) {
+                                break;
+                            }
+                            //write buff
+                            downloaded += readed;
+                            //                            publishProgress(downloaded, target);
+                            if (Thread.interrupted()) {
+                                //TODO cancel
+                                return;
+                            }
+                        }
+
+                        String pathToThumb = VideoUtil.createThumbImage(getContext(), mApiMoment, fileSynced.getPath());
+                        String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mApiMoment, fileSynced.getPath());
+                        if (mMoment == null)
+                            mMoment = new Moment();
+                        mMoment.setOwner(mApiMoment.getOwnerID());
+                        mMoment.setTime(mApiMoment.getTime());
+                        mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
+                        mMoment.setPath(fileSynced.getPath());
+                        mMoment.setThumbPath(pathToThumb);
+                        mMoment.setLargeThumbPath(pathToLargeThumb);
+                        dao.createOrUpdate(mMoment);
+                        //TODO ok
+
+
+                        return;
+                    } catch (IOException ignore) {
+                        //TODO failed
+                        return;
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        //TODO failed
+                        return;
+                    } finally {
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //TODO failed
+            return;
+
+
+            //if file exist, just register private moment at database
+            //            try {
+            //                if (fileSynced.exists()) {
+            //                    if (Etag.file(fileSynced).equals(aVideoOnServer.getHash())) {
+            //                        String pathToThumb = CameraHelper.createThumbImage(getContext(), fileSynced.getPath());
+            //                        String pathToLargeThumb = CameraHelper.createLargeThumbImage(getContext(), fileSynced.getPath());
+            //                        //don't need lock
+            //                        //if file exist, just register/update private moment at database
+            //                        if (momentOld == null) {
+            //                            Moment moment = Moment.from(aVideoOnServer, fileSynced.getPath(), pathToThumb, pathToLargeThumb);
+            //                            Log.v(TAG, "create a recovered moment: " + moment);
+            //                            dao.create(moment);
+            //                            isDownloadChanged = true;
+            //                        } else {
+            //                            momentOld.setLargeThumbPath(pathToLargeThumb);
+            //                            momentOld.setThumbPath(pathToThumb);
+            //                            Log.v(TAG, "update a recovered moment: " + momentOld);
+            //                            dao.update(momentOld);
+            //                            isDownloadChanged = true;
+            //
+            //                        }
+            //                        syncUpdate(UpdateType.DOWNLOAD, 100, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
+            //                        if (latch != null) {
+            //                            latch.countDown();
+            //                        }
+            //                        return;
+            //                    } else {
+            //                        fileSynced.delete();
+            //                    }
+            //                }
+            //            } catch (IOException | SQLException e) {
+            //                e.printStackTrace();
+            //            }
+        }
+    }
+
+    private class DeleteTask implements Runnable {
+        private final ApiMoment mApiMoment;
+
+        private DeleteTask(ApiMoment mApiMoment) {
+            this.mApiMoment = mApiMoment;
+        }
+
+
+        @Override public void run() {
+            mMiscService.deleteVideo(mApiMoment.getName());
+        }
     }
 }
