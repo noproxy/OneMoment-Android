@@ -70,6 +70,10 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
         return time;
     }
 
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public String getOwnerID() {
         return owner;
     }
@@ -121,6 +125,14 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
 
     public void setLargeThumbPath(String largeThumbPath) {
         this.largeThumbPath = largeThumbPath;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     /**
