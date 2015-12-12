@@ -21,6 +21,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
+import co.yishun.onemoment.app.account.sync.SyncAdapter;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.compat.Contract;
@@ -162,6 +163,7 @@ public class AccountHelper {
         Bundle b = new Bundle();
         b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        b.putBoolean(SyncAdapter.BUNLDE_IGNORE_NETWORK, true);
         ContentResolver.requestSync(account, Contract.AUTHORITY, b);
     }
 
