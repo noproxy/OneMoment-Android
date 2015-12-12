@@ -23,6 +23,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 
@@ -39,56 +40,13 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
  */
 @EActivity(R.layout.activity_settings)
 public class SettingsActivity extends BaseActivity {
+    private static final String TAG = "SettingsActivity";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = (preference, value) -> {
-        String stringValue = value.toString();
 
-        if (preference instanceof RingtonePreference) {
-            // For ringtone preferences, look up the correct display value
-            // using RingtoneManager.
-            if (TextUtils.isEmpty(stringValue)) {
-                // Empty values correspond to 'silent' (no ringtone).
-                preference.setSummary(R.string.pref_remind_ringtone_silent);
-            } else {
-                Ringtone ringtone = RingtoneManager.getRingtone(preference.getContext(), Uri.parse(stringValue));
-                if (ringtone == null) {
-                    // Clear the summary if there was a lookup error.
-                    preference.setSummary(null);
-                } else {
-                    // Set the summary to reflect the new ringtone display name.
-                    String name = ringtone.getTitle(preference.getContext());
-                    preference.setSummary(name);
-                }
-            }
-
-        }
-        return true;
-    };
     @ViewById Toolbar toolbar;
-
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
-    }
 
     @AfterViews
     void setupToolBar() {
@@ -103,7 +61,6 @@ public class SettingsActivity extends BaseActivity {
     @AfterViews
     void setPreference() {
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
-
     }
 
     @Override
@@ -133,11 +90,58 @@ public class SettingsActivity extends BaseActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragment {
+        private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = (preference, value) -> {
+            String stringValue = value.toString();
+
+            if (preference instanceof RingtonePreference) {
+                // For ringtone preferences, look up the correct display value
+                // using RingtoneManager.
+                if (TextUtils.isEmpty(stringValue)) {
+                    // Empty values correspond to 'silent' (no ringtone).
+                    preference.setSummary(R.string.pref_remind_ringtone_silent);
+                } else {
+                    Ringtone ringtone = RingtoneManager.getRingtone(preference.getContext(), Uri.parse(stringValue));
+                    if (ringtone == null) {
+                        // Clear the summary if there was a lookup error.
+                        preference.setSummary(null);
+                    } else {
+                        // Set the summary to reflect the new ringtone display name.
+                        String name = ringtone.getTitle(preference.getContext());
+                        preference.setSummary(name);
+                    }
+                }
+
+            }
+            return true;
+        };
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_ringtone)));
+            this.findPreference(getString(R.string.pref_key_sync_now)).setOnPreferenceClickListener(preference -> {
+                AccountHelper.syncNow(getContext());
+                return true;
+            });
+        }
+
+        /**
+         * Binds a preference's summary to its value. More specifically, when the
+         * preference's value is changed, its summary (line of text below the
+         * preference title) is updated to reflect the value. The summary is also
+         * immediately updated upon calling this method. The exact display format is
+         * dependent on the type of preference.
+         *
+         * @see #sBindPreferenceSummaryToValueListener
+         */
+        private void bindPreferenceSummaryToValue(Preference preference) {
+            // Set the listener to watch for value changes.
+            preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+
+            // Trigger the listener immediately with the preference's
+            // current value.
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
         }
     }
 }
