@@ -28,8 +28,8 @@ android {
         applicationId "co.yishun.onemoment.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "2.0-dev"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -74,6 +74,10 @@ android {
         marketXiaomi {}
         marketYingyongbao {}
         marketUniversal {}// for other market
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 }
 
@@ -140,11 +144,12 @@ dependencies {
 
     compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
     compile 'com.umeng.analytics:analytics:5.5.3'
-    compile 'com.qiniu:qiniu-android-sdk:7.0.6.1'
+    compile 'com.qiniu:qiniu-android-sdk:7.0.9'
     compile 'io.realm:realm-android:0.82.2'
     // for compatible
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.tojc.ormlite.android:ormlite-content-provider-library:1.0.4@aar'
 
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.nineoldandroids:library:2.4.0'

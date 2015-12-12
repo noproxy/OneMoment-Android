@@ -132,6 +132,12 @@
                 android:resource="@xml/syncadapter"/>
         </service>
 
+        <provider
+            android:name=".data.compat.MomentProvider"
+            android:authorities="co.yishun.onemoment.app"
+            android:exported="false"
+            android:syncable="true"/>
+
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"

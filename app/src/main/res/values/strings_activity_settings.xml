@@ -46,5 +46,9 @@
     <string name="pref_title_about_app_name">@string/app_name</string>
     <string name="pref_title_about_app_version">@string/app_version</string>
 
-    <string name="pref_key_remind_ringtone">remind_everyday_ringtone</string>
+    <string name="pref_key_remind_ringtone" translatable="false">remind_everyday_ringtone</string>
+    <string name="pref_key_sync_now" translatable="false">sync_now</string>
+    <string name="pref_key_sync_frequency" translatable="false">sync_frequency</string>
+    <string name="pref_key_sync" translatable="false">sync</string>
+    <string name="pref_key_sync_cellular_data" translatable="false">sync_cellular_data</string>
 </resources>
