@@ -145,6 +145,7 @@ dependencies {
     // for compatible
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.tojc.ormlite.android:ormlite-content-provider-library:1.0.4@aar'
 
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.nineoldandroids:library:2.4.0'
