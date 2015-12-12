@@ -16,7 +16,7 @@ import org.androidannotations.api.SdkVersionHelper;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
-import co.yishun.onemoment.app.wxapi.WXEntryActivity;
+import co.yishun.onemoment.app.wxapi.EntryActivity;
 
 /**
  * Created by yyz on 7/23/15.
@@ -75,7 +75,7 @@ public class SplashActivity extends BaseActivity {
         if (AccountHelper.isLogin(this))
             MainActivity_.intent(this).start();
         else
-            startActivity(new Intent(this, WXEntryActivity.class));
+            startActivity(new Intent(this, EntryActivity.class));
     }
 
     @Nullable

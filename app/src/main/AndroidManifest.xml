@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="co.yishun.onemoment.app"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest package="co.yishun.onemoment.app"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk tools:overrideLibrary="com.github.hiteshsondhi88.libffmpeg"/>
 
@@ -24,7 +23,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
-
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -32,7 +30,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -43,14 +40,13 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".ui.SplashActivity_"
-            android:theme="@style/AppTheme.SplashActivity"
-            >
+            android:theme="@style/AppTheme.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -58,54 +54,47 @@
             android:name=".ui.MainActivity_"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.MainActivity"
-            />
+            android:theme="@style/AppTheme.MainActivity"/>
         <activity
             android:name=".ui.VideoVotedUpActivity_"
             android:label="@string/discovery_title"
-            android:theme="@style/AppTheme.VideoVoteUpActivity"
-            >
+            android:theme="@style/AppTheme.VideoVoteUpActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity"
-                />
+                android:value=".ui.MainActivity"/>
         </activity>
         <activity
             android:name=".ui.SettingsActivity_"
             android:label="@string/title_settings"
-            android:theme="@style/AppTheme.Settings"
-            >
+            android:theme="@style/AppTheme.Settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"
-                />
+                android:value=".ui.MainActivity_"/>
         </activity>
-
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.WXEntryActivity"/>
+            android:theme="@android:style/Theme.NoDisplay"/>
+        <activity
+            android:name=".wxapi.EntryActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.EntryActivity"/>
         <activity
             android:name=".ui.AccountActivity_"
-            android:theme="@style/AppTheme.PhoneAccountActivity"
-            >
+            android:theme="@style/AppTheme.PhoneAccountActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".wxapi.WXEntryActivity"
-                />
-            <!-- TODO just for test-->
+                android:value=".wxapi.EntryActivity"/>
+            <!-- TODO just for test -->
         </activity>
-
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.FitWindowsActivity"/>
-
         <activity
             android:name=".ui.EspressoTestActivity"
-            android:label="@string/title_activity_espresso_test"
-            />
+            android:label="@string/title_activity_espresso_test"/>
         <activity android:name=".ui.UIAutomatorTestActivity"/>
 
         <service
@@ -115,11 +104,11 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator"/>
         </service>
-
         <service
             android:name=".account.sync.SyncService"
             android:exported="true"
@@ -127,6 +116,7 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter"/>
@@ -149,15 +139,13 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data android:scheme="tencent222222"/>
-                <!-- TODO change test id to 1104574591-->
+                <!-- TODO change test id to 1104574591 -->
             </intent-filter>
         </activity>
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            />
-
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
@@ -171,16 +159,13 @@
         </activity>
         <activity
             android:name=".ui.ShootActivity_"
-            android:theme="@style/AppTheme.ShootActivity"
-            />
+            android:theme="@style/AppTheme.ShootActivity"/>
         <activity
             android:name=".ui.SearchActivity_"
             android:theme="@style/AppTheme.SearchActivity">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"
-                />
+                android:value=".ui.MainActivity_"/>
         </activity>
         <activity
             android:name=".ui.PlayActivity_"
@@ -188,24 +173,18 @@
         </activity>
         <activity
             android:name=".ui.MomentCreateActivity_"
-            android:theme="@style/AppTheme.MomentCreateActivity"
-            >
+            android:theme="@style/AppTheme.MomentCreateActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"
-                />
+                android:value=".ui.MainActivity_"/>
         </activity>
         <activity
             android:name=".ui.TagCreateActivity_"
-            android:theme="@style/AppTheme.TagCreateActivity"
-            >
-
+            android:theme="@style/AppTheme.TagCreateActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MomentCreateActivity_"
-                />
+                android:value=".ui.MomentCreateActivity_"/>
         </activity>
-
         <activity
             android:name=".ui.UserInfoActivity_"
             android:theme="@style/AppTheme.UserInfoActivity">
@@ -213,7 +192,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity_"/>
         </activity>
-
         <activity
             android:name=".ui.PlayMomentActivity_"
             android:theme="@style/AppTheme.PlayMomentActivity">
@@ -221,7 +199,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity_"/>
         </activity>
-
         <activity
             android:name=".ui.ShareExportActivity_"
             android:theme="@style/AppTheme.ShareOutputActivity">
@@ -243,7 +220,6 @@
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="549e2c80fd98c5e4cf000f64"/>
-
     </application>
 
 </manifest>
