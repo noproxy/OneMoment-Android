@@ -6,9 +6,12 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -30,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +42,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountHelper;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -81,6 +86,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mUploadManager = new UploadManager();
     }
 
+    private final List<Moment> toUpload = new ArrayList<>();
+    private final List<Pair<ApiMoment, Moment>> toDownload = new ArrayList<>();
+    private final List<ApiMoment> toDelete = new ArrayList<>();
     ContentResolver mContentResolver;
     /**
      * whether local data update while sync. if true, need to notify some ui update
@@ -89,9 +97,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     boolean isDownloadChanged = false;
     @SystemService ConnectivityManager connectivityManager;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> dao;
-    List<Moment> toUpload;
-    List<Pair<ApiMoment, Moment>> toDownload;
-    List<ApiMoment> toDelete;
 
     public SyncAdapter(Context context) {
         super(context, true);
@@ -136,17 +141,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
-     * To execute sync. When sync end, it will call {@link #onSyncEnd()} to send broadcast notify sync process ending. And in syncing process, it calls {@link #syncUpdate(UpdateType, int, int, int)} to broadcast progress.
+     * To execute sync. When sync end, it will call {@link #onSyncEnd()} to send broadcast notify sync process ending. And in syncing process, it calls {@link #onSyncUpdate(int, int, int)} to broadcast progress.
      */
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.i(TAG, "onPerformSync, account: " + account.name + ", Bundle: " + extras);
-
-        if (!extras.getBoolean(BUNLDE_IGNORE_NETWORK, false) && !connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
-            Log.i(TAG, "cancel sync because network is not wifi");
+        if (!checkSyncOption(extras))
             return;
-        }
-        //see:http://developer.android.com/training/sync-adapters/creating-sync-adapter.html
 
         RestAdapter restAdapter = OneMomentV3.createAdapter();
         co.yishun.onemoment.app.api.Account service = restAdapter.create(co.yishun.onemoment.app.api.Account.class);
@@ -165,7 +166,36 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    /**
+     * check sync option.
+     *
+     * @param extras Bundle of sync.
+     * @return false if sync should give up.
+     */
+    private boolean checkSyncOption(Bundle extras) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Resources res = getContext().getResources();
+        boolean isEnable = prefs.getBoolean(res.getString(R.string.pref_key_sync), true);
+        boolean canCellular = prefs.getBoolean(res.getString(R.string.pref_key_sync_now), false);
+
+        if (!isEnable) {
+            Log.i(TAG, "cancel sync because sync is disabled");
+            return false;
+        }
+
+        if (!extras.getBoolean(BUNLDE_IGNORE_NETWORK, false) &&
+                !canCellular && !connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
+            Log.i(TAG, "cancel sync because network is not permitted");
+            return false;
+        }
+        Log.i(TAG, "sync option is OK");
+        return true;
+    }
+
     private void divideTask(List<ApiMoment> momentsOnServer, List<Moment> momentsOnDevice) {
+        Log.i(TAG, "divide task, servers: " + momentsOnServer.size());
+        Log.i(TAG, "divide task, local: " + momentsOnDevice.size());
+
         final HashMap<String, ApiMoment> apiMomentHashMap = new HashMap<>(momentsOnServer.size());
         for (ApiMoment apiMoment : momentsOnServer)
             apiMomentHashMap.put(apiMoment.getTime(), apiMoment);
@@ -181,6 +211,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 toDownload.add(Pair.create(momentOnServer, moment));
             }
         }
+
+        Log.i(TAG, "divide end.");
+        Log.i(TAG, "to upload: " + toUpload.size());
+        Log.i(TAG, "to download: " + toDownload.size());
+        Log.i(TAG, "to delete: " + toDelete.size());
     }
 
     private void digestTask() {
@@ -198,6 +233,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             executor.submit(new DeleteTask(apiMoment));
 
         try {
+            Log.i(TAG, "Wait Sync Task end");
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             Log.i(TAG, "executor is interrupted!");
