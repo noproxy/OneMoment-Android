@@ -6,6 +6,7 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,12 +19,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.WeakHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
-import java8.util.stream.StreamSupport;
+import co.yishun.onemoment.app.data.compat.Contract;
 
 /**
  * Created by Carlos on 2015/8/13.
@@ -152,6 +152,17 @@ public class AccountHelper {
 
     public static void removeOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
         mListeners.remove(listener.hashCode());
+    }
+
+
+    public static void syncNow(Context context) {
+        Log.i(TAG, "sync at once");
+        Account account = AccountHelper.getAccount(context);
+        Log.i(TAG, "sync account: " + account);
+        Bundle b = new Bundle();
+        b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        ContentResolver.requestSync(account, Contract.AUTHORITY, b);
     }
 
 
