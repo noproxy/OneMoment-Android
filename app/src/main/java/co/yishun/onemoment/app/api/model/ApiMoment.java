@@ -63,8 +63,7 @@ public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuK
         return (int) (putTime - apiMoment.putTime);
     }
 
-    @Override
-    public String getName() {
+    @Override public String getKey() {
         return this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp();
     }
 }

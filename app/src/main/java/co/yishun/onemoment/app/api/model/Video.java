@@ -18,7 +18,7 @@ public class Video extends ApiModel implements QiniuKeyProvider {
     public Domain domain;
 
     @Override
-    public String getName() {
+    public String getKey() {
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
 

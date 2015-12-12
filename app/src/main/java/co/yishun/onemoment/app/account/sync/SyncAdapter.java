@@ -293,9 +293,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         @Override public void run() {
             Log.i(TAG, "upload a moment: " + mMoment);
-            String qiNiuKey = mMoment.getName();
+            String qiNiuKey = mMoment.getKey();
             //            syncUpdate(UpdateType.UPLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-            UploadToken token = mMiscService.getUploadToken(mMoment.getName());
+            UploadToken token = mMiscService.getUploadToken(mMoment.getKey());
             if (!token.isSuccess()) {
                 //TODO failed
                 return;
@@ -342,7 +342,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             File fileSynced = FileUtil.getMomentStoreFile(getContext());
             OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder().url(domain.domain + mApiMoment.getName()).get().build();
+            Request request = new Request.Builder().url(domain.domain + mApiMoment.getKey()).get().build();
             try {
                 Response response = client.newCall(request).execute();
                 if (response.code() == 200) {
@@ -448,7 +448,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
         @Override public void run() {
-            mMiscService.deleteVideo(mApiMoment.getName());
+            mMiscService.deleteVideo(mApiMoment.getKey());
         }
     }
 }

@@ -49,7 +49,9 @@ public class FileUtil {
      */
     public static File getThumbnailStoreFile(Context context, QiniuKeyProvider provider, Type type) {
         String dir = THUMB_STORE_DIR;
-        return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + provider.getName() + type.getSuffix());
+        final String key = provider.getKey();
+        final String name = key.substring(0, key.lastIndexOf('.'));
+        return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + name + type.getSuffix());
     }
 
     /**
@@ -60,7 +62,7 @@ public class FileUtil {
      * @return path of the Video, it may not exist.
      */
     public static File getWorldVideoStoreFile(Context context, Video video) {
-        return new File(getMediaStoreDir(context, WORLD_STORE_DIR), video.getName() + Constants.VIDEO_FILE_SUFFIX);
+        return new File(getMediaStoreDir(context, WORLD_STORE_DIR), video.getKey());
     }
 
     /**
