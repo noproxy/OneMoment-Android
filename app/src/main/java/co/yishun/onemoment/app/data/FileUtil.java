@@ -50,8 +50,8 @@ public class FileUtil {
     public static File getThumbnailStoreFile(Context context, QiniuKeyProvider provider, Type type) {
         String dir = THUMB_STORE_DIR;
         final String key = provider.getKey();
-        final String name = key.substring(0, key.lastIndexOf('.'));
-        return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + name + type.getSuffix());
+//        final String name = key.substring(0, key.lastIndexOf('.'));
+        return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + key + type.getSuffix());
     }
 
     /**
