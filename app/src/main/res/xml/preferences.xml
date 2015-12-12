@@ -5,7 +5,7 @@
         >
         <com.jenzz.materialpreference.CheckBoxPreference
             android:defaultValue="true"
-            android:key="sync"
+            android:key="@string/pref_key_sync"
             android:summary="@string/pref_summary_sync_auto"
             android:title="@string/pref_title_sync_auto"
             />
@@ -14,7 +14,7 @@
             android:dependency="sync"
             android:entries="@array/pref_sync_frequency_titles"
             android:entryValues="@array/pref_sync_frequency_values"
-            android:key="sync_frequency"
+            android:key="@string/pref_key_sync_frequency"
             android:layout="@layout/layout_preference_mtd"
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
@@ -24,7 +24,7 @@
         <com.jenzz.materialpreference.CheckBoxPreference
             android:defaultValue="false"
             android:dependency="sync"
-            android:key="sync_cellular_data"
+            android:key="@string/pref_key_sync_cellular_data"
             android:summaryOff="@string/pref_summary_sync_cellular_data_off"
             android:summaryOn="@string/pref_summary_sync_cellular_data_on"
             android:title="@string/pref_title_sync_cellular_data"
