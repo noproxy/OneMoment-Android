@@ -39,6 +39,10 @@ public class Constants {
 
     public static final int INT_EXIT_DELAY_MILLIS = 500;
 
+    public static final String QQ_APP_ID = "222222";
+    public static final String WE_CHAT_APP_ID = "wx669ce174488102f4";
+    public static final String WEIBO_APP_ID = "4070980764";
+
     public static class ErrorCode {
         public static final int INPUT_MISSING = -1;
         public static final int INPUT_ERROR = -2;

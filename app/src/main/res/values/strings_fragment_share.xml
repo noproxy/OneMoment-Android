@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_share_qq">QQ</string>
+    <string name="fragment_share_qzone">QZone</string>
+    <string name="fragment_share_weibo">Weibo</string>
+    <string name="fragment_share_we_chat">WeChat</string>
+    <string name="fragment_share_wx_circle">Moments</string>
+</resources>

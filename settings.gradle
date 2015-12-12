@@ -1,1 +1,1 @@
-include ':app', ':transition-library', ':play-library', ':calendar-library', ':umeng-res-library'
+include ':app', ':transition-library', ':play-library', ':calendar-library'

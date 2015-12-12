@@ -65,6 +65,8 @@ import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.share.ShareFragment;
+import co.yishun.onemoment.app.ui.share.ShareFragment_;
 
 @EActivity(R.layout.activity_share_export)
 public class ShareExportActivity extends BaseActivity
@@ -84,7 +86,8 @@ public class ShareExportActivity extends BaseActivity
     private List<Moment> allMoments;
     private List<Moment> selectedMoments;
     private File videoCacheFile;
-
+    private boolean isSharing = false;
+    private ShareFragment shareFragment;
 
     @AfterViews void setupViews() {
         momentCalendar.setAdapter(this);
@@ -109,12 +112,16 @@ public class ShareExportActivity extends BaseActivity
     }
 
     @Click(R.id.shareText) @Background void shareTextClicked() {
+        if (selectedMoments.size() == 0){
+            showSnackMsg("Select at least one to share");
+            return;
+        }
         appendSelectedVideos();
         if (videoCacheFile == null) {
             //TODO check append videos failed
             return;
         }
-        upload();
+        uploadAndShare();
     }
 
     @Click(R.id.exportText) void exportTextClicked() {
@@ -165,7 +172,7 @@ public class ShareExportActivity extends BaseActivity
         String content = String.format(getResources().getString(R.string.activity_share_export_selected),
                 selectedMoments.size(), allMoments.size());
         SpannableString ss = new SpannableString(content);
-        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 2,
+        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), content.indexOf(" "),
                 content.indexOf("/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         selectedText.setText(ss);
     }
@@ -205,6 +212,15 @@ public class ShareExportActivity extends BaseActivity
                 selectedMoments.add(moment);
             }
             updateSelectedText();
+        }
+    }
+
+    @Override public void onBackPressed() {
+        if (isSharing) {
+            getSupportFragmentManager().beginTransaction().remove(shareFragment).commit();
+            isSharing = false;
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -263,7 +279,7 @@ public class ShareExportActivity extends BaseActivity
         }
     }
 
-    @SupposeBackground void upload() {
+    @SupposeBackground void uploadAndShare() {
         showProgress();
         UploadManager uploadManager = new UploadManager();
         Log.d(TAG, "upload " + videoCacheFile.getName());
@@ -313,6 +329,11 @@ public class ShareExportActivity extends BaseActivity
 
         videoCacheFile.delete();
         hideProgress();
+
+        shareFragment = ShareFragment_.builder()
+                .shareInfo(shareInfo).build();
+        getSupportFragmentManager().beginTransaction().add(android.R.id.content, shareFragment).commit();
+        isSharing = true;
     }
 
     @Nullable @Override public View getSnackbarAnchorWithView(@Nullable View view) {
