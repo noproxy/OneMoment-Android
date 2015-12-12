@@ -75,6 +75,10 @@ android {
         marketYingyongbao {}
         marketUniversal {}// for other market
     }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
 }
 
 def SUPPORT_VERSION = '23.1.1'
