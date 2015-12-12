@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.sina.weibo.sdk.api.ImageObject;
+import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
@@ -146,6 +147,9 @@ public class ShareController {
     }
 
     private void shareToWeibo() {
+        TextObject textObject = new TextObject();
+        textObject.text = shareContent;
+
         ImageObject imageObject = new ImageObject();
         imageObject.setImageObject(bitmap);
 
@@ -158,6 +162,7 @@ public class ShareController {
         mediaObject.defaultText = shareContent;
 
         WeiboMultiMessage weiboMessage = new WeiboMultiMessage();
+        weiboMessage.textObject = textObject;
         weiboMessage.imageObject = imageObject;
         weiboMessage.mediaObject = mediaObject;
         SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
