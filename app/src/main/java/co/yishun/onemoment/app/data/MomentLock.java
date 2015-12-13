@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.data;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -18,8 +19,8 @@ public class MomentLock {
     private static HashMap<String, FileLock> mLockMap = new HashMap<>();
 
 
-    private static void lock(String lock) throws Exception {
-        File lockFile = new File(lock);
+    private static void lock(Context context, String lock) throws Exception {
+        File lockFile = new File(FileUtil.getCacheDirectory(context, false), lock);
         if (!lockFile.exists()) {
             if (!lockFile.createNewFile()) {
                 throw new Exception();
@@ -31,7 +32,7 @@ public class MomentLock {
         mLockMap.put(lock, fileLock);
     }
 
-    private static void unLock(@NonNull String lock) throws Exception {
+    private static void unLock(Context context, @NonNull String lock) throws Exception {
         FileLock fileLock = mLockMap.get(lock);
         if (fileLock != null) {
             fileLock.release();
@@ -44,8 +45,8 @@ public class MomentLock {
      * @param moment to provide time to lock.
      * @throws Exception
      */
-    public static void lockMoment(@NonNull Moment moment) throws Exception {
-        lock(moment.getTime());
+    public static void lockMoment(Context context, @NonNull Moment moment) throws Exception {
+        lock(context, moment.getTime());
     }
 
     /**
@@ -54,9 +55,9 @@ public class MomentLock {
      * @param moment to provide time to lock. Do nothing if null.
      * @throws Exception
      */
-    public static void unlockMomentIfLocked(@Nullable Moment moment) throws Exception {
+    public static void unlockMomentIfLocked(Context context, @Nullable Moment moment) throws Exception {
         if (moment != null) {
-            unLock(moment.getTime());
+            unLock(context, moment.getTime());
         }
     }
 }
