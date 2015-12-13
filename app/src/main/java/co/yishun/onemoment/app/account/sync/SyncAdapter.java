@@ -50,6 +50,7 @@ import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.VideoUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
@@ -413,6 +414,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mApiMoment, fileSynced.getPath());
                 if (mMoment == null)
                     mMoment = new Moment();
+                else {
+                    MomentLock.lockMoment(mMoment);
+                    //TODO I don't delete old. To clean them by adding clean cache function or delete them here.
+                }
+
+
                 mMoment.setOwner(mApiMoment.getOwnerID());
                 mMoment.setTime(mApiMoment.getTime());
                 mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
@@ -421,12 +428,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 mMoment.setLargeThumbPath(pathToLargeThumb);
                 dao.createOrUpdate(mMoment);
                 Log.i(TAG, "download ok: " + mMoment);
+
+                MomentLock.unlockMomentIfLocked(mMoment);
+
                 //TODO ok
             } catch (SQLException e) {
                 //TODO failed
                 Log.e(TAG, "exception when save a moment into database", e);
             } catch (IOException e) {
                 Log.e(TAG, "exception when create thumbimage", e);
+            } catch (Exception e) {
+                Log.e(TAG, "unknown exception,may be thrown in MomentLock", e);
             }
         }
     }
