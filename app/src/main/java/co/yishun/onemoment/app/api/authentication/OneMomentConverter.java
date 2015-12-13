@@ -101,7 +101,10 @@ public class OneMomentConverter implements Converter {
                 if (genericType == Banner.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     models = mGson.fromJson(data.get("banners").getAsJsonArray(), type);
-                } else if (genericType == ApiMoment.class || genericType == Video.class) {
+                } else if (genericType == ApiMoment.class) {
+                    JsonObject data = jsonObject.get("data").getAsJsonObject();
+                    models = mGson.<List<ApiMoment>>fromJson(data.get("videos").getAsJsonArray(), type);
+                } else if (genericType == Video.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     List<Video> videos = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
                     Domain domain = mGson.fromJson(data, Domain.class);
