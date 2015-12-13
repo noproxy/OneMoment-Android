@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.ui.common;
 
+import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -22,20 +24,20 @@ import co.yishun.onemoment.app.config.Constants;
  */
 @EActivity
 public abstract class BaseActivity extends AppCompatActivity {
-    private MaterialDialog mProgressDialog;
     //set it false, if we only take this activity's fragments into count. else set it true, and give a page name.
     protected boolean mIsPage = true;
     protected String mPageName = "BaseActivity";
+    private MaterialDialog mProgressDialog;
 
-    @Nullable
-    public abstract View getSnackbarAnchorWithView(@Nullable View view);
+    @CallSuper @NonNull public View getSnackbarAnchorWithView(@Nullable View view) {
+        return view != null ? view : findViewById(android.R.id.content);
+    }
 
     public abstract void setPageInfo();
 
     @UiThread
     public void showSnackMsg(String msg) {
-        View view = getSnackbarAnchorWithView(null);
-        Snackbar.make(view != null ? view : findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getSnackbarAnchorWithView(null), msg, Snackbar.LENGTH_SHORT).show();
     }
 
     public void showSnackMsg(@StringRes int msgRes) {

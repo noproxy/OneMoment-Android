@@ -4,7 +4,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -165,12 +164,6 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
     void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(queryText.getWindowToken(), 0);
-    }
-
-    @Nullable
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
     }
 
     @Override

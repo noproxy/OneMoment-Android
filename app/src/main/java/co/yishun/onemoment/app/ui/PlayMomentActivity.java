@@ -1,13 +1,10 @@
 package co.yishun.onemoment.app.ui;
 
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import org.androidannotations.annotations.AfterViews;
@@ -55,10 +52,6 @@ public class PlayMomentActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Nullable @Override public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
     }
 
     @Override public void setPageInfo() {

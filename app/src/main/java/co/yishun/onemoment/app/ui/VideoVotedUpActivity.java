@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -64,12 +63,6 @@ public class VideoVotedUpActivity extends BaseActivity
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.video_vote_up_title);
         Log.i("setupToolbar", "set home as up true");
-    }
-
-    @Nullable
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
     }
 
     @Override

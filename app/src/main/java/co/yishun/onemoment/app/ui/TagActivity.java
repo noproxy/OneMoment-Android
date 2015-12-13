@@ -1,11 +1,9 @@
 package co.yishun.onemoment.app.ui;
 
 import android.animation.ArgbEvaluator;
-import android.animation.FloatEvaluator;
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,23 +18,16 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.squareup.picasso.Picasso;
-import com.transitionseverywhere.ChangeBounds;
-import com.transitionseverywhere.ChangeImageTransform;
-import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Scene;
-import com.transitionseverywhere.Slide;
 import com.transitionseverywhere.TransitionInflater;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
@@ -55,9 +46,7 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
-import co.yishun.onemoment.app.ui.view.CornerTransition;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
-import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 
 /**
  * Created by Carlos on 2015/8/17.
@@ -90,12 +79,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     private int collapsedSubTitleColor;
     private int expendedTitleColor;
     private int expendedSubTitleColor;
-
-    @Nullable
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
-    }
 
     @Override
     public void setPageInfo() {

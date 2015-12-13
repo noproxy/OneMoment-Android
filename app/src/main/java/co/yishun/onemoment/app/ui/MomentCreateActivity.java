@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -42,12 +41,6 @@ public class MomentCreateActivity extends BaseActivity {
     @Extra WorldTag worldTag;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
     private boolean isPrivate;//TODO use it
-
-    @Nullable
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
-    }
 
     @Override
     public void setPageInfo() {

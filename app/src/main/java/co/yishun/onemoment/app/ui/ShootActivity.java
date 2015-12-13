@@ -60,12 +60,6 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
 
-    @Nullable
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
-    }
-
     @Override
     public void setPageInfo() {
         mPageName = "ShootActivity";
