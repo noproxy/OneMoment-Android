@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +39,7 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
  * API Guide</a> for more information on developing a Settings UI.
  */
 @EActivity(R.layout.activity_settings)
-public class SettingsActivity extends BaseActivity {
+public class SettingsActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "SettingsActivity";
     /**
      * A preference value change listener that updates the preference's summary
@@ -54,6 +56,16 @@ public class SettingsActivity extends BaseActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(getTitle());
         Log.i("setupToolbar", "set home as up true");
+    }
+
+    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @AfterViews
@@ -79,6 +91,11 @@ public class SettingsActivity extends BaseActivity {
     @Override
     public void setPageInfo() {
         mPageName = "SettingsActivity";
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        SyncManager.notifySyncSettingsChange(this);
     }
 
     public static class SettingsFragment extends PreferenceFragment {
