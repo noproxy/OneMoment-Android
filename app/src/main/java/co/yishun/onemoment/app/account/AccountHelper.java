@@ -56,7 +56,9 @@ public class AccountHelper {
     }
 
     public static boolean isLogin(Context context) {
-        return getAccount(context) != null;
+        if (getAccount(context) == null) return false;
+        else if (getUserInfo(context) == null) return false;
+        return true;
     }
 
     public static void saveAccount(Context context, User user) {
