@@ -1,5 +1,8 @@
 package co.yishun.onemoment.app.data;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.channels.FileChannel;
@@ -12,10 +15,10 @@ import co.yishun.onemoment.app.data.model.Moment;
  * Created by Carlos on 12/10/15.
  */
 public class MomentLock {
-    private HashMap<String, FileLock> mLockMap = new HashMap<>();
+    private static HashMap<String, FileLock> mLockMap = new HashMap<>();
 
 
-    private void lock(String lock) throws Exception {
+    private static void lock(String lock) throws Exception {
         File lockFile = new File(lock);
         if (!lockFile.exists()) {
             if (!lockFile.createNewFile()) {
@@ -28,16 +31,32 @@ public class MomentLock {
         mLockMap.put(lock, fileLock);
     }
 
-    private void unLock(String lock) throws Exception {
+    private static void unLock(@NonNull String lock) throws Exception {
         FileLock fileLock = mLockMap.get(lock);
-        fileLock.release();
+        if (fileLock != null) {
+            fileLock.release();
+        }
     }
 
-    public void lockMoment(Moment moment) throws Exception {
+    /**
+     * Lock moments by their {@link Moment#getTime()}. Any moment having the same time will be locked.
+     *
+     * @param moment to provide time to lock.
+     * @throws Exception
+     */
+    public static void lockMoment(@NonNull Moment moment) throws Exception {
         lock(moment.getTime());
     }
 
-    public void unlockMoment(Moment moment) throws Exception {
-        unLock(moment.getTime());
+    /**
+     * Unlock the time of the moment.
+     *
+     * @param moment to provide time to lock. Do nothing if null.
+     * @throws Exception
+     */
+    public static void unlockMomentIfLocked(@Nullable Moment moment) throws Exception {
+        if (moment != null) {
+            unLock(moment.getTime());
+        }
     }
 }
