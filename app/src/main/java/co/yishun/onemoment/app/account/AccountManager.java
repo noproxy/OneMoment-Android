@@ -66,6 +66,7 @@ public class AccountManager {
         bundle.putString(ACCOUNT_ID_KEY, user._id);
         getAccountManager(context).addAccountExplicitly(newAccount, null, bundle);
         updateOrCreateUserInfo(context, user);
+        SyncManager.notifySyncSettingsChange(context);
     }
 
     public static String getAccountId(Context context) {
