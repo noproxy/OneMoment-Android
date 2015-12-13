@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.util.Log;
 
 import co.yishun.onemoment.app.R;
@@ -16,13 +17,20 @@ import co.yishun.onemoment.app.data.compat.Contract;
  */
 public class SyncManager {
     public static final String SYNC_IGNORE_NETWORK = "boolean_ignore_network";
+
+    public static final String SYNC_BROADCAST_ACTION_START = "co.yishun.onemoment.app.sync.action.start";
+    public static final String SYNC_BROADCAST_EXTRA_START_TASK_NUM = "extra_start_task_num";
+
+
     public static final String SYNC_BROADCAST_ACTION_END = "co.yishun.onemoment.app.sync.action.end";
-    public static final String SYNC_BROADCAST_ACTION_START = "co.yishun.onemoment.app.sync.action.end";
-    public static final String SYNC_BROADCAST_PROGRESS_UPLOAD = "co.yishun.onemoment.app.sync.update.upload";
-    public static final String SYNC_BROADCAST_PROGRESS_DOWNLOAD = "co.yishun.onemoment.app.sync.update.download";
-    public static final String SYNC_BROADCAST_EXTRA_THIS_PROGRESS = "int_this_progress";
-    public static final String SYNC_BROADCAST_EXTRA_TYPE_PROGRESS = "int_type_progress";
-    public static final String SYNC_BROADCAST_EXTRA_ALL_PROGRESS = "int_all_progress";
+    public static final String SYNC_BROADCAST_EXTRA_END_RESULT = "extra_end_result";
+    public static final int SYNC_BROADCAST_EXTRA_END_RESULT_SUCCESS = 1;
+    public static final int SYNC_BROADCAST_EXTRA_END_RESULT_CANCEL = 0;
+    public static final int SYNC_BROADCAST_EXTRA_END_RESULT_FAIL = -1;
+    public static final String SYNC_BROADCAST_ACTION_PROGRESS = "co.yishun.onemoment.app.sync.action.progress";
+    public static final String SYNC_BROADCAST_EXTRA_PROGRESS_VALUE = "extra_int_progress_value";
+    public static final int PROGRESS_MAX_VALUE = 100;
+
     public static final int PROGRESS_NOT_AVAILABLE = -1;
     public static final int PROGRESS_ERROR = -2;
     private static final String TAG = "SyncManager";
@@ -67,4 +75,7 @@ public class SyncManager {
     protected static void disableSync() {
         ContentResolver.setMasterSyncAutomatically(false);
     }
+
+    @IntDef(value = {SYNC_BROADCAST_EXTRA_END_RESULT_SUCCESS, SYNC_BROADCAST_EXTRA_END_RESULT_FAIL, SYNC_BROADCAST_EXTRA_END_RESULT_CANCEL})
+    public @interface EndResult {}
 }
