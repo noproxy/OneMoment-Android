@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.ui.share;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.app.FragmentManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -21,6 +22,7 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  */
 @EFragment(R.layout.fragment_share)
 public class ShareFragment extends BaseFragment {
+    public static final String TAG = "ShareFragment";
 
     @FragmentArg ShareInfo shareInfo;
 

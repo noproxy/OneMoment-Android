@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -86,8 +87,6 @@ public class ShareExportActivity extends BaseActivity
     private List<Moment> allMoments;
     private List<Moment> selectedMoments;
     private File videoCacheFile;
-    private boolean isSharing = false;
-    private ShareFragment shareFragment;
 
     @AfterViews void setupViews() {
         momentCalendar.setAdapter(this);
@@ -112,7 +111,7 @@ public class ShareExportActivity extends BaseActivity
     }
 
     @Click(R.id.shareText) @Background void shareTextClicked() {
-        if (selectedMoments.size() == 0){
+        if (selectedMoments.size() == 0) {
             showSnackMsg("Select at least one to share");
             return;
         }
@@ -216,9 +215,9 @@ public class ShareExportActivity extends BaseActivity
     }
 
     @Override public void onBackPressed() {
-        if (isSharing) {
-            getSupportFragmentManager().beginTransaction().remove(shareFragment).commit();
-            isSharing = false;
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ShareFragment.TAG);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         } else {
             super.onBackPressed();
         }
@@ -330,10 +329,10 @@ public class ShareExportActivity extends BaseActivity
         videoCacheFile.delete();
         hideProgress();
 
-        shareFragment = ShareFragment_.builder()
+        ShareFragment shareFragment = ShareFragment_.builder()
                 .shareInfo(shareInfo).build();
-        getSupportFragmentManager().beginTransaction().add(android.R.id.content, shareFragment).commit();
-        isSharing = true;
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, shareFragment, ShareFragment.TAG).commit();
     }
 
     @Nullable @Override public View getSnackbarAnchorWithView(@Nullable View view) {
