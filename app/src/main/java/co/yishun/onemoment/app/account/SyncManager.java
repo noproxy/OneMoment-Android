@@ -61,7 +61,7 @@ public class SyncManager {
 
         boolean isSync = pref.getBoolean(context.getString(R.string.pref_key_sync), true);
         boolean canCellular = pref.getBoolean(context.getString(R.string.pref_key_sync_cellular_data), false);
-        long frequency = pref.getLong(context.getString(R.string.pref_key_sync_frequency), 60L);// unit: minutes
+        long frequency = Long.parseLong(pref.getString(context.getString(R.string.pref_key_sync_frequency), "60"));// unit: minutes
 
         Log.i(TAG, "notifySyncSettingsChange, isSync: " + isSync);
 
