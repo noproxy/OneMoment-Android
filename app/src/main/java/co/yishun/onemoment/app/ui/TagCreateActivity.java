@@ -282,14 +282,21 @@ public class TagCreateActivity extends BaseActivity
                         FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.MICRO_THUMB).delete();
                         mToDe.getFile().delete();
                     }
+                    showSnackMsg(R.string.activity_tag_create_moment_success);
+                    delayFinish();
+                    return;
                 }
             } catch (SQLException e) {
+                Log.e(TAG, "failed to save moment", e);
                 e.printStackTrace();
             }
-            this.finish();
-            showSnackMsg(R.string.activity_tag_create_moment_success);
+            showSnackMsg(R.string.activity_tag_create_moment_fail);
             //TODO need any longer? Moment.unlock();
         }
+    }
+
+    @UiThread(delay = 300) void delayFinish() {
+        this.finish();
     }
 
     /**
