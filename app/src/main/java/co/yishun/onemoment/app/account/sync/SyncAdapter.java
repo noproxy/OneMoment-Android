@@ -30,6 +30,7 @@ import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.SystemService;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -350,64 +351,70 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             File fileSynced = FileUtil.getMomentStoreFile(getContext());
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder().url(domain.domain + mApiMoment.getKey()).get().build();
+            Log.i(TAG, "start download: " + request.urlString());
+
             try {
                 Response response = client.newCall(request).execute();
-                if (response.code() == 200) {
-                    InputStream inputStream = null;
-                    try {
+                InputStream inputStream = null;
+                FileOutputStream out = null;
+                try {
+                    if (response.code() == 200) {
+                        byte[] data = new byte[1024];
+                        int count;
+                        double target = response.body().contentLength();
+                        double total = 0;
                         inputStream = response.body().byteStream();
-                        byte[] buff = new byte[1024 * 4];
-                        long downloaded = 0;
-                        long target = response.body().contentLength();
+                        out = new FileOutputStream(fileSynced);
 
-                        //TODO progress
-                        while (true) {
-                            int readed = inputStream.read(buff);
-                            if (readed == -1) {
-                                break;
-                            }
-                            //write buff
-                            downloaded += readed;
-                            //                            publishProgress(downloaded, target);
+                        while ((count = inputStream.read(data)) != -1) {
+                            total += count;
+                            out.write(data, 0, count);
+
+                            Log.v(TAG, "progress: " + (total / target));
                             if (Thread.interrupted()) {
                                 //TODO cancel
                                 return;
                             }
                         }
+                        out.flush();
+                        out.close();
+                        inputStream.close();
 
-                        String pathToThumb = VideoUtil.createThumbImage(getContext(), mApiMoment, fileSynced.getPath());
-                        String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mApiMoment, fileSynced.getPath());
-                        if (mMoment == null)
-                            mMoment = new Moment();
-                        mMoment.setOwner(mApiMoment.getOwnerID());
-                        mMoment.setTime(mApiMoment.getTime());
-                        mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
-                        mMoment.setPath(fileSynced.getPath());
-                        mMoment.setThumbPath(pathToThumb);
-                        mMoment.setLargeThumbPath(pathToLargeThumb);
-                        dao.createOrUpdate(mMoment);
-                        //TODO ok
-
-
-                        return;
-                    } catch (IOException ignore) {
-                        //TODO failed
-                        return;
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        //TODO failed
-                        return;
-                    } finally {
-                        if (inputStream != null) {
-                            inputStream.close();
+                        try {
+                            String pathToThumb = VideoUtil.createThumbImage(getContext(), mApiMoment, fileSynced.getPath());
+                            String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mApiMoment, fileSynced.getPath());
+                            if (mMoment == null)
+                                mMoment = new Moment();
+                            mMoment.setOwner(mApiMoment.getOwnerID());
+                            mMoment.setTime(mApiMoment.getTime());
+                            mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
+                            mMoment.setPath(fileSynced.getPath());
+                            mMoment.setThumbPath(pathToThumb);
+                            mMoment.setLargeThumbPath(pathToLargeThumb);
+                            dao.createOrUpdate(mMoment);
+                            Log.i(TAG, "download ok: " + mMoment);
+                            //TODO ok
+                            return;
+                        } catch (SQLException e) {
+                            //TODO failed
+                            Log.e(TAG, "exception when save a moment into database", e);
+                            return;
                         }
+                    }
+                } catch (IOException e) {
+                    //TODO failed
+                    Log.e(TAG, "download failed", e);
+                } finally {
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                    if (out != null) {
+                        out.close();
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "exception when http call or close the stream", e);
             }
-            //TODO failed
-            return;
 
 
             //if file exist, just register private moment at database
