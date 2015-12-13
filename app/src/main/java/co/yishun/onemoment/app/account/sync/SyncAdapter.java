@@ -21,6 +21,7 @@ import com.j256.ormlite.dao.Dao;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
+import com.qiniu.android.utils.Etag;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -209,7 +210,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 if (moment.getUnixTimeStamp() > momentOnServer.getUnixTimeStamp()) {
                     toUpload.add(moment);
                     toDelete.add(momentOnServer);
-                } else {
+                } else if (moment.getUnixTimeStamp() < momentOnServer.getUnixTimeStamp()) {
+                    toDownload.add(Pair.create(momentOnServer, moment));
+                } else if (!isFileHashSame(new File(moment.getPath()), momentOnServer)) {
                     toDownload.add(Pair.create(momentOnServer, moment));
                 }
                 apiMomentHashMap.remove(moment.getTime());
@@ -289,6 +292,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         return mUploadManager;
     }
 
+    private boolean isFileHashSame(@NonNull File file, @NonNull ApiMoment apiMoment) {
+        boolean isSame = false;
+        try {
+            isSame = Etag.file(file).equals(apiMoment.hash);
+        } catch (IOException e) {
+            isSame = false;
+            Log.e(TAG, "exception when hash the fileSynced", e);
+        }
+        return isSame;
+    }
+
     private class UploadTask implements Runnable {
 
 
@@ -353,10 +367,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Request request = new Request.Builder().url(domain.domain + mApiMoment.getKey()).get().build();
             Log.i(TAG, "start download: " + request.urlString());
 
-            try {
-                Response response = client.newCall(request).execute();
+            if (!(fileSynced.exists() && isFileHashSame(fileSynced, mApiMoment))) {
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                } catch (IOException e) {
+                    Log.e(TAG, "exception when http call or close the stream", e);
+                    return;
+                }
+
                 InputStream inputStream = null;
                 FileOutputStream out = null;
+
                 try {
                     if (response.code() == 200) {
                         byte[] data = new byte[1024];
@@ -375,81 +397,50 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                 //TODO cancel
                                 return;
                             }
-                        }
+                            }
                         out.flush();
                         out.close();
                         inputStream.close();
 
-                        try {
-                            String pathToThumb = VideoUtil.createThumbImage(getContext(), mApiMoment, fileSynced.getPath());
-                            String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mApiMoment, fileSynced.getPath());
-                            if (mMoment == null)
-                                mMoment = new Moment();
-                            mMoment.setOwner(mApiMoment.getOwnerID());
-                            mMoment.setTime(mApiMoment.getTime());
-                            mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
-                            mMoment.setPath(fileSynced.getPath());
-                            mMoment.setThumbPath(pathToThumb);
-                            mMoment.setLargeThumbPath(pathToLargeThumb);
-                            dao.createOrUpdate(mMoment);
-                            Log.i(TAG, "download ok: " + mMoment);
-                            //TODO ok
-                            return;
-                        } catch (SQLException e) {
-                            //TODO failed
-                            Log.e(TAG, "exception when save a moment into database", e);
-                            return;
-                        }
+
                     }
                 } catch (IOException e) {
                     //TODO failed
                     Log.e(TAG, "download failed", e);
                 } finally {
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-                    if (out != null) {
-                        out.close();
-                    }
+                        try {
+                            if (inputStream != null) {
+                                inputStream.close();
+                            }
+                            if (out != null) {
+                                out.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                 }
-            } catch (IOException e) {
-                Log.e(TAG, "exception when http call or close the stream", e);
             }
 
-
-            //if file exist, just register private moment at database
-            //            try {
-            //                if (fileSynced.exists()) {
-            //                    if (Etag.file(fileSynced).equals(aVideoOnServer.getHash())) {
-            //                        String pathToThumb = CameraHelper.createThumbImage(getContext(), fileSynced.getPath());
-            //                        String pathToLargeThumb = CameraHelper.createLargeThumbImage(getContext(), fileSynced.getPath());
-            //                        //don't need lock
-            //                        //if file exist, just register/update private moment at database
-            //                        if (momentOld == null) {
-            //                            Moment moment = Moment.from(aVideoOnServer, fileSynced.getPath(), pathToThumb, pathToLargeThumb);
-            //                            Log.v(TAG, "create a recovered moment: " + moment);
-            //                            dao.create(moment);
-            //                            isDownloadChanged = true;
-            //                        } else {
-            //                            momentOld.setLargeThumbPath(pathToLargeThumb);
-            //                            momentOld.setThumbPath(pathToThumb);
-            //                            Log.v(TAG, "update a recovered moment: " + momentOld);
-            //                            dao.update(momentOld);
-            //                            isDownloadChanged = true;
-            //
-            //                        }
-            //                        syncUpdate(UpdateType.DOWNLOAD, 100, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
-            //                        if (latch != null) {
-            //                            latch.countDown();
-            //                        }
-            //                        return;
-            //                    } else {
-            //                        fileSynced.delete();
-            //                    }
-            //                }
-            //            } catch (IOException | SQLException e) {
-            //                e.printStackTrace();
-            //            }
+            try {
+                String pathToThumb = VideoUtil.createThumbImage(getContext(), mApiMoment, fileSynced.getPath());
+                String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mApiMoment, fileSynced.getPath());
+                if (mMoment == null)
+                    mMoment = new Moment();
+                mMoment.setOwner(mApiMoment.getOwnerID());
+                mMoment.setTime(mApiMoment.getTime());
+                mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
+                mMoment.setPath(fileSynced.getPath());
+                mMoment.setThumbPath(pathToThumb);
+                mMoment.setLargeThumbPath(pathToLargeThumb);
+                dao.createOrUpdate(mMoment);
+                Log.i(TAG, "download ok: " + mMoment);
+                //TODO ok
+            } catch (SQLException e) {
+                //TODO failed
+                Log.e(TAG, "exception when save a moment into database", e);
+            } catch (IOException e) {
+                Log.e(TAG, "exception when create thumbimage", e);
+            }
         }
     }
 
