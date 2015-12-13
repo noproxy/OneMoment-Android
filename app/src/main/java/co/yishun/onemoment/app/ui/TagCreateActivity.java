@@ -60,6 +60,7 @@ import co.yishun.library.EditTagContainer;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -268,6 +269,7 @@ public class TagCreateActivity extends BaseActivity
 
                 if (1 == momentDao.create(moment)) {
                     Log.i(TAG, "new moment: " + moment);
+                    SyncManager.syncNow(this);
 
                     RealmHelper.removeTags(moment.getTime());
                     for (co.yishun.library.tag.VideoTag tag : editTagContainer.getVideoTags()) {
