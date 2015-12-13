@@ -51,9 +51,6 @@ public class DayView extends ImageView implements View.OnClickListener {
         mMultiSelection = multiSelection;
     }
 
-    private static void setSelectedDayView(DayView dayView) {
-    }
-
     public static void setOnMomentSelectedListener(@Nullable OnMomentSelectedListener listener) {
         mMomentSelectedListener = listener;
     }
@@ -79,7 +76,10 @@ public class DayView extends ImageView implements View.OnClickListener {
 
     @Override
     public void setEnabled(boolean enabled) {
-        super.setEnabled(mTimeStatus == TimeStatus.TODAY || enabled);
+        if (!mMultiSelection)
+            super.setEnabled(mTimeStatus == TimeStatus.TODAY || enabled);
+        else
+            super.setEnabled(enabled);
     }
 
     private void init(int day) {
@@ -114,7 +114,7 @@ public class DayView extends ImageView implements View.OnClickListener {
         final float oy = canvas.getHeight() / 2;
         final float r = Math.min(ox, oy);
 
-        if(getDrawable() != null) {
+        if (getDrawable() != null) {
             updatePaint(getBitmapFromDrawable(getDrawable()));
             canvas.drawCircle(ox, oy, r, mBitmapPaint);
         }
