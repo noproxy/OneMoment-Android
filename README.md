@@ -1,8 +1,22 @@
 ## Import
 
+
+### local properties
+
+You must define those
+
+    sdk.dir=/path/to/your/Android/sdk
+    KEY_ALIAS_RELEASE=example
+    KEY_ALIAS_DEBUG=example
+    STORE_PASSWORD=password
+    KEY_PASSWORD=password
+    KEYSTORE_PATH=/path/to/keystore/file
+
+in your ```local.properties``` file in project root directory.
+
 ### Intellij IDEA/Android Studio
 
-execute ```gradle idea``` under root project, then directly open this project from IDEA or android studio.
+Execute ```gradle idea``` under root project, then directly open this project from IDEA or android studio.
 
 ### Eclipse
 
