@@ -57,7 +57,10 @@ public class AccountHelper {
 
     public static boolean isLogin(Context context) {
         if (getAccount(context) == null) return false;
-        else if (getUserInfo(context) == null) return false;
+        else if (getUserInfo(context) == null){
+            deleteAccount(context);
+            return false;
+        }
         return true;
     }
 
@@ -75,7 +78,7 @@ public class AccountHelper {
     }
 
     public static boolean deleteAccount(Context context) {
-        account = null;
+        account = getAccount(context);
         mUser = null;
         deleteUserInfo(context);
         MyFuture future = new MyFuture();
@@ -87,6 +90,7 @@ public class AccountHelper {
             e.printStackTrace();
             return false;
         }
+        account = null;
         return future.result;
     }
 

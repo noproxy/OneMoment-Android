@@ -35,20 +35,22 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
  * Created by yyz on 7/24/15.
- *
+ * <p>
  * Rename from WXEntryActivity to EntryActivity by jiangjin.
  * WXEntryActivity is also used for share, so create a transparent WXEntryActivity.
+ * </p>
  */
 // This Activity cannot use AndroidAnnotations because of WeChat login require EntryActivity naming
 public class EntryActivity extends BaseActivity implements LoginListener {
     private static final String TAG = "EntryActivity";
     static AuthHelper mAuthHelper;
-    static Account mAccountService = OneMomentV3.createAdapter().create(Account.class);
+    static Account mAccountService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mAccountService = OneMomentV3.createAdapter().create(Account.class);
         if (mAuthHelper != null && mAuthHelper instanceof WeChatHelper)
             ((WeChatHelper) mAuthHelper).handleIntent(getIntent());
         findViewById(R.id.loginByWeChat).setOnClickListener(this::loginByWeChatClicked);
@@ -109,7 +111,7 @@ public class EntryActivity extends BaseActivity implements LoginListener {
     }
 
     @Override protected void onDestroy() {
-        EntryActivity.mAuthHelper  = null;
+        EntryActivity.mAuthHelper = null;
         EntryActivity.mAccountService = null;
         super.onDestroy();
     }
@@ -134,8 +136,7 @@ class AsyncHandler {
      *
      * @param token
      */
-    @Background
-    void handleToken(OAuthToken token) {
+    @Background void handleToken(OAuthToken token) {
         switch (getType(mAuthHelper)) {
             case WeChat:
                 handleUser(mAccountService.getUserInfoByWeChatUid(token.getId()), token);
@@ -155,8 +156,7 @@ class AsyncHandler {
      * @param user
      * @param token
      */
-    @SupposeBackground
-    void handleUser(User user, OAuthToken token) {
+    @SupposeBackground void handleUser(User user, OAuthToken token) {
         if (user.code == 1) {
             AccountHelper.saveAccount(mActivity, user);
             mActivity.showSnackMsg(R.string.activity_wx_entry_login_success);
@@ -175,8 +175,7 @@ class AsyncHandler {
      *
      * @param token
      */
-    @SupposeBackground
-    void getUserInfo(OAuthToken token) {
+    @SupposeBackground void getUserInfo(OAuthToken token) {
         UserInfo info = mAuthHelper.getUserInfo(token);
         mActivity.showSnackMsg(R.string.activity_wx_entry_auth_success);
         mActivity.getApplicationContext().startActivity(AccountActivity_.intent(mActivity).userInfo(info).type(getType(mAuthHelper)).get().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -195,8 +194,7 @@ class AsyncHandler {
         }
     }
 
-    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
-    void exitWithStartMain() {
+    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS) void exitWithStartMain() {
         MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
         mActivity.finish();
     }
