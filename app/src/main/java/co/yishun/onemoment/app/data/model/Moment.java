@@ -108,7 +108,7 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
     }
 
     @Override public String getKey() {
-        return this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp();
+        return this.getOwnerID() + Constants.URL_HYPHEN + this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
     }
 
     public String getThumbPath() {
