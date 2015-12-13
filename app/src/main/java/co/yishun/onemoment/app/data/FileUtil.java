@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
@@ -50,7 +49,7 @@ public class FileUtil {
     public static File getThumbnailStoreFile(Context context, QiniuKeyProvider provider, Type type) {
         String dir = THUMB_STORE_DIR;
         final String key = provider.getKey();
-//        final String name = key.substring(0, key.lastIndexOf('.'));
+        //        final String name = key.substring(0, key.lastIndexOf('.'));
         return new File(getMediaStoreDir(context, dir), type.getPrefix(context) + key + type.getSuffix());
     }
 
@@ -161,7 +160,7 @@ public class FileUtil {
         }
         return type;
     }
-    
+
     public static File getCacheFile(Context context, String fileName) {
         return new File(getCacheDirectory(context, false), fileName);
     }
@@ -213,7 +212,10 @@ public class FileUtil {
         File dir = new File(Environment.getExternalStorageDirectory() + "/" +
                 Environment.DIRECTORY_DCIM + "/yishun");
         if (!dir.exists()) dir.mkdir();
-        return new File(dir.getPath(), Constants.EXPORT_VIDEO_PREFIX + Util.unixTimeStamp()+Constants.VIDEO_FILE_SUFFIX);
+        String time = new SimpleDateFormat(Constants.TIEM_FORMAT_EXPORT,
+                Locale.getDefault()).format(new Date());
+        return new File(dir.getPath(), Constants.EXPORT_VIDEO_PREFIX
+                + time + Constants.VIDEO_FILE_SUFFIX);
     }
 
     /**

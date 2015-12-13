@@ -114,6 +114,7 @@ public class ShareExportActivity extends BaseActivity
             showSnackMsg("Select at least one to share");
             return;
         }
+        showProgress();
         appendSelectedVideos();
         if (videoCacheFile == null) {
             //TODO check append videos failed
@@ -123,6 +124,11 @@ public class ShareExportActivity extends BaseActivity
     }
 
     @Click(R.id.exportText) void exportTextClicked() {
+        if (selectedMoments.size() == 0) {
+            showSnackMsg("Select at least one to share");
+            return;
+        }
+        showProgress();
         appendSelectedVideos();
         if (videoCacheFile == null) {
             //TODO check append videos failed
@@ -133,6 +139,8 @@ public class ShareExportActivity extends BaseActivity
         Log.d(TAG, "origin : " + videoCacheFile.getPath());
         FileUtil.copyFile(videoCacheFile, outFile);
         videoCacheFile.delete();
+        hideProgress();
+        showSnackMsg("Export success");
     }
 
     @Click(R.id.selectAllText) void selectAllTextClicked() {
@@ -170,7 +178,7 @@ public class ShareExportActivity extends BaseActivity
         String content = String.format(getResources().getString(R.string.activity_share_export_selected),
                 selectedMoments.size(), allMoments.size());
         SpannableString ss = new SpannableString(content);
-        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), content.indexOf(" "),
+        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSecondary)), content.indexOf(" "),
                 content.indexOf("/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         selectedText.setText(ss);
     }
@@ -289,7 +297,6 @@ public class ShareExportActivity extends BaseActivity
     }
 
     @SupposeBackground void uploadAndShare() {
-        showProgress();
         UploadManager uploadManager = new UploadManager();
         Log.d(TAG, "upload " + videoCacheFile.getName());
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoCacheFile.getName());
