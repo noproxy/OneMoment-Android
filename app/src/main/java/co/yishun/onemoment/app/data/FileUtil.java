@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import co.yishun.onemoment.app.Util;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.api.model.Video;
@@ -253,7 +253,7 @@ public class FileUtil {
         SYNCED {
             @Override
             public String getPrefix(Context context) {
-                return AccountHelper.getAccountId(context) + URL_HYPHEN;
+                return AccountManager.getAccountId(context) + URL_HYPHEN;
             }
 
             @Override

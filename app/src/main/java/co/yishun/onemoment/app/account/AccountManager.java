@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.account;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
@@ -29,18 +28,18 @@ import co.yishun.onemoment.app.data.compat.Contract;
 /**
  * Created by Carlos on 2015/8/13.
  */
-public class AccountHelper {
+public class AccountManager {
     public static final String ACCOUNT_TYPE = "co.yishun.onemoment.app";
     public static final String ACCOUNT_ID_KEY = "id";
-    private static final String TAG = "AccountHelper";
-    public static AccountManager accountManager;
+    private static final String TAG = "AccountManager";
+    public static android.accounts.AccountManager accountManager;
     public static Account account;
     private static User mUser = null;
     private static HashMap<Integer, OnUserInfoChangeListener> mListeners = new HashMap<>();
 
-    private static AccountManager getAccountManager(Context context) {
+    private static android.accounts.AccountManager getAccountManager(Context context) {
         if (accountManager == null) {
-            accountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+            accountManager = (android.accounts.AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
         }
         return accountManager;
     }
@@ -164,7 +163,7 @@ public class AccountHelper {
 
     public static void syncNow(Context context) {
         Log.i(TAG, "sync at once");
-        Account account = AccountHelper.getAccount(context);
+        Account account = AccountManager.getAccount(context);
         Log.i(TAG, "sync account: " + account);
         Bundle b = new Bundle();
         b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);

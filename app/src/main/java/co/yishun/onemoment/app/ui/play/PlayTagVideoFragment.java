@@ -24,7 +24,7 @@ import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTask;
@@ -103,9 +103,9 @@ public class PlayTagVideoFragment extends BaseFragment {
         oneVideo.likeNum += oneVideo.liked ? 1 : -1;
         refreshUserInfo();
         if (oneVideo.liked) {
-            mWorld.likeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
+            mWorld.likeVideo(oneVideo._id, AccountManager.getUserInfo(mContext)._id);
         } else {
-            mWorld.unlikeVideo(oneVideo._id, AccountHelper.getUserInfo(mContext)._id);
+            mWorld.unlikeVideo(oneVideo._id, AccountManager.getUserInfo(mContext)._id);
         }
     }
 

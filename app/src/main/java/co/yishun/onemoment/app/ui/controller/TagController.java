@@ -10,7 +10,7 @@ import org.androidannotations.annotations.UiThread;
 
 import java.util.List;
 
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Seed;
@@ -42,7 +42,7 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
 
     @Override
     protected List<TagVideo> onLoad() {
-        List<TagVideo> list = mWorld.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountHelper.getUserInfo(mContext)._id, seed);
+        List<TagVideo> list = mWorld.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id, seed);
         if (list.size() == 0) {
             //TODO loading error
             return null;

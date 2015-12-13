@@ -31,7 +31,7 @@ import org.androidannotations.annotations.UiThread;
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
@@ -45,7 +45,7 @@ import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
 
 @EActivity
-public class MainActivity extends BaseActivity implements AccountHelper.OnUserInfoChangeListener {
+public class MainActivity extends BaseActivity implements AccountManager.OnUserInfoChangeListener {
     private static final String TAG = "MainActivity";
     private static WeakReference<FloatingActionMenu> floatingActionMenu;
     private static boolean pendingUserInfoUpdate = false;
@@ -109,8 +109,8 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
                 return navigationTo(menuItem.getItemId());
         });
 
-        invalidateUserInfo(AccountHelper.getUserInfo(this));
-        AccountHelper.addOnUserInfoChangedListener(this);
+        invalidateUserInfo(AccountManager.getUserInfo(this));
+        AccountManager.addOnUserInfoChangedListener(this);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
@@ -227,7 +227,7 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AccountHelper.removeOnUserInfoChangedListener(this);
+        AccountManager.removeOnUserInfoChangedListener(this);
     }
 
     @Override

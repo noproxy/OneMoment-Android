@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -52,7 +51,7 @@ import co.yishun.library.calendarlibrary.MomentCalendar;
 import co.yishun.library.calendarlibrary.MomentMonthView;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -261,8 +260,7 @@ public class ShareExportActivity extends BaseActivity
             BasicContainer out = (BasicContainer) new DefaultMp4Builder()
                     .build(result);
 
-            videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX
-                    + AccountHelper.getUserInfo(this)._id
+            videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id
                     + Constants.URL_HYPHEN + count + Constants.URL_HYPHEN
                     + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
             FileChannel fc = new RandomAccessFile(videoCacheFile, "rw").getChannel();
@@ -323,7 +321,7 @@ public class ShareExportActivity extends BaseActivity
         Log.d(TAG, tags);
 
         Account account = OneMomentV3.createAdapter().create(Account.class);
-        ShareInfo shareInfo = account.share(videoCacheFile.getName(), AccountHelper.getUserInfo(this)._id, tags);
+        ShareInfo shareInfo = account.share(videoCacheFile.getName(), AccountManager.getUserInfo(this)._id, tags);
 
         videoCacheFile.delete();
         hideProgress();

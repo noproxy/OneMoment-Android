@@ -45,7 +45,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiMoment;
@@ -153,11 +153,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         RestAdapter restAdapter = OneMomentV3.createAdapter();
         co.yishun.onemoment.app.api.Account service = restAdapter.create(co.yishun.onemoment.app.api.Account.class);
-        final List<ApiMoment> momentsOnServer = service.getVideoList(AccountHelper.getAccountId(getContext()));
+        final List<ApiMoment> momentsOnServer = service.getVideoList(AccountManager.getAccountId(getContext()));
         Collections.sort(momentsOnServer);
         List<Moment> momentsOnDevice = null;
         try {
-            momentsOnDevice = dao.queryBuilder().where().eq("owner", AccountHelper.getAccountId(getContext())).query();
+            momentsOnDevice = dao.queryBuilder().where().eq("owner", AccountManager.getAccountId(getContext())).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -10,7 +10,7 @@ import org.androidannotations.annotations.UiThread;
 
 import java.util.List;
 
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -36,7 +36,7 @@ public class VotedUpController extends IntOffsetRefreshableRecyclerController<Su
 
     @Override
     protected List<TagVideo> onLoad() {
-        List<TagVideo> list = mWorld.getLikedVideos(AccountHelper.getUserInfo(mContext)._id, getOffset(), 10);
+        List<TagVideo> list = mWorld.getLikedVideos(AccountManager.getUserInfo(mContext)._id, getOffset(), 10);
         if (list.size() == 0) {
             //TODO loading error
             return null;

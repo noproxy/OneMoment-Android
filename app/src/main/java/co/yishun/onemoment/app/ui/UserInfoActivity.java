@@ -34,7 +34,7 @@ import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.auth.LoginListener;
 import co.yishun.onemoment.app.account.auth.OAuthToken;
 import co.yishun.onemoment.app.account.auth.UserInfo;
@@ -53,7 +53,7 @@ import co.yishun.onemoment.app.ui.view.LocationChooseDialog;
  * Created by Jinge on 2015/11/12.
  */
 @EActivity(R.layout.activity_user_info)
-public class UserInfoActivity extends PickCropActivity implements AccountHelper.OnUserInfoChangeListener {
+public class UserInfoActivity extends PickCropActivity implements AccountManager.OnUserInfoChangeListener {
     private static final String TAG = "UserInfoActivity";
     @ViewById
     Toolbar toolbar;
@@ -96,13 +96,13 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AccountHelper.addOnUserInfoChangedListener(this);
+        AccountManager.addOnUserInfoChangedListener(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AccountHelper.removeOnUserInfoChangedListener(this);
+        AccountManager.removeOnUserInfoChangedListener(this);
     }
 
     @AfterViews
@@ -118,7 +118,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         genderFragment.setOnClickListener(this::genderClicked);
         locationFragment.setOnClickListener(this::locationClicked);
 
-        invalidateUserInfo(AccountHelper.getUserInfo(this));
+        invalidateUserInfo(AccountManager.getUserInfo(this));
     }
 
     void pickAvatar(View view) {
@@ -129,17 +129,16 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         new MaterialDialog.Builder(this)
                 .theme(Theme.LIGHT)
                 .title(getString(R.string.activity_user_info_username))
-                .input(getString(R.string.activity_user_info_username),
-                        AccountHelper.getUserInfo(this).nickname, false, (MaterialDialog dialog, CharSequence input) -> {
-                            if (TextUtils.equals(input, AccountHelper.getUserInfo(this).nickname))
+                .input(getString(R.string.activity_user_info_username), AccountManager.getUserInfo(this).nickname, false, (MaterialDialog dialog, CharSequence input) -> {
+                    if (TextUtils.equals(input, AccountManager.getUserInfo(this).nickname))
                                 return;
-                            updateUserInfo(AccountHelper.getUserInfo(this)._id, input.toString(), null, null, null);
+                    updateUserInfo(AccountManager.getUserInfo(this)._id, input.toString(), null, null, null);
                         })
                 .build().show();
     }
 
     void weiboClicked(View view) {
-        User user = AccountHelper.getUserInfo(this);
+        User user = AccountManager.getUserInfo(this);
         if (TextUtils.isEmpty(user.weiboUid)) {
             new WeiboHelper(this).login(new LoginListener() {
                 @Override
@@ -166,14 +165,13 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
             }
             new MaterialDialog.Builder(this)
                     .theme(Theme.LIGHT)
-                    .content(String.format(getString(R.string.activity_user_info_weibo_id_unbind_msg),
-                            AccountHelper.getUserInfo(this).weiboNickname))
+                    .content(String.format(getString(R.string.activity_user_info_weibo_id_unbind_msg), AccountManager.getUserInfo(this).weiboNickname))
                     .positiveText(R.string.view_location_spinner_positive_btn)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             super.onPositive(dialog);
-                            unbindWeibo(AccountHelper.getUserInfo(UserInfoActivity.this).weiboUid);
+                            unbindWeibo(AccountManager.getUserInfo(UserInfoActivity.this).weiboUid);
                         }
                     })
                     .build().show();
@@ -181,16 +179,16 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     }
 
     void genderClicked(View view) {
-        Account.Gender mSelectGender = AccountHelper.getUserInfo(this).gender;
+        Account.Gender mSelectGender = AccountManager.getUserInfo(this).gender;
         new MaterialDialog.Builder(this)
                 .theme(Theme.LIGHT)
                 .title(R.string.view_gender_spinner_title)
                 .items(R.array.view_gender_spinner_items)
                 .itemsCallbackSingleChoice(mSelectGender.toInt() % 2, (dialog, view1, which, text) -> {
                     Account.Gender gender = Account.Gender.format(which);
-                    if (gender == AccountHelper.getUserInfo(this).gender)
+                    if (gender == AccountManager.getUserInfo(this).gender)
                         return true;
-                    updateUserInfo(AccountHelper.getUserInfo(this)._id, null, gender, null, null);
+                    updateUserInfo(AccountManager.getUserInfo(this)._id, null, gender, null, null);
                     return true; // allow selection
                 })
                 .positiveText(R.string.view_gender_spinner_positive_btn)
@@ -201,9 +199,9 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         new LocationChooseDialog.Builder(this)
                 .build()
                 .setLocationSelectedListener((String location, Pair<String, String> provinceAndDistrict) -> {
-                    if (TextUtils.equals(location, AccountHelper.getUserInfo(this).location))
+                    if (TextUtils.equals(location, AccountManager.getUserInfo(this).location))
                         return;
-                    updateUserInfo(AccountHelper.getUserInfo(this)._id, null, null, null, location);
+                    updateUserInfo(AccountManager.getUserInfo(this)._id, null, null, null, location);
                 })
                 .show();
     }
@@ -213,18 +211,18 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         if (user == null) {
             return;
         }
-        Picasso.with(this).load(AccountHelper.getUserInfo(this).avatarUrl).into(avatarImage);
+        Picasso.with(this).load(AccountManager.getUserInfo(this).avatarUrl).into(avatarImage);
 
-        nicknameFragment.setContent(AccountHelper.getUserInfo(this).nickname);
+        nicknameFragment.setContent(AccountManager.getUserInfo(this).nickname);
         String weiboID;
-        if (TextUtils.isEmpty(AccountHelper.getUserInfo(this).weiboUid)) {
+        if (TextUtils.isEmpty(AccountManager.getUserInfo(this).weiboUid)) {
             weiboID = getString(R.string.activity_user_info_weibo_id_unbound);
         } else {
-            weiboID = AccountHelper.getUserInfo(this).weiboNickname;
+            weiboID = AccountManager.getUserInfo(this).weiboNickname;
         }
         weiboFragment.setContent(weiboID);
         String gender;
-        switch (AccountHelper.getUserInfo(this).gender) {
+        switch (AccountManager.getUserInfo(this).gender) {
             case FEMALE:
                 gender = "♀";
                 break;
@@ -236,7 +234,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
                 break;
         }
         genderFragment.setContent(gender);
-        locationFragment.setContent(AccountHelper.getUserInfo(this).location);
+        locationFragment.setContent(AccountManager.getUserInfo(this).location);
     }
 
     @Override
@@ -247,7 +245,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     @Override
     public void onPictureCropped(Uri uri) {
         croppedProfileUri = uri;
-        updateAvatar(AccountHelper.getUserInfo(this)._id);
+        updateAvatar(AccountManager.getUserInfo(this)._id);
         Picasso.with(this).load(uri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(avatarImage);
     }
 
@@ -298,7 +296,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
             Log.i(TAG, "update info failed: " + user.msg);
             return;
         }
-        AccountHelper.updateOrCreateUserInfo(this, user);
+        AccountManager.updateOrCreateUserInfo(this, user);
     }
 
     @Background
@@ -306,7 +304,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
         UserInfo userInfo = new WeiboHelper(this).getUserInfo(token);
 
         Account account = OneMomentV3.createAdapter().create(Account.class);
-        User user = account.bindWeibo(AccountHelper.getUserInfo(this)._id, userInfo.id, userInfo.name);
+        User user = account.bindWeibo(AccountManager.getUserInfo(this)._id, userInfo.id, userInfo.name);
         if (user.code <= 0) {
             Log.i(TAG, "bind weibo failed: " + user.msg);
             if (user.errorCode == Constants.ErrorCode.ACCOUNT_EXISTS) {
@@ -314,18 +312,18 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
             }
             return;
         }
-        AccountHelper.updateOrCreateUserInfo(this, user);
+        AccountManager.updateOrCreateUserInfo(this, user);
     }
 
     @Background
     void unbindWeibo(String weiboUid) {
         Account account = OneMomentV3.createAdapter().create(Account.class);
-        User user = account.unbindWeibo(AccountHelper.getUserInfo(this)._id, weiboUid);
+        User user = account.unbindWeibo(AccountManager.getUserInfo(this)._id, weiboUid);
         if (user.code <= 0) {
             Log.i(TAG, "unbind weibo failed: " + user.msg);
             return;
         }
-        AccountHelper.updateOrCreateUserInfo(this, user);
+        AccountManager.updateOrCreateUserInfo(this, user);
     }
 
     @Override

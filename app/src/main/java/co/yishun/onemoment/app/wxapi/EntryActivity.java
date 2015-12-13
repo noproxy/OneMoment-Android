@@ -16,7 +16,7 @@ import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.auth.AccessTokenKeeper;
 import co.yishun.onemoment.app.account.auth.AuthHelper;
 import co.yishun.onemoment.app.account.auth.LoginListener;
@@ -158,7 +158,7 @@ class AsyncHandler {
      */
     @SupposeBackground void handleUser(User user, OAuthToken token) {
         if (user.code == 1) {
-            AccountHelper.saveAccount(mActivity, user);
+            AccountManager.saveAccount(mActivity, user);
             mActivity.showSnackMsg(R.string.activity_wx_entry_login_success);
             exitWithStartMain();
         } else if (user.errorCode == Constants.ErrorCode.ACCOUNT_DOESNT_EXIST) {

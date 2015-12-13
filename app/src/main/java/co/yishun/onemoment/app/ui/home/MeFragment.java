@@ -23,7 +23,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
@@ -40,7 +40,7 @@ import co.yishun.onemoment.app.ui.controller.MeController_;
  * Created by yyz on 7/21/15.
  */
 @EFragment(R.layout.fragment_me)
-public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag>,AccountHelper.OnUserInfoChangeListener {
+public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag>, AccountManager.OnUserInfoChangeListener {
     private static final String TAG = "MeFragment";
     @ViewById
     TextView nickNameTextView;
@@ -56,18 +56,18 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        AccountHelper.addOnUserInfoChangedListener(this);
+        AccountManager.addOnUserInfoChangedListener(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        AccountHelper.removeOnUserInfoChangedListener(this);
+        AccountManager.removeOnUserInfoChangedListener(this);
     }
 
     @AfterViews
     void setHeader() {
-        User user = AccountHelper.getUserInfo(getContext());
+        User user = AccountManager.getUserInfo(getContext());
         invalidateUserInfo(user);
         updateUserInfo();
     }
@@ -75,8 +75,8 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     @Background
     void updateUserInfo() {
         Account account = OneMomentV3.createAdapter().create(Account.class);
-        User user = account.getUserInfo(AccountHelper.getAccountId(getContext()));
-        AccountHelper.updateOrCreateUserInfo(this.getActivity(), user);
+        User user = account.getUserInfo(AccountManager.getAccountId(getContext()));
+        AccountManager.updateOrCreateUserInfo(this.getActivity(), user);
         invalidateUserInfo(user);
     }
 

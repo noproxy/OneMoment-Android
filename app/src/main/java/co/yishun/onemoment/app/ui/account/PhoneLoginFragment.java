@@ -9,7 +9,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.MainActivity_;
@@ -43,7 +43,7 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
         mActivity.hideProgress();
         if (user.code > 0) {
             mActivity.showSnackMsg(R.string.fragment_phone_login_success);
-            AccountHelper.saveAccount(mActivity, user);
+            AccountManager.saveAccount(mActivity, user);
             exitWithStartMain();
         } else switch (user.errorCode) {
             case Constants.ErrorCode.PHONE_FORMAT_ERROR:

@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import co.yishun.onemoment.app.Util;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.model.OMDataBase;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
@@ -20,7 +20,7 @@ import io.realm.RealmResults;
  */
 public class RealmHelper {
     public static void setup(Context context) {
-        String userId = AccountHelper.getUserInfo(context)._id;
+        String userId = AccountManager.getUserInfo(context)._id;
         RealmConfiguration config = new RealmConfiguration.Builder(context)
                 .name("tag-" + userId + ".realm").build();
         Realm.setDefaultConfiguration(config);

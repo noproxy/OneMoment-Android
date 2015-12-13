@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -200,7 +200,7 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
             check();
             Moment m = new Moment();
             m.path = mPath;
-            m.owner = AccountHelper.getAccountId(mContext);
+            m.owner = AccountManager.getAccountId(mContext);
             m.timeStamp = FileUtil.parseTimeStamp(mPath);
             m.time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(m.getUnixTimeStamp() * 1000);
             return m;

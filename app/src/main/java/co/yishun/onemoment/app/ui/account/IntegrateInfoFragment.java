@@ -29,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.auth.AccessTokenKeeper;
 import co.yishun.onemoment.app.account.auth.UserInfo;
 import co.yishun.onemoment.app.api.Account;
@@ -166,7 +166,7 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
             Log.i(TAG, "update info failed: " + user.msg);
             return false;
         }
-        AccountHelper.updateOrCreateUserInfo(mActivity, user);
+        AccountManager.updateOrCreateUserInfo(mActivity, user);
         return true;
     }
 
@@ -189,7 +189,7 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
                 break;
         }
         if (user.code > 0) {
-            AccountHelper.saveAccount(mActivity, user);
+            AccountManager.saveAccount(mActivity, user);
             checkAvatarAndExit(user._id);
         } else switch (user.errorCode) {
             case Constants.ErrorCode.NICKNAME_EXISTS:

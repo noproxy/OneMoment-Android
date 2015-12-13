@@ -59,7 +59,7 @@ import java.util.concurrent.CountDownLatch;
 import co.yishun.library.EditTagContainer;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
-import co.yishun.onemoment.app.account.AccountHelper;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -180,7 +180,7 @@ public class TagCreateActivity extends BaseActivity
 
         List<String> defaultTag = new ArrayList<>();
         if (locationClient.getLastKnownLocation() == null) {
-            defaultTag.add(AccountHelper.getUserInfo(this).location);
+            defaultTag.add(AccountManager.getUserInfo(this).location);
         } else {
             defaultTag.add(formatLocation(locationClient.getLastKnownLocation()));
         }
@@ -262,7 +262,7 @@ public class TagCreateActivity extends BaseActivity
             List<Moment> result;
             Where<Moment, Integer> w = momentDao.queryBuilder().where();
             try {
-                result = w.and(w.eq("time", time), w.eq("owner", AccountHelper.getUserInfo(this)._id)).query();
+                result = w.and(w.eq("time", time), w.eq("owner", AccountManager.getUserInfo(this)._id)).query();
 
                 Log.i(TAG, "delete old today moment: " + Arrays.toString(result.toArray()));
 
@@ -296,7 +296,7 @@ public class TagCreateActivity extends BaseActivity
     @Background void upload() {
         showProgress();
         Video video = new Video();
-        video.fileName = Constants.WORLD_VIDEO_PREFIX + AccountHelper.getUserInfo(this)._id +
+        video.fileName = Constants.WORLD_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id +
                 Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
         File tmp = new File(videoPath);
         File videoFile = new File(FileUtil.getWorldVideoStoreFile(this, video).getPath() + Constants.VIDEO_FILE_SUFFIX);
@@ -340,7 +340,7 @@ public class TagCreateActivity extends BaseActivity
         Log.d(TAG, tags);
 
         World world = OneMomentV3.createAdapter().create(World.class);
-        Video uploadVideo = world.addVideoToWorld(AccountHelper.getUserInfo(this)._id,
+        Video uploadVideo = world.addVideoToWorld(AccountManager.getUserInfo(this)._id,
                 isPrivate ? "private" : "public", videoFile.getName(), tags);
         if (uploadVideo.code == Constants.CODE_SUCCESS) {
             hideProgress();
