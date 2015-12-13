@@ -270,7 +270,7 @@ public class TagCreateActivity extends BaseActivity
                     Log.i(TAG, "new moment: " + moment);
 
                     RealmHelper.removeTags(moment.getTime());
-                    for (co.yishun.library.tag.VideoTag tag : editTagContainer.getVideoTags()){
+                    for (co.yishun.library.tag.VideoTag tag : editTagContainer.getVideoTags()) {
                         RealmHelper.addTodayTag(tag.getText(), tag.getX(), tag.getY());
                     }
 
@@ -299,13 +299,14 @@ public class TagCreateActivity extends BaseActivity
         video.fileName = Constants.WORLD_VIDEO_PREFIX + AccountHelper.getUserInfo(this)._id +
                 Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
         File tmp = new File(videoPath);
-        File videoFile = FileUtil.getWorldVideoStoreFile(this, video);
+        File videoFile = new File(FileUtil.getWorldVideoStoreFile(this, video).getPath() + Constants.VIDEO_FILE_SUFFIX);
         tmp.renameTo(videoFile);
         videoPath = videoFile.getPath();
 
         UploadManager uploadManager = new UploadManager();
         Log.d(TAG, "upload " + videoFile.getName());
-        UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoFile.getName());
+        UploadToken token = OneMomentV3.createAdapter().create(Misc.class)
+                .getUploadToken(videoFile.getName());
         if (token.code <= 0) {
             Log.e(TAG, "get upload token error: " + token.msg);
             return;
@@ -331,7 +332,7 @@ public class TagCreateActivity extends BaseActivity
 
         Gson gson = new Gson();
         JsonArray tagArray = gson.toJsonTree(editTagContainer.getVideoTags()).getAsJsonArray();
-        for (JsonElement element : tagArray){
+        for (JsonElement element : tagArray) {
             element.getAsJsonObject().remove("code");
             element.getAsJsonObject().remove("errorCode");
         }
@@ -341,7 +342,7 @@ public class TagCreateActivity extends BaseActivity
         World world = OneMomentV3.createAdapter().create(World.class);
         Video uploadVideo = world.addVideoToWorld(AccountHelper.getUserInfo(this)._id,
                 isPrivate ? "private" : "public", videoFile.getName(), tags);
-        if (uploadVideo.code == Constants.CODE_SUCCESS){
+        if (uploadVideo.code == Constants.CODE_SUCCESS) {
             hideProgress();
             this.finish();
         }
