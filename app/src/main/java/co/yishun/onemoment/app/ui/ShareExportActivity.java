@@ -59,6 +59,7 @@ import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
@@ -224,8 +225,13 @@ public class ShareExportActivity extends BaseActivity
     void appendSelectedVideos() {
         List<String> paths = new ArrayList<>();
         Collections.sort(selectedMoments);
-        for (Moment moment : selectedMoments) {
-            paths.add(moment.getPath());
+        try {
+            for (Moment moment : selectedMoments) {
+                paths.add(moment.getPath());
+                MomentLock.lockMoment(this, moment);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         try {
             int count = paths.size();
@@ -271,6 +277,13 @@ public class ShareExportActivity extends BaseActivity
             e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            for (Moment moment : selectedMoments) {
+                MomentLock.unlockMomentIfLocked(this, moment);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
