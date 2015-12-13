@@ -10,9 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -98,7 +98,10 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         profileImageView = (ImageView) header.findViewById(R.id.profileImageView);
         usernameTextView = (TextView) header.findViewById(R.id.usernameTextView);
         locationTextView = (TextView) header.findViewById(R.id.locationTextView);
-
+        header.setOnClickListener(v -> {
+            drawerLayout.closeDrawers();
+            delayStartUserInfoActivity();
+        });
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawers();
             int id = menuItem.getItemId();
@@ -116,10 +119,13 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         drawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    @UiThread(delay = 300)
-    void delayStartSettingsActivity() {
+    @UiThread(delay = 300) void delayStartSettingsActivity() {
         SettingsActivity_.intent(this).start();
         //TODO add animation
+    }
+
+    @UiThread(delay = 300) void delayStartUserInfoActivity() {
+        UserInfoActivity_.intent(this).start();
     }
 
     private void setActionMenu() {
@@ -155,8 +161,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         return super.dispatchTouchEvent(event);
     }
 
-    @UiThread
-    void invalidateUserInfo(User user) {
+    @UiThread void invalidateUserInfo(User user) {
         if (user == null) {
             return;
         }
@@ -206,14 +211,13 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         return true;
     }
 
-    @UiThread(delay = 300)
-    void delayCommit(Fragment targetFragment) {
+    @UiThread(delay = 300) void delayCommit(Fragment targetFragment) {
         fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commit();
     }
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
             if (currentItemId != R.id.navigation_item_0) {
