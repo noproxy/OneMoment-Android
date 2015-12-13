@@ -59,21 +59,6 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
     private TextView usernameTextView;
     private TextView locationTextView;
 
-    /**
-     * get fab to display SnackBar
-     *
-     * @param view where SnackBar called
-     * @return FloatingActionBar view if exists, the origin param view if not exists.
-     */
-    public static
-    @NonNull
-    View withView(@NonNull View view) {
-        FloatingActionMenu fab = floatingActionMenu.get();
-        if (fab != null) {
-            return fab;
-        } else return view;
-    }
-
     @Override protected void onResume() {
         super.onResume();
         // refresh diary in case moment update
@@ -279,10 +264,13 @@ public class MainActivity extends BaseActivity implements AccountHelper.OnUserIn
         syncToggle();
     }
 
-    @Nullable
-    @Override
+    @NonNull @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        return floatingActionMenu.get();
+        FloatingActionMenu fab = floatingActionMenu.get();
+        if (fab != null) {
+            return fab;
+        } else
+            return super.getSnackbarAnchorWithView(view);
     }
 
     @Override

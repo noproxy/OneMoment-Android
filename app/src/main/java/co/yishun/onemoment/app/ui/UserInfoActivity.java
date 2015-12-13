@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.qiniu.android.storage.UploadManager;
-import com.qiniu.android.utils.StringUtils;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -74,12 +73,6 @@ public class UserInfoActivity extends PickCropActivity implements AccountHelper.
     private Uri croppedProfileUri;
     private boolean avatarUploadOk = false;
     private Account mAccount;
-
-    @Nullable
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
-    }
 
     @Override
     public void setPageInfo() {

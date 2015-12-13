@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -50,12 +49,6 @@ public class PlayActivity extends BaseActivity {
     ImageView addImageView;
 
     private FragmentManager fragmentManager;
-
-    @Nullable
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
-    }
 
     @Override
     public void setPageInfo() {

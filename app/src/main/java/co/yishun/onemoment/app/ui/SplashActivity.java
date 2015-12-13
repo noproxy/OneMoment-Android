@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -76,12 +75,6 @@ public class SplashActivity extends BaseActivity {
             MainActivity_.intent(this).start();
         else
             startActivity(new Intent(this, EntryActivity.class));
-    }
-
-    @Nullable
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        throw new UnsupportedOperationException("not implement");
     }
 
     @Override

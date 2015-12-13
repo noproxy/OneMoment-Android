@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
@@ -72,7 +73,6 @@ import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.VideoUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
-import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -111,9 +111,9 @@ public class TagCreateActivity extends BaseActivity
     private float tagY;
     private Moment momentToSave;
 
-    @Nullable @Override
+    @NonNull @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        return editTagContainer;
+        return super.getSnackbarAnchorWithView(editTagContainer);
     }
 
     @Override

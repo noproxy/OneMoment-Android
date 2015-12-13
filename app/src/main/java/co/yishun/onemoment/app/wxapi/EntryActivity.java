@@ -3,7 +3,10 @@ package co.yishun.onemoment.app.wxapi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.ProgressSnackBar;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
@@ -58,6 +61,12 @@ public class EntryActivity extends BaseActivity implements LoginListener {
     public void loginByWeChatClicked(final View view) {
         mAuthHelper = new WeChatHelper(this);
         mAuthHelper.login(this);
+        showSnackProgress();
+    }
+
+    private void showSnackProgress() {
+        Snackbar snackbar = Snackbar.make(getSnackbarAnchorWithView(null), R.string.activity_wx_entry_login_progress, Snackbar.LENGTH_INDEFINITE);
+        ProgressSnackBar.with(snackbar).show();
     }
 
     @Override
@@ -80,17 +89,18 @@ public class EntryActivity extends BaseActivity implements LoginListener {
     public void loginByWeiBoClicked(final View view) {
         mAuthHelper = new WeiboHelper(this);
         mAuthHelper.login(this);
+        showSnackProgress();
     }
 
     public void loginByQQClicked(final View view) {
         mAuthHelper = new QQHelper(this);
         mAuthHelper.login(this);
+        showSnackProgress();
     }
 
-    @Nullable
-    @Override
+    @NonNull @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
+        return super.getSnackbarAnchorWithView(null);
     }
 
     @Override

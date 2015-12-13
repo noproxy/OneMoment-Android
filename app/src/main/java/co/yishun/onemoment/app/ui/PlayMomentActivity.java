@@ -1,12 +1,10 @@
 package co.yishun.onemoment.app.ui;
 
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.gson.Gson;
@@ -228,10 +226,6 @@ public class PlayMomentActivity extends BaseActivity {
                 .shareInfo(shareInfo).build();
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, shareFragment, ShareFragment.TAG).commit();
-    }
-
-    @Nullable @Override public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
     }
 
     @Override public void setPageInfo() {

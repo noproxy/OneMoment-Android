@@ -9,7 +9,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -333,10 +332,6 @@ public class ShareExportActivity extends BaseActivity
                 .shareInfo(shareInfo).build();
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, shareFragment, ShareFragment.TAG).commit();
-    }
-
-    @Nullable @Override public View getSnackbarAnchorWithView(@Nullable View view) {
-        return null;
     }
 
     @Override public void setPageInfo() {
