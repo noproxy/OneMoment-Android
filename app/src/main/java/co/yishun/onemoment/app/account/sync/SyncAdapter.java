@@ -415,7 +415,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 if (mMoment == null)
                     mMoment = new Moment();
                 else {
-                    MomentLock.lockMoment(mMoment);
+                    MomentLock.lockMoment(getContext(), mMoment);
                     //TODO I don't delete old. To clean them by adding clean cache function or delete them here.
                 }
 
@@ -429,7 +429,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 dao.createOrUpdate(mMoment);
                 Log.i(TAG, "download ok: " + mMoment);
 
-                MomentLock.unlockMomentIfLocked(mMoment);
+                MomentLock.unlockMomentIfLocked(getContext(), mMoment);
 
                 //TODO ok
             } catch (SQLException e) {
