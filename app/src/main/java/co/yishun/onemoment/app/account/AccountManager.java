@@ -81,7 +81,7 @@ public class AccountManager {
         MyFuture future = new MyFuture();
         CountDownLatch latch = new CountDownLatch(1);
         getAccountManager(context).removeAccount(account, future, null);
-        SyncManager.diableSync();
+        SyncManager.disableSync();
         try {
             latch.await();
         } catch (InterruptedException e) {
