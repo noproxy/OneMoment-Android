@@ -468,7 +468,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
         @Override public void run() {
+            Log.i(TAG, "delete a video: " + mApiMoment);
             mMiscService.deleteVideo(mApiMoment.getKey());
+            Log.i(TAG, "delete a video ok: " + mApiMoment);
         }
     }
 }
