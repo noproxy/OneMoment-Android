@@ -21,7 +21,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 
@@ -113,7 +113,7 @@ public class SettingsActivity extends BaseActivity {
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_ringtone)));
             this.findPreference(getString(R.string.pref_key_sync_now)).setOnPreferenceClickListener(preference -> {
-                AccountManager.syncNow(getActivity());
+                SyncManager.syncNow(getActivity());
                 return true;
             });
         }

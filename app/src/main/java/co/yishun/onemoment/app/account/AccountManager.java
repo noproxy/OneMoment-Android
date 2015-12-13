@@ -5,7 +5,6 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,10 +19,8 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
-import co.yishun.onemoment.app.account.sync.SyncAdapter;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.data.compat.Contract;
 
 /**
  * Created by Carlos on 2015/8/13.
@@ -44,7 +41,7 @@ public class AccountManager {
         return accountManager;
     }
 
-    private static Account getAccount(Context context) {
+    protected static Account getAccount(Context context) {
         if (account == null) {
             Account[] accounts = getAccountManager(context).getAccountsByType(ACCOUNT_TYPE);
             if (accounts.length >= 1) {
@@ -158,18 +155,6 @@ public class AccountManager {
 
     public static void removeOnUserInfoChangedListener(@NonNull OnUserInfoChangeListener listener) {
         mListeners.remove(listener.hashCode());
-    }
-
-
-    public static void syncNow(Context context) {
-        Log.i(TAG, "sync at once");
-        Account account = AccountManager.getAccount(context);
-        Log.i(TAG, "sync account: " + account);
-        Bundle b = new Bundle();
-        b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        b.putBoolean(SyncAdapter.BUNLDE_IGNORE_NETWORK, true);
-        ContentResolver.requestSync(account, Contract.AUTHORITY, b);
     }
 
 
