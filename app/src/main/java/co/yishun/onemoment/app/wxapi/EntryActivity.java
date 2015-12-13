@@ -17,6 +17,7 @@ import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.account.auth.AccessTokenKeeper;
 import co.yishun.onemoment.app.account.auth.AuthHelper;
 import co.yishun.onemoment.app.account.auth.LoginListener;
@@ -160,6 +161,7 @@ class AsyncHandler {
         if (user.code == 1) {
             AccountManager.saveAccount(mActivity, user);
             mActivity.showSnackMsg(R.string.activity_wx_entry_login_success);
+            SyncManager.syncNow(mActivity);
             exitWithStartMain();
         } else if (user.errorCode == Constants.ErrorCode.ACCOUNT_DOESNT_EXIST) {
             Log.i(TAG, "account not exist, start getting user info");
