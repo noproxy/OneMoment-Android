@@ -74,15 +74,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private final List<ApiMoment> toDelete = new ArrayList<>();
     @SystemService ConnectivityManager connectivityManager;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> dao;
-    private ContentResolver mContentResolver;
     private volatile int allTask = 0;
     private volatile int successTask = 0;
     private volatile int failTask = 0;
 
     public SyncAdapter(Context context) {
         super(context, true);
-        mContentResolver = context.getContentResolver();
-
     }
 
     /**
@@ -306,7 +303,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         @Override public void run() {
             Log.i(TAG, "upload a moment: " + mMoment);
             String qiNiuKey = mMoment.getKey();
-            //            syncUpdate(UpdateType.UPLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
             UploadToken token = mMiscService.getUploadToken(mMoment.getKey());
             if (!token.isSuccess()) {
                 Log.e(TAG, "upload failed when get token");
