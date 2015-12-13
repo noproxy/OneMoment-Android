@@ -170,7 +170,7 @@ public class FileUtil {
         return new File(getCacheDirectory(context, false), "video-" + System.currentTimeMillis() + ".mp4");
     }
 
-    private static File getCacheDirectory(Context context, boolean preferExternal) {
+    public static File getCacheDirectory(Context context, boolean preferExternal) {
         File appCacheDir = null;
 
         if (preferExternal && Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
