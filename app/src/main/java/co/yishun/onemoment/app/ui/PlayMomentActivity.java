@@ -49,6 +49,7 @@ import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
@@ -72,12 +73,10 @@ public class PlayMomentActivity extends BaseActivity {
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
 
     private PlayMomentFragment playMomentFragment;
-    private List<Moment> selectedMoments;
+    private List<Moment> playingMoments;
     private File videoCacheFile;
 
     @AfterViews void setUpViews() {
-        playMomentFragment = PlayMomentFragment_.builder().startDate(startDate).endDate(endDate).build();
-        getSupportFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, playMomentFragment).commit();
     }
 
     @AfterViews void setupToolbar() {
@@ -86,6 +85,33 @@ public class PlayMomentActivity extends BaseActivity {
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         Log.i("setupToolbar", "set home as up true");
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        try {
+            playingMoments = momentDao.queryBuilder().where().between("time", startDate, endDate).query();
+            for (Moment m : playingMoments) {
+                MomentLock.lockMoment(this, m);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        playMomentFragment = PlayMomentFragment_.builder().startDate(startDate).endDate(endDate).build();
+        getSupportFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, playMomentFragment).commit();
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+        try {
+            for (Moment m : playingMoments) {
+                MomentLock.unlockMomentIfLocked(this, m);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,24 +128,19 @@ public class PlayMomentActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Background void shareClick(){
+    @Background void shareClick() {
         appendSelectedVideos();
         if (videoCacheFile == null) {
             //TODO check append videos failed
-            return ;
+            return;
         }
         uploadAndShare();
     }
 
     void appendSelectedVideos() {
-        try {
-            selectedMoments = momentDao.queryBuilder().where().between("time", startDate, endDate).query();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         List<String> paths = new ArrayList<>();
-        Collections.sort(selectedMoments);
-        for (Moment moment : selectedMoments) {
+        Collections.sort(playingMoments);
+        for (Moment moment : playingMoments) {
             paths.add(moment.getPath());
         }
         try {
@@ -200,7 +221,7 @@ public class PlayMomentActivity extends BaseActivity {
 
         Gson gson = new Gson();
         JsonArray allTagArray = new JsonArray();
-        for (Moment m : selectedMoments) {
+        for (Moment m : playingMoments) {
             JsonArray momentTags = new JsonArray();
             for (OMLocalVideoTag tag : RealmHelper.getTags(m.getTime())) {
                 JsonObject element = new JsonObject();
