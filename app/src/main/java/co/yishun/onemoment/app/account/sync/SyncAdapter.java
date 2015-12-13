@@ -204,12 +204,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             ApiMoment momentOnServer = apiMomentHashMap.get(moment.getTime());
             if (momentOnServer == null) {
                 toUpload.add(moment);
-            } else if (moment.getUnixTimeStamp() > momentOnServer.getUnixTimeStamp()) {
-                toUpload.add(moment);
-                toDelete.add(momentOnServer);
             } else {
-                toDownload.add(Pair.create(momentOnServer, moment));
+                if (moment.getUnixTimeStamp() > momentOnServer.getUnixTimeStamp()) {
+                    toUpload.add(moment);
+                    toDelete.add(momentOnServer);
+                } else {
+                    toDownload.add(Pair.create(momentOnServer, moment));
+                }
+                apiMomentHashMap.remove(moment.getTime());
             }
+        }
+
+        for (ApiMoment apiMoment : apiMomentHashMap.values()) {
+            toDownload.add(Pair.create(apiMoment, null));
         }
 
         Log.i(TAG, "divide end.");
