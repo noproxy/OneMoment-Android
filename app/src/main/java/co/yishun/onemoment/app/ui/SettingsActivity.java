@@ -121,7 +121,7 @@ public class SettingsActivity extends BaseActivity {
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_ringtone)));
             this.findPreference(getString(R.string.pref_key_sync_now)).setOnPreferenceClickListener(preference -> {
-                AccountHelper.syncNow(getContext());
+                AccountHelper.syncNow(getActivity());
                 return true;
             });
         }
