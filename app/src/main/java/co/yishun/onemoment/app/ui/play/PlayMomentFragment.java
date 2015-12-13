@@ -22,6 +22,7 @@ import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
@@ -46,7 +47,9 @@ public class PlayMomentFragment extends BaseFragment
         videoPlayView.setWithAvatar(false);
         videoPlayView.setVideoChangeListener(this);
         try {
-            List<Moment> momentList = momentDao.queryBuilder().where().between("time", startDate, endDate).query();
+            List<Moment> momentList = momentDao.queryBuilder().where()
+                    .eq("owner", AccountManager.getAccountId(getContext()))
+                    .between("time", startDate, endDate).query();
             videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
             for (Moment moment : momentList) {
                 List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());

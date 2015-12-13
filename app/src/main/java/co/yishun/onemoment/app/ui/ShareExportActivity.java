@@ -92,7 +92,7 @@ public class ShareExportActivity extends BaseActivity
         DayView.setOnMomentSelectedListener(this);
         DayView.setMultiSelection(true);
         try {
-            allMoments = momentDao.queryForAll();
+            allMoments = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this)).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }

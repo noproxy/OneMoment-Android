@@ -91,7 +91,8 @@ public class PlayMomentActivity extends BaseActivity {
     @Override protected void onResume() {
         super.onResume();
         try {
-            playingMoments = momentDao.queryBuilder().where().between("time", startDate, endDate).query();
+            playingMoments = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this))
+                    .between("time", startDate, endDate).query();
             for (Moment m : playingMoments) {
                 MomentLock.lockMoment(this, m);
             }
