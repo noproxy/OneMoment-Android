@@ -65,42 +65,21 @@ import retrofit.RestAdapter;
  */
 @EBean
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-    public static final String SYNC_BROADCAST_DONE = "co.yishun.onemoment.app.sync.done";
-    public static final String SYNC_BROADCAST_UPDATE_UPLOAD = "co.yishun.onemoment.app.sync.update.upload";
-    public static final String SYNC_BROADCAST_UPDATE_DOWNLOAD = "co.yishun.onemoment.app.sync.update.download";
-    public static final String SYNC_BROADCAST_UPDATE_RECOVER = "co.yishun.onemoment.app.sync.update.recover";
-    public static final String SYNC_BROADCAST_EXTRA_IS_UPLOAD_CHANGED = "is_upload_changed";
-    public static final String SYNC_BROADCAST_EXTRA_IS_DOWNLOAD_CHANGED = "is_download_changed";
-    public static final String SYNC_BROADCAST_EXTRA_IS_SUCCESS = "is_success";
-    public static final String SYNC_BROADCAST_EXTRA_THIS_PROGRESS = "int_this_progress";
-    public static final String SYNC_BROADCAST_EXTRA_TYPE_PROGRESS = "int_type_progress";
-    public static final String SYNC_BROADCAST_EXTRA_ALL_PROGRESS = "int_all_progress";
-    public static final int PROGRESS_NOT_AVAILABLE = -1;
-    public static final int PROGRESS_ERROR = -2;
     private static final String TAG = "SyncAdapter";
-    private final static UploadManager mUploadManager;
-    private static Misc mMiscService = OneMomentV3.createAdapter().create(Misc.class);
-
-    static {
-        mUploadManager = new UploadManager();
-    }
+    private final static UploadManager mUploadManager = new UploadManager();
+    private final static Misc mMiscService = OneMomentV3.createAdapter().create(Misc.class);
 
     private final List<Moment> toUpload = new ArrayList<>();
     private final List<Pair<ApiMoment, Moment>> toDownload = new ArrayList<>();
     private final List<ApiMoment> toDelete = new ArrayList<>();
-    ContentResolver mContentResolver;
-    /**
-     * whether local data update while sync. if true, need to notify some ui update
-     */
-    boolean isUploadChanged = false;
-    boolean isDownloadChanged = false;
     @SystemService ConnectivityManager connectivityManager;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> dao;
+    private volatile int allTask = 0;
+    private volatile int successTask = 0;
+    private volatile int failTask = 0;
 
     public SyncAdapter(Context context) {
         super(context, true);
-        mContentResolver = context.getContentResolver();
-
     }
 
     /**
@@ -217,9 +196,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i(TAG, "to delete: " + toDelete.size());
     }
 
+    private void cleanFile() {
+    }
+
     private void digestTask() {
         ExecutorService executor = Executors.newCachedThreadPool();
+
+        allTask = toDownload.size() + toUpload.size();
+        failTask = 0;
+        successTask = 0;
         onSyncStart();
+
         for (Moment moment : toUpload) {
             executor.submit(new UploadTask(moment));
         }
@@ -242,25 +229,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         cleanFile();
     }
 
-    private void cleanFile() {
-    }
-
-
     /**
      * send broadcast to notify syncing progress update.
      * <p>
      * progress is from 0 to 100.
      * <p>
-     * {@link #PROGRESS_NOT_AVAILABLE} means no progress data available.
-     * {@link #PROGRESS_ERROR} means error occurred.
+     * {@link SyncManager#PROGRESS_NOT_AVAILABLE} means no progress data available.
+     * {@link SyncManager#PROGRESS_ERROR} means error occurred.
      */
-    private void onSyncUpdate(int thisProgress, int thisTypeProgress, int allProgress) {
-        Intent intent = new Intent(SYNC_BROADCAST_UPDATE_DOWNLOAD);
-        intent.putExtra(SYNC_BROADCAST_EXTRA_THIS_PROGRESS, thisProgress);
-        intent.putExtra(SYNC_BROADCAST_EXTRA_TYPE_PROGRESS, thisTypeProgress);
-        intent.putExtra(SYNC_BROADCAST_EXTRA_ALL_PROGRESS, allProgress);
-        Log.i(TAG, "sync update progress, send a broadcast. type: " + // type.name() +
-                ", this progress: " + thisProgress + ", type progress: " + thisTypeProgress + ", all progress: " + allProgress);
+    private void onSyncUpdate() {
+        Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_PROGRESS);
+        int progress = successTask * 100 / allTask;
+        intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_PROGRESS_VALUE, progress);
+        Log.i(TAG, "sync update progress, send a broadcast. progress: " + progress);
         getContext().sendBroadcast(intent);
     }
 
@@ -270,10 +251,28 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void onSyncEnd() {
         Log.i(TAG, "sync end");
+        if (allTask == 0)
+            return;
+        Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_END);
+        @SyncManager.EndResult int result;
+        if (successTask + failTask < allTask)
+            result = SyncManager.SYNC_BROADCAST_EXTRA_END_RESULT_CANCEL;
+        else if (successTask == allTask) {
+            result = SyncManager.SYNC_BROADCAST_EXTRA_END_RESULT_SUCCESS;
+        } else {
+            result = SyncManager.SYNC_BROADCAST_EXTRA_END_RESULT_FAIL;
+        }
+        intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_END_RESULT, result);
+        getContext().sendBroadcast(intent);
     }
 
     private void onSyncStart() {
         Log.i(TAG, "sync start");
+        if (allTask == 0)
+            return;
+        Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_START);
+        intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_START_TASK_NUM, allTask);
+        getContext().sendBroadcast(intent);
     }
 
     private UploadManager getUploadManager() {
@@ -304,10 +303,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         @Override public void run() {
             Log.i(TAG, "upload a moment: " + mMoment);
             String qiNiuKey = mMoment.getKey();
-            //            syncUpdate(UpdateType.UPLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
             UploadToken token = mMiscService.getUploadToken(mMoment.getKey());
             if (!token.isSuccess()) {
-                //TODO failed
+                Log.e(TAG, "upload failed when get token");
+                failTask++;
+                onSyncUpdate();
                 return;
             }
             getUploadManager().put(mMoment.getPath(), qiNiuKey, token.token, newHandler(), newOptions());
@@ -322,11 +322,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.i(TAG, responseInfo.toString());
                 if (responseInfo.isOK()) {
                     Log.i(TAG, "a moment upload ok: " + mMoment);
-                    //                    syncUpdate(UpdateType.UPLOAD, 100, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
+                    successTask++;
                 } else {
                     Log.i(TAG, "a moment upload failed: " + mMoment);
-                    //                    syncUpdate(UpdateType.UPLOAD, PROGRESS_ERROR, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
+                    failTask++;
                 }
+                onSyncUpdate();
             };
         }
     }
@@ -342,10 +343,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         @Override public void run() {
             Log.i(TAG, "download a moment: " + mApiMoment);
-            //            syncUpdate(UpdateType.DOWNLOAD, 0, PROGRESS_NOT_AVAILABLE, PROGRESS_NOT_AVAILABLE);
             Domain domain = mMiscService.getResourceDomain("video");
             if (!domain.isSuccess()) {
-                //TODO failed
+                Log.e(TAG, "download failed when get resource domain");
+                failTask++;
+                onSyncUpdate();
                 return;
             }
 
@@ -361,6 +363,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     response = client.newCall(request).execute();
                 } catch (IOException e) {
                     Log.e(TAG, "exception when http call or close the stream", e);
+                    failTask++;
+                    onSyncUpdate();
                     return;
                 }
 
@@ -382,10 +386,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                             Log.v(TAG, "progress: " + (total / target));
                             if (Thread.interrupted()) {
-                                //TODO cancel
+                                Log.i(TAG, "cancel download");// canceled task not failTask++
                                 return;
                             }
-                            }
+                        }
                         out.flush();
                         out.close();
                         inputStream.close();
@@ -393,8 +397,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                     }
                 } catch (IOException e) {
-                    //TODO failed
+                    failTask++;
                     Log.e(TAG, "download failed", e);
+                    onSyncUpdate();
+                    return;
                 } finally {
                         try {
                             if (inputStream != null) {
@@ -431,13 +437,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 MomentLock.unlockMomentIfLocked(getContext(), mMoment);
 
-                //TODO ok
+                successTask++;
+                onSyncUpdate();
             } catch (SQLException e) {
-                //TODO failed
+                failTask++;
+                onSyncUpdate();
                 Log.e(TAG, "exception when save a moment into database", e);
             } catch (IOException e) {
-                Log.e(TAG, "exception when create thumbimage", e);
+                failTask++;
+                onSyncUpdate();
+                Log.e(TAG, "exception when create thumb image", e);
             } catch (Exception e) {
+                failTask++;
+                onSyncUpdate();
                 Log.e(TAG, "unknown exception,may be thrown in MomentLock", e);
             }
         }
@@ -452,7 +464,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
         @Override public void run() {
+            Log.i(TAG, "delete a video: " + mApiMoment);
             mMiscService.deleteVideo(mApiMoment.getKey());
+            Log.i(TAG, "delete a video ok: " + mApiMoment);
         }
     }
 }
