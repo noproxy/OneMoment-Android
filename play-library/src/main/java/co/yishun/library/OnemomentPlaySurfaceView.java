@@ -17,7 +17,8 @@ import co.yishun.library.resource.VideoResource;
  * Created on 2015/10/29.
  */
 public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHolder.Callback,
-        MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
+                                                                     MediaPlayer.OnCompletionListener,
+                                                                     MediaPlayer.OnErrorListener {
     private static final String TAG = "PlaySurfaceView";
     private SurfaceHolder mHolder;
     private MediaPlayer mMediaPlayer;
@@ -100,7 +101,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     }
 
     public void start() {
-        if (mMediaState == State.PREPARED || mMediaState == State.PAUSE){
+        if (mMediaState == State.PREPARED || mMediaState == State.PAUSE) {
             Log.d(TAG, "start");
             mMediaPlayer.start();
             mMediaState = State.STARTED;
@@ -223,7 +224,6 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
         mHolderCreated = true;
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(holder);
-            mMediaPlayer.seekTo(500);
         }
     }
 
@@ -236,7 +236,7 @@ public class OnemomentPlaySurfaceView extends SurfaceView implements SurfaceHold
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d(TAG, "surface destroy");
         mHolderCreated = false;
-        release();
+        reset();
     }
 
     @Override
