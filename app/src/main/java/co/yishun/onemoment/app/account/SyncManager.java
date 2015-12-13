@@ -46,6 +46,8 @@ public class SyncManager {
         boolean canCellular = pref.getBoolean(context.getString(R.string.pref_key_sync_cellular_data), false);
         long frequency = pref.getLong(context.getString(R.string.pref_key_sync_frequency), 60L);// unit: minutes
 
+        Log.i(TAG, "notifySyncSettingsChange, isSync: " + isSync);
+
         Bundle b = new Bundle();
         b.putBoolean(SYNC_IGNORE_NETWORK, canCellular);
 
