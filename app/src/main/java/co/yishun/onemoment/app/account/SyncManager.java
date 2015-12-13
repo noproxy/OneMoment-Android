@@ -52,4 +52,8 @@ public class SyncManager {
         ContentResolver.setMasterSyncAutomatically(isSync);
         ContentResolver.addPeriodicSync(AccountManager.getAccount(context), Contract.AUTHORITY, b, frequency * 60);
     }
+
+    protected static void diableSync() {
+        ContentResolver.setMasterSyncAutomatically(false);
+    }
 }
