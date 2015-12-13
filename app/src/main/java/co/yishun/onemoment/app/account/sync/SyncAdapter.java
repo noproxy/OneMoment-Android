@@ -6,12 +6,9 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.SyncResult;
-import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -44,8 +41,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiMoment;
@@ -67,7 +64,6 @@ import retrofit.RestAdapter;
  */
 @EBean
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-    public static final String BUNLDE_IGNORE_NETWORK = "boolean_ignore_network";
     public static final String SYNC_BROADCAST_DONE = "co.yishun.onemoment.app.sync.done";
     public static final String SYNC_BROADCAST_UPDATE_UPLOAD = "co.yishun.onemoment.app.sync.update.upload";
     public static final String SYNC_BROADCAST_UPDATE_DOWNLOAD = "co.yishun.onemoment.app.sync.update.download";
@@ -175,18 +171,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      * @return false if sync should give up.
      */
     private boolean checkSyncOption(Bundle extras) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        Resources res = getContext().getResources();
-        boolean isEnable = prefs.getBoolean(res.getString(R.string.pref_key_sync), true);
-        boolean canCellular = prefs.getBoolean(res.getString(R.string.pref_key_sync_now), false);
-
-        if (!isEnable) {
-            Log.i(TAG, "cancel sync because sync is disabled");
-            return false;
-        }
-
-        if (!extras.getBoolean(BUNLDE_IGNORE_NETWORK, false) &&
-                !canCellular && !connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
+        if (!extras.getBoolean(ContentResolver.SYNC_EXTRAS_IGNORE_SETTINGS, false) &&
+                !extras.getBoolean(SyncManager.SYNC_IGNORE_NETWORK, false) &&
+                !connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
             Log.i(TAG, "cancel sync because network is not permitted");
             return false;
         }
