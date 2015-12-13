@@ -16,6 +16,15 @@ import co.yishun.onemoment.app.data.compat.Contract;
  */
 public class SyncManager {
     public static final String SYNC_IGNORE_NETWORK = "boolean_ignore_network";
+    public static final String SYNC_BROADCAST_ACTION_END = "co.yishun.onemoment.app.sync.action.end";
+    public static final String SYNC_BROADCAST_ACTION_START = "co.yishun.onemoment.app.sync.action.end";
+    public static final String SYNC_BROADCAST_PROGRESS_UPLOAD = "co.yishun.onemoment.app.sync.update.upload";
+    public static final String SYNC_BROADCAST_PROGRESS_DOWNLOAD = "co.yishun.onemoment.app.sync.update.download";
+    public static final String SYNC_BROADCAST_EXTRA_THIS_PROGRESS = "int_this_progress";
+    public static final String SYNC_BROADCAST_EXTRA_TYPE_PROGRESS = "int_type_progress";
+    public static final String SYNC_BROADCAST_EXTRA_ALL_PROGRESS = "int_all_progress";
+    public static final int PROGRESS_NOT_AVAILABLE = -1;
+    public static final int PROGRESS_ERROR = -2;
     private static final String TAG = "SyncManager";
 
     /**

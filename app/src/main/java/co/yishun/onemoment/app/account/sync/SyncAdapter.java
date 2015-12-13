@@ -65,37 +65,16 @@ import retrofit.RestAdapter;
  */
 @EBean
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-    public static final String SYNC_BROADCAST_DONE = "co.yishun.onemoment.app.sync.done";
-    public static final String SYNC_BROADCAST_UPDATE_UPLOAD = "co.yishun.onemoment.app.sync.update.upload";
-    public static final String SYNC_BROADCAST_UPDATE_DOWNLOAD = "co.yishun.onemoment.app.sync.update.download";
-    public static final String SYNC_BROADCAST_UPDATE_RECOVER = "co.yishun.onemoment.app.sync.update.recover";
-    public static final String SYNC_BROADCAST_EXTRA_IS_UPLOAD_CHANGED = "is_upload_changed";
-    public static final String SYNC_BROADCAST_EXTRA_IS_DOWNLOAD_CHANGED = "is_download_changed";
-    public static final String SYNC_BROADCAST_EXTRA_IS_SUCCESS = "is_success";
-    public static final String SYNC_BROADCAST_EXTRA_THIS_PROGRESS = "int_this_progress";
-    public static final String SYNC_BROADCAST_EXTRA_TYPE_PROGRESS = "int_type_progress";
-    public static final String SYNC_BROADCAST_EXTRA_ALL_PROGRESS = "int_all_progress";
-    public static final int PROGRESS_NOT_AVAILABLE = -1;
-    public static final int PROGRESS_ERROR = -2;
     private static final String TAG = "SyncAdapter";
-    private final static UploadManager mUploadManager;
-    private static Misc mMiscService = OneMomentV3.createAdapter().create(Misc.class);
-
-    static {
-        mUploadManager = new UploadManager();
-    }
+    private final static UploadManager mUploadManager = new UploadManager();
+    private final static Misc mMiscService = OneMomentV3.createAdapter().create(Misc.class);
 
     private final List<Moment> toUpload = new ArrayList<>();
     private final List<Pair<ApiMoment, Moment>> toDownload = new ArrayList<>();
     private final List<ApiMoment> toDelete = new ArrayList<>();
-    ContentResolver mContentResolver;
-    /**
-     * whether local data update while sync. if true, need to notify some ui update
-     */
-    boolean isUploadChanged = false;
-    boolean isDownloadChanged = false;
     @SystemService ConnectivityManager connectivityManager;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> dao;
+    private ContentResolver mContentResolver;
 
     public SyncAdapter(Context context) {
         super(context, true);
