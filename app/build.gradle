@@ -117,7 +117,7 @@ dependencies {
     compile 'com.qiniu:qiniu-android-sdk:7.0.9'
     compile 'io.realm:realm-android:0.82.2'
     compile 'com.umeng.analytics:analytics:5.6.1'
-    'com.googlecode.mp4parser:isoparser:1.1.7'
+    compile 'com.googlecode.mp4parser:isoparser:1.1.7'
 
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
