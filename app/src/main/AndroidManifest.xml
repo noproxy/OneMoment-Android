@@ -77,7 +77,6 @@
             android:theme="@android:style/Theme.NoDisplay"/>
         <activity
             android:name=".wxapi.EntryActivity"
-            android:exported="true"
             android:theme="@style/AppTheme.EntryActivity"/>
         <activity
             android:name=".ui.AccountActivity_"

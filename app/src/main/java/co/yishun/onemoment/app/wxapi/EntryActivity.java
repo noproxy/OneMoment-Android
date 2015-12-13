@@ -95,7 +95,13 @@ public class EntryActivity extends BaseActivity implements LoginListener {
 
     @Override
     public void setPageInfo() {
+        mIsPage = false;
+    }
 
+    @Override protected void onDestroy() {
+        EntryActivity.mAuthHelper  = null;
+        EntryActivity.mAccountService = null;
+        super.onDestroy();
     }
 }
 
