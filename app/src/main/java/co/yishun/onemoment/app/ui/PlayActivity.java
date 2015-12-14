@@ -10,10 +10,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -108,7 +106,7 @@ public class PlayActivity extends BaseActivity {
                 .transitionY(location[1] + view.getHeight() / 2).worldTag(worldTag).forWorld(true).start();
     }
 
-    @Click(R.id.worldShare) @Background void shareWorld(View view){
+    @Click(R.id.worldShare) @Background void shareWorld(View view) {
         World world = OneMomentV3.createAdapter().create(World.class);
         ShareInfo shareInfo = world.shareWorld(worldTag.name);
         getSupportFragmentManager().beginTransaction().add(android.R.id.content,
