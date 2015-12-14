@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
@@ -72,8 +73,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private final List<Moment> toUpload = new ArrayList<>();
     private final List<Pair<ApiMoment, Moment>> toDownload = new ArrayList<>();
     private final List<ApiMoment> toDelete = new ArrayList<>();
+    private final List<Moment> toCreateThumb = new ArrayList<>();
     @SystemService ConnectivityManager connectivityManager;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> dao;
+    ExecutorService executor = Executors.newCachedThreadPool();
     private volatile int allTask = 0;
     private volatile int successTask = 0;
     private volatile int failTask = 0;
@@ -119,7 +122,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
-     * To execute sync. When sync end, it will call {@link #onSyncEnd()} to send broadcast notify sync process ending. And in syncing process, it calls {@link #onSyncUpdate(int, int, int)} to broadcast progress.
+     * To execute sync. When sync end, it will call {@link #onSyncEnd()}
+     * to send broadcast notify sync process ending. And in syncing process,
+     * it calls {@link #onSyncUpdate()} to broadcast progress.
      */
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
@@ -184,6 +189,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
                 apiMomentHashMap.remove(moment.getTime());
             }
+            if (TextUtils.isEmpty(moment.getThumbPath()) || TextUtils.isEmpty(moment.getLargeThumbPath())){
+                toCreateThumb.add(moment);
+            }
         }
 
         for (ApiMoment apiMoment : apiMomentHashMap.values()) {
@@ -200,7 +208,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void digestTask() {
-        ExecutorService executor = Executors.newCachedThreadPool();
 
         allTask = toDownload.size() + toUpload.size();
         failTask = 0;
@@ -213,6 +220,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         for (Pair<ApiMoment, Moment> pair : toDownload) {
             executor.submit(new DownloadTask(pair.first, pair.second));
+        }
+
+        for (Moment moment : toCreateThumb) {
+            executor.submit(new CreateThumbTask(moment));
         }
 
         for (ApiMoment apiMoment : toDelete)
@@ -402,22 +413,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     onSyncUpdate();
                     return;
                 } finally {
-                        try {
-                            if (inputStream != null) {
-                                inputStream.close();
-                            }
-                            if (out != null) {
-                                out.close();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    try {
+                        if (inputStream != null) {
+                            inputStream.close();
                         }
+                        if (out != null) {
+                            out.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
             try {
-                String pathToThumb = VideoUtil.createThumbImage(getContext(), mApiMoment, fileSynced.getPath());
-                String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mApiMoment, fileSynced.getPath());
                 if (mMoment == null)
                     mMoment = new Moment();
                 else {
@@ -425,17 +434,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     //TODO I don't delete old. To clean them by adding clean cache function or delete them here.
                 }
 
-
                 mMoment.setOwner(mApiMoment.getOwnerID());
                 mMoment.setTime(mApiMoment.getTime());
                 mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
                 mMoment.setPath(fileSynced.getPath());
-                mMoment.setThumbPath(pathToThumb);
-                mMoment.setLargeThumbPath(pathToLargeThumb);
                 dao.createOrUpdate(mMoment);
                 Log.i(TAG, "download ok: " + mMoment);
 
                 MomentLock.unlockMomentIfLocked(getContext(), mMoment);
+
+                executor.submit(new CreateThumbTask(mMoment));
 
                 successTask++;
                 onSyncUpdate();
@@ -453,6 +461,62 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.e(TAG, "unknown exception,may be thrown in MomentLock", e);
             }
         }
+    }
+
+    private class CreateThumbTask implements Runnable {
+        private final Moment mMoment;
+
+        public CreateThumbTask(@NonNull Moment moment) {
+            this.mMoment = moment;
+        }
+
+        @Override public void run() {
+            try {
+                String pathToThumb = VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
+                String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
+
+                File smallThumb = new File(pathToThumb);
+                File largeThumb = new File(pathToLargeThumb);
+                for (int i = 0; i < 3; i++) {
+                    if (smallThumb.length() == 0) {
+                        VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
+                    }
+                    if (largeThumb.length() == 0) {
+                        VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
+                    }
+                    if (smallThumb.length() > 0) break;
+                }
+
+                if (smallThumb.length() == 0) {
+                    smallThumb.delete();
+                } else {
+                    mMoment.setThumbPath(pathToThumb);
+                }
+                if (largeThumb.length() == 0) {
+                    largeThumb.delete();
+                } else {
+                    mMoment.setLargeThumbPath(pathToLargeThumb);
+                }
+                dao.update(mMoment);
+                Log.i(TAG, "create Thumb ok: " + mMoment);
+
+                successTask++;
+                onSyncUpdate();
+            } catch (SQLException e) {
+                failTask++;
+                onSyncUpdate();
+                Log.e(TAG, "exception when save a moment into database", e);
+            } catch (IOException e) {
+                failTask++;
+                onSyncUpdate();
+                Log.e(TAG, "exception when create thumb image", e);
+            } catch (Exception e) {
+                failTask++;
+                onSyncUpdate();
+                Log.e(TAG, "unknown exception,may be thrown in MomentLock", e);
+            }
+        }
+
     }
 
     private class DeleteTask implements Runnable {
