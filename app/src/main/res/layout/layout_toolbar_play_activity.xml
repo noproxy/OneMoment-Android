@@ -11,12 +11,20 @@
     app:layout_collapseMode="pin"
     >
 
-    <ImageButton
+    <ImageView
         style="@style/AppTheme.Widget.ImageButton"
-        android:id="@+id/addImageView"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_gravity="right"
+        android:id="@+id/worldAdd"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
         android:scaleType="centerInside"
         android:src="@drawable/ic_action_add"/>
+
+    <ImageView
+        style="@style/AppTheme.Widget.ImageButton"
+        android:id="@+id/worldShare"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_action_share"/>
 </android.support.v7.widget.Toolbar>

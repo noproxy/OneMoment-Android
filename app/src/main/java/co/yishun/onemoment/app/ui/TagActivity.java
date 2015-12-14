@@ -71,7 +71,6 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     CollapsingToolbarLayout collapsingToolbarLayout;
     ImageView videoImageView;
     SwipeRefreshLayout swipeRefreshLayout;
-    ImageView addImageView;
     private boolean transitionOver = false;
     private TagAdapter tagAdapter;
     private int statusBarHeight;
@@ -136,8 +135,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         videoImageView = ((ImageView) findViewById(R.id.videoImageView));
         swipeRefreshLayout = ((SwipeRefreshLayout) findViewById(R.id.ptr_layout));
         recyclerView = ((SuperRecyclerView) findViewById(R.id.recyclerView));
-        addImageView = (ImageView) findViewById(R.id.addImageView);
-        addImageView.setOnClickListener(this::addImageClicked);
+        findViewById(R.id.worldAdd).setOnClickListener(this::addVideo);
+        findViewById(R.id.worldShare).setOnClickListener(this::shareWorld);
 
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
         videoImageView.setOnClickListener(this::videoImageClick);
@@ -251,11 +250,15 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return super.onOptionsItemSelected(item);
     }
 
-    void addImageClicked(View view) {
+    void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
                 .transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
+    }
+
+    void shareWorld(View view){
+
     }
 
     void videoImageClick(View v) {

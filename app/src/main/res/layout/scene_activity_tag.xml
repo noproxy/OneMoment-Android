@@ -51,7 +51,7 @@
                     android:layout_alignBottom="@id/videoImageView"/>
             </RelativeLayout>
 
-            <include layout="@layout/layout_toolbar_add"/>
+            <include layout="@layout/layout_toolbar_play_activity"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
