@@ -189,7 +189,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
                 apiMomentHashMap.remove(moment.getTime());
             }
-            if (TextUtils.isEmpty(moment.getThumbPath()) || TextUtils.isEmpty(moment.getLargeThumbPath())){
+            if (new File(moment.getLargeThumbPath()).length() == 0 ||
+                    new File(moment.getThumbPath()).length() == 0) {
                 toCreateThumb.add(moment);
             }
         }
@@ -472,31 +473,29 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         @Override public void run() {
             try {
-                String pathToThumb = VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
-                String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
+                String pathToThumb = mMoment.getThumbPath();
+                if (TextUtils.isEmpty(pathToThumb))
+                    pathToThumb = VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
+
+                String pathToLargeThumb = mMoment.getLargeThumbPath();
+                if (TextUtils.isEmpty(pathToLargeThumb))
+                    pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
 
                 File smallThumb = new File(pathToThumb);
                 File largeThumb = new File(pathToLargeThumb);
                 for (int i = 0; i < 3; i++) {
-                    if (smallThumb.length() == 0) {
+                    if (smallThumb.length() == 0)
                         VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
-                    }
-                    if (largeThumb.length() == 0) {
+                    else break;
+                }
+                for (int i = 0; i < 3; i++) {
+                    if (largeThumb.length() == 0)
                         VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
-                    }
-                    if (smallThumb.length() > 0) break;
+                    else break;
                 }
 
-                if (smallThumb.length() == 0) {
-                    smallThumb.delete();
-                } else {
-                    mMoment.setThumbPath(pathToThumb);
-                }
-                if (largeThumb.length() == 0) {
-                    largeThumb.delete();
-                } else {
-                    mMoment.setLargeThumbPath(pathToLargeThumb);
-                }
+                mMoment.setThumbPath(pathToThumb);
+                mMoment.setLargeThumbPath(pathToLargeThumb);
                 dao.update(mMoment);
                 Log.i(TAG, "create Thumb ok: " + mMoment);
 
