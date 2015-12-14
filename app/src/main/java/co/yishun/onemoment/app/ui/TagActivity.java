@@ -7,6 +7,7 @@ import android.support.annotation.CallSuper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -33,19 +34,25 @@ import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
+import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
+import co.yishun.onemoment.app.ui.share.ShareFragment;
+import co.yishun.onemoment.app.ui.share.ShareFragment_;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 
 /**
@@ -53,7 +60,8 @@ import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
  */
 
 @EActivity(R.layout.activity_tag)
-public class TagActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
+public class TagActivity extends BaseActivity
+        implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
     public static final int FROM_WORLD_FRAGMENT = 0;
     public static final int FROM_SEARCH_ACTIVITY = 1;
     private static final String TAG = "TagActivity";
@@ -91,8 +99,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         recyclerView = ((SuperRecyclerView) coordinatorLayout.findViewById(R.id.recyclerView));
     }
 
-    @AfterViews
-    void preTransition() {
+    @AfterViews void preTransition() {
         if (from == FROM_WORLD_FRAGMENT) {
             coordinatorLayout.addView(LayoutInflater.from(this).inflate(
                     R.layout.scene_activity_tag_world_smooth, coordinatorLayout, false));
@@ -117,8 +124,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     }
 
     @UiThread(delay = 100)
-    @AfterViews
-    void sceneTransition() {
+    @AfterViews void sceneTransition() {
         ViewGroup sceneRoot = coordinatorLayout;
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
 
@@ -127,7 +133,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         animator.setEvaluator(new ArgbEvaluator());
         animator.start();
 
-        TransitionSet set =(TransitionSet) TransitionInflater.from(this).inflateTransition(R.transition.activity_tag_transition);
+        TransitionSet set = (TransitionSet) TransitionInflater.from(this).inflateTransition(R.transition.activity_tag_transition);
         TransitionManager.go(scene, set);
 
         afterTransition();
@@ -155,8 +161,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         transitionOver = true;
     }
 
-    @UiThread(delay = 600)
-    void afterTransition() {
+    @UiThread(delay = 600) void afterTransition() {
         AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBar);
         toolbar = ((Toolbar) findViewById(R.id.toolbar));
         collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
@@ -250,6 +255,15 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ShareFragment.TAG);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
@@ -257,8 +271,11 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
                 .transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
     }
 
-    void shareWorld(View view){
-
+    @Background void shareWorld(View view) {
+        World world = OneMomentV3.createAdapter().create(World.class);
+        ShareInfo shareInfo = world.shareWorld(tag.name);
+        getSupportFragmentManager().beginTransaction().add(android.R.id.content,
+                ShareFragment_.builder().shareInfo(shareInfo).build(), ShareFragment.TAG).commit();
     }
 
     void videoImageClick(View v) {

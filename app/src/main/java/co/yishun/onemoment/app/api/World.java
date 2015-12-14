@@ -12,6 +12,7 @@ import java.util.List;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.Seed;
+import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.VideoTag;
@@ -65,9 +66,9 @@ public interface World {
                           @Field("filename") @NonNull String fileName, @Field("tags") @NonNull String tags
     );
 
-    @POST("/world/shareWorld")
+    @POST("/world/share")
     @FormUrlEncoded
-    ApiModel shareWorld(@Field("tag_name") String tagName);
+    ShareInfo shareWorld(@Field("tag_name") String tagName);
 
     @StringDef({"recommend", "time"})
     @interface Sort {
