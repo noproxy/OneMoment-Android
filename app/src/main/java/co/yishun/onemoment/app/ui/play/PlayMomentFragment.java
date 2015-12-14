@@ -48,7 +48,7 @@ public class PlayMomentFragment extends BaseFragment
         videoPlayView.setVideoChangeListener(this);
         try {
             List<Moment> momentList = momentDao.queryBuilder().where()
-                    .eq("owner", AccountManager.getAccountId(getContext()))
+                    .eq("owner", AccountManager.getAccountId(getContext())).and()
                     .between("time", startDate, endDate).query();
             videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
             for (Moment moment : momentList) {
