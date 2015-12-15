@@ -435,6 +435,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     //TODO I don't delete old. To clean them by adding clean cache function or delete them here.
                 }
 
+                String pathToThumb = VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
+
+                String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
+
+                mMoment.setThumbPath(pathToThumb);
+                mMoment.setLargeThumbPath(pathToLargeThumb);
+
                 mMoment.setOwner(mApiMoment.getOwnerID());
                 mMoment.setTime(mApiMoment.getTime());
                 mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
@@ -444,7 +451,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 MomentLock.unlockMomentIfLocked(getContext(), mMoment);
 
-                executor.submit(new CreateThumbTask(mMoment));
+                File smallThumb = new File(pathToThumb);
+                File largeThumb = new File(pathToLargeThumb);
+                if (smallThumb.length() == 0 || largeThumb.length() == 0)
+                    executor.submit(new CreateThumbTask(mMoment));
 
                 successTask++;
                 onSyncUpdate();
