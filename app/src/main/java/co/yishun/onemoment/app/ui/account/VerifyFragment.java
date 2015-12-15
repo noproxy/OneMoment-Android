@@ -107,6 +107,7 @@ public class VerifyFragment extends AccountFragment {
                 break;
             case Constants.ErrorCode.PHONE_VERIFY_CODE_EXPIRES:
                 mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_expire);
+                break;
             default:
                 mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_network);
                 break;

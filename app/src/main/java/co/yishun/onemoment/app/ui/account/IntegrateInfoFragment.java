@@ -48,7 +48,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Carlos on 2015/8/11.
  */
 @EFragment(R.layout.fragment_integrate_info)
-public class IntegrateInfoFragment extends AccountFragment implements AccountActivity.PictureCroppedHandler {
+public class IntegrateInfoFragment extends AccountFragment
+        implements AccountActivity.PictureCroppedHandler {
 
     private static final String TAG = "IntegrateInfoFragment";
     @FragmentArg String phoneNum;
@@ -68,13 +69,11 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
         userInfo.name = text.toString().trim();
     }
 
-    @Override
-    int getFABBackgroundColorRes() {
+    @Override int getFABBackgroundColorRes() {
         return R.color.colorSecondary;
     }
 
-    @Override
-    int getFABImageResource() {
+    @Override int getFABImageResource() {
         return R.drawable.ic_login_done;
     }
 
@@ -107,8 +106,7 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
         return true;
     }
 
-    @Background
-    void checkNicknameAndSignUp() {
+    @Background void checkNicknameAndSignUp() {
         signUp();
     }
 
@@ -117,8 +115,7 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
      *
      * @return true if no need update or update success
      */
-    @SupposeBackground
-    boolean updateAvatar(@NonNull String userId) {
+    @SupposeBackground boolean updateAvatar(@NonNull String userId) {
         if (croppedProfileUri == null) return true;
         String uriString = croppedProfileUri.toString();
         String path = uriString.substring(uriString.indexOf(":") + 1);
@@ -132,11 +129,11 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
             return false;
         }
         // don't need
-//        String domain = ApiUtil.getVideoResourceDomain();
-//        if (domain == null) {
-//            Log.e(TAG, "get domain error");
-//            return false;
-//        }
+        //        String domain = ApiUtil.getVideoResourceDomain();
+        //        if (domain == null) {
+        //            Log.e(TAG, "get domain error");
+        //            return false;
+        //        }
         CountDownLatch latch = new CountDownLatch(1);
         uploadManager.put(path, qiNiuKey, token.token,
                 (s, responseInfo, jsonObject) -> {
@@ -170,24 +167,26 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
         return true;
     }
 
-    @SupposeBackground
-    void signUp() {
+    @SupposeBackground void signUp() {
         mActivity.showProgress(R.string.fragment_integrate_info_sign_up_progress);
         User user;
-        switch (type) {
-            case WeChat:
-                user = mActivity.getAccountService().signUpByWeChat(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
-                break;
-            case Weibo:
-                user = mActivity.getAccountService().signUpByWeibo(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
-                break;
-            case QQ:
-                user = mActivity.getAccountService().signUpByQQ(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
-                break;
-            default:
-                user = mActivity.getAccountService().signUpByPhone(phoneNum, password, userInfo.name, Account.Gender.format(userInfo.gender), null, userInfo.location);
-                break;
-        }
+        if (type != null)
+            switch (type) {
+                case WeChat:
+                    user = mActivity.getAccountService().signUpByWeChat(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
+                    break;
+                case Weibo:
+                    user = mActivity.getAccountService().signUpByWeibo(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
+                    break;
+                case QQ:
+                    user = mActivity.getAccountService().signUpByQQ(userInfo.id, userInfo.name, Account.Gender.format(userInfo.gender), userInfo.avatar_large, userInfo.location, userInfo.name);
+                    break;
+                default:
+                    user = mActivity.getAccountService().signUpByPhone(phoneNum, password, userInfo.name, Account.Gender.format(userInfo.gender), null, userInfo.location);
+                    break;
+            }
+        else
+            user = mActivity.getAccountService().signUpByPhone(phoneNum, password, userInfo.name, Account.Gender.format(userInfo.gender), null, userInfo.location);
         if (user.code > 0) {
             AccountManager.saveAccount(mActivity, user);
             checkAvatarAndExit(user._id);
@@ -205,20 +204,17 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
         mActivity.hideProgress();
     }
 
-    @SupposeBackground
-    void checkAvatarAndExit(@NonNull String userId) {
+    @SupposeBackground void checkAvatarAndExit(@NonNull String userId) {
         boolean success = updateAvatar(userId);
         mActivity.showSnackMsg(success ? R.string.fragment_integrate_info_sign_up_success : R.string.fragment_integrate_info_sign_up_success_but_avatar_upload_failed);
         exitWithStartMain();
     }
 
-    @Click
-    void profileImageViewClicked(View view) {
+    @Click void profileImageViewClicked(View view) {
         Crop.pickImage(mActivity);
     }
 
-    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
-    void exitWithStartMain() {
+    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS) void exitWithStartMain() {
         MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
         //TODO bug not stop the WXEntryAct
     }
@@ -235,8 +231,7 @@ public class IntegrateInfoFragment extends AccountFragment implements AccountAct
         Picasso.with(mActivity).load(croppedProfileUri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
     }
 
-    @AfterViews
-    void setViews() {
+    @AfterViews void setViews() {
         if (userInfo == null) {
             userInfo = new UserInfo();
         }
