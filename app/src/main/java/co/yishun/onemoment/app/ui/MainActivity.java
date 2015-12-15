@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,8 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
+import com.umeng.message.UmengRegistrar;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
@@ -80,6 +83,9 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         setContentView(R.layout.activity_main);
 
         RealmHelper.setup(this);
+        PushAgent mPushAgent = PushAgent.getInstance(this);
+        Log.d(TAG, "token "+UmengRegistrar.getRegistrationId(this));
+        mPushAgent.enable();
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
