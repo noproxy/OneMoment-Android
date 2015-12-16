@@ -9,7 +9,7 @@
     tools:context=".wxapi.EntryActivity"
     >
 
-    <include layout="@layout/layout_toolbar"/>
+    <!--<include layout="@layout/layout_toolbar"/>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
