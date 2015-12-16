@@ -25,8 +25,8 @@ import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.SyncManager;
+import co.yishun.onemoment.app.account.remind.ReminderReceiver;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
-import co.yishun.onemoment.app.ui.view.TimePreference;
 
 
 /**
@@ -50,8 +50,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
 
     @ViewById Toolbar toolbar;
 
-    @AfterViews
-    void setupToolBar() {
+    @AfterViews void setupToolBar() {
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
@@ -70,8 +69,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @AfterViews
-    void setPreference() {
+    @AfterViews void setPreference() {
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
     }
 
@@ -98,6 +96,8 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         SyncManager.notifySyncSettingsChange(this);
+
+        sendBroadcast(new Intent(ReminderReceiver.ACTION_UPDATE_REMIND));
     }
 
     public static class SettingsFragment extends PreferenceFragment {
@@ -123,11 +123,6 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
                 }
 
             }
-            if (preference instanceof TimePreference){
-                Intent intent = new Intent();
-                intent.setAction("co.yishun.onemoment.app.remind.update");
-                getActivity().sendBroadcast(intent);
-            }
 
             return true;
         };
@@ -137,7 +132,6 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_ringtone)));
-            bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_time)));
             this.findPreference(getString(R.string.pref_key_sync_now)).setOnPreferenceClickListener(preference -> {
                 SyncManager.syncNow(getActivity());
                 return true;

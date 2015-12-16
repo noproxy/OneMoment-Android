@@ -216,7 +216,7 @@
         <service android:name=".account.remind.ReminderService">
 
         </service>
-        <receiver android:name=".account.remind.RemainderReceiver">
+        <receiver android:name=".account.remind.ReminderReceiver">
             <intent-filter>
                 <action android:name="co.yishun.onemoment.app.remind.update"/>
             </intent-filter>
