@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.IBinder;
@@ -47,14 +49,17 @@ public class ReminderService extends Service {
 
         boolean vibrate = preferences.getBoolean(getString(R.string.pref_key_remind_vibrate), true);
 
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("My notification")
                         .setContentText("Hello" + System.currentTimeMillis())
                         .setContentIntent(pendingIntent)
-                        .setAutoCancel(true)
-                        .setSound(ringtoneUri);
+                        .setLargeIcon(largeIcon)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSound(ringtoneUri)
+                        .setDefaults(Notification.DEFAULT_LIGHTS)
+                        .setAutoCancel(true);
         if (vibrate) mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
 
         NotificationManager mNotifyMgr =
