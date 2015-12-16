@@ -1,0 +1,53 @@
+package co.yishun.onemoment.app.account.remind;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
+import java.util.Calendar;
+
+import co.yishun.onemoment.app.R;
+
+/**
+ * Created by Jinge on 2015/12/16.
+ */
+public class RemainderReceiver extends BroadcastReceiver {
+    public static final String ACTION_UPDATE_REMIND = "co.yishun.onemoment.app.remind.update";
+    private static final String TAG = "RemainderReceiver";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "receive broadcast");
+        resetDailyRemainder(context);
+    }
+
+    public void setDailyReminder(Context context, int hour, int minute) {
+        Log.d(TAG, "time update " + hour + "  " + minute);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent alarmIntent = PendingIntent.getService(context, 0,
+                new Intent(context, ReminderService.class), PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+
+    }
+
+    public void resetDailyRemainder(Context context) {
+        String time = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.pref_key_remind_time),
+                        context.getString(R.string.pref_summary_remind_time_default));
+        String[] timeStrings = time.split(":");
+        setDailyReminder(context, Integer.valueOf(timeStrings[0]), Integer.valueOf(timeStrings[1]));
+    }
+}
+

@@ -31,6 +31,8 @@
     <string name="pref_title_remind_everyday">每日提醒</string>
     <string name="pref_summary_remind_everyday">记录你每天的一瞬</string>
 
+    <string name="pref_title_remind_time">提醒时间</string>
+
     <string name="pref_title_remind_ringtone">通知声音</string>
     <string name="pref_remind_ringtone_silent">静默</string>
     <string name="pref_title_remind_vibrate">震动</string>

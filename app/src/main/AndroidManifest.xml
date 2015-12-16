@@ -213,6 +213,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity_"/>
         </activity>
+        <service android:name=".account.remind.ReminderService">
+
+        </service>
+        <receiver android:name=".account.remind.RemainderReceiver">
+            <intent-filter>
+                <action android:name="co.yishun.onemoment.app.remind.update"/>
+            </intent-filter>
+        </receiver>
 
         <!-- baidu location service -->
         <service

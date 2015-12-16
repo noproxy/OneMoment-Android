@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -25,6 +26,7 @@ import org.androidannotations.annotations.ViewById;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.view.TimePreference;
 
 
 /**
@@ -121,6 +123,12 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
                 }
 
             }
+            if (preference instanceof TimePreference){
+                Intent intent = new Intent();
+                intent.setAction("co.yishun.onemoment.app.remind.update");
+                getActivity().sendBroadcast(intent);
+            }
+
             return true;
         };
 
@@ -129,6 +137,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
             bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_ringtone)));
+            bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_time)));
             this.findPreference(getString(R.string.pref_key_sync_now)).setOnPreferenceClickListener(preference -> {
                 SyncManager.syncNow(getActivity());
                 return true;

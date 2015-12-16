@@ -42,10 +42,19 @@
         >
         <com.jenzz.materialpreference.CheckBoxPreference
             android:defaultValue="true"
-            android:key="remind_everyday"
+            android:key="@string/pref_key_remind_everyday"
             android:summary="@string/pref_summary_remind_everyday"
             android:title="@string/pref_title_remind_everyday"
             />
+        <co.yishun.onemoment.app.ui.view.TimePreference
+            android:key="@string/pref_key_remind_time"
+            android:dependency="remind_everyday"
+            android:title="@string/pref_title_remind_time"
+            android:layout="@layout/layout_preference_mtd"
+            android:negativeButtonText="@android:string/cancel"
+            android:positiveButtonText="@android:string/ok"
+            >
+        </co.yishun.onemoment.app.ui.view.TimePreference>
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
             android:dependency="remind_everyday"
@@ -55,9 +64,9 @@
             android:title="@string/pref_title_remind_ringtone"
             />
         <com.jenzz.materialpreference.CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@string/pref_summary_remind_vibrate_default"
             android:dependency="remind_everyday"
-            android:key="remind_everyday_vibrate"
+            android:key="@string/pref_key_remind_vibrate"
             android:title="@string/pref_title_remind_vibrate"
             />
     </com.jenzz.materialpreference.PreferenceCategory>
