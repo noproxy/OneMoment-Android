@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.wxapi;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,6 +47,7 @@ public class EntryActivity extends BaseActivity implements LoginListener {
     private static final String TAG = "EntryActivity";
     static AuthHelper mAuthHelper;
     static Account mAccountService;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,13 +64,16 @@ public class EntryActivity extends BaseActivity implements LoginListener {
     }
 
     public void loginByWeChatClicked(final View view) {
-        mAuthHelper = new WeChatHelper(this);
-        mAuthHelper.login(this);
-        showSnackProgress();
+        if (isAppInstalled("com.tencent.mm")) {
+            mAuthHelper = new WeChatHelper(this);
+            mAuthHelper.login(this);
+            showSnackProgress();
+        } else
+            showSnackMsg("WeChat not installed!");
     }
 
     private void showSnackProgress() {
-        Snackbar snackbar = Snackbar.make(getSnackbarAnchorWithView(null), R.string.activity_wx_entry_login_progress, Snackbar.LENGTH_INDEFINITE);
+        snackbar = Snackbar.make(getSnackbarAnchorWithView(null), R.string.activity_wx_entry_login_progress, Snackbar.LENGTH_INDEFINITE);
         ProgressSnackBar.with(snackbar).show();
     }
 
@@ -87,6 +92,7 @@ public class EntryActivity extends BaseActivity implements LoginListener {
     @Override
     public void onCancel() {
         Log.i(TAG, "user cancel auth");
+        if (snackbar.isShown()) snackbar.dismiss();
     }
 
     public void loginByWeiBoClicked(final View view) {
@@ -104,6 +110,18 @@ public class EntryActivity extends BaseActivity implements LoginListener {
     @NonNull @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return super.getSnackbarAnchorWithView(null);
+    }
+
+    private boolean isAppInstalled(String packageName) {
+        PackageManager pm = getPackageManager();
+        boolean installed = false;
+        try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            installed = false;
+        }
+        return installed;
     }
 
     @Override
