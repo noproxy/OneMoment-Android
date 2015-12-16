@@ -11,6 +11,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import org.androidannotations.annotations.AfterViews;
@@ -26,7 +27,9 @@ import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.ui.account.AccountFragment;
 import co.yishun.onemoment.app.ui.account.IntegrateInfoFragment_;
+import co.yishun.onemoment.app.ui.account.PhoneLoginFragment;
 import co.yishun.onemoment.app.ui.account.PhoneLoginFragment_;
+import co.yishun.onemoment.app.ui.account.PhoneSignUpFragment_;
 import co.yishun.onemoment.app.ui.common.PickCropActivity;
 import retrofit.RestAdapter;
 
@@ -101,6 +104,12 @@ public class AccountActivity extends PickCropActivity {
 
     public void setCurrentFragment(AccountFragment fragment) {
         mCurrentFragment = fragment;
+        findViewById(R.id.signUpByPhone).setVisibility(mCurrentFragment instanceof PhoneLoginFragment ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Click
+    void signUpByPhoneClicked(View view) {
+        openFragment(PhoneSignUpFragment_.builder().build());
     }
 
     @NonNull @Override

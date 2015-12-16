@@ -18,7 +18,6 @@
     <android.support.design.widget.FrameLayoutWithBehavior
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="32dp"
         app:layout_anchor="@id/fragment_container"
         app:layout_anchorGravity="bottom|center_horizontal"
         >
@@ -28,13 +27,25 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_margin="16dp"
+            android:layout_margin="48dp"
             android:scaleType="center"
             android:stateListAnimator="@anim/fab_elevation"
             app:backgroundTint="@color/colorSecondary"
             app:borderWidth="0dp"
             app:elevation="@dimen/fab_elevation"
             tools:src="@drawable/ic_login_next"
+            />
+
+        <TextView
+            android:id="@+id/signUpByPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_centerHorizontal="true"
+            android:text="@string/fragment_phone_login_layout_sign_up"
+            android:textColor="@color/colorAccent"
             />
     </android.support.design.widget.FrameLayoutWithBehavior>
 </android.support.design.widget.CoordinatorLayout>

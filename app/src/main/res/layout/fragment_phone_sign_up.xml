@@ -19,11 +19,13 @@
     </RelativeLayout>
 
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:padding="32dp"
+        android:orientation="vertical"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
         android:paddingTop="32dp"
         >
 
@@ -31,7 +33,7 @@
             android:id="@+id/phoneEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
             android:background="@null"
             android:gravity="center_horizontal"
             android:hint="@string/fragment_phone_login_layout_hint_phone"
@@ -43,7 +45,6 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="0.3dp"
-            android:layout_below="@id/phoneEditText"
             android:background="@android:color/black"
             />
 
@@ -54,8 +55,6 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/divider"
-            android:layout_centerHorizontal="true"
             android:background="@null"
             android:gravity="center_horizontal"
             android:hint="@string/fragment_phone_login_layout_hint_password"
@@ -65,6 +64,6 @@
             app:inputTypeVisible="text"
             app:visibleDrawable="@drawable/ic_login_eye_open"
             />
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

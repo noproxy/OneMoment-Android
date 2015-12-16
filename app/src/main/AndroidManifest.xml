@@ -88,7 +88,8 @@
             android:theme="@style/AppTheme.EntryActivity"/>
         <activity
             android:name=".ui.AccountActivity_"
-            android:theme="@style/AppTheme.PhoneAccountActivity">
+            android:theme="@style/AppTheme.PhoneAccountActivity"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".wxapi.EntryActivity"/>
