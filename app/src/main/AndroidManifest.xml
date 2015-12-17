@@ -218,7 +218,12 @@
         <activity
             android:name=".ui.share.ShareActivity_"
             android:theme="@style/AppTheme.ShareActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service android:name=".account.remind.ReminderService">
 
