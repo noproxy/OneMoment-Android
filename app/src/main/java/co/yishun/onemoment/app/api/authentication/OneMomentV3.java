@@ -14,9 +14,7 @@ public class OneMomentV3 {
     public static final String FAKE_RESPONSE = "{\"msg\": \"fake success\",\n    \"code\": -99}";
 
     public static RestAdapter createAdapter() {
-        return new RestAdapter.Builder().setEndpoint(API_BASE_URL)
-                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(new OneMomentClient())
+        return new RestAdapter.Builder().setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC).setClient(OneMomentClient.getCachedClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
                 .setConverter(new OneMomentConverter())
                 .build();
