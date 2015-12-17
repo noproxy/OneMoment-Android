@@ -1,7 +1,11 @@
 package co.yishun.onemoment.app.ui.share;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -20,15 +24,33 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
  * Created by Jinge on 2015/12/12.
  */
 @EActivity(R.layout.activity_share)
-public class ShareActivity extends BaseActivity {
+public class ShareActivity extends BaseActivity implements ShareController.ShareResultListener {
     public static final String TAG = "ShareActivity";
 
     @Extra ShareInfo shareInfo;
 
     private ShareController shareController;
 
+    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        shareController = new ShareController(this, shareInfo.imageUrl, shareInfo.link, shareInfo.title, this);
+        if (savedInstanceState != null)
+            shareController.onNewIntent(getIntent());
+    }
+
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(TAG, "onNewIntent");
+        shareController.onNewIntent(intent);
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
     @AfterViews void setUp() {
-        shareController = new ShareController(this, shareInfo.imageUrl, shareInfo.link, shareInfo.title);
+
     }
 
     @Click(R.id.linearLayout) void linearLayoutClick() {
@@ -73,5 +95,22 @@ public class ShareActivity extends BaseActivity {
     @Override public void setPageInfo() {
         mIsPage = true;
         mPageName = "ShareActivity";
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        shareController.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override public void onSuccess() {
+        showSnackMsg("Share Success");
+    }
+
+    @Override public void onFail() {
+        showSnackMsg("Share Fail");
+    }
+
+    @Override public void onCancel() {
+        showSnackMsg("Share Cancel");
     }
 }

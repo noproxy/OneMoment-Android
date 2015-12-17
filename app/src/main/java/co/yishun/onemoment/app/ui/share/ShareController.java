@@ -1,16 +1,22 @@
 package co.yishun.onemoment.app.ui.share;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.sina.weibo.sdk.api.ImageObject;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
+import com.sina.weibo.sdk.api.share.BaseResponse;
+import com.sina.weibo.sdk.api.share.IWeiboHandler;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 import com.sina.weibo.sdk.api.share.SendMultiMessageToWeiboRequest;
 import com.sina.weibo.sdk.api.share.WeiboShareSDK;
+import com.sina.weibo.sdk.constant.WBConstants;
 import com.sina.weibo.sdk.utils.Utility;
 import com.tencent.connect.share.QzoneShare;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
@@ -30,7 +36,7 @@ import co.yishun.onemoment.app.config.Constants;
 /**
  * Created by Jinge on 2015/12/12.
  */
-public class ShareController {
+public class ShareController implements IWeiboHandler.Response {
     public static final int TYPE_WE_CHAT = 0;
     public static final int TYPE_WX_CIRCLE = 1;
     public static final int TYPE_WEIBO = 2;
@@ -50,12 +56,14 @@ public class ShareController {
     private Bitmap bitmap;
     private IUiListener qqShareListener = new QQShareListener();
     private int type;
+    private ShareResultListener shareListener;
 
-    public ShareController(Activity activity, String imageUrl, String shareUrl, String shareContent) {
+    public ShareController(Activity activity, String imageUrl, String shareUrl, String shareContent, ShareResultListener shareListener) {
         this.activity = activity;
         this.imageUrl = imageUrl;
         this.shareUrl = shareUrl;
         this.shareContent = shareContent;
+        this.shareListener = shareListener;
     }
 
     public void setType(int type) {
@@ -177,18 +185,58 @@ public class ShareController {
         return stream.toByteArray();
     }
 
+    public void onNewIntent(Intent intent) {
+        Log.d(TAG, "onNewIntent");
+        if (mWeiboShareAPI != null)
+            mWeiboShareAPI.handleWeiboResponse(intent, this);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult");
+        if (mQQShareAPI != null)
+            Tencent.onActivityResultData(requestCode, resultCode, data, qqShareListener);
+    }
+
+    @Override public void onResponse(BaseResponse baseResponse) {
+        switch (baseResponse.errCode) {
+            case WBConstants.ErrorCode.ERR_OK:
+                shareListener.onSuccess();
+                break;
+            case WBConstants.ErrorCode.ERR_FAIL:
+                shareListener.onFail();
+                break;
+            case WBConstants.ErrorCode.ERR_CANCEL:
+                shareListener.onCancel();
+                break;
+        }
+    }
+
+    public interface ShareResultListener {
+        void onSuccess();
+
+        void onFail();
+
+        void onCancel();
+    }
+
     class QQShareListener implements IUiListener {
 
         @Override public void onComplete(Object o) {
-
+            if (shareListener != null) {
+                shareListener.onSuccess();
+            }
         }
 
         @Override public void onError(UiError uiError) {
-
+            if (shareListener != null) {
+                shareListener.onFail();
+            }
         }
 
         @Override public void onCancel() {
-
+            if (shareListener != null) {
+                shareListener.onCancel();
+            }
         }
     }
 }

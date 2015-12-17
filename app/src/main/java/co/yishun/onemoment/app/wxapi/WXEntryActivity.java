@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.wxapi;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import co.yishun.onemoment.app.account.auth.WeChatHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -11,7 +12,7 @@ public class WXEntryActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(new FrameLayout(this));
+        Log.d("Share", "onCreate");
         if (EntryActivity.mAuthHelper != null && EntryActivity.mAuthHelper instanceof WeChatHelper)
             ((WeChatHelper) EntryActivity.mAuthHelper).handleIntent(getIntent());
         finish();
