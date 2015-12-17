@@ -13,6 +13,7 @@ import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.api.share.BaseResponse;
 import com.sina.weibo.sdk.api.share.IWeiboHandler;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
+import com.sina.weibo.sdk.api.share.SendMessageToWeiboResponse;
 import com.sina.weibo.sdk.api.share.SendMultiMessageToWeiboRequest;
 import com.sina.weibo.sdk.api.share.WeiboShareSDK;
 import com.sina.weibo.sdk.constant.WBConstants;
@@ -38,7 +39,7 @@ import co.yishun.onemoment.app.config.Constants;
 /**
  * Created by Jinge on 2015/12/12.
  */
-public class ShareController implements IWeiboHandler.Response, IWXAPIEventHandler {
+public class ShareController implements IWXAPIEventHandler {
     public static final int TYPE_WE_CHAT = 0;
     public static final int TYPE_WX_CIRCLE = 1;
     public static final int TYPE_WEIBO = 2;
@@ -77,6 +78,9 @@ public class ShareController implements IWeiboHandler.Response, IWXAPIEventHandl
     }
 
     public void share() {
+        mWeChatShareAPI = null;
+        mWeiboShareAPI = null;
+        mQQShareAPI = null;
         switch (type) {
             case TYPE_WE_CHAT:
                 mWeChatShareAPI = WXAPIFactory.createWXAPI(activity, Constants.WE_CHAT_APP_ID);
@@ -189,8 +193,17 @@ public class ShareController implements IWeiboHandler.Response, IWXAPIEventHandl
 
     public void onNewIntent(Intent intent) {
         Log.d(TAG, "onNewIntent");
+
+        /**
+         * The {@link com.sina.weibo.sdk.api.share.WeiboShareAPIImpl#handleWeiboResponse(Intent, IWeiboHandler.Response)}
+         * is not reasonable. According to the document, we should use mWeiboShareAPI.handleWeiboResponse(intent, this);
+         * The second argument of this method must be instanceof Activity,
+         * or {@link #onResponse(BaseResponse)} won't call.
+         * So we handle the intent manually.
+         */
         if (mWeiboShareAPI != null)
-            mWeiboShareAPI.handleWeiboResponse(intent, this);
+            onResponse(new SendMessageToWeiboResponse(intent.getExtras()));
+
         if (mWeChatShareAPI != null)
             mWeChatShareAPI.handleIntent(intent, this);
     }
@@ -201,7 +214,7 @@ public class ShareController implements IWeiboHandler.Response, IWXAPIEventHandl
             Tencent.onActivityResultData(requestCode, resultCode, data, qqShareListener);
     }
 
-    @Override public void onResponse(BaseResponse baseResponse) {
+    public void onResponse(BaseResponse baseResponse) {
         switch (baseResponse.errCode) {
             case WBConstants.ErrorCode.ERR_OK:
                 shareListener.onSuccess();
@@ -215,11 +228,20 @@ public class ShareController implements IWeiboHandler.Response, IWXAPIEventHandl
         }
     }
 
-    @Override public void onReq(BaseReq baseReq) {
-        shareListener.onFail();
-    }
+    @Override public void onReq(BaseReq baseReq) { /*ignore*/ }
 
     @Override public void onResp(BaseResp baseResp) {
+        switch (baseResp.errCode) {
+            case BaseResp.ErrCode.ERR_OK:
+                shareListener.onSuccess();
+                break;
+            case BaseResp.ErrCode.ERR_USER_CANCEL:
+                shareListener.onCancel();
+                break;
+            case BaseResp.ErrCode.ERR_SENT_FAILED:
+                shareListener.onFail();
+                break;
+        }
         shareListener.onSuccess();
     }
 
