@@ -139,6 +139,10 @@ public class EntryActivity extends BaseActivity implements LoginListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (mAuthHelper instanceof QQHelper)
             ((QQHelper) mAuthHelper).handleIntent(requestCode, resultCode, data);
+
+        if (mAuthHelper instanceof WeiboHelper) {
+            ((WeiboHelper)mAuthHelper).handleIntent(requestCode, resultCode, data);
+        }
     }
 }
 
