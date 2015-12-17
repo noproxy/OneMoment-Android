@@ -1,12 +1,12 @@
 package co.yishun.onemoment.app.api.authentication;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.common.base.Charsets;
-
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +21,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 import co.yishun.onemoment.app.Util;
+import co.yishun.onemoment.app.data.FileUtil;
 import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Request;
@@ -37,7 +38,22 @@ import retrofit.mime.TypedOutput;
 public class OneMomentClient extends OkClient {
     public static final String TAG = "OneMomentClient";
     public static final int DEFAULT_EXPIRE_TIME = 10;
+    public static final int CACHE_SIZE = 1024 * 1024 * 10;
+    private static final OkHttpClient mOkHttpClient = new OkHttpClient();
+    private static OneMomentClient mInstance = new OneMomentClient();
 
+    private OneMomentClient() {
+        super(mOkHttpClient);
+    }
+
+    public static OneMomentClient getCachedClient() {
+        return mInstance;
+    }
+
+    public void setUpCache(Context context) {
+        Cache cache = new Cache(FileUtil.getCacheDirectory(context, true), CACHE_SIZE);
+        mOkHttpClient.setCache(cache);
+    }
 
     @Override
     public Response execute(Request request) throws IOException {
