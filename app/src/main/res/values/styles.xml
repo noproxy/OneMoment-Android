@@ -81,8 +81,7 @@
     </style>
 
     <style name="AppTheme.ShareActivity">
-        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
-        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowBackground">@color/colorWindowShareActivity</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
