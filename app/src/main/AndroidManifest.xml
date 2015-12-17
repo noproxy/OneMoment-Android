@@ -83,7 +83,8 @@
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.NoDisplay"/>
+            android:theme="@android:style/Theme.NoDisplay"
+            android:launchMode="singleInstance"/>
         <activity
             android:name=".wxapi.EntryActivity"
             android:theme="@style/AppTheme.EntryActivity"/>
