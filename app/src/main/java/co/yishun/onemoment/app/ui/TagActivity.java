@@ -7,7 +7,6 @@ import android.support.annotation.CallSuper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -51,8 +50,7 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
-import co.yishun.onemoment.app.ui.share.ShareFragment;
-import co.yishun.onemoment.app.ui.share.ShareFragment_;
+import co.yishun.onemoment.app.ui.share.ShareActivity_;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 
 /**
@@ -255,15 +253,6 @@ public class TagActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ShareFragment.TAG);
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
@@ -274,8 +263,7 @@ public class TagActivity extends BaseActivity
     @Background void shareWorld(View view) {
         World world = OneMomentV3.createAdapter().create(World.class);
         ShareInfo shareInfo = world.shareWorld(tag.name);
-        getSupportFragmentManager().beginTransaction().add(android.R.id.content,
-                ShareFragment_.builder().shareInfo(shareInfo).build(), ShareFragment.TAG).commit();
+        ShareActivity_.intent(this).shareInfo(shareInfo).start();
     }
 
     void videoImageClick(View v) {

@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -58,8 +57,7 @@ import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.play.PlayMomentFragment;
 import co.yishun.onemoment.app.ui.play.PlayMomentFragment_;
-import co.yishun.onemoment.app.ui.share.ShareFragment;
-import co.yishun.onemoment.app.ui.share.ShareFragment_;
+import co.yishun.onemoment.app.ui.share.ShareActivity_;
 
 @EActivity(R.layout.activity_play_moment)
 public class PlayMomentActivity extends BaseActivity {
@@ -128,15 +126,6 @@ public class PlayMomentActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ShareFragment.TAG);
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Background void shareClick() {
@@ -253,10 +242,7 @@ public class PlayMomentActivity extends BaseActivity {
         videoCacheFile.delete();
         hideProgress();
 
-        ShareFragment shareFragment = ShareFragment_.builder()
-                .shareInfo(shareInfo).build();
-        getSupportFragmentManager().beginTransaction()
-                .add(android.R.id.content, shareFragment, ShareFragment.TAG).commit();
+        ShareActivity_.intent(this).shareInfo(shareInfo).start();
     }
 
     @Override public void setPageInfo() {

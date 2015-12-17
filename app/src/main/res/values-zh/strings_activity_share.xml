@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_share_qq">QQ</string>
+    <string name="activity_share_qzone">QQ空间</string>
+    <string name="activity_share_weibo">微博</string>
+    <string name="activity_share_we_chat">微信</string>
+    <string name="activity_share_wx_circle">朋友圈</string>
+</resources>

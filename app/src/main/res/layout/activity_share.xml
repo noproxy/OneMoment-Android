@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/fragment_share_we_chat"/>
+            android:text="@string/activity_share_we_chat"/>
 
     </LinearLayout>
 
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/fragment_share_wx_circle"/>
+            android:text="@string/activity_share_wx_circle"/>
 
     </LinearLayout>
 
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/fragment_share_weibo"/>
+            android:text="@string/activity_share_weibo"/>
 
     </LinearLayout>
 
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/fragment_share_qq"/>
+            android:text="@string/activity_share_qq"/>
 
     </LinearLayout>
 
@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/fragment_share_qzone"/>
+            android:text="@string/activity_share_qzone"/>
 
     </LinearLayout>
 

@@ -2,38 +2,37 @@ package co.yishun.onemoment.app.ui.share;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.FragmentManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 
 import java.io.IOException;
 import java.net.URL;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.ShareInfo;
-import co.yishun.onemoment.app.ui.common.BaseFragment;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
  * Created by Jinge on 2015/12/12.
  */
-@EFragment(R.layout.fragment_share)
-public class ShareFragment extends BaseFragment {
-    public static final String TAG = "ShareFragment";
+@EActivity(R.layout.activity_share)
+public class ShareActivity extends BaseActivity {
+    public static final String TAG = "ShareActivity";
 
-    @FragmentArg ShareInfo shareInfo;
+    @Extra ShareInfo shareInfo;
 
     private ShareController shareController;
 
     @AfterViews void setUp() {
-        shareController = new ShareController(getActivity(), shareInfo.imageUrl, shareInfo.link, shareInfo.title);
+        shareController = new ShareController(this, shareInfo.imageUrl, shareInfo.link, shareInfo.title);
     }
 
     @Click(R.id.linearLayout) void linearLayoutClick() {
-        getFragmentManager().beginTransaction().remove(this).commit();
+        finish();
     }
 
     @Click(R.id.shareWeChat) void shareWeChatClick() {
@@ -73,6 +72,6 @@ public class ShareFragment extends BaseFragment {
 
     @Override public void setPageInfo() {
         mIsPage = true;
-        mPageName = "ShareFragment";
+        mPageName = "ShareActivity";
     }
 }

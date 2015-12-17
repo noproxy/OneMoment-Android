@@ -80,6 +80,12 @@
         <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.ShareActivity">
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="TextAppearance.PlaySmall" parent="TextAppearance.AppCompat.Small"/>
 
     <style name="TextAppearance.PlaySmall.Inverse" parent="TextAppearance.AppCompat.Small.Inverse"/>
