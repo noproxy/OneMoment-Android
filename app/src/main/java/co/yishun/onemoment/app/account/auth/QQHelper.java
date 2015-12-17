@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.account.auth;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -28,6 +29,7 @@ public class QQHelper implements AuthHelper {
     private final Activity mActivity;
     private CountDownLatch mLatch;//to make method synchronous
     private UserInfo mInfo = null;//user info to return
+    private IUiListener mLoginListener;
 
     public QQHelper(Activity activity) {
         mActivity = activity;
@@ -45,7 +47,8 @@ public class QQHelper implements AuthHelper {
 
     @Override
     public void login(@NonNull LoginListener loginListener) {
-        mTencent.login(mActivity, SCOPE, createLoginListener(loginListener));
+        mLoginListener = createLoginListener(loginListener);
+        mTencent.login(mActivity, SCOPE, mLoginListener);
     }
 
     @Override
@@ -63,6 +66,10 @@ public class QQHelper implements AuthHelper {
             return null;
         }
 
+    }
+
+    public void handleIntent(int requestCode, int resultCode, Intent data) {
+        Tencent.onActivityResultData(requestCode, resultCode, data, mLoginListener);
     }
 
     private IUiListener createLoginListener(LoginListener loginListener) {
@@ -94,9 +101,9 @@ public class QQHelper implements AuthHelper {
             @Override
             public void onError(UiError uiError) {
                 Log.e(TAG, "tencent auth error: { " +
-                                "message: " + uiError.errorMessage + ", " +
-                                "detail: " + uiError.errorDetail + ", " +
-                                "code: " + uiError.errorCode + "} "
+                        "message: " + uiError.errorMessage + ", " +
+                        "detail: " + uiError.errorDetail + ", " +
+                        "code: " + uiError.errorCode + "} "
                 );
                 loginListener.onFail();
             }
@@ -157,9 +164,9 @@ public class QQHelper implements AuthHelper {
             @Override
             public void onError(UiError uiError) {
                 Log.e(TAG, "get qq info  error: { " +
-                                "message: " + uiError.errorMessage + ", " +
-                                "detail: " + uiError.errorDetail + ", " +
-                                "code: " + uiError.errorCode + "} "
+                        "message: " + uiError.errorMessage + ", " +
+                        "detail: " + uiError.errorDetail + ", " +
+                        "code: " + uiError.errorCode + "} "
                 );
                 mLatch.countDown();
                 mInfo = null;

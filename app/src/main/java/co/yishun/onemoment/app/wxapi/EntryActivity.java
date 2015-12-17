@@ -134,6 +134,12 @@ public class EntryActivity extends BaseActivity implements LoginListener {
         EntryActivity.mAccountService = null;
         super.onDestroy();
     }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (mAuthHelper instanceof QQHelper)
+            ((QQHelper) mAuthHelper).handleIntent(requestCode, resultCode, data);
+    }
 }
 
 @EBean
