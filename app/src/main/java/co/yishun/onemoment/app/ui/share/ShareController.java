@@ -19,10 +19,13 @@ import com.sina.weibo.sdk.api.share.WeiboShareSDK;
 import com.sina.weibo.sdk.constant.WBConstants;
 import com.sina.weibo.sdk.utils.Utility;
 import com.tencent.connect.share.QzoneShare;
+import com.tencent.mm.sdk.modelbase.BaseReq;
+import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -36,7 +39,7 @@ import co.yishun.onemoment.app.config.Constants;
 /**
  * Created by Jinge on 2015/12/12.
  */
-public class ShareController implements IWeiboHandler.Response {
+public class ShareController implements IWeiboHandler.Response, IWXAPIEventHandler {
     public static final int TYPE_WE_CHAT = 0;
     public static final int TYPE_WX_CIRCLE = 1;
     public static final int TYPE_WEIBO = 2;
@@ -189,6 +192,8 @@ public class ShareController implements IWeiboHandler.Response {
         Log.d(TAG, "onNewIntent");
         if (mWeiboShareAPI != null)
             mWeiboShareAPI.handleWeiboResponse(intent, this);
+        if (mWeChatShareAPI != null)
+            mWeChatShareAPI.handleIntent(intent, this);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -209,6 +214,14 @@ public class ShareController implements IWeiboHandler.Response {
                 shareListener.onCancel();
                 break;
         }
+    }
+
+    @Override public void onReq(BaseReq baseReq) {
+        shareListener.onFail();
+    }
+
+    @Override public void onResp(BaseResp baseResp) {
+        shareListener.onSuccess();
     }
 
     public interface ShareResultListener {
