@@ -63,14 +63,11 @@ public class TagActivity extends BaseActivity
     public static final int FROM_WORLD_FRAGMENT = 0;
     public static final int FROM_SEARCH_ACTIVITY = 1;
     private static final String TAG = "TagActivity";
-    @Extra
-    int top;
-    @Extra
-    int from;
-    @Extra
-    WorldTag tag;
-    @ViewById
-    CoordinatorLayout coordinatorLayout;
+    @Extra int top;
+    @Extra int from;
+    @Extra WorldTag tag;
+    @Extra boolean isPrivate = false;
+    @ViewById CoordinatorLayout coordinatorLayout;
 
     Toolbar toolbar;
     SuperRecyclerView recyclerView;
@@ -154,7 +151,7 @@ public class TagActivity extends BaseActivity
 
         tagAdapter = new TagAdapter(this, this);
         recyclerView.setAdapter(tagAdapter);
-        TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
+        TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag, isPrivate);
 
         transitionOver = true;
     }
@@ -176,7 +173,7 @@ public class TagActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         if (transitionOver) {
-            TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag);
+            TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag, isPrivate);
         }
     }
 

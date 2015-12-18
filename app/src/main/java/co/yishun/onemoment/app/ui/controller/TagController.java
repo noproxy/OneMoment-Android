@@ -23,26 +23,34 @@ import co.yishun.onemoment.app.ui.adapter.TagAdapter;
  * Created by Carlos on 2015/8/17.
  */
 @EBean
-public class TagController extends RecyclerController<Integer, SuperRecyclerView, TagVideo, TagAdapter.SimpleViewHolder> implements OnMoreListener {
+public class TagController extends RecyclerController<Integer, SuperRecyclerView, TagVideo, TagAdapter.SimpleViewHolder>
+        implements OnMoreListener {
     public static final int COUNT_EVERY_PAGE = 10;
     private static final String TAG = "TagController";
     private WorldTag mTag;
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
     private Seed seed;
+    private boolean mIsPrivate;
 
     protected TagController(Context context) {
         super(context);
     }
 
-    public void setUp(AbstractRecyclerViewAdapter<TagVideo, TagAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, WorldTag tag) {
+    public void setUp(AbstractRecyclerViewAdapter<TagVideo, TagAdapter.SimpleViewHolder> adapter,
+                      SuperRecyclerView recyclerView, WorldTag tag, boolean isPrivate) {
         mTag = tag;
+        mIsPrivate = isPrivate;
         super.setUp(adapter, recyclerView, 0);
         getRecyclerView().setOnMoreListener(this);
     }
 
     @Override
     protected List<TagVideo> onLoad() {
-        List<TagVideo> list = mWorld.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id, seed);
+        List<TagVideo> list;
+        if (mIsPrivate)
+            list = mWorld.getPrivateVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id);
+        else
+            list = mWorld.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id, seed);
         if (list.size() == 0) {
             //TODO loading error
             return null;
@@ -52,11 +60,10 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
     }
 
     @Override
-    @UiThread
-    void onLoadEnd(List<TagVideo> list) {
+    @UiThread void onLoadEnd(List<TagVideo> list) {
         if (list != null) {
-            ((TagAdapter)getAdapter()).addItems(list, getOffset());
-        }else {
+            ((TagAdapter) getAdapter()).addItems(list, getOffset());
+        } else {
             getRecyclerView().hideMoreProgress();
         }
     }

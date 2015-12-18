@@ -23,8 +23,7 @@ public abstract class TabPagerFragment extends ToolbarFragment {
     private ViewPager mViewPager;
 
     protected abstract
-    @ArrayRes
-    int getTabTitleArrayResources();
+    @ArrayRes int getTabTitleArrayResources();
 
     private PagerAdapter getViewPager(LayoutInflater inflater) {
         String titles[] = getResources().getStringArray(getTabTitleArrayResources());
@@ -59,12 +58,14 @@ public abstract class TabPagerFragment extends ToolbarFragment {
     }
 
     protected abstract
-    @NonNull
-    View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
+    @NonNull View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
 
     protected abstract
-    @LayoutRes
-    int getContentViewId(Bundle savedInstanceState);
+    @LayoutRes int getContentViewId(Bundle savedInstanceState);
+
+    protected int getCurrentItem(){
+        return mViewPager.getCurrentItem();
+    }
 
     @NonNull
     @CallSuper
@@ -74,14 +75,14 @@ public abstract class TabPagerFragment extends ToolbarFragment {
         assert rootView != null;
 
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
-        ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
+        mViewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
-        if (toolbar == null || viewPager == null || tabLayout == null)
+        if (toolbar == null || mViewPager == null || tabLayout == null)
             throw new AssertionError("You must ensure your layout contain TabLayout, ViewPager and Toolbar with R.id.tabLayout, R.id.viewPager, R.id.toolbar");
         PagerAdapter viewPagerAdapter = getViewPager(inflater);
-        viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+        mViewPager.setAdapter(viewPagerAdapter);
+        tabLayout.setupWithViewPager(mViewPager);
 
         return rootView;
     }

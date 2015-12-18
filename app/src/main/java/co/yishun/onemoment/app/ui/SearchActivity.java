@@ -175,6 +175,6 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
     public void onClick(View view, WorldTag item) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        TagActivity_.intent(this).tag(item).top(location[1]).from(TagActivity.FROM_SEARCH_ACTIVITY).start();
+        TagActivity_.intent(this).tag(item).top(location[1]).from(TagActivity.FROM_SEARCH_ACTIVITY).isPrivate(false).start();
     }
 }
