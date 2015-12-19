@@ -218,7 +218,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     @UiThread(delay = 300) void delayCommit(Fragment targetFragment) {
-        fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commit();
+        fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commitAllowingStateLoss();
     }
 
     @Override
