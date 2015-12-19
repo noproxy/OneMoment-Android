@@ -35,7 +35,6 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
     }
 
     public void addItems(List<? extends TagVideo> collection, int offset) {
-//        int preSize = mItems.size();
         for (int i = 0; i < collection.size(); i++) {
             if (mItems.size() < offset) {
                 mItems.add(collection.get(i));
@@ -44,7 +43,6 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
             }
         }
         notifyItemRangeChanged(offset - collection.size(), collection.size());
-//        notifyItemRangeInserted(preSize, mItems.size() - preSize);
     }
 
     @Override
@@ -63,8 +61,6 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
         }
 
         protected void setUp(TagVideo video) {
-//            task = VideoTaskManager.getInstance().addDownloadTask(task, video);
-//            task.setImageView(itemImageView);
             if (videoTask != null) {
                 videoTask.cancel();
             }
@@ -74,9 +70,9 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
                     .start();
         }
 
-        void setImage(File large, File small) {
-            Log.d("Video", "get " + small.getName());
-            Picasso.with(mContext).load(small).into(itemImageView);
+        void setImage(File large) {
+            Log.d("Video", "get " + large.getName());
+            Picasso.with(mContext).load(large).into(itemImageView);
         }
 
         void setVideo(Video video) {

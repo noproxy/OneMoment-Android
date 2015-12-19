@@ -60,10 +60,8 @@ public class VideoTask {
         //the file exists, but is error.
         File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
         File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
-        File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
         videoFile.delete();
         large.delete();
-        small.delete();
 
         return start();
     }
@@ -90,9 +88,9 @@ public class VideoTask {
         // check whether thumbnail exists
         Log.d(TAG, "try to get image");
         File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
-        File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
-        if (large.length() != 0 && small.length() != 0) {
-            getImage(large, small);
+
+        if (large.length() != 0) {
+            getImage(large);
         } else {
             imageTask = new VideoImageTask(context, this);
             VideoTaskManager.getInstance().executeTask(imageTask, video);
@@ -100,10 +98,10 @@ public class VideoTask {
         }
     }
 
-    void getImage(File large, File small) {
+    void getImage(File large) {
         Log.d(TAG, "get image");
         if (imageListener != null) {
-            imageListener.onImageCreate(large, small);
+            imageListener.onImageCreate(large);
         } else {
             Log.e(TAG, "image listener null");
         }
@@ -114,6 +112,6 @@ public class VideoTask {
     }
 
     public interface OnImageListener {
-        void onImageCreate(File large, File small);
+        void onImageCreate(File large);
     }
 }
