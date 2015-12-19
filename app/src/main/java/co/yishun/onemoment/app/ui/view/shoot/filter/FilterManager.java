@@ -22,10 +22,10 @@ public class FilterManager {
             case Normal:
             default:
                 return new CameraFilter(context);
-            case Blend:
-                return new CameraFilterBlend(context, R.drawable.mask);
-            case SoftLight:
-                return new CameraFilterBlendSoftLight(context, R.drawable.mask);
+//            case Blend:
+//                return new CameraFilterBlend(context, R.drawable.mask);
+//            case SoftLight:
+//                return new CameraFilterBlendSoftLight(context, R.drawable.mask);
             case ToneCurve:
                 mCurveIndex++;
                 if (mCurveIndex > 10) {
@@ -41,10 +41,10 @@ public class FilterManager {
             case Normal:
             default:
                 return new ImageFilter(context);
-            case Blend:
-                return new ImageFilterBlend(context, R.drawable.mask);
-            case SoftLight:
-                return new ImageFilterBlendSoftLight(context, R.drawable.mask);
+//            case Blend:
+//                return new ImageFilterBlend(context, R.drawable.mask);
+//            case SoftLight:
+//                return new ImageFilterBlendSoftLight(context, R.drawable.mask);
             case ToneCurve:
                 mCurveIndex++;
                 if (mCurveIndex > 10) {
@@ -56,6 +56,8 @@ public class FilterManager {
     }
 
     public enum FilterType {
-        Normal, Blend, SoftLight, ToneCurve
+        Normal,
+        //        Blend, SoftLight,
+        ToneCurve
     }
 }
