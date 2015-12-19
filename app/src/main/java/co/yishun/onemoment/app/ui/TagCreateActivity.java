@@ -180,7 +180,8 @@ public class TagCreateActivity extends BaseActivity
         showKeyboard();
 
         List<String> defaultTag = new ArrayList<>();
-        if (locationClient.getLastKnownLocation() == null) {
+        if (locationClient.getLastKnownLocation() == null ||
+                TextUtils.isEmpty(formatLocation(locationClient.getLastKnownLocation()))) {
             defaultTag.add(AccountManager.getUserInfo(this).location);
         } else {
             defaultTag.add(formatLocation(locationClient.getLastKnownLocation()));
@@ -410,7 +411,7 @@ public class TagCreateActivity extends BaseActivity
         option.setEnableSimulateGps(false);
         locationClient.setLocOption(option);
         locationClient.registerLocationListener(bdLocation -> {
-            if ("".equals(formatLocation(bdLocation))) {
+            if (TextUtils.isEmpty(formatLocation(bdLocation))) {
                 return;
             }
             addItem(0, formatLocation(bdLocation));
