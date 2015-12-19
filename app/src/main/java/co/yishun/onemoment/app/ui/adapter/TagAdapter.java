@@ -30,7 +30,7 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
 
     @Override
     public void onBindViewHolder(TagAdapter.SimpleViewHolder holder, TagVideo item, int position) {
-        Picasso.with(mContext).load(R.drawable.pic_slider_loading).fit().into(holder.itemImageView);
+        Picasso.with(mContext).load(R.drawable.pic_world_default).fit().into(holder.itemImageView);
         holder.setUp(item);
     }
 
