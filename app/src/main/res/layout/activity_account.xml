@@ -24,10 +24,10 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_margin="48dp"
+            android:layout_margin="@dimen/fab_layout_margin"
             android:scaleType="center"
             android:stateListAnimator="@anim/fab_elevation"
             app:backgroundTint="@color/colorSecondary"

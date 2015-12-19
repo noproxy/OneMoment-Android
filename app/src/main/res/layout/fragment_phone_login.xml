@@ -21,12 +21,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_weight="0.4"
         android:orientation="vertical"
-        android:gravity="bottom"
+        android:gravity="top"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
-        android:paddingBottom="136dp">
+        android:paddingBottom="88dp">
 
         <EditText
             android:id="@+id/phoneEditText"
