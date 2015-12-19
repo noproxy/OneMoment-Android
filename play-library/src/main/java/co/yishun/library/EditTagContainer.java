@@ -31,18 +31,19 @@ public class EditTagContainer extends TagContainer {
                 case MotionEvent.ACTION_MOVE:
                     float moveX = event.getX() - touchX;
                     float moveY = event.getY() - touchY;
-                    if (v.getX() + moveX + v.getWidth() > mSize) {
+                    if (v.getX() + moveX + v.getWidth() > mSize)
                         v.setX(mSize - v.getWidth());
-                    } else if (v.getX() + moveX < 0) {
+                    else if (v.getX() + moveX < 0)
                         v.setX(0);
-                    } else {
+                    else
                         v.setX(v.getX() + moveX);
-                    }
-                    if (v.getY() + moveY < 0) {
+
+                    if (v.getY() + moveY < 0)
                         v.setY(0);
-                    } else {
+                    else if (v.getY() + moveY < mSize && v.getY() + moveY > mSize - v.getHeight())
+                        v.setY(mSize - v.getHeight());
+                    else
                         v.setY(v.getY() + moveY);
-                    }
                     return true;
                 case MotionEvent.ACTION_UP:
                     if (v.getY() > getSize()) {
@@ -100,7 +101,18 @@ public class EditTagContainer extends TagContainer {
         textView.setOnTouchListener(listener);
         addView(textView);
         tagViews.add(textView);
-        Log.d("[ETC]", textView.getWidth() + " " + textView.getHeight());
+        textView.measure(0, 0);       //must call measure!
+        Log.d("[ETC]", textView.getMeasuredHeight() + " " + textView.getMeasuredWidth());
+
+        if (textView.getX() + textView.getMeasuredWidth() > mSize)
+            textView.setX(mSize - textView.getMeasuredWidth());
+        else if (textView.getX() < 0)
+            textView.setX(0);
+
+        if (textView.getY() < 0)
+            textView.setY(0);
+        else if (textView.getY() < mSize && textView.getY() > mSize - textView.getMeasuredHeight())
+            textView.setY(mSize - textView.getMeasuredHeight());
     }
 
     public void setOnAddTagListener(OnAddTagListener listener) {
