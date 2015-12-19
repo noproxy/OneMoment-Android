@@ -43,7 +43,7 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
         return position - middleInt;
     }
 
-    private Calendar getCalendarAt(int position) {
+    protected Calendar getCalendarAt(int position) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, getRelativePosition(position));
         return calendar;

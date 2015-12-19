@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -90,6 +91,13 @@ public class MomentCalendar extends AnimationViewPager {
 
     public void setAdapter(MomentMonthView.MonthAdapter adapter) {
         mAdapter = new CalendarAdapter(getContext(), this, adapter);
+    }
+
+    /**
+     * get current displayed month's time.
+     */
+    public Calendar getCurrentCalendar() {
+        return mAdapter.getCalendarAt(getCurrentItem());
     }
 
     @Override
