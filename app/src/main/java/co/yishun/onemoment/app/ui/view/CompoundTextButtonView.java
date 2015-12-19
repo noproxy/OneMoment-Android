@@ -78,7 +78,6 @@ public class CompoundTextButtonView extends LinearLayout implements View.OnClick
     }
 
     @Override public void onClick(View v) {
-        Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
         if (mListener != null) {
             mListener.onClick(v);
         }

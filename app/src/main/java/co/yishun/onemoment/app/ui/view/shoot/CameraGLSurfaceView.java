@@ -11,7 +11,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -68,7 +67,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
         this.setOnClickListener(v -> {
             mCameraRenderer.nextFilter();
-            Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "click to set filter");
         });
     }
 
