@@ -10,7 +10,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/pic_profile_tmp"
         android:layout_centerVertical="true"
+        android:src="@drawable/pic_profile_default"
         app:rc_cornerRadio="1"/>
 </RelativeLayout>

@@ -9,18 +9,18 @@
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:background="@drawable/bg_btn_transparent"
         android:layout_height="92dp"
+        android:background="@drawable/bg_btn_transparent"
+        android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="horizontal">
+        android:paddingRight="16dp">
 
         <co.yishun.onemoment.app.ui.view.RadioCornerImageView
             android:id="@+id/itemImageView"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/pic_profile_tmp"
+            android:src="@drawable/pic_profile_default"
             app:rc_cornerRadio="1"/>
 
         <RelativeLayout
@@ -56,10 +56,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:drawableLeft="@drawable/ic_me_world_like"
-                android:drawableStart="@drawable/ic_me_world_like"
                 android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_me_world_like"
                 android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_me_world_like"
                 android:gravity="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/textColorPrimary"/>

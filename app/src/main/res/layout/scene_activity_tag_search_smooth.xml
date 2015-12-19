@@ -35,7 +35,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/pic_profile_tmp"
+                android:src="@drawable/pic_profile_default"
                 app:rc_cornerRadio="1"/>
 
         </FrameLayout>

@@ -10,7 +10,7 @@
         android:id="@+id/itemImageView"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:src="@drawable/pic_profile_tmp"
+        android:src="@drawable/pic_profile_default"
         />
 
 

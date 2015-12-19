@@ -18,7 +18,7 @@
         android:contentDescription="@string/content_des_profile_image"
         android:minHeight="56dp"
         android:minWidth="56dp"
-        android:src="@drawable/pic_profile_tmp"
+        android:src="@drawable/pic_profile_default"
         app:border_color="@color/colorProfileImageBorder"
         app:border_width="2dp"/>
 
