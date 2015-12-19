@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
@@ -13,9 +12,8 @@ import co.yishun.onemoment.app.data.FileUtil;
  * Created by Jinge on 2015/11/18.
  */
 public class VideoTask {
-    public static final int TYPE_VIDEO_IMAGE = 0;
-    public static final int TYPE_VIDEO_ONLY = 1;
-    public static final int TYPE_IAMGE_ONLY = 2;
+    public static final int TYPE_VIDEO = 0x01;
+    public static final int TYPE_IMAGE = 0x02;
     private static final String TAG = "VideoTask";
 
     private Context context;
@@ -43,16 +41,18 @@ public class VideoTask {
     }
 
     public VideoTask start() {
-        File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
-        //the file exist, but size is 0.
-        if (videoFile.length() != 0) {
-            Log.d(TAG, "video file exist " + video.fileName);
-            getVideo(video);
-        } else {
-            Log.d(TAG, "video file not exist " + video.fileName);
-            downloadTask = new VideoDownloadTask(context, this);
-            VideoTaskManager.getInstance().executeTask(downloadTask, video);
+        if ((type & TYPE_IMAGE) == TYPE_IMAGE){
+            File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
+            File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
+            if (small.length() > 0) {
+                getImage(large, small);
+                type &= ~TYPE_IMAGE;
+            }
         }
+
+        downloadTask = new VideoDownloadTask(context, this);
+        VideoTaskManager.getInstance().executeTask(downloadTask, video);
+
         return this;
     }
 
@@ -84,7 +84,7 @@ public class VideoTask {
         } else {
             Log.e(TAG, "video listener null");
         }
-        if (type == TYPE_VIDEO_ONLY) {
+        if ((type & TYPE_IMAGE) != TYPE_IMAGE) {
             return;
         }
         // check whether thumbnail exists

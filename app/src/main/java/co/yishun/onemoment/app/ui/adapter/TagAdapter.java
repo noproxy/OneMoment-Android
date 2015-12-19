@@ -68,7 +68,7 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
             if (videoTask != null) {
                 videoTask.cancel();
             }
-            videoTask = new VideoTask(mContext, video, VideoTask.TYPE_VIDEO_IMAGE)
+            videoTask = new VideoTask(mContext, video, VideoTask.TYPE_VIDEO | VideoTask.TYPE_IMAGE)
                     .setImageListener(this::setImage)
                     .setVideoListener(this::setVideo)
                     .start();

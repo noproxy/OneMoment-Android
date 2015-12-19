@@ -34,8 +34,6 @@ public class VideoDownloadTask extends LoaderTask {
     public VideoDownloadTask(Context context, VideoTask videoTask) {
         mContext = context;
         videoTaskReference = new WeakReference<>(videoTask);
-//        VideoTaskManager.getInstance().addTask(this);
-//        VideoTaskManager.getInstance().
     }
 
     @Override
@@ -58,6 +56,9 @@ public class VideoDownloadTask extends LoaderTask {
                 long fileLength = response.body().contentLength();
                 if (fileLength == 0) {
                     Log.e(TAG, "error file length " + this.toString());
+                    return false;
+                } else if (videoFile.length() == fileLength){
+                    return true;
                 }
 
                 //OkHttp can't read more than 2048 bytes at a time.

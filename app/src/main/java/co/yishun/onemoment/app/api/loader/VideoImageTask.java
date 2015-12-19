@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
@@ -43,23 +42,13 @@ public class VideoImageTask extends LoaderTask {
         small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
         try {
             // there is some reason lead to thumb created fail, it depends. So try 3 times, make it less error
-            for (int i = 0; i < 3; i++) {
-                if (small.length() == 0) {
-                    Log.d(TAG, "create small " + video.fileName + " " + this.toString());
-                    VideoUtil.createThumbImage(context, video, videoFile.getPath());
-                    getSmall = true;
-                }
-                if (large.length() == 0) {
-                    Log.d(TAG, "create large " + video.fileName + " " + this.toString());
-                    VideoUtil.createLargeThumbImage(context, video, videoFile.getPath());
-                    getLarge = true;
-                }
-                if (small.length() > 0) break;
-            }
-            //maybe the video file is error, download again.
-            if (small.length() == 0){
-                videoTaskReference.get().startForce();
+            if (videoFile.length() == 0) {
+                Log.e(TAG, "video not found " + videoFile.getName());
                 return false;
+            }
+            for (int i = 0; i < 3; i++) {
+                if (small.length() > 0) break;
+                VideoUtil.createThumbs(context, video, videoFile.getPath(), large, small);
             }
             return large.exists() && small.exists();
         } catch (IOException e) {
