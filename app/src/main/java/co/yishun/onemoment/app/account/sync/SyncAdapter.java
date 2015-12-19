@@ -242,6 +242,21 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
+     * send broadcast to notify local moment changed at some date. If sync task create
+     * a new moment or update existed moment, it will be called. Upload task won't cause
+     * local moment changes.
+     *
+     * @param date of the changed moment.
+     */
+    private void onSyncLocalUpdate(@NonNull String date, @NonNull long timestamp) {
+        Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_LOCAL_UPDATE);
+        intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_DATE, date);
+        intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP, timestamp);
+        Log.i(TAG, "sync update local, send a broadcast. date: " + date);
+        getContext().sendBroadcast(intent);
+    }
+
+    /**
      * send broadcast to notify syncing progress update.
      * <p>
      * progress is from 0 to 100.
@@ -312,7 +327,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
 
-        @Override public void run() {
+        @Override
+        public void run() {
             Log.i(TAG, "upload a moment: " + mMoment);
             String qiNiuKey = mMoment.getKey();
             UploadToken token = mMiscService.getUploadToken(mMoment.getKey());
@@ -353,7 +369,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             mMoment = moment;
         }
 
-        @Override public void run() {
+        @Override
+        public void run() {
             Log.i(TAG, "download a moment: " + mApiMoment);
             Domain domain = mMiscService.getResourceDomain("video");
             if (!domain.isSuccess()) {
@@ -457,6 +474,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     executor.submit(new CreateThumbTask(mMoment));
 
                 successTask++;
+                onSyncLocalUpdate(mMoment.getTime(), mMoment.getUnixTimeStamp());
                 onSyncUpdate();
             } catch (SQLException e) {
                 failTask++;
@@ -481,7 +499,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             this.mMoment = moment;
         }
 
-        @Override public void run() {
+        @Override
+        public void run() {
             try {
                 String pathToThumb = mMoment.getThumbPath();
                 if (TextUtils.isEmpty(pathToThumb))
@@ -510,6 +529,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.i(TAG, "create Thumb ok: " + mMoment);
 
                 successTask++;
+                onSyncLocalUpdate(mMoment.getTime(), mMoment.getUnixTimeStamp());
                 onSyncUpdate();
             } catch (SQLException e) {
                 failTask++;
@@ -536,7 +556,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
 
-        @Override public void run() {
+        @Override
+        public void run() {
             Log.i(TAG, "delete a video: " + mApiMoment);
             mMiscService.deleteVideo(mApiMoment.getKey());
             Log.i(TAG, "delete a video ok: " + mApiMoment);

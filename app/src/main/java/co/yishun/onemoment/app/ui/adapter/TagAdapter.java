@@ -30,12 +30,11 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
 
     @Override
     public void onBindViewHolder(TagAdapter.SimpleViewHolder holder, TagVideo item, int position) {
-        Picasso.with(mContext).load(R.drawable.pic_slider_loading).fit().into(holder.itemImageView);
+        Picasso.with(mContext).load(R.drawable.pic_world_default).fit().into(holder.itemImageView);
         holder.setUp(item);
     }
 
     public void addItems(List<? extends TagVideo> collection, int offset) {
-//        int preSize = mItems.size();
         for (int i = 0; i < collection.size(); i++) {
             if (mItems.size() < offset) {
                 mItems.add(collection.get(i));
@@ -44,7 +43,6 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
             }
         }
         notifyItemRangeChanged(offset - collection.size(), collection.size());
-//        notifyItemRangeInserted(preSize, mItems.size() - preSize);
     }
 
     @Override
@@ -63,8 +61,6 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
         }
 
         protected void setUp(TagVideo video) {
-//            task = VideoTaskManager.getInstance().addDownloadTask(task, video);
-//            task.setImageView(itemImageView);
             if (videoTask != null) {
                 videoTask.cancel();
             }

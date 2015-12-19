@@ -173,3 +173,66 @@
 
 # for twowayview
 -keep class org.lucasr.twowayview.** { *; }
+
+# for umeng message
+-keep class com.umeng.message.* {
+        public <fields>;
+        public <methods>;
+}
+
+-keep class com.umeng.message.protobuffer.* {
+        public <fields>;
+        public <methods>;
+}
+
+-keep class com.squareup.wire.* {
+        public <fields>;
+        public <methods>;
+}
+
+-keep class com.umeng.message.local.* {
+        public <fields>;
+        public <methods>;
+}
+-keep class org.android.agoo.impl.*{
+        public <fields>;
+        public <methods>;
+}
+
+-dontwarn com.xiaomi.**
+
+-dontwarn com.ut.mini.**
+
+-keep class org.android.agoo.service.* {*;}
+
+-keep class org.android.spdy.**{*;}
+
+-keep public class co.yishun.onemoment.app.R$*{
+    public static final int *;
+}
+
+# for mp4parser
+# https://github.com/sannies/mp4parser/issues/65
+
+-keep class com.coremedia.iso.** { *; }
+-keep interface com.coremedia.iso.** { *; }
+
+-keep class com.mp4parser.** { *; }
+-keep interface com.mp4parser.** { *; }
+
+-keep class com.googlecode.mp4parser.** { *; }
+-keep interface com.googlecode.mp4parser.** { *; }
+
+# for SuperRecyclerView
+# https://github.com/Malinskiy/SuperRecyclerView/blob/afc83bee2a2943aa1167cb52cc6341835f90c0bf/README.md#proguard
+
+-dontwarn com.malinskiy.superrecyclerview.SwipeDismissRecyclerViewTouchListener*
+
+# for AndroidAnnotations
+# because we do not use Spring for android
+-dontwarn org.androidannotations.api.rest.**
+
+# for Qiniu
+-dontwarn com.qiniu.android.http.**
+
+-dontwarn com.googlecode.mp4parser.**

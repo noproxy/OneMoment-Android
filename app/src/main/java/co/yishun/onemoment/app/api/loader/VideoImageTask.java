@@ -23,14 +23,9 @@ public class VideoImageTask extends LoaderTask {
     private boolean getSmall;
     private WeakReference<VideoTask> videoTaskReference;
 
-    public VideoImageTask(Context context) {
-        this.context = context;
-    }
-
     public VideoImageTask(Context context, VideoTask videoTask) {
         this.context = context;
         this.videoTaskReference = new WeakReference<>(videoTask);
-//        VideoTaskManager.getInstance().addTask(this);
     }
 
     @Override
@@ -76,7 +71,6 @@ public class VideoImageTask extends LoaderTask {
         super.onCancelled(result);
         Log.d(TAG, "cancel image " + result + " " + this.toString());
         if (result == null || !result) {
-            if (small != null && !getSmall && small.exists()) small.delete();
             if (large != null && !getLarge && large.exists()) large.delete();
         }
         VideoTaskManager.getInstance().removeTask(this);

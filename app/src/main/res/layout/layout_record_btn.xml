@@ -47,7 +47,9 @@
         android:minWidth="64dp"
         app:cpv_clickAnimationDelayMillis="0"
         app:cpv_endDrawableMargins="0dp"
+        app:cpv_progressDrawable="@drawable/ic_capture_capture_center"
         app:cpv_progressDrawableMargins="0dp"
+        app:cpv_startDrawable="@drawable/ic_capture_capture"
         app:cpv_startDrawableMargins="0dp"
         app:cpv_strokeSize="3dp"/>
 
