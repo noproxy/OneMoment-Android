@@ -11,7 +11,6 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
@@ -452,13 +451,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     //TODO I don't delete old. To clean them by adding clean cache function or delete them here.
                 }
 
-                String pathToThumb = VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
+                File small = FileUtil.getThumbnailStoreFile(getContext(), mMoment, FileUtil.Type.MICRO_THUMB);
+                File large = FileUtil.getThumbnailStoreFile(getContext(), mMoment, FileUtil.Type.LARGE_THUMB);
 
-                String pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
-
-                mMoment.setThumbPath(pathToThumb);
-                mMoment.setLargeThumbPath(pathToLargeThumb);
-
+                mMoment.setThumbPath(small.getPath());
+                mMoment.setLargeThumbPath(large.getPath());
                 mMoment.setOwner(mApiMoment.getOwnerID());
                 mMoment.setTime(mApiMoment.getTime());
                 mMoment.setTimeStamp(mApiMoment.getUnixTimeStamp());
@@ -468,10 +465,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 MomentLock.unlockMomentIfLocked(getContext(), mMoment);
 
-                File smallThumb = new File(pathToThumb);
-                File largeThumb = new File(pathToLargeThumb);
-                if (smallThumb.length() == 0 || largeThumb.length() == 0)
-                    executor.submit(new CreateThumbTask(mMoment));
+                if (small.length() == 0 || large.length() == 0)
+                    executor.submit(new CreateThumbTask(mMoment, small, large));
 
                 successTask++;
                 onSyncLocalUpdate(mMoment.getTime(), mMoment.getUnixTimeStamp());
@@ -494,42 +489,43 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private class CreateThumbTask implements Runnable {
         private final Moment mMoment;
+        private final File mSmall;
+        private final File mLarge;
 
         public CreateThumbTask(@NonNull Moment moment) {
             this.mMoment = moment;
+            mSmall = FileUtil.getThumbnailStoreFile(getContext(), mMoment, FileUtil.Type.MICRO_THUMB);
+            mLarge = FileUtil.getThumbnailStoreFile(getContext(), mMoment, FileUtil.Type.LARGE_THUMB);
+        }
+
+        public CreateThumbTask(Moment moment, File small, File large) {
+            this.mMoment = moment;
+            this.mSmall = small;
+            this.mLarge = large;
         }
 
         @Override
         public void run() {
             try {
-                String pathToThumb = mMoment.getThumbPath();
-                if (TextUtils.isEmpty(pathToThumb))
-                    pathToThumb = VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
+                File momentFile = new File(mMoment.getPath());
+                if (momentFile.length() == 0) {
+                    failTask++;
+                    onSyncUpdate();
+                    Log.e(TAG, "moment file is null exception");
+                } else {
+                    for (int i = 0; i < 3; i++) {
+                        if (mSmall.length() > 0) break;
+                        VideoUtil.createThumbs(mMoment.getPath(), mLarge, mSmall);
+                    }
 
-                String pathToLargeThumb = mMoment.getLargeThumbPath();
-                if (TextUtils.isEmpty(pathToLargeThumb))
-                    pathToLargeThumb = VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
+                    mMoment.setThumbPath(mSmall.getPath());
+                    mMoment.setLargeThumbPath(mLarge.getPath());
+                    dao.update(mMoment);
+                    Log.i(TAG, "create Thumb ok: " + mMoment);
 
-                File smallThumb = new File(pathToThumb);
-                File largeThumb = new File(pathToLargeThumb);
-                for (int i = 0; i < 3; i++) {
-                    if (smallThumb.length() == 0)
-                        VideoUtil.createThumbImage(getContext(), mMoment, mMoment.getPath());
-                    else break;
+                    successTask++;
+                    onSyncLocalUpdate(mMoment.getTime(), mMoment.getUnixTimeStamp());
                 }
-                for (int i = 0; i < 3; i++) {
-                    if (largeThumb.length() == 0)
-                        VideoUtil.createLargeThumbImage(getContext(), mMoment, mMoment.getPath());
-                    else break;
-                }
-
-                mMoment.setThumbPath(pathToThumb);
-                mMoment.setLargeThumbPath(pathToLargeThumb);
-                dao.update(mMoment);
-                Log.i(TAG, "create Thumb ok: " + mMoment);
-
-                successTask++;
-                onSyncLocalUpdate(mMoment.getTime(), mMoment.getUnixTimeStamp());
                 onSyncUpdate();
             } catch (SQLException e) {
                 failTask++;

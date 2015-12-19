@@ -43,7 +43,7 @@ public class VideoImageTask extends LoaderTask {
             }
             for (int i = 0; i < 3; i++) {
                 if (small.length() > 0) break;
-                VideoUtil.createThumbs(context, video, videoFile.getPath(), large, small);
+                VideoUtil.createThumbs(videoFile.getPath(), large, small);
             }
             return large.exists() && small.exists();
         } catch (IOException e) {

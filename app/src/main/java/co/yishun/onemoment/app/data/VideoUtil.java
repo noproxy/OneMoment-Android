@@ -70,8 +70,7 @@ public class VideoUtil {
         return thumbFile.getPath();
     }
 
-    public static void createThumbs(Context context, QiniuKeyProvider provider, String videoPath,
-                                    File large, File small) throws IOException {
+    public static void createThumbs(String videoPath, File large, File small) throws IOException {
         if (large.length() == 0) large.delete();
         if (small.length() == 0) small.delete();
 
