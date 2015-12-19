@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
-import android.widget.Toast;
 
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.TransitionManager;
@@ -182,14 +181,12 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     @Override
     public void call() {
-        Log.i(TAG, "call");
-        Toast.makeText(ShootActivity.this, "start record", Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "start record callback");
     }
 
     @Override
     public void accept(File file) {
         Log.i(TAG, "accept: " + file);
-        Toast.makeText(ShootActivity.this, "success: " + file.getPath(), Toast.LENGTH_SHORT).show();
         delayStart(file);
     }
 

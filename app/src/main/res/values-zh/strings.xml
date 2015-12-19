@@ -47,4 +47,35 @@
 
     <string name="progress_loading_msg">请稍后…</string>
     <string name="unknown_error">未知错误</string>
+    <string name="activity_phone_account_fail_select_pic">选择图片出错</string>
+    <string name="activity_tag_create_moment_fail">保存失败</string>
+    <string name="activity_tag_create_moment_success">保存成功</string>
+    <string name="activity_tag_create_no_tag_error">至少添加一个标签</string>
+    <string name="activity_tag_create_tag_empty_error">请输入标签内容！</string>
+    <string name="activity_tag_create_tag_hint">点击任何位置创建标签\n拖动到这里删除</string>
+    <string name="activity_tag_create_tag_number_error">最多只能添加3个标签</string>
+    <string name="activity_wx_entry_auth_success">授权成功</string>
+    <string name="activity_wx_entry_login_fail">登陆失败</string>
+    <string name="activity_wx_entry_login_progress">正在登录…</string>
+    <string name="activity_wx_entry_login_success">登陆成功</string>
+    <string name="fragment_diary_action_all_play">全部播放</string>
+    <string name="fragment_diary_action_share">分享</string>
+    <string name="fragment_integrate_info_error_avatar_upload_failed">上传头像失败，请重试。</string>
+    <string name="fragment_integrate_info_error_gender_empty">请选择性别！</string>
+    <string name="fragment_integrate_info_error_location_empty">请填写位置！</string>
+    <string name="fragment_integrate_info_error_nickname_empty">请输入您的昵称！</string>
+    <string name="fragment_integrate_info_error_nickname_exist">这个用户名已被使用，请尝试其他的吧。</string>
+    <string name="fragment_integrate_info_error_nickname_invalid">这个用户名不能使用，请尝试其他的吧。</string>
+    <string name="fragment_integrate_info_error_nickname_long">这个用户名太长啦，请尝试其他的吧。</string>
+    <string name="fragment_integrate_info_sign_up_progress">正在注册…</string>
+    <string name="fragment_integrate_info_sign_up_success">注册成功</string>
+    <string name="fragment_integrate_info_sign_up_success_but_avatar_upload_failed">注册成功,但上传头像好像出了点问题。您可以去修改资料里更新头像。</string>
+    <string name="fragment_me_action_modify_info">修改资料</string>
+    <string name="fragment_me_vote_format_text">点赞的视频</string>
+    <string name="fragment_me_voted_format_text">收到的赞</string>
+    <string name="fragment_phone_verify_verify_error_expire">验证码过期，请重新发送。</string>
+    <string name="fragment_phone_verify_verify_progress">正在验证，请稍后…</string>
+    <string name="hello_blank_fragment"></string>
+    <string name="view_today_moment_no_moment">今天还没有一瞬</string>
+    <string name="view_today_moment_no_tag">没有添加标签</string>
 </resources>
