@@ -57,8 +57,22 @@ public class DiaryFragment extends ToolbarFragment
 
     private Moment selectMoment;
 
-    @AfterViews
-    void setCalendar() {
+    /**
+     * judge whether a {@link Date} is in current display month.
+     *
+     * @param date
+     * @return
+     */
+    public boolean isCurrentMonth(Date date) {
+        Calendar calendar = momentCalendar.getCurrentCalendar();
+        Calendar toChanged = Calendar.getInstance();
+        toChanged.setTime(date);
+
+        return toChanged.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)
+                && toChanged.get(Calendar.MONTH) == calendar.get(Calendar.MONTH);
+    }
+
+    @AfterViews void setCalendar() {
         momentCalendar.setAdapter(this);
         DayView.setOnMomentSelectedListener(this);
         DayView.setMultiSelection(false);
@@ -84,8 +98,7 @@ public class DiaryFragment extends ToolbarFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Click(R.id.momentPreviewImageView)
-    void previewClick() {
+    @Click(R.id.momentPreviewImageView) void previewClick() {
         if (selectMoment != null)
             PlayMomentActivity_.intent(this.getActivity()).startDate(selectMoment.getTime()).endDate(selectMoment.getTime()).start();
     }
