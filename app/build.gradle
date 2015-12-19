@@ -6,6 +6,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
+    useLibrary 'org.apache.http.legacy'
     signingConfigs() {
         debugSignature {
             keyAlias = properties.getProperty("KEY_ALIAS_DEBUG")
