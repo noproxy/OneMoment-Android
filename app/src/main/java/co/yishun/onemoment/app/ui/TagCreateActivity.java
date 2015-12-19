@@ -296,7 +296,7 @@ public class TagCreateActivity extends BaseActivity
         }
     }
 
-    @UiThread(delay = 300) void delayFinish() {
+    @UiThread(delay = 500) void delayFinish() {
         this.finish();
     }
 
