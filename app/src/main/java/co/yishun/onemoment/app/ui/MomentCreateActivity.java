@@ -15,6 +15,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OrmLiteDao;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.sql.SQLException;
@@ -47,15 +48,14 @@ public class MomentCreateActivity extends BaseActivity {
         mPageName = "MomentCreateActivity";
     }
 
-    @AfterViews
-    void addView() {
+    @AfterViews void addView() {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         View child;
         if (forWorld) {
             child = new PermissionSwitch(this);
-            ((PermissionSwitch)child).setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ((PermissionSwitch) child).setOnCheckedChangeListener((buttonView, isChecked) -> {
                 isPrivate = isChecked;
-                ((PermissionSwitch)child).setChecked(isChecked);
+                ((PermissionSwitch) child).setChecked(isChecked);
             });
         } else {
             child = new MomentCountDateView(this);
@@ -69,8 +69,7 @@ public class MomentCreateActivity extends BaseActivity {
         containerFrameLayout.addView(child, params);
     }
 
-    @AfterViews
-    void setupToolbar() {
+    @AfterViews void setupToolbar() {
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
@@ -80,15 +79,17 @@ public class MomentCreateActivity extends BaseActivity {
         Log.i("setupToolbar", "set home as up true");
     }
 
-    @AfterViews
-    void setVideo() {
+    @AfterViews void setVideo() {
         if (videoPath == null) return;
         videoView.setVideoPath(videoPath);
+        playVideo();
+    }
+
+    @UiThread(delay = 500) void playVideo() {
         videoView.start();
     }
 
-    @Click
-    void nextBtnClicked(View view) {
+    @Click void nextBtnClicked(View view) {
         TagCreateActivity_.intent(this).worldTag(worldTag).forWorld(forWorld).isPrivate(isPrivate).videoPath(videoPath).start();
         this.finish();
     }
