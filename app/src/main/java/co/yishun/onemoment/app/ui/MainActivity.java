@@ -1,7 +1,10 @@
 package co.yishun.onemoment.app.ui;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -32,15 +35,18 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 
 import java.lang.ref.WeakReference;
+import java.util.Date;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.home.DiaryFragment;
 import co.yishun.onemoment.app.ui.home.DiaryFragment_;
 import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
@@ -61,13 +67,38 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private ImageView profileImageView;
     private TextView usernameTextView;
     private TextView locationTextView;
+    private BroadcastReceiver mSyncChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (currentItemId == R.id.navigation_item_1) {
+                Bundle extra = intent.getExtras();
+                long unixTimeStamp = extra.getLong(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP);
 
-    @Override protected void onResume() {
+                boolean needUpdate = ((DiaryFragment) fragmentManager.findFragmentById(R.id.fragment_container)).isCurrentMonth(new Date(unixTimeStamp * 1000));
+                if (needUpdate) updateDiary();
+            }
+
+        }
+    };
+
+    @Override
+    protected void onResume() {
         super.onResume();
         // refresh diary in case moment update
         if (currentItemId == R.id.navigation_item_1) {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, DiaryFragment_.builder().build()).commit();
+            updateDiary();
         }
+        registerSyncListener();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mSyncChangedReceiver);
+    }
+
+    private void updateDiary() {
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, DiaryFragment_.builder().build()).commitAllowingStateLoss();
     }
 
     private void startShoot(View view, boolean forWorld) {
@@ -84,7 +115,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
         RealmHelper.setup(this);
         PushAgent mPushAgent = PushAgent.getInstance(this);
-        Log.d(TAG, "token "+UmengRegistrar.getRegistrationId(this));
+        Log.d(TAG, "token " + UmengRegistrar.getRegistrationId(this));
         mPushAgent.enable();
 
         fragmentManager = getSupportFragmentManager();
@@ -148,6 +179,14 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             fam.close(false);
         });
 
+    }
+
+    private void registerSyncListener() {
+        registerReceiver(mSyncChangedReceiver, new IntentFilter(SyncManager.SYNC_BROADCAST_ACTION_LOCAL_UPDATE));
+    }
+
+    private void unregisterSyncListener() {
+        unregisterReceiver(mSyncChangedReceiver);
     }
 
     @Override
@@ -246,7 +285,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // no global option menu to handle, fragment handles itself.
@@ -274,7 +312,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         syncToggle();
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         FloatingActionMenu fab = floatingActionMenu.get();
         if (fab != null) {
