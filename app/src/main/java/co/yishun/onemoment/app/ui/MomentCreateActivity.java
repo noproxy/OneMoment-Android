@@ -82,10 +82,12 @@ public class MomentCreateActivity extends BaseActivity {
     @AfterViews void setVideo() {
         if (videoPath == null) return;
         videoView.setVideoPath(videoPath);
+        videoView.seekTo(300);
         playVideo();
     }
 
     @UiThread(delay = 500) void playVideo() {
+        videoView.seekTo(0);
         videoView.start();
     }
 
