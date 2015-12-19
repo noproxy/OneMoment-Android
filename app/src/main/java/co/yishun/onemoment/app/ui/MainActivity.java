@@ -60,6 +60,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     DrawerLayout drawerLayout;
+    NavigationView navigationView;
     private FragmentManager fragmentManager;
     private int currentItemId = 0;
     private WorldFragment worldFragment;
@@ -106,6 +107,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
                 .transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
+        navigationTo(R.id.navigation_item_1);
+        navigationView.setCheckedItem(R.id.navigation_item_1);
     }
 
     @Override
@@ -126,7 +129,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
     private void setupNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        NavigationView navigationView = ((NavigationView) findViewById(R.id.navigationView));
+        navigationView = ((NavigationView) findViewById(R.id.navigationView));
         // views in NavigationView can only be found from NavigationView since support 23.1.0
         // http://stackoverflow.com/questions/33199764/android-api-23-change-navigation-view-headerlayout-textview
         View header = LayoutInflater.from(this).inflate(R.layout.layout_nav_header, navigationView, false);
