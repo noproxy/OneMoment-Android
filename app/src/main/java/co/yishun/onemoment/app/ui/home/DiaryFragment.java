@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui.home;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -56,7 +57,8 @@ public class DiaryFragment extends ToolbarFragment
 
     private Moment selectMoment;
 
-    @AfterViews void setCalendar() {
+    @AfterViews
+    void setCalendar() {
         momentCalendar.setAdapter(this);
         DayView.setOnMomentSelectedListener(this);
         DayView.setMultiSelection(false);
@@ -71,12 +73,19 @@ public class DiaryFragment extends ToolbarFragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        DayView.setTodayAvailableListener(this::onSelected);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_diary, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Click(R.id.momentPreviewImageView) void previewClick() {
+    @Click(R.id.momentPreviewImageView)
+    void previewClick() {
         if (selectMoment != null)
             PlayMomentActivity_.intent(this.getActivity()).startDate(selectMoment.getTime()).endDate(selectMoment.getTime()).start();
     }
@@ -115,7 +124,8 @@ public class DiaryFragment extends ToolbarFragment
         mPageName = "DiaryFragment";
     }
 
-    @Override public void onBindView(Calendar calendar, DayView dayView) {
+    @Override
+    public void onBindView(Calendar calendar, DayView dayView) {
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(calendar.getTime());
         try {
             Moment moment = momentDao.queryBuilder().where().eq("time", time).queryForFirst();
@@ -133,7 +143,9 @@ public class DiaryFragment extends ToolbarFragment
         }
     }
 
-    @Override public void onSelected(DayView dayView) {
+    @Override
+    public void onSelected(@NonNull DayView dayView) {
+        Log.i(TAG, "onSelected: " + dayView);
         Moment moment = (Moment) dayView.getTag();
         selectMoment = moment;
         if (moment != null) {
