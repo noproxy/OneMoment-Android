@@ -67,7 +67,7 @@ public class PlayTagVideoFragment extends BaseFragment {
 
         videoPlayView.setWithAvatar(false);
 
-        new VideoTask(mContext, oneVideo, VideoTask.TYPE_VIDEO_ONLY)
+        new VideoTask(mContext, oneVideo, VideoTask.TYPE_VIDEO)
                 .setVideoListener(this::addVideo).start();
 
         refreshUserInfo();

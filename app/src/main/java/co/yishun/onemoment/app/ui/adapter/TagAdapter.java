@@ -64,15 +64,15 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
             if (videoTask != null) {
                 videoTask.cancel();
             }
-            videoTask = new VideoTask(mContext, video, VideoTask.TYPE_VIDEO_IMAGE)
+            videoTask = new VideoTask(mContext, video, VideoTask.TYPE_VIDEO | VideoTask.TYPE_IMAGE)
                     .setImageListener(this::setImage)
                     .setVideoListener(this::setVideo)
                     .start();
         }
 
-        void setImage(File large) {
-            Log.d("Video", "get " + large.getName());
-            Picasso.with(mContext).load(large).into(itemImageView);
+        void setImage(File large, File small) {
+            Log.d("Video", "get " + small.getName());
+            Picasso.with(mContext).load(small).into(itemImageView);
         }
 
         void setVideo(Video video) {

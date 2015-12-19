@@ -123,7 +123,7 @@ public class PlayWorldFragment extends BaseFragment implements OnemomentPlayerVi
                 backgroundGetThumb(video, videoFile.getPath());
             }
         } else {
-            new VideoTask(mContext, video, VideoTask.TYPE_VIDEO_ONLY)
+            new VideoTask(mContext, video, VideoTask.TYPE_VIDEO)
                     .setVideoListener(this).start();
         }
 

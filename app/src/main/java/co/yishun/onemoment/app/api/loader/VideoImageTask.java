@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
@@ -19,9 +18,9 @@ public class VideoImageTask extends LoaderTask {
     private static final String TAG = "VideoImageTask";
     private Context context;
     private File large;
-
+    private File small;
     private boolean getLarge;
-
+    private boolean getSmall;
     private WeakReference<VideoTask> videoTaskReference;
 
     public VideoImageTask(Context context, VideoTask videoTask) {
@@ -35,23 +34,18 @@ public class VideoImageTask extends LoaderTask {
         Log.d(TAG, "start image " + video.fileName + " " + this.toString());
         File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
         large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
-
+        small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
         try {
             // there is some reason lead to thumb created fail, it depends. So try 3 times, make it less error
-            for (int i = 0; i < 3; i++) {
-                if (large.length() == 0) {
-                    Log.d(TAG, "create large " + video.fileName + " " + this.toString());
-                    VideoUtil.createLargeThumbImage(context, video, videoFile.getPath());
-                    getLarge = true;
-                }
-                if (large.length() > 0) break;
-            }
-            //maybe the video file is error, download again.
-            if (large.length() == 0){
-                videoTaskReference.get().startForce();
+            if (videoFile.length() == 0) {
+                Log.e(TAG, "video not found " + videoFile.getName());
                 return false;
             }
-            return large.exists();
+            for (int i = 0; i < 3; i++) {
+                if (small.length() > 0) break;
+                VideoUtil.createThumbs(context, video, videoFile.getPath(), large, small);
+            }
+            return large.exists() && small.exists();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,7 +57,7 @@ public class VideoImageTask extends LoaderTask {
         if (result) {
             Log.d(TAG, "stop image");
             if (videoTaskReference.get() != null) {
-                videoTaskReference.get().getImage(large);
+                videoTaskReference.get().getImage(large, small);
             }
         } else {
             onCancelled(false);
