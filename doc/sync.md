@@ -37,6 +37,7 @@
 
         3. video newer:
             - use these video to update the moment information(but not download video)
+            - add this video&moment to [fix list]
             - *remove video from map*
 
 6. if the left video map not empty, for each
