@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PageIndicatorDot">
+        <attr name="pid_num" format="integer" />
+        <attr name="pid_dotRadius" format="dimension" />
+        <attr name="pid_interval" format="dimension" />
+        <attr name="pid_background" format="color" />
+        <attr name="pid_foreground" format="color" />
+    </declare-styleable>
+</resources>
