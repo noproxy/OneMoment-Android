@@ -106,7 +106,7 @@ public class MomentFixTask implements Runnable {
                         mOnFail.call();
                         return false;
                     }
-                    int progress = (int) (total / target);
+                    int progress = (int) (total * 100 / target);
                     Log.v(TAG, "progress: " + progress);
                     mOnProgress.accept(progress);
                 }
