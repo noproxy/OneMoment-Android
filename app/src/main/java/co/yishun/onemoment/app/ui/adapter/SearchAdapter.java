@@ -49,7 +49,7 @@ public class SearchAdapter
 
     @Override
     public void onBindViewHolder(SearchAdapter.SimpleViewHolder holder, WorldTag item, int position) {
-        Picasso.with(mContext).load(item.domain + item.thumbnail).into(holder.itemImageView);
+        Picasso.with(mContext).load(item.domain + item.thumbnail).placeholder(R.drawable.pic_world_default).into(holder.itemImageView);
         holder.numTextView.setText(String.format(PeopleSuffix, item.videosCount));
         holder.tagTextView.setText(item.name);
         holder.likeTextView.setText(String.valueOf(item.likeCount));
