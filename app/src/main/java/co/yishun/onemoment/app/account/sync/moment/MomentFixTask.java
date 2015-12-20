@@ -32,7 +32,7 @@ public class MomentFixTask implements Runnable {
 
     private static final String TAG = "MomentFixTask";
     private final static Misc mMiscService = OneMomentV3.createAdapter().create(Misc.class);
-
+    private static Domain mDomain;
     private final ApiMoment mApiMoment;
     private final Moment mMoment;
     private final Callback mOnFail;
@@ -64,16 +64,22 @@ public class MomentFixTask implements Runnable {
      */
     private boolean fixVideo() {
         Log.i(TAG, "download a moment: " + mMoment);
-        Domain domain = mMiscService.getResourceDomain("video");
-        if (!domain.isSuccess()) {
-            Log.e(TAG, "download failed when get resource domain");
-            mOnFail.call();
-            return false;
+
+        if (mDomain == null) {
+            Domain domain = mMiscService.getResourceDomain("video");
+            if (!domain.isSuccess()) {
+                Log.e(TAG, "download failed when get resource domain");
+                mOnFail.call();
+                return false;
+            } else {
+                mDomain = domain;
+            }
         }
+
 
         File targetFile = mMoment.getFile();
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(domain.domain + mMoment.getKey()).get().build();
+        Request request = new Request.Builder().url(mDomain + mMoment.getKey()).get().build();
         Log.i(TAG, "start download: " + request.urlString());
 
         Response response;
