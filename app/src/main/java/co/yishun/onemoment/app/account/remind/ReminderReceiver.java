@@ -25,12 +25,12 @@ public class ReminderReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "receive broadcast");
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (preferences.getBoolean(context.getString(R.string.pref_key_remind_everyday), true)){
+        if (preferences.getBoolean(context.getString(R.string.pref_key_remind_everyday), true)) {
             resetDailyRemainder(context);
         } else {
             cancelDailyReminder(context);
         }
-            }
+    }
 
     public void setDailyReminder(Context context, int hour, int minute) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

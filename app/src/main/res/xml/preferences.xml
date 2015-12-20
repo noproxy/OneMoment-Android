@@ -53,6 +53,7 @@
             android:layout="@layout/layout_preference_mtd"
             android:negativeButtonText="@android:string/cancel"
             android:positiveButtonText="@android:string/ok"
+            android:summary="@string/pref_summary_remind_time_default"
             >
         </co.yishun.onemoment.app.ui.view.TimePreference>
         <RingtonePreference
