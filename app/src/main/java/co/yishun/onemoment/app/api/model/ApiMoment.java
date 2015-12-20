@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 import com.sina.weibo.sdk.utils.LogUtil;
 
-import co.yishun.onemoment.app.BuildConfig;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.model.Moment;
 
@@ -65,8 +64,9 @@ public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuK
     }
 
     @Override public String getKey() {
-        if (BuildConfig.DEBUG && !key.equals(getOwnerID() + Constants.URL_HYPHEN + this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp() + Constants.VIDEO_FILE_SUFFIX))
-            throw new AssertionError("qiniu key is not corroding to server's");
+//        if (BuildConfig.DEBUG && !key.equals(getOwnerID() + Constants.URL_HYPHEN + this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp() + Constants.VIDEO_FILE_SUFFIX))
+//            throw new AssertionError("qiniu key is not corroding to server's");
+        // because of history, there are some key not accorded with standard.
         return key;
     }
 }
