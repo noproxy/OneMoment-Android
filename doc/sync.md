@@ -30,14 +30,14 @@
         1. moment newer:
             - upload this moment
             - delete this video
-            - remove video from map
+            - *remove video from map*
 
         2. same:
-            - remove video from map
+            - *remove video from map*
 
         3. video newer:
             - use these video to update the moment information(but not download video)
-            - remove video from map
+            - *remove video from map*
 
 6. if the left video map not empty, for each
     -   add a moment to moment list
