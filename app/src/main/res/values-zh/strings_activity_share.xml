@@ -5,4 +5,7 @@
     <string name="activity_share_weibo">微博</string>
     <string name="activity_share_we_chat">微信</string>
     <string name="activity_share_wx_circle">朋友圈</string>
+
+    <string name="activity_share_share_moment">分享一瞬</string>
+    <string name="activity_share_share_world">分享世界</string>
 </resources>

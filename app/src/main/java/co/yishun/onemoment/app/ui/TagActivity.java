@@ -50,6 +50,7 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
+import co.yishun.onemoment.app.ui.share.ShareActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity_;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 
@@ -260,7 +261,7 @@ public class TagActivity extends BaseActivity
     @Background void shareWorld(View view) {
         World world = OneMomentV3.createAdapter().create(World.class);
         ShareInfo shareInfo = world.shareWorld(tag.name);
-        ShareActivity_.intent(this).shareInfo(shareInfo).start();
+        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 
     void videoImageClick(View v) {

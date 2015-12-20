@@ -5,4 +5,7 @@
     <string name="activity_share_weibo">Weibo</string>
     <string name="activity_share_we_chat">WeChat</string>
     <string name="activity_share_wx_circle">Moments</string>
+
+    <string name="activity_share_share_moment">Share Moment</string>
+    <string name="activity_share_share_world">Share World</string>
 </resources>

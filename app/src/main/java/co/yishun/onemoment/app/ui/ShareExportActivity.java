@@ -64,6 +64,7 @@ import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.share.ShareActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity_;
 
 @EActivity(R.layout.activity_share_export)
@@ -335,7 +336,7 @@ public class ShareExportActivity extends BaseActivity
         videoCacheFile.delete();
         hideProgress();
 
-        ShareActivity_.intent(this).shareInfo(shareInfo).start();
+        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_MOMENT).start();
     }
 
     @Override public void setPageInfo() {

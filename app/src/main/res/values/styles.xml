@@ -83,7 +83,8 @@
     <style name="AppTheme.ShareActivity">
         <item name="android:windowBackground">@color/colorWindowShareActivity</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:textColorTertiary">@android:color/white</item>
+        <item name="android:textColorTertiary">#545454</item>
+        <item name="android:textColorTertiaryInverse">#b0b0b0</item>
     </style>
 
     <style name="TextAppearance.PlaySmall" parent="TextAppearance.AppCompat.Small"/>

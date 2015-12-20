@@ -6,12 +6,14 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.ViewById;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,8 +28,13 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
 @EActivity(R.layout.activity_share)
 public class ShareActivity extends BaseActivity implements ShareController.ShareResultListener {
     public static final String TAG = "ShareActivity";
+    public static final int TYPE_SHARE_MOMENT = 0;
+    public static final int TYPE_SHARE_WORLD = 1;
 
     @Extra ShareInfo shareInfo;
+    @Extra int shareType;
+
+    @ViewById TextView shareText;
 
     private ShareController shareController;
 
@@ -50,10 +57,13 @@ public class ShareActivity extends BaseActivity implements ShareController.Share
     }
 
     @AfterViews void setUp() {
-
+        if (shareType == TYPE_SHARE_MOMENT)
+            shareText.setText(getString(R.string.activity_share_share_moment));
+        else
+            shareText.setText(getString(R.string.activity_share_share_world));
     }
 
-    @Click(R.id.linearLayout) void linearLayoutClick() {
+    @Click(R.id.relativeLayout) void linearLayoutClick() {
         finish();
     }
 

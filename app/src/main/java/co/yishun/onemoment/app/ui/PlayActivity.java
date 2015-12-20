@@ -30,6 +30,7 @@ import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
 import co.yishun.onemoment.app.ui.play.PlayWorldFragment;
 import co.yishun.onemoment.app.ui.play.PlayWorldFragment_;
+import co.yishun.onemoment.app.ui.share.ShareActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity_;
 
 /**
@@ -98,7 +99,7 @@ public class PlayActivity extends BaseActivity {
     @Click(R.id.worldShare) @Background void shareWorld(View view) {
         World world = OneMomentV3.createAdapter().create(World.class);
         ShareInfo shareInfo = world.shareWorld(worldTag.name);
-        ShareActivity_.intent(this).shareInfo(shareInfo).start();
+        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 
     @Override

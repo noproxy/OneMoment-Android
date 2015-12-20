@@ -57,6 +57,7 @@ import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.play.PlayMomentFragment;
 import co.yishun.onemoment.app.ui.play.PlayMomentFragment_;
+import co.yishun.onemoment.app.ui.share.ShareActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity_;
 
 @EActivity(R.layout.activity_play_moment)
@@ -242,7 +243,7 @@ public class PlayMomentActivity extends BaseActivity {
         videoCacheFile.delete();
         hideProgress();
 
-        ShareActivity_.intent(this).shareInfo(shareInfo).start();
+        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_MOMENT).start();
     }
 
     @Override public void setPageInfo() {
