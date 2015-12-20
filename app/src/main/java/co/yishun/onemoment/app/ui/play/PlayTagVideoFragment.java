@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import co.yishun.library.OnemomentPlayerView;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
@@ -28,38 +27,24 @@ import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTask;
-import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.ui.common.BaseFragment;
 
 /**
  * Created on 2015/10/28.
  */
 @EFragment(R.layout.fragment_play_tag_video)
-public class PlayTagVideoFragment extends BaseFragment {
-    @FragmentArg
-    TagVideo oneVideo;
-    @ViewById
-    ImageView avatar;
-    @ViewById
-    TextView usernameTextView;
-    @ViewById
-    OnemomentPlayerView videoPlayView;
-    @ViewById
-    TextView voteCountTextView;
-    private Context mContext;
+public class PlayTagVideoFragment extends PlayFragment {
+    @FragmentArg TagVideo oneVideo;
+
+    @ViewById ImageView avatar;
+    @ViewById TextView usernameTextView;
+    @ViewById TextView voteCountTextView;
+
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
-
-    @AfterViews
-    void setup() {
+    @AfterViews void setup() {
         Log.d("oneVideo", oneVideo.toString());
         Picasso.with(mContext).load(oneVideo.avatar).into(avatar);
 
@@ -73,32 +58,21 @@ public class PlayTagVideoFragment extends BaseFragment {
         refreshUserInfo();
     }
 
-    @UiThread
-    void addVideo(Video video) {
+    @UiThread void addVideo(Video video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         List<VideoTag> tags = new LinkedList<>();
         for (int i = 0; i < video.tags.size(); i++) {
             tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x, video.tags.get(i).y));
         }
-        NetworkVideo videoResource = new NetworkVideo(video.domain + video.fileName, tags);
-        videoResource.setPath(videoFile.getPath());
+        NetworkVideo videoResource = new NetworkVideo(tags, videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);
         videoPlayView.setPreview(FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB));
         videoPlayView.addAvatarUrl(((TagVideo) video).avatar);
-    }
-
-    @Click(R.id.videoPlayView)
-    void videoClick() {
-        if (videoPlayView.isPlaying()) {
-            videoPlayView.pause();
-        } else {
-            videoPlayView.start();
-        }
+        onLoad();
     }
 
     @Click(R.id.voteCountTextView)
-    @Background
-    void voteClick() {
+    @Background void voteClick() {
         oneVideo.liked = !oneVideo.liked;
         oneVideo.likeNum += oneVideo.liked ? 1 : -1;
         refreshUserInfo();
@@ -109,8 +83,7 @@ public class PlayTagVideoFragment extends BaseFragment {
         }
     }
 
-    @UiThread
-    void refreshUserInfo() {
+    @UiThread void refreshUserInfo() {
         if (oneVideo.liked) {
             voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall_Inverse);
             voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
@@ -124,22 +97,5 @@ public class PlayTagVideoFragment extends BaseFragment {
     @Override
     public void setPageInfo() {
         mIsPage = false;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (videoPlayView != null) {
-            videoPlayView.pause();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        VideoTaskManager.getInstance().quit();
-        if (videoPlayView != null) {
-            videoPlayView.stop();
-        }
     }
 }

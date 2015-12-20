@@ -33,15 +33,13 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  * A simple {@link BaseFragment} subclass.
  */
 @EFragment(R.layout.fragment_play_moment)
-public class PlayMomentFragment extends BaseFragment
+public class PlayMomentFragment extends PlayFragment
         implements OnemomentPlayerView.OnVideoChangeListener {
 
     @FragmentArg String startDate;
     @FragmentArg String endDate;
 
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
-
-    @ViewById OnemomentPlayerView videoPlayView;
 
     @AfterViews void setUpViews() {
         videoPlayView.setWithAvatar(false);
@@ -61,35 +59,12 @@ public class PlayMomentFragment extends BaseFragment
                 }
                 NetworkVideo videoResource = new NetworkVideo(videoTags, moment.getPath());
                 videoPlayView.addVideoResource(videoResource);
+                onLoad();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-    }
-
-    @Click(R.id.videoPlayView) void videoClick() {
-        if (videoPlayView.isPlaying()) {
-            videoPlayView.pause();
-            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        } else {
-            videoPlayView.start();
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
-    }
-
-    @Override public void onPause() {
-        super.onPause();
-        if (videoPlayView != null) {
-            videoPlayView.pause();
-        }
-    }
-
-    @Override public void onDestroy() {
-        super.onDestroy();
-        if (videoPlayView != null) {
-            videoPlayView.stop();
-        }
     }
 
     @Override public void setPageInfo() {
