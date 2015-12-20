@@ -26,7 +26,6 @@
     for each moment, if in that day, there is
     1. no video:
         - upload this moment
-        - delete this video
     2. a video, then compare moment to video, if
         1. moment newer:
             - upload this moment
