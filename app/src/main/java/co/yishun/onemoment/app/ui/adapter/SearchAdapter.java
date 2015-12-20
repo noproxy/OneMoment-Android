@@ -62,7 +62,7 @@ public class SearchAdapter
             drawable = holder.likeTextView.getCompoundDrawables()[0];
             drawable = DrawableCompat.wrap(drawable);
             DrawableCompat.setTint(drawable, mContext.getResources().getColor(R.color.textColorPrimary));
-            holder.likeTextView.setCompoundDrawables(drawable, null, null, null);
+            holder.likeTextView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
         } else
             holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(getDrawableByType(item.type), null, null, null);
     }
