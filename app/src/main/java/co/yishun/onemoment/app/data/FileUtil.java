@@ -80,7 +80,7 @@ public class FileUtil {
      * @param unixTimeStamp when the moment is shot. Null if use now.
      * @return file of the moment shot at sometime.
      */
-    public static File getMomentStoreFile(Context context, long unixTimeStamp) {
+    public static File getMomentStoreFile(Context context, String unixTimeStamp) {
         File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
         return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, unixTimeStamp);
     }
@@ -93,12 +93,12 @@ public class FileUtil {
         return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, apiMoment.getUnixTimeStamp());
     }
 
-    private static File getMediaStoreFile(Context context, File dir, Type type, @Nullable Long unixTimeStamp) {
+    private static File getMediaStoreFile(Context context, File dir, Type type, @Nullable String unixTimeStamp) {
         if (unixTimeStamp == null) {
-            unixTimeStamp = new Date().getTime() / 1000;
+            unixTimeStamp = String.valueOf(new Date().getTime() / 1000);
         }
         Log.i(TAG, "timestamp: " + unixTimeStamp);
-        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(unixTimeStamp * 1000);
+        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Long.parseLong(unixTimeStamp) * 1000);
         Log.i(TAG, "formatted time: " + time);
         return new File(dir, type.getPrefix(context) + time + URL_HYPHEN + unixTimeStamp + type.getSuffix());
     }
@@ -113,7 +113,7 @@ public class FileUtil {
      * @param file to retrieve.
      * @return unix timestamp in filename.
      */
-    public static long parseTimeStamp(File file) {
+    public static String parseTimeStamp(File file) {
         return parseTimeStamp(file.getPath());
     }
 
@@ -123,8 +123,8 @@ public class FileUtil {
      * @param pathOrFileName to retrieve.
      * @return unix timestamp in filename.
      */
-    public static long parseTimeStamp(String pathOrFileName) {
-        return Long.parseLong(pathOrFileName.substring(pathOrFileName.lastIndexOf(URL_HYPHEN) + 1, pathOrFileName.lastIndexOf(".")));
+    public static String parseTimeStamp(String pathOrFileName) {
+        return pathOrFileName.substring(pathOrFileName.lastIndexOf(URL_HYPHEN) + 1, pathOrFileName.lastIndexOf("."));
     }
 
     /**

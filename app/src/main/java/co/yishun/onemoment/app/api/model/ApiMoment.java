@@ -46,8 +46,8 @@ public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuK
     }
 
     @Override
-    public long getUnixTimeStamp() {
-        return Long.parseLong(key.substring(key.lastIndexOf(Constants.URL_HYPHEN) + 1, key.lastIndexOf(".")));
+    public String getUnixTimeStamp() {
+        return key.substring(key.lastIndexOf(Constants.URL_HYPHEN) + 1, key.lastIndexOf("."));
     }
 
     @Override

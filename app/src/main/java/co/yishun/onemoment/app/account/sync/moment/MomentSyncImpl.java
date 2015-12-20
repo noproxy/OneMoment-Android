@@ -135,10 +135,10 @@ public class MomentSyncImpl extends MomentSync {
             if (momentOnServer == null) {
                 toUpload.add(moment);
             } else {
-                if (moment.getUnixTimeStamp() > momentOnServer.getUnixTimeStamp()) {
+                if (Long.parseLong(moment.getUnixTimeStamp()) > Long.parseLong(momentOnServer.getUnixTimeStamp())) {
                     toUpload.add(moment);
                     toDelete.add(momentOnServer);
-                } else if (moment.getUnixTimeStamp() < momentOnServer.getUnixTimeStamp()) {
+                } else if (Long.parseLong(moment.getUnixTimeStamp()) < Long.parseLong(momentOnServer.getUnixTimeStamp())) {
                     toAdd.add(Pair.create(momentOnServer, moment));
                 }
                 apiMomentHashMap.remove(moment.getTime());
