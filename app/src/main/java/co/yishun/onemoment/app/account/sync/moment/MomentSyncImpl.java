@@ -29,6 +29,7 @@ import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiMoment;
+import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import retrofit.RestAdapter;
@@ -153,7 +154,14 @@ public class MomentSyncImpl extends MomentSync {
             ApiMoment apiMoment = pair.first;
             Moment moment = pair.second;
             if (moment == null) moment = new Moment();
-            //TODO update info
+
+            moment.setOwner(apiMoment.getOwnerID());
+            moment.setTime(apiMoment.getTime());
+            moment.setTimeStamp(apiMoment.getUnixTimeStamp());
+            moment.setPath(FileUtil.getMomentStoreFile(mContext, apiMoment).toString());
+            moment.setThumbPath(FileUtil.getThumbnailStoreFile(mContext, apiMoment, FileUtil.Type.MICRO_THUMB).getPath());
+            moment.setLargeThumbPath(FileUtil.getThumbnailStoreFile(mContext, apiMoment, FileUtil.Type.LARGE_THUMB).getPath());
+
             try {
                 dao.createOrUpdate(moment);
                 toFix.add(moment);
