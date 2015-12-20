@@ -119,12 +119,20 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
         this.thumbPath = thumbPath;
     }
 
+    public File getThumbPathFile() {
+        return new File(getThumbPath());
+    }
+
     public String getLargeThumbPath() {
         return largeThumbPath;
     }
 
     public void setLargeThumbPath(String largeThumbPath) {
         this.largeThumbPath = largeThumbPath;
+    }
+
+    public File getLargeThumbPathFile() {
+        return new File(largeThumbPath);
     }
 
     public void setOwner(String owner) {
