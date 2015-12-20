@@ -37,7 +37,7 @@ import retrofit.RestAdapter;
  * Created by Carlos on 2015/12/20.
  */
 @EBean
-public class MomentSyncImpl implements MomentSync {
+public class MomentSyncImpl extends MomentSync {
     private static final String TAG = "MomentSyncImpl";
     private final Context mContext;
     /**
@@ -99,7 +99,7 @@ public class MomentSyncImpl implements MomentSync {
     }
 
     @Override
-    public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+    void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 
         RestAdapter restAdapter = OneMomentV3.createAdapter();
         co.yishun.onemoment.app.api.Account service = restAdapter.create(co.yishun.onemoment.app.api.Account.class);

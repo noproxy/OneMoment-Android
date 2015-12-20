@@ -7,14 +7,23 @@ import android.content.SyncResult;
 import android.os.Bundle;
 
 /**
+ * Abstract MomentSync module. Call {@link #sync(Context, Account, Bundle, String, ContentProviderClient, SyncResult)} to sync.
+ * <p>
  * Created by Carlos on 2015/12/20.
  */
-public interface MomentSync {
+public abstract class MomentSync {
 
-    static void sync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        MomentSyncImpl_.getInstance_(context).onPerformSync(account, extras, authority, provider, syncResult);
+    public static MomentSync getInstance(Context context) {
+        return MomentSyncImpl_.getInstance_(context);
     }
 
-    void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult);
+    /**
+     * Just sync.
+     */
+    public static void sync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+        getInstance(context).onPerformSync(account, extras, authority, provider, syncResult);
+    }
+
+    abstract void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult);
 
 }
