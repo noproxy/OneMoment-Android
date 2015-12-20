@@ -43,10 +43,9 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
      */
     @DatabaseField private String owner;
     @DatabaseField private String time;
-    @DatabaseField private long timeStamp;
+    @DatabaseField private String timeStamp;
 
     public Moment() {
-        fixTimeStampAndTime();
     /*keep for ormlite*/
     }
 
@@ -78,7 +77,7 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
         return owner;
     }
 
-    public long getUnixTimeStamp() {
+    public String getUnixTimeStamp() {
         return timeStamp;
     }
 
@@ -94,19 +93,6 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
                 '}';
     }
 
-    /**
-     * To fix TimeStamp from millisecond to second
-     *
-     * @return whether timestamp is wrong
-     */
-    public boolean fixTimeStampAndTime() {
-        if (String.valueOf(timeStamp).length() > 10) {
-            timeStamp = timeStamp / 1000;
-            time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(timeStamp * 1000);
-            return true;
-        } else return false;
-    }
-
     @Override public String getKey() {
         return this.getOwnerID() + Constants.URL_HYPHEN + this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
     }
@@ -119,6 +105,10 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
         this.thumbPath = thumbPath;
     }
 
+    public File getThumbPathFile() {
+        return new File(getThumbPath());
+    }
+
     public String getLargeThumbPath() {
         return largeThumbPath;
     }
@@ -127,11 +117,15 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
         this.largeThumbPath = largeThumbPath;
     }
 
+    public File getLargeThumbPathFile() {
+        return new File(largeThumbPath);
+    }
+
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    public void setTimeStamp(long timeStamp) {
+    public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 
@@ -140,18 +134,18 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
      * to make a list of moment in time order.
      *
      * @return a negative integer if this instance is less than {@code another};
-     *         a positive integer if this instance is greater than
-     *         {@code another}; 0 if this instance has the same order as
-     *         {@code another}.
+     * a positive integer if this instance is greater than
+     * {@code another}; 0 if this instance has the same order as
+     * {@code another}.
      */
     @Override public int compareTo(@NonNull Object another) {
-        if (!(another instanceof Moment)){
+        if (!(another instanceof Moment)) {
             return 1;
         }
-        Moment anotherMoment = (Moment)another;
+        Moment anotherMoment = (Moment) another;
         int thisTime = Integer.valueOf(this.getTime());
         int anotherTime = Integer.valueOf(anotherMoment.getTime());
-        if (thisTime > anotherTime){
+        if (thisTime > anotherTime) {
             return 1;
         } else {
             return -1;
@@ -165,7 +159,7 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
 
         String getOwnerID();
 
-        long getUnixTimeStamp();
+        String getUnixTimeStamp();
     }
 
     public static class MomentBuilder {
@@ -202,7 +196,7 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
             m.path = mPath;
             m.owner = AccountManager.getAccountId(mContext);
             m.timeStamp = FileUtil.parseTimeStamp(mPath);
-            m.time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(m.getUnixTimeStamp() * 1000);
+            m.time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Long.parseLong(m.getUnixTimeStamp()) * 1000);
             return m;
         }
 
