@@ -75,7 +75,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private final List<Moment> toCreateThumb = new ArrayList<>();
     @SystemService ConnectivityManager connectivityManager;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> dao;
-    ExecutorService executor = Executors.newCachedThreadPool();
+    ExecutorService executor;
     private volatile int allTask = 0;
     private volatile int successTask = 0;
     private volatile int failTask = 0;
@@ -208,7 +208,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void digestTask() {
-
+        executor = Executors.newSingleThreadExecutor();
         allTask = toDownload.size() + toUpload.size();
         failTask = 0;
         successTask = 0;
