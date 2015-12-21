@@ -75,7 +75,6 @@
     <string name="fragment_me_voted_format_text">收到的赞 %s</string>
     <string name="fragment_phone_verify_verify_error_expire">验证码过期，请重新发送。</string>
     <string name="fragment_phone_verify_verify_progress">正在验证，请稍后…</string>
-    <string name="hello_blank_fragment"></string>
     <string name="view_today_moment_no_moment">今天还没有一瞬</string>
     <string name="view_today_moment_no_tag">没有添加标签</string>
 

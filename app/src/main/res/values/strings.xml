@@ -53,8 +53,6 @@
     <string name="progress_loading_msg">Loading…</string>
     <string name="unknown_error">Unknown Error</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="fragment_phone_verify_sign_up_error_account_exit">Account exists, please login.</string>
     <string name="fragment_phone_verify_sign_up_error_password_invalid">Password is invalid.</string>
 
