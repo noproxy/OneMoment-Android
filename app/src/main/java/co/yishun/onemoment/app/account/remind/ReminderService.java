@@ -93,9 +93,8 @@ public class ReminderService extends Service {
                         .setTicker(CONTENT[contentIndex])
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(CONTENT[contentIndex]))
                         .setSound(ringtoneUri)
-                        .setDefaults(Notification.DEFAULT_LIGHTS)
                         .setAutoCancel(true);
-        if (vibrate) mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+        mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | (vibrate ? Notification.DEFAULT_VIBRATE : 0));
 
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
