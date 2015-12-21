@@ -26,7 +26,7 @@
     <string name="pref_title_sync_cellular_data">Use cellular data</string>
     <string name="pref_summary_sync_cellular_data_on">Backup up Moment over Wifi&amp; cellular data</string>
     <string name="pref_summary_sync_cellular_data_off">Backup up Moment only when wifi is available</string>
-    <string name="pref_title_sync_at_once">Sync at once</string>
+    <string name="pref_title_sync_at_once">Sync now</string>
     <string name="pref_summary_sync_at_once">Ignore any sync settings</string>
 
     <string name="pref_title_remind">Remind</string>
