@@ -82,11 +82,17 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         }
     };
 
+    /**
+     * Flag means just going to shoot diary ui.
+     */
+    private boolean goToShootDiary = false;
+
     @Override
     protected void onResume() {
         super.onResume();
         // refresh diary in case moment update
-        if (currentItemId == R.id.navigation_item_1) {
+        if (currentItemId == R.id.navigation_item_1 && goToShootDiary) {
+            goToShootDiary = false;
             updateDiary();
         }
         registerSyncListener();
@@ -103,6 +109,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     private void startShoot(View view, boolean forWorld) {
+        if (!forWorld) goToShootDiary = true;
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
