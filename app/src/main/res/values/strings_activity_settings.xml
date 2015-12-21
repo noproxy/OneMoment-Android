@@ -1,6 +1,8 @@
 <resources>
     <string name="title_settings">Settings</string>
 
+    <string name="activity_settings_sync_now">Sync…</string>
+
     <!-- settings for Data & Sync -->
     <string name="pref_title_sync">Data &amp; sync</string>
     <string name="pref_title_sync_auto">Auto sync</string>
@@ -30,7 +32,7 @@
     <string name="pref_title_remind">Remind</string>
     <string name="pref_title_remind_everyday">Remind everyday</string>
     <string name="pref_summary_remind_everyday">Shoot your apiMoment everyday</string>
-    
+
     <string name="pref_title_remind_time">Remind Time</string>
     <string name="pref_summary_remind_time_default" translatable="false">20:00</string>
 

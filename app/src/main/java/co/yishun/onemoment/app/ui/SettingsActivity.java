@@ -134,6 +134,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
             bindPreferenceSummaryToValue(this.findPreference(getString(R.string.pref_key_remind_ringtone)));
             this.findPreference(getString(R.string.pref_key_sync_now)).setOnPreferenceClickListener(preference -> {
                 SyncManager.syncNow(getActivity());
+                ((SettingsActivity) getActivity()).showSnackMsg(R.string.activity_settings_sync_now);
                 return true;
             });
         }
