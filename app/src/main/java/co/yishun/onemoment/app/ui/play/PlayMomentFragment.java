@@ -48,6 +48,7 @@ public class PlayMomentFragment extends PlayFragment
             videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
             Collections.sort(momentList);
             for (Moment moment : momentList) {
+                if (moment.getFile().length() == 0) continue;
                 List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());
                 List<VideoTag> videoTags = new ArrayList<>();
                 for (OMLocalVideoTag omlTag : omLocalVideoTags) {
