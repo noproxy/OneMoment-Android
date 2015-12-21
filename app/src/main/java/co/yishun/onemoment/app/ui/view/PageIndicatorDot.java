@@ -141,9 +141,9 @@ public class PageIndicatorDot extends View {
         float topMargin = height / 2;
 
         for (int i = 0; i < num; i++) {
+            canvas.drawCircle(leftMargin + interval * i, topMargin, radius, normalPaint);
             if (i == current)
                 canvas.drawCircle(leftMargin + interval * current, topMargin, radius, selectPaint);
-            canvas.drawCircle(leftMargin + interval * i, topMargin, radius, normalPaint);
         }
     }
 }
