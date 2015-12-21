@@ -28,4 +28,5 @@
 
     <dimen name="page_indicator_dot_radius">5dp</dimen>
     <dimen name="page_indicator_dot_interval">12dp</dimen>
+    <dimen name="page_indicator_dot_stroke_width">1dp</dimen>
 </resources>

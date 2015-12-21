@@ -22,11 +22,14 @@ public class PageIndicatorDot extends View {
     float interval;
     int background;
     int foreground;
+    boolean isStroke;
+    float stokeWidth;
 
     int current;
 
     private ViewPager viewPager;
-    private Paint paint;
+    private Paint selectPaint;
+    private Paint normalPaint;
 
     public PageIndicatorDot(Context context) {
         super(context);
@@ -37,12 +40,14 @@ public class PageIndicatorDot extends View {
         super(context, attrs);
         init(context);
         initAttr(context, attrs);
+        resetPaint();
     }
 
     public PageIndicatorDot(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
         initAttr(context, attrs);
+        resetPaint();
     }
 
     private void initAttr(Context context, AttributeSet attrs) {
@@ -53,6 +58,8 @@ public class PageIndicatorDot extends View {
         interval = typedArray.getDimension(R.styleable.PageIndicatorDot_pid_interval, interval);
         background = typedArray.getColor(R.styleable.PageIndicatorDot_pid_background, background);
         foreground = typedArray.getColor(R.styleable.PageIndicatorDot_pid_foreground, foreground);
+        isStroke = typedArray.getBoolean(R.styleable.PageIndicatorDot_pid_isStroke, isStroke);
+        stokeWidth = typedArray.getDimension(R.styleable.PageIndicatorDot_pid_strokeWidth, stokeWidth);
 
         typedArray.recycle();
     }
@@ -65,9 +72,27 @@ public class PageIndicatorDot extends View {
         interval = resources.getDimension(R.dimen.page_indicator_dot_interval);
         background = resources.getColor(android.R.color.white);
         foreground = resources.getColor(R.color.colorAccent);
+        isStroke = false;
+        stokeWidth = resources.getDimension(R.dimen.page_indicator_dot_stroke_width);
         current = 0;
 
-        paint = new Paint();
+        selectPaint = new Paint();
+        selectPaint.setAntiAlias(true);
+        normalPaint = new Paint();
+        normalPaint.setAntiAlias(true);
+    }
+
+    private void resetPaint() {
+        selectPaint.setStyle(Paint.Style.FILL);
+        selectPaint.setColor(foreground);
+        if (isStroke) {
+            normalPaint.setStyle(Paint.Style.STROKE);
+            normalPaint.setColor(foreground);
+            normalPaint.setStrokeWidth(stokeWidth);
+        } else {
+            normalPaint.setStyle(Paint.Style.FILL);
+            normalPaint.setColor(background);
+        }
     }
 
     public void setViewPager(ViewPager viewPager) {
@@ -115,14 +140,10 @@ public class PageIndicatorDot extends View {
         float leftMargin = (width - interval * (num - 1)) / 2;
         float topMargin = height / 2;
 
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(background);
-
         for (int i = 0; i < num; i++) {
-            canvas.drawCircle(leftMargin + interval * i, topMargin, radius, paint);
+            if (i == current)
+                canvas.drawCircle(leftMargin + interval * current, topMargin, radius, selectPaint);
+            canvas.drawCircle(leftMargin + interval * i, topMargin, radius, normalPaint);
         }
-
-        paint.setColor(foreground);
-        canvas.drawCircle(leftMargin + interval * current, topMargin, radius, paint);
     }
 }
