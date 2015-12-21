@@ -15,8 +15,10 @@
         android:id="@+id/avatarLayout"
         android:layout_width="match_parent"
         android:layout_height="72dp"
+        android:background="@drawable/bg_btn_white"
         android:paddingLeft="32dp"
-        android:paddingRight="32dp">
+        android:paddingRight="32dp"
+        android:stateListAnimator="@anim/btn_elevation">
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,9 +45,9 @@
 
     <fragment
         android:id="@+id/nicknameFragment"
+        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
         tools:layout="@layout/fragment_user_info_item"/>
 
     <View
@@ -55,9 +57,9 @@
 
     <fragment
         android:id="@+id/weiboFragment"
+        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
         tools:layout="@layout/fragment_user_info_item"/>
 
     <View
@@ -67,9 +69,9 @@
 
     <fragment
         android:id="@+id/genderFragment"
+        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
         tools:layout="@layout/fragment_user_info_item"/>
 
     <View
@@ -79,9 +81,9 @@
 
     <fragment
         android:id="@+id/locationFragment"
+        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        class="co.yishun.onemoment.app.ui.UserInfoActivity$ItemFragment"
         tools:layout="@layout/fragment_user_info_item"/>
 
     <View
@@ -89,4 +91,25 @@
         android:layout_height="1dp"
         android:background="@color/colorDivider"/>
 
+    <LinearLayout
+        android:id="@+id/signOutBtn"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/bg_btn_white"
+        android:padding="8dp"
+        android:stateListAnimator="@anim/btn_elevation"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="@string/activity_user_info_sign_out"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/holo_red_light"
+            />
+    </LinearLayout>
 </LinearLayout>

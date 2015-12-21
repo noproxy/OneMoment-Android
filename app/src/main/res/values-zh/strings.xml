@@ -71,11 +71,10 @@
     <string name="fragment_integrate_info_sign_up_success">注册成功</string>
     <string name="fragment_integrate_info_sign_up_success_but_avatar_upload_failed">注册成功,但上传头像好像出了点问题。您可以去修改资料里更新头像。</string>
     <string name="fragment_me_action_modify_info">修改资料</string>
-    <string name="fragment_me_vote_format_text">点赞的视频</string>
-    <string name="fragment_me_voted_format_text">收到的赞</string>
+    <string name="fragment_me_vote_format_text">点赞的视频 %s</string>
+    <string name="fragment_me_voted_format_text">收到的赞 %s</string>
     <string name="fragment_phone_verify_verify_error_expire">验证码过期，请重新发送。</string>
     <string name="fragment_phone_verify_verify_progress">正在验证，请稍后…</string>
-    <string name="hello_blank_fragment"></string>
     <string name="view_today_moment_no_moment">今天还没有一瞬</string>
     <string name="view_today_moment_no_tag">没有添加标签</string>
 

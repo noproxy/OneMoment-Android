@@ -1,10 +1,6 @@
 package co.yishun.onemoment.app.account;
 
 import android.accounts.Account;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +13,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
@@ -53,7 +48,7 @@ public class AccountManager {
 
     public static boolean isLogin(Context context) {
         if (getAccount(context) == null) return false;
-        else if (getUserInfo(context) == null){
+        else if (getUserInfo(context) == null) {
             deleteAccount(context);
             return false;
         }
@@ -74,22 +69,14 @@ public class AccountManager {
         return getAccountManager(context).getUserData(account, ACCOUNT_ID_KEY);
     }
 
-    public static boolean deleteAccount(Context context) {
+    public static void deleteAccount(Context context) {
         account = getAccount(context);
         mUser = null;
         deleteUserInfo(context);
-        MyFuture future = new MyFuture();
-        CountDownLatch latch = new CountDownLatch(1);
-        getAccountManager(context).removeAccount(account, future, null);
+        getAccountManager(context).removeAccount(account, null, null);
         SyncManager.disableSync();
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
+
         account = null;
-        return future.result;
     }
 
     public static boolean updateOrCreateUserInfo(Context context, User user) {
@@ -162,18 +149,5 @@ public class AccountManager {
 
     public interface OnUserInfoChangeListener {
         void onUserInfoChange(User info);
-    }
-
-    private static class MyFuture implements AccountManagerCallback<Boolean> {
-        boolean result = false;
-
-        @Override
-        public void run(AccountManagerFuture<Boolean> future) {
-            try {
-                result = future.getResult();
-            } catch (OperationCanceledException | IOException | AuthenticatorException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

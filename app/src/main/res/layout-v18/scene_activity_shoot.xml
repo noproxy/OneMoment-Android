@@ -13,12 +13,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
+
         <co.yishun.onemoment.app.ui.view.RadioCornerImageView
             android:id="@+id/maskImageView"
-            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
             app:rc_cornerRadio="0"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <co.yishun.onemoment.app.ui.view.PageIndicatorDot
+                android:id="@+id/pageIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="bottom"
+                android:fitsSystemWindows="true"
+                app:pid_dotRadius="3dp"
+                app:pid_interval="10dp"
+                app:pid_isStroke="true"/>
+        </LinearLayout>
     </FrameLayout>
 
 

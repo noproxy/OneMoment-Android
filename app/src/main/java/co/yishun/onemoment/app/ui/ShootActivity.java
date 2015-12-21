@@ -24,8 +24,10 @@ import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.view.PageIndicatorDot;
 import co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView;
 import co.yishun.onemoment.app.ui.view.shoot.IShootView;
+import co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 import me.toxz.circularprogressview.library.CircularProgressView;
@@ -41,6 +43,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     ImageSwitcher recordFlashSwitch;
     //    @ViewById unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
     ImageSwitcher cameraSwitch;
+    PageIndicatorDot pageIndicatorDot;
 
     @Extra
     int transitionX;
@@ -58,6 +61,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @Nullable
     CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
+    private int currentFilter = 0;
 
     @Override
     public void setPageInfo() {
@@ -73,8 +77,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     @UiThread()
-    @AfterViews
-    void preTransition() {
+    @AfterViews void preTransition() {
         sceneRoot = (ViewGroup) findViewById(R.id.linearLayout);
         sceneRoot.setVisibility(View.INVISIBLE);
         sceneRoot.post(() -> {
@@ -97,8 +100,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     @UiThread(delay = 250)
-    @AfterViews
-    void sceneTransition() {
+    @AfterViews void sceneTransition() {
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_shoot, this);
         TransitionSet set = new TransitionSet();
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
@@ -111,6 +113,13 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         shootView = (IShootView) findViewById(R.id.shootView);
         if (shootView instanceof CameraGLSurfaceView) {
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
+
+            mCameraGLSurfaceView.setOnClickListener(v -> {
+                Log.i(TAG, "click to set filter");
+                currentFilter = (currentFilter + 1) % FilterManager.FilterType.values().length;
+                mCameraGLSurfaceView.nextFilter();
+                pageIndicatorDot.setCurrent(currentFilter);
+            });
         }
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(findViewById(R.id.maskImageView), "alpha", 1f, 0f).setDuration(350);
@@ -118,6 +127,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
         recordFlashSwitch = (ImageSwitcher) findViewById(R.id.recordFlashSwitch);
         cameraSwitch = (ImageSwitcher) findViewById(R.id.cameraSwitch);
+        pageIndicatorDot = ((PageIndicatorDot) findViewById(R.id.pageIndicator));
         CircularProgressView shootBtn = ((CircularProgressView) findViewById(R.id.shootBtn));
         shootBtn.setOnStateListener(status -> {
             switch (status) {
@@ -129,6 +139,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         });
 
         setControllerBtn();
+
+        pageIndicatorDot.setNum(FilterManager.FilterType.values().length);
 
 
         recordFlashSwitch.getCurrentView().setOnClickListener(this::flashlightBtnClicked);
@@ -190,8 +202,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         delayStart(file);
     }
 
-    @UiThread(delay = 200)
-    void delayStart(File file) {
+    @UiThread(delay = 200) void delayStart(File file) {
         MomentCreateActivity_.intent(this).videoPath(file.getPath()).forWorld(forWorld).worldTag(worldTag).start();
         this.finish();
     }

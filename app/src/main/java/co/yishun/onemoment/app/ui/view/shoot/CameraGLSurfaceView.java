@@ -51,6 +51,10 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         init();
     }
 
+    public void nextFilter() {
+        mCameraRenderer.nextFilter();
+    }
+
     private void init() {
         initHandler();
 
@@ -63,12 +67,6 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         setRenderMode(RENDERMODE_WHEN_DIRTY);
 
         initFlashlightAndCamera();
-
-
-        this.setOnClickListener(v -> {
-            mCameraRenderer.nextFilter();
-            Log.i(TAG, "click to set filter");
-        });
     }
 
     public void onDestroy() {

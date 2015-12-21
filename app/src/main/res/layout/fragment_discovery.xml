@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_discovery"
     android:orientation="vertical"
-    tools:context=".ui.DiscoveryFragment"
+    tools:context=".ui.home.DiscoveryFragment"
     >
 
     <include layout="@layout/layout_toolbar"/>
