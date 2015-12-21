@@ -3,12 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center"
     android:orientation="vertical">
 
-    <TextView
-        android:gravity="center"
+    <ImageView
+        android:id="@+id/picImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/app_name"/>
+        android:layout_height="wrap_content"
+        android:src="@drawable/pic_guide_001"/>
 
+    <ImageView
+        android:id="@+id/textImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pic_guide_001txt"/>
 </LinearLayout>

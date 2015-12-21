@@ -225,8 +225,9 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.GuideActivity_">
-
+        <activity
+            android:name=".ui.GuideActivity_"
+            android:theme="@style/AppTheme.GuideActivity">
         </activity>
 
         <service android:name=".account.remind.ReminderService">
