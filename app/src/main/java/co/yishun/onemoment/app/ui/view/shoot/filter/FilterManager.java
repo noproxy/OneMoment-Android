@@ -36,13 +36,13 @@ public class FilterManager {
         ToneCurve0,
         ToneCurve1,
         ToneCurve2,
-        ToneCurve3,
-        ToneCurve4,
-        ToneCurve5,
-        ToneCurve6,
-        ToneCurve7,
-        ToneCurve8,
-        ToneCurve9,
-        ToneCurve10
+//        ToneCurve3,
+//        ToneCurve4,
+//        ToneCurve5,
+//        ToneCurve6,
+//        ToneCurve7,
+//        ToneCurve8,
+//        ToneCurve9,
+//        ToneCurve10
     }
 }
