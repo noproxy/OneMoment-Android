@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.UiThread;
@@ -79,8 +81,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         mPageName = "UserInfoActivity";
     }
 
-    @AfterViews
-    void setupToolbar() {
+    @AfterViews void setupToolbar() {
         if (toolbar == null)
             throw new UnsupportedOperationException("You need bind Toolbar instance to" +
                     " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
@@ -105,8 +106,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         AccountManager.removeOnUserInfoChangedListener(this);
     }
 
-    @AfterViews
-    void setupViews() {
+    @AfterViews void setupViews() {
         avatarLayout.setOnClickListener(this::pickAvatar);
 
         nicknameFragment.setTitle(getString(R.string.activity_user_info_username));
@@ -131,9 +131,9 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
                 .title(getString(R.string.activity_user_info_username))
                 .input(getString(R.string.activity_user_info_username), AccountManager.getUserInfo(this).nickname, false, (MaterialDialog dialog, CharSequence input) -> {
                     if (TextUtils.equals(input, AccountManager.getUserInfo(this).nickname))
-                                return;
+                        return;
                     updateUserInfo(AccountManager.getUserInfo(this)._id, input.toString(), null, null, null);
-                        })
+                })
                 .build().show();
     }
 
@@ -159,7 +159,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
             });
         } else {
             if (TextUtils.isEmpty(user.phone) && TextUtils.isEmpty(user.qqId)
-                    &&TextUtils.isEmpty(user.weiboUid) && TextUtils.isEmpty(user.weixinUid)){
+                    && TextUtils.isEmpty(user.weiboUid) && TextUtils.isEmpty(user.weixinUid)) {
                 showSnackMsg(R.string.activity_user_info_weibo_id_unbind_forbid);
                 return;
             }
@@ -206,8 +206,23 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
                 .show();
     }
 
-    @UiThread
-    void invalidateUserInfo(User user) {
+
+    @Click(R.id.signOutBtn) void signOut() {
+        new MaterialDialog.Builder(this).theme(Theme.LIGHT).title(R.string.activity_user_info_sign_out_dialog_title).content(R.string.activity_user_info_sign_out_dialog_content).positiveText(R.string.activity_user_info_sign_out_dialog_cancel).negativeText(R.string.activity_user_info_sign_out_dialog_ok).
+                callback(new MaterialDialog.ButtonCallback() {
+                    @Override public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        AccountManager.deleteAccount(UserInfoActivity.this);
+                        dialog.dismiss();
+                        UserInfoActivity.this.finish();
+                        SplashActivity_.intent(UserInfoActivity.this).action(Intent.ACTION_MAIN)
+                                .flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+                    }
+                }).
+                show();
+    }
+
+    @UiThread void invalidateUserInfo(User user) {
         if (user == null) {
             return;
         }
@@ -249,8 +264,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         Picasso.with(this).load(uri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(avatarImage);
     }
 
-    @Background
-    void updateAvatar(@NonNull String userId) {
+    @Background void updateAvatar(@NonNull String userId) {
         if (croppedProfileUri == null) return;
         String uriString = croppedProfileUri.toString();
         String path = uriString.substring(uriString.indexOf(":") + 1);
@@ -299,8 +313,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         AccountManager.updateOrCreateUserInfo(this, user);
     }
 
-    @Background
-    void bindWeibo(OAuthToken token) {
+    @Background void bindWeibo(OAuthToken token) {
         UserInfo userInfo = new WeiboHelper(this).getUserInfo(token);
 
         Account account = OneMomentV3.createAdapter().create(Account.class);
@@ -315,8 +328,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         AccountManager.updateOrCreateUserInfo(this, user);
     }
 
-    @Background
-    void unbindWeibo(String weiboUid) {
+    @Background void unbindWeibo(String weiboUid) {
         Account account = OneMomentV3.createAdapter().create(Account.class);
         User user = account.unbindWeibo(AccountManager.getUserInfo(this)._id, weiboUid);
         if (user.code <= 0) {

@@ -12,4 +12,9 @@
     <string name="activity_user_info_location">Location</string>
 
     <string name="activity_user_info_dialog_positive">OK</string>
+    <string name="activity_user_info_sign_out">Sign Out</string>
+    <string name="activity_user_info_sign_out_dialog_title">Sign Out</string>
+    <string name="activity_user_info_sign_out_dialog_cancel">Cancel</string>
+    <string name="activity_user_info_sign_out_dialog_ok">Sign Out</string>
+    <string name="activity_user_info_sign_out_dialog_content">Are you sure to sign out?</string>
 </resources>
