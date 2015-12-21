@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="co.yishun.onemoment.app.ui.GuideActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <co.yishun.onemoment.app.ui.view.PageIndicatorDot
+            android:id="@+id/pageIndicator"
+            android:fitsSystemWindows="true"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            app:pid_interval="16dp"
+            app:pid_isStroke="true"/>
+    </RelativeLayout>
+
+</RelativeLayout>

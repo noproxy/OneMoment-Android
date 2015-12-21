@@ -25,4 +25,8 @@
     <dimen name="navigation_elevation">12dp</dimen>
 
     <dimen name="video_grid_divider">6dp</dimen>
+
+    <dimen name="page_indicator_dot_radius">5dp</dimen>
+    <dimen name="page_indicator_dot_interval">12dp</dimen>
+    <dimen name="page_indicator_dot_stroke_width">1dp</dimen>
 </resources>
