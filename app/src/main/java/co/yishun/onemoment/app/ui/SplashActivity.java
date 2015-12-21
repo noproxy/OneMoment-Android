@@ -14,6 +14,7 @@ import org.androidannotations.api.SdkVersionHelper;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.account.remind.ReminderReceiver;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.wxapi.EntryActivity;
 
@@ -65,6 +66,7 @@ public class SplashActivity extends BaseActivity {
 
 
     @UiThread(delay = 1600) void startRecording() {
+        sendBroadcast(new Intent(ReminderReceiver.ACTION_UPDATE_REMIND));
         this.finish();
 //        if (BuildConfig.DEBUG) new EveryDayNotification().onReceive(this, null);
         if (isFirstLaunch()) {
