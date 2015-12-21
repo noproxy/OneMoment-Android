@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
@@ -31,6 +32,7 @@ public class OnemomentPlayerView extends RelativeLayout
     private AvatarRecyclerView mAvatarView;
     private ImageView mVideoPreview;
     private ImageView mPlayBtn;
+    private ProgressBar mProgress;
     private PlayTagContainer mTagContainer;
     private List<NetworkVideo> mVideoResources = new LinkedList<>();
     private OnVideoChangeListener mVideoChangeListener;
@@ -80,6 +82,7 @@ public class OnemomentPlayerView extends RelativeLayout
         mVideoPreview = (ImageView) findViewById(R.id.om_video_preview);
         mTagContainer = (PlayTagContainer) findViewById(R.id.om_tags_container);
         mAvatarView = (AvatarRecyclerView) findViewById(R.id.om_avatar_recycler_view);
+        mProgress = (ProgressBar) findViewById(R.id.om_progress);
 
         mPlaySurface.setOneListener(this);
 
@@ -104,6 +107,18 @@ public class OnemomentPlayerView extends RelativeLayout
 
     public void setPreview(File largeThumb) {
         Picasso.with(getContext()).load(largeThumb).into(mVideoPreview);
+    }
+
+    public void showLoading() {
+        mProgress.setVisibility(VISIBLE);
+        mPlayBtn.setVisibility(INVISIBLE);
+        this.setEnabled(false);
+    }
+
+    public void hideLoading() {
+        mProgress.setVisibility(INVISIBLE);
+        mPlayBtn.setVisibility(VISIBLE);
+        this.setEnabled(true);
     }
 
     public void start() {

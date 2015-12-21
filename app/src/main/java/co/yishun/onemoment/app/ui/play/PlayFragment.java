@@ -1,10 +1,9 @@
 package co.yishun.onemoment.app.ui.play;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
@@ -23,9 +22,11 @@ public abstract class PlayFragment extends BaseFragment {
     protected Context mContext;
     @ViewById OnemomentPlayerView videoPlayView;
 
-    @Override public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ((BaseActivity) getActivity()).showProgress();
+    private boolean isLoading;
+
+    @AfterViews void setupVideoPlayView() {
+        videoPlayView.showLoading();
+        isLoading = true;
     }
 
     @Override
@@ -35,11 +36,15 @@ public abstract class PlayFragment extends BaseFragment {
     }
 
     protected void onLoad() {
-        ((BaseActivity) getActivity()).hideProgress();
+        videoPlayView.hideLoading();
+        isLoading = false;
     }
 
-    protected void onLoadError() {
-        ((BaseActivity) getActivity()).hideProgress();
+    protected void onLoadError(int resId) {
+        videoPlayView.hideLoading();
+        if (isLoading) {
+            ((BaseActivity) getActivity()).showSnackMsg(resId);
+        }
     }
 
     @Click(R.id.videoPlayView) void videoClick() {

@@ -57,6 +57,9 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
         List<TagVideo> videos = mWorld.getVideoOfTag(worldTag.name, offset,
                 10, AccountManager.getUserInfo(mContext)._id, seed);
         if (videos.size() == 0) {
+            if (offset == 0){
+                onLoadError(R.string.fragment_play_world_video_null);
+            }
             return;
         }
         offset += videos.size();

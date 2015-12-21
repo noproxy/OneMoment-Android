@@ -74,6 +74,7 @@ public class AvatarRecyclerView extends RecyclerView {
         index = 0;
 
         addOnScrollListener(new AvatarOnScrollListener());
+        setEnabled(false);
     }
 
     public void addAvatar(String url) {

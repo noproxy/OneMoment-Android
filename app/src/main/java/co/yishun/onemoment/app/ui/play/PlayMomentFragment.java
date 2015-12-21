@@ -59,6 +59,7 @@ public class PlayMomentFragment extends PlayFragment
                 videoPlayView.addVideoResource(videoResource);
                 onLoad();
             }
+            onLoadError(R.string.fragment_play_moment_not_found);
         } catch (SQLException e) {
             e.printStackTrace();
         }

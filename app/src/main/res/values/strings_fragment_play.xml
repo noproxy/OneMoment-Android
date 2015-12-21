@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_play_moment_not_found">Moment not found</string>
+    <string name="fragment_play_world_video_null">No video in this world!</string>
+    <string name="fragment_play_world_video_load_error">Video load error!</string>
+</resources>

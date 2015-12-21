@@ -30,13 +30,20 @@
             android:layout_centerInParent="true"
             android:src="@drawable/ic_play"/>
 
+        <ProgressBar
+            android:id="@+id/om_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
     </co.yishun.library.PlayTagContainer>
 
     <co.yishun.library.AvatarRecyclerView
-        android:layout_marginTop="8dp"
         android:id="@+id/om_avatar_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/arv_selectSize"
+        android:layout_marginTop="8dp"
         app:arv_normalSize="@dimen/arv_normalSize"
         app:arv_selectSize="@dimen/arv_selectSize"/>
 
