@@ -15,6 +15,7 @@ import org.androidannotations.annotations.ViewById;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import co.yishun.library.OnemomentPlayerView;
@@ -49,6 +50,7 @@ public class PlayMomentFragment extends PlayFragment
                     .eq("owner", AccountManager.getAccountId(getContext())).and()
                     .between("time", startDate, endDate).query();
             videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
+            Collections.sort(momentList);
             for (Moment moment : momentList) {
                 List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());
                 List<VideoTag> videoTags = new ArrayList<>();
