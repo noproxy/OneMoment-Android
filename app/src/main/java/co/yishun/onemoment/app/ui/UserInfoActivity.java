@@ -215,7 +215,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
                         dialog.dismiss();
                         UserInfoActivity.this.finish();
                         SplashActivity_.intent(UserInfoActivity.this).action(Intent.ACTION_MAIN)
-                                .flags(Intent.FLAG_ACTIVITY_CLEAR_TOP).start();
+                                .flags(Intent.FLAG_ACTIVITY_CLEAR_TASK).start();
                     }
                 }).
                 show();
