@@ -15,10 +15,18 @@
             />
         <co.yishun.onemoment.app.ui.view.RadioCornerImageView
             android:id="@+id/maskImageView"
-            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
             app:rc_cornerRadio="0"/>
+
+        <co.yishun.onemoment.app.ui.view.PageIndicatorDot
+            android:id="@+id/pageIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:fitsSystemWindows="true"
+            app:pid_interval="16dp"
+            app:pid_isStroke="true"/>
     </FrameLayout>
 
 
