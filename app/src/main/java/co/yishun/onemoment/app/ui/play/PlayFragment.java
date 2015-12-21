@@ -18,14 +18,14 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  * Created on 2015/12/20.
  */
 @EFragment
-public abstract class PlayFragment extends BaseFragment{
+public abstract class PlayFragment extends BaseFragment {
 
-    @ViewById OnemomentPlayerView videoPlayView;
     protected Context mContext;
+    @ViewById OnemomentPlayerView videoPlayView;
 
     @Override public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((BaseActivity)getActivity()).showProgress();
+        ((BaseActivity) getActivity()).showProgress();
     }
 
     @Override
@@ -35,11 +35,11 @@ public abstract class PlayFragment extends BaseFragment{
     }
 
     protected void onLoad() {
-        ((BaseActivity)getActivity()).hideProgress();
+        ((BaseActivity) getActivity()).hideProgress();
     }
 
     protected void onLoadError() {
-        ((BaseActivity)getActivity()).hideProgress();
+        ((BaseActivity) getActivity()).hideProgress();
     }
 
     @Click(R.id.videoPlayView) void videoClick() {
