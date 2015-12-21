@@ -1,13 +1,15 @@
 package co.yishun.onemoment.app.account.remind;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
@@ -19,6 +21,7 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.ui.SplashActivity_;
@@ -39,6 +42,15 @@ public class ReminderService extends Service {
             "今天就没有那么一瞬值得被记录么？",
             "神说，永远别想重来昨天的一瞬，所以今天也要记录下来哦！"
     };
+    private StartAppReceiver startAppReceiver;
+
+    @Override public void onCreate() {
+        super.onCreate();
+        startAppReceiver = new StartAppReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(StartAppReceiver.ACTION);
+        this.registerReceiver(startAppReceiver, intentFilter);
+    }
 
     @Nullable
     @Override
@@ -46,11 +58,16 @@ public class ReminderService extends Service {
         return null;
     }
 
+    @Override public void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(startAppReceiver);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Intent startApp = new Intent();
-        startApp.setComponent(new ComponentName(this, SplashActivity_.class));
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, startApp, 0);
+        startApp.setAction(StartAppReceiver.ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, startApp, 0);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -115,4 +132,26 @@ public class ReminderService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    class StartAppReceiver extends BroadcastReceiver {
+        public static final String ACTION = "co.yishun.onemoment.app.remind.startApp";
+
+        @Override public void onReceive(Context context, Intent intent) {
+            final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            final List<ActivityManager.RunningTaskInfo> recentTasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+            boolean needStart = true;
+            for (int i = 0; i < recentTasks.size(); i++) {
+                if (recentTasks.get(i).baseActivity.toShortString().contains(context.getPackageName())) {
+                    needStart = false;
+                    activityManager.moveTaskToFront(recentTasks.get(i).id, ActivityManager.MOVE_TASK_WITH_HOME);
+                    break;
+                }
+            }
+
+            if (needStart) {
+                Intent start = new Intent(context, SplashActivity_.class);
+                start.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(start);
+            }
+        }
+    }
 }
