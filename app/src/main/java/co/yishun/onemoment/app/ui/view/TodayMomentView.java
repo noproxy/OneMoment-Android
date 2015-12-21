@@ -66,7 +66,7 @@ public class TodayMomentView extends RelativeLayout {
         mDateTextView.setText(todayMoment.date);
         if (todayMoment.moment != null) {
             Moment moment = todayMoment.moment;
-            Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(mMomentImageView);
+            Picasso.with(getContext()).load(new File(moment.getThumbPath())).error(R.drawable.pic_world_default).into(mMomentImageView);
             mTagTextView.setText(todayMoment.tag == null ? NO_TAG : todayMoment.tag);
         } else {
             Picasso.with(getContext()).load(R.drawable.pic_diary_none).resize(64 * 3, 64 * 3).centerInside().into(mMomentImageView);
