@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.SplashActivity_;
 
 /**
  * Created by Jinge on 2015/12/16.
@@ -48,8 +50,10 @@ public class ReminderService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         PackageManager pm = getPackageManager();
         Intent launchIntent = pm.getLaunchIntentForPackage(getPackageName());
-//        Intent startApp = new Intent(this, MainActivity_.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, launchIntent, 0);
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        Intent startApp = new Intent();
+        startApp.setComponent(new ComponentName(this, SplashActivity_.class));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, startApp, 0);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -86,12 +90,12 @@ public class ReminderService extends Service {
                 getString(R.string.pref_summary_remind_time_default));
         String[] timeStrings = time.split(":");
         Calendar now = Calendar.getInstance();
-        int hour = Integer.valueOf(timeStrings[0]) - now.get(Calendar.HOUR_OF_DAY);
-        int minute = Integer.valueOf(timeStrings[1]) - now.get(Calendar.MINUTE);
+        int hour = now.get(Calendar.HOUR_OF_DAY) - Integer.valueOf(timeStrings[0]);
+        int minute = now.get(Calendar.MINUTE) - Integer.valueOf(timeStrings[1]);
 
         long lastRemindTime = preferences.getLong("last_remind", 0);
         boolean shouldNotify = false;
-        if (Math.abs(hour * 60 + minute) < 3) {
+        if (hour * 60 + minute < 3) {
             shouldNotify = true;
         }
         if (lastRemindTime > 0) {
@@ -100,8 +104,8 @@ public class ReminderService extends Service {
 
             if (lastRemind.get(Calendar.DAY_OF_MONTH) == now.get(Calendar.DAY_OF_MONTH)) {
                 long timeDiff = now.getTimeInMillis() - lastRemindTime;
-                if (timeDiff < 3000) shouldNotify = false;
-                else if (Math.abs(hour * 60 + minute) < 3) {
+                if (timeDiff < 180000) shouldNotify = false;
+                else if (hour * 60 + minute < 3) {
                     shouldNotify = true;
                 }
             }
