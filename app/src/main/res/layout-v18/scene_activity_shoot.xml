@@ -13,6 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
+
         <co.yishun.onemoment.app.ui.view.RadioCornerImageView
             android:id="@+id/maskImageView"
             android:layout_width="match_parent"
@@ -25,7 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:fitsSystemWindows="true"
-            app:pid_interval="16dp"
+            app:pid_dotRadius="3dp"
+            app:pid_interval="10dp"
             app:pid_isStroke="true"/>
     </FrameLayout>
 
