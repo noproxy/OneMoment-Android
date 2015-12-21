@@ -26,13 +26,8 @@ public class FilterManager {
 //                return new CameraFilterBlendSoftLight(context, R.drawable.mask);
             default:
                 int index = filterType.ordinal() - 1;
-                return new ImageFilterToneCurve(context, context.getResources().openRawResource(mCurveArrays[index % 10]));
+                return new CameraFilterToneCurve(context, context.getResources().openRawResource(mCurveArrays[index % 10]));
         }
-    }
-
-    public IFilter getToneCurveFilterAt(Context context, int type) {
-        int index = type % 10;
-        return new ImageFilterToneCurve(context, context.getResources().openRawResource(mCurveArrays[type]));
     }
 
     public enum FilterType {
