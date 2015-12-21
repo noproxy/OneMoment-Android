@@ -74,7 +74,6 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
 
     private Uri croppedProfileUri;
     private boolean avatarUploadOk = false;
-    private Account mAccount;
 
     @Override
     public void setPageInfo() {
