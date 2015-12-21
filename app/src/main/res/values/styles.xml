@@ -61,6 +61,7 @@
         <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
         <item name="android:windowBackground">@color/colorWindowTransparent</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="AppTheme.TagActivity">
