@@ -48,9 +48,6 @@ public class ReminderService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        PackageManager pm = getPackageManager();
-        Intent launchIntent = pm.getLaunchIntentForPackage(getPackageName());
-        launchIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         Intent startApp = new Intent();
         startApp.setComponent(new ComponentName(this, SplashActivity_.class));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, startApp, 0);
