@@ -90,7 +90,7 @@ public class FileUtil {
      */
     public static File getMomentStoreFile(Context context, @NonNull ApiMoment apiMoment) {
         File mediaStorageDir = getMediaStoreDir(context, MOMENT_STORE_DIR);
-        return getMediaStoreFile(context, mediaStorageDir, Type.SYNCED, apiMoment.getUnixTimeStamp());
+        return new File(mediaStorageDir, apiMoment.getKey());
     }
 
     private static File getMediaStoreFile(Context context, File dir, Type type, @Nullable String unixTimeStamp) {
