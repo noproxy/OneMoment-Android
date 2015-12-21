@@ -1,16 +1,12 @@
 package co.yishun.onemoment.app.ui.play;
 
 
-import android.view.WindowManager;
-
 import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.OrmLiteDao;
-import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 import java.sql.SQLException;

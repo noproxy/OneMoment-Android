@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui.play;
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
