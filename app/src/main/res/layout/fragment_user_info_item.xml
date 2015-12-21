@@ -3,10 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="72dp"
+    android:background="@drawable/bg_btn_white"
+    android:gravity="center_vertical"
     android:orientation="vertical"
     android:paddingLeft="32dp"
     android:paddingRight="32dp"
-    android:gravity="center_vertical">
+    android:stateListAnimator="@anim/btn_elevation">
 
     <TextView
         android:id="@+id/itemTitle"
