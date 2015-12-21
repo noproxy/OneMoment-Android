@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="co.yishun.onemoment.app"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest package="co.yishun.onemoment.app"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk tools:overrideLibrary="com.github.hiteshsondhi88.libffmpeg"/>
 
@@ -37,7 +36,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
 
-    <!--required by umeng-->
+    <!-- required by umeng -->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
@@ -83,8 +82,8 @@
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.NoDisplay"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.NoDisplay"/>
         <activity
             android:name=".wxapi.EntryActivity"
             android:theme="@style/AppTheme.EntryActivity"/>
@@ -218,17 +217,22 @@
         </activity>
         <activity
             android:name=".ui.share.ShareActivity_"
-            android:theme="@style/AppTheme.ShareActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.ShareActivity">
             <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.GuideActivity_"
+            android:theme="@style/AppTheme.GuideActivity">
         </activity>
 
         <service android:name=".account.remind.ReminderService">
-
         </service>
+
         <receiver android:name=".account.remind.ReminderReceiver">
             <intent-filter>
                 <action android:name="co.yishun.onemoment.app.remind.update"/>
@@ -242,12 +246,11 @@
             android:process=":remote">
         </service>
 
-        <!--umeng message -->
+        <!-- umeng message -->
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
             android:exported="false">
         </receiver>
-
         <receiver
             android:name="com.umeng.message.SystemReceiver"
             android:process=":push">
@@ -259,10 +262,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+
                 <data android:scheme="package"/>
             </intent-filter>
         </receiver>
-
         <receiver
             android:name="com.umeng.message.MessageReceiver"
             android:exported="false"
@@ -271,16 +274,15 @@
                 <action android:name="org.agoo.android.intent.action.RECEIVE"/>
             </intent-filter>
         </receiver>
-
         <receiver
             android:name="com.umeng.message.ElectionReceiver"
             android:process=":push">
             <intent-filter>
                 <action android:name="org.agoo.android.intent.action.ELECTION_RESULT_V4"/>
+
                 <category android:name="umeng"/>
             </intent-filter>
         </receiver>
-
         <receiver
             android:name="com.umeng.message.RegistrationReceiver"
             android:exported="false">
@@ -307,14 +309,13 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="org.agoo.android.intent.action.PING_V4"/>
+
                 <category android:name="umeng"/>
             </intent-filter>
         </service>
-
         <service
             android:name="com.umeng.message.UmengIntentService"
             android:process=":push"/>
-
         <service
             android:name="com.umeng.message.UmengMessageIntentReceiverService"
             android:exported="true"
@@ -342,9 +343,7 @@
                 <action android:name="com.umeng.message.autoupdate.handler.action"/>
             </intent-filter>
         </service>
-
         <service android:name="com.umeng.message.UmengDownloadResourceService"/>
-
         <service
             android:name="com.umeng.message.local.UmengLocalNotificationService"
             android:exported="false"/>

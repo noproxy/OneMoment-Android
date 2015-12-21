@@ -21,4 +21,6 @@
     <color name="colorWindowShareActivity">#90000000</color>
 
     <color name="colorDivider">#dcdcdc</color>
+
+    <color name="colorGuideEnter">#363636</color>
 </resources>

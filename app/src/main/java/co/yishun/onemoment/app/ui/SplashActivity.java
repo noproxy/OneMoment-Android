@@ -45,8 +45,7 @@ public class SplashActivity extends BaseActivity {
         startRecording();
     }
 
-    @AfterViews
-    void setResource() {
+    @AfterViews void setResource() {
         // do nothing because don't need different image
 //        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
 //        boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
@@ -65,13 +64,14 @@ public class SplashActivity extends BaseActivity {
     }
 
 
-    @UiThread(delay = 1600)
-    void startRecording() {
+    @UiThread(delay = 1600) void startRecording() {
         this.finish();
 //        if (BuildConfig.DEBUG) new EveryDayNotification().onReceive(this, null);
-//        if (isFirstLaunch()) GuideActivity_.intent(this).start();
-//        else
-        if (AccountManager.isLogin(this))
+        if (isFirstLaunch()) {
+            GuideActivity_.intent(this).isFirstLuanch(true).start();
+            getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE).edit()
+                    .putBoolean(PREFERENCE_IS_FIRST_LAUNCH, false).apply();
+        } else if (AccountManager.isLogin(this))
             MainActivity_.intent(this).start();
         else
             startActivity(new Intent(this, EntryActivity.class));

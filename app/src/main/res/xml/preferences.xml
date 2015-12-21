@@ -76,7 +76,7 @@
         <com.jenzz.materialpreference.Preference android:title="@string/pref_title_about_tour">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="co.yishun.onemoment.app.ui.GuideActivity"
+                android:targetClass="co.yishun.onemoment.app.ui.GuideActivity_"
                 android:targetPackage="co.yishun.onemoment.app"
                 />
         </com.jenzz.materialpreference.Preference>
