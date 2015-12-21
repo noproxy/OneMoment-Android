@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
@@ -16,9 +17,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.ui.SplashActivity_;
 
 /**
  * Created by Jinge on 2015/12/16.
@@ -45,8 +46,10 @@ public class ReminderService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent startApp = new Intent(this, SplashActivity_.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, startApp, PendingIntent.FLAG_UPDATE_CURRENT);
+        PackageManager pm = getPackageManager();
+        Intent launchIntent = pm.getLaunchIntentForPackage(getPackageName());
+//        Intent startApp = new Intent(this, MainActivity_.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, launchIntent, 0);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -85,8 +88,28 @@ public class ReminderService extends Service {
         Calendar now = Calendar.getInstance();
         int hour = Integer.valueOf(timeStrings[0]) - now.get(Calendar.HOUR_OF_DAY);
         int minute = Integer.valueOf(timeStrings[1]) - now.get(Calendar.MINUTE);
-        if (Math.abs(hour * 60 + minute) < 5)
+
+        long lastRemindTime = preferences.getLong("last_remind", 0);
+        boolean shouldNotify = false;
+        if (Math.abs(hour * 60 + minute) < 3) {
+            shouldNotify = true;
+        }
+        if (lastRemindTime > 0) {
+            Calendar lastRemind = Calendar.getInstance();
+            lastRemind.setTime(new Date(lastRemindTime));
+
+            if (lastRemind.get(Calendar.DAY_OF_MONTH) == now.get(Calendar.DAY_OF_MONTH)) {
+                long timeDiff = now.getTimeInMillis() - lastRemindTime;
+                if (timeDiff < 3000) shouldNotify = false;
+                else if (Math.abs(hour * 60 + minute) < 3) {
+                    shouldNotify = true;
+                }
+            }
+        }
+        if (shouldNotify) {
             mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+            preferences.edit().putLong("last_remind", now.getTimeInMillis()).apply();
+        }
 
         return super.onStartCommand(intent, flags, startId);
     }
