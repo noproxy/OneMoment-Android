@@ -27,6 +27,7 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.view.PageIndicatorDot;
 import co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView;
 import co.yishun.onemoment.app.ui.view.shoot.IShootView;
+import co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 import me.toxz.circularprogressview.library.CircularProgressView;
@@ -60,6 +61,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @Nullable
     CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
+    private int currentFilter = 0;
 
     @Override
     public void setPageInfo() {
@@ -111,6 +113,13 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         shootView = (IShootView) findViewById(R.id.shootView);
         if (shootView instanceof CameraGLSurfaceView) {
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
+
+            mCameraGLSurfaceView.setOnClickListener(v -> {
+                Log.i(TAG, "click to set filter");
+                currentFilter = (currentFilter + 1) % FilterManager.FilterType.values().length;
+                mCameraGLSurfaceView.nextFilter();
+                pageIndicatorDot.setCurrent(currentFilter);
+            });
         }
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(findViewById(R.id.maskImageView), "alpha", 1f, 0f).setDuration(350);
@@ -131,7 +140,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
         setControllerBtn();
 
-        pageIndicatorDot.setNum(11);
+        pageIndicatorDot.setNum(FilterManager.FilterType.values().length);
 
 
         recordFlashSwitch.getCurrentView().setOnClickListener(this::flashlightBtnClicked);
