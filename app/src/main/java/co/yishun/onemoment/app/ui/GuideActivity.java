@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +11,13 @@ import android.widget.ImageView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.ui.view.PageIndicatorDot;
+import co.yishun.onemoment.app.wxapi.EntryActivity;
 
 @EActivity(R.layout.activity_guide)
 public class GuideActivity extends AppCompatActivity {
@@ -28,8 +32,11 @@ public class GuideActivity extends AppCompatActivity {
             R.drawable.pic_guide_003txt,
             R.drawable.pic_guide_004txt};
 
+    @Extra boolean isFirstLuanch;
+
     @ViewById ViewPager viewPager;
     @ViewById PageIndicatorDot pageIndicator;
+
     private int pageNum = 5;
 
     @AfterViews void setUpViews() {
@@ -43,12 +50,23 @@ public class GuideActivity extends AppCompatActivity {
         View rootView;
         if (position != 4) {
             rootView = inflater.inflate(R.layout.page_guide, container, false);
-            ((ImageView)rootView.findViewById(R.id.picImage)).setImageResource(pagePicRes[position]);
-            ((ImageView)rootView.findViewById(R.id.textImage)).setImageResource(pageTextRes[position]);
+            ((ImageView) rootView.findViewById(R.id.picImage)).setImageResource(pagePicRes[position]);
+            ((ImageView) rootView.findViewById(R.id.textImage)).setImageResource(pageTextRes[position]);
         } else {
             rootView = inflater.inflate(R.layout.page_guide_final, container, false);
+            rootView.findViewById(R.id.enterText).setOnClickListener(this::enterClick);
         }
         return rootView;
+    }
+
+    void enterClick(View view) {
+        if (isFirstLuanch) {
+            if (AccountManager.isLogin(this))
+                MainActivity_.intent(this).start();
+            else
+                startActivity(new Intent(this, EntryActivity.class));
+        }
+        finish();
     }
 
     private PagerAdapter getViewPager(LayoutInflater inflater) {
