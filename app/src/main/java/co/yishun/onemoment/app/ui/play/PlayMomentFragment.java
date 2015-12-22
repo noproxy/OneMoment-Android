@@ -45,21 +45,24 @@ public class PlayMomentFragment extends PlayFragment
             List<Moment> momentList = momentDao.queryBuilder().where()
                     .eq("owner", AccountManager.getAccountId(getContext())).and()
                     .between("time", startDate, endDate).query();
-            videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
-            Collections.sort(momentList);
-            for (Moment moment : momentList) {
-                if (moment.getFile().length() == 0) continue;
-                List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());
-                List<VideoTag> videoTags = new ArrayList<>();
-                for (OMLocalVideoTag omlTag : omLocalVideoTags) {
-                    String[] position = omlTag.getTagPosition().split(" ");
-                    videoTags.add(new BaseVideoTag(omlTag.getTagText(), Float.parseFloat(position[0]),
-                            Float.parseFloat(position[1])));
+            if (momentList.size()> 0){
+                videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
+                Collections.sort(momentList);
+                for (Moment moment : momentList) {
+                    if (moment.getFile().length() == 0) continue;
+                    List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());
+                    List<VideoTag> videoTags = new ArrayList<>();
+                    for (OMLocalVideoTag omlTag : omLocalVideoTags) {
+                        String[] position = omlTag.getTagPosition().split(" ");
+                        videoTags.add(new BaseVideoTag(omlTag.getTagText(), Float.parseFloat(position[0]),
+                                Float.parseFloat(position[1])));
+                    }
+                    NetworkVideo videoResource = new NetworkVideo(videoTags, moment.getPath());
+                    videoPlayView.addVideoResource(videoResource);
+                    onLoad();
                 }
-                NetworkVideo videoResource = new NetworkVideo(videoTags, moment.getPath());
-                videoPlayView.addVideoResource(videoResource);
-                onLoad();
             }
+
             onLoadError(R.string.fragment_play_moment_not_found);
         } catch (SQLException e) {
             e.printStackTrace();
