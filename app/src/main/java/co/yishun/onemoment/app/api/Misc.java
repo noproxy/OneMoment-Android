@@ -21,6 +21,9 @@ public interface Misc {
     @GET("/misc/upload_token")
     UploadToken getUploadToken(@Query("filename") @Nullable String filename);
 
+    @GET("/misc/upload_token")
+    UploadToken getUploadToken(@Query("filename") @Nullable String filename, @Query("type") String type);
+
     @GET("/misc/resource_domain")
     Domain getResourceDomain(@Query("type") @Nullable @DomainType String type);
 
