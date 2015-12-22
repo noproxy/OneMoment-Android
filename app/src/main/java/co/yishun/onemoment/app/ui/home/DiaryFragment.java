@@ -74,8 +74,6 @@ public class DiaryFragment extends ToolbarFragment
 
     @AfterViews void setCalendar() {
         momentCalendar.setAdapter(this);
-        DayView.setOnMomentSelectedListener(this);
-        DayView.setMultiSelection(false);
     }
 
     @Nullable
@@ -90,6 +88,8 @@ public class DiaryFragment extends ToolbarFragment
     public void onResume() {
         super.onResume();
         DayView.setTodayAvailableListener(this::onSelected);
+        DayView.setMultiSelection(false);
+        DayView.setOnMomentSelectedListener(this);
     }
 
     @Override
