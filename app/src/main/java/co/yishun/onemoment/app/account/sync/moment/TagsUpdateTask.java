@@ -1,8 +1,13 @@
 package co.yishun.onemoment.app.account.sync.moment;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.qiniu.android.storage.UploadManager;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -11,18 +16,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.lang.ref.WeakReference;
 
-import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Account;
+import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Link;
-import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.model.OMDataBase;
+import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.function.Callback;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -31,25 +35,95 @@ import io.realm.RealmConfiguration;
  * Created on 2015/12/22.
  */
 public class TagsUpdateTask implements Runnable {
+    public static final int MSG_REALM_TAG_LOCAL = 0x1;
+    public static final int MSG_REALM_TAG_REMOTE = 0x2;
+    public static final int MSG_QUIT = 0x4;
     private static final String TAG = "TagsUpdateTask";
+    private final Object mReadyFence = new Object();
     private final Context mContext;
     private final Callback mOnFail;
     private final Callback mOnSuccess;
+    private final File remoteRealmFolder;
     private final String remoteRealmFileName = "remoteRealm.realm";
-    private final String mergedRealmFileName = "mergedRealm.realm";
+    private Realm mLocalRealm;
+    private Realm mRemoteRealm;
+    private boolean mReady;
+    private boolean mRemoteExist = false;
+    private volatile TagsUpdateHandler mHandler;
 
     public TagsUpdateTask(Context context, Callback onFail, Callback onSuccess) {
         this.mContext = context;
         this.mOnFail = onFail;
         this.mOnSuccess = onSuccess;
+        remoteRealmFolder = FileUtil.getCacheDirectory(context, false);
+
+        new Thread(this, "TagsUpdateTask").start();
     }
 
     @Override public void run() {
+        Looper.prepare();
+        synchronized (mReadyFence) {
+            mHandler = new TagsUpdateHandler(this);
+            mReady = true;
+            mReadyFence.notify();
+        }
+
         Account account = OneMomentV3.createAdapter().create(Account.class);
         Link link = account.getTagUrl(AccountManager.getUserInfo(mContext)._id);
         File remoteRealmFile = FileUtil.getCacheFile(mContext, remoteRealmFileName);
 
+        //if there is no realm on server, don't handle any message
+        if (!TextUtils.isEmpty(link.link) &&
+                downloadRealm(link.link, remoteRealmFile)) {
+            mRemoteExist = true;
+            Looper.loop();
+        } else {
+            mRemoteExist = false;
+            Looper looper = Looper.myLooper();
+            if (looper != null) looper.quit();
+        }
+        initRealm();
 
+        Log.d(TAG, "TagUpdate thread exiting");
+        synchronized (mReadyFence) {
+            mReady = false;
+            mHandler = null;
+        }
+
+        restoreRealm();
+        uploadRealm();
+    }
+
+    private void initRealm() {
+        mLocalRealm = Realm.getInstance(new RealmConfiguration.Builder(mContext)
+                .name("tag-" + AccountManager.getUserInfo(mContext)._id + ".realm").build());
+
+        if (mRemoteExist) {
+            mRemoteRealm = Realm.getInstance(new RealmConfiguration.Builder(remoteRealmFolder)
+                    .name(remoteRealmFileName).build());
+
+            long localCreate = Long.parseLong(mLocalRealm.where(OMDataBase.class).findFirst().getCreateTime().substring(9));
+            long remoteCreate = Long.parseLong(mRemoteRealm.where(OMDataBase.class).findFirst().getCreateTime().substring(9));
+            if (localCreate > remoteCreate) {
+                mLocalRealm.beginTransaction();
+                mLocalRealm.where(OMDataBase.class).findFirst().setCreateTime(
+                        mRemoteRealm.where(OMDataBase.class).findFirst().getCreateTime());
+                mLocalRealm.commitTransaction();
+            }
+        }
+    }
+
+    private void restoreRealm() {
+        if (mRemoteExist) {
+            long localUpdate = Long.parseLong(mLocalRealm.where(OMDataBase.class).findFirst().getUpdateTime().substring(9));
+            long remoteUpdate = Long.parseLong(mRemoteRealm.where(OMDataBase.class).findFirst().getUpdateTime().substring(9));
+            if (remoteUpdate > localUpdate) {
+                mLocalRealm.beginTransaction();
+                mLocalRealm.where(OMDataBase.class).findFirst().setUpdateTime(
+                        mRemoteRealm.where(OMDataBase.class).findFirst().getUpdateTime());
+                mLocalRealm.commitTransaction();
+            }
+        }
     }
 
     private boolean downloadRealm(String link, File remoteRealmFile) {
@@ -115,21 +189,85 @@ public class TagsUpdateTask implements Runnable {
         }
     }
 
-    private boolean mergeRealm(File remoteRealmFile) {
-        Realm localRealm = Realm.getInstance(new RealmConfiguration.Builder(mContext)
-                .name("tag-" + AccountManager.getUserInfo(mContext)._id + ".realm").build());
+    private boolean uploadRealm() {
+        File realmFile = new File(mLocalRealm.getConfiguration().getRealmFolder(),
+                mLocalRealm.getConfiguration().getRealmFileName());
 
-        Realm remoteRealm = Realm.getInstance(new RealmConfiguration
-                .Builder(FileUtil.getCacheDirectory(mContext, false))
-                .name(remoteRealmFileName).build());
+        Log.d(TAG, "upload " + realmFile.getName());
+        UploadToken token = OneMomentV3.createAdapter().create(Misc.class)
+                .getUploadToken(realmFile.getName());
+        if (token.code <= 0) {
+            Log.e(TAG, "get upload token error: " + token.msg);
+            mOnFail.call();
+            return false;
+        }
 
-        Realm mergedRealm = Realm.getInstance(new RealmConfiguration
-                .Builder(FileUtil.getCacheDirectory(mContext, false))
-                .name(mergedRealmFileName).build());
+        UploadManager uploadManager = new UploadManager();
+        uploadManager.put(realmFile, realmFile.getName(), token.token,
+                (s, responseInfo, jsonObject) -> {
+                    Log.i(TAG, responseInfo.toString());
+                    if (responseInfo.isOK()) {
+                        Log.d(TAG, "loaded " + responseInfo.path);
+                        Log.i(TAG, "profile upload ok");
+                    } else {
+                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                    }
+                }, null
+        );
+        return true;
+    }
 
-        long localUpdate = Long.parseLong(localRealm.where(OMDataBase.class).findFirst().getUpdateTime().substring(9));
-        long remoteUpdate = Long.parseLong(remoteRealm.where(OMDataBase.class).findFirst().getUpdateTime().substring(9));
+    public void useRemoteTags(String date) {
+        synchronized (mReadyFence) {
+            if (!mReady) return;
+        }
+        mHandler.sendMessage(mHandler.obtainMessage(MSG_REALM_TAG_REMOTE, date));
+    }
 
-        return false;
+    public void stopUpdateTags() {
+        synchronized (mReadyFence) {
+            if (!mReady) return;
+        }
+        mHandler.sendMessage(mHandler.obtainMessage(MSG_QUIT));
+    }
+
+    private void handleUseRemoteTags(String date) {
+        Log.d(TAG, "let's update tags of " + date);
+        if (mRemoteExist) {
+            mLocalRealm.beginTransaction();
+            mLocalRealm.where(OMLocalVideoTag.class).equalTo("tagDate", date).findAll().clear();
+            mLocalRealm.copyToRealm(mRemoteRealm.where(OMLocalVideoTag.class).equalTo("tagDate", date).findAll());
+            mLocalRealm.commitTransaction();
+        }
+    }
+
+    private static class TagsUpdateHandler extends Handler {
+        private WeakReference<TagsUpdateTask> mWeakTask;
+
+        public TagsUpdateHandler(TagsUpdateTask tagsUpdateTask) {
+            this.mWeakTask = new WeakReference<>(tagsUpdateTask);
+        }
+
+        @Override public void handleMessage(Message msg) {
+            int what = msg.what;
+            Object obj = msg.obj;
+            switch (what) {
+                case MSG_REALM_TAG_LOCAL:
+                    break;
+                case MSG_REALM_TAG_REMOTE:
+                    Log.i(TAG, "MSG_REALM_TAG_REMOTE");
+                    mWeakTask.get().handleUseRemoteTags((String) obj);
+                    break;
+                case MSG_QUIT:
+                    Log.i(TAG, "MSG_QUIT");
+                    Looper looper = Looper.myLooper();
+                    if (looper != null) {
+                        looper.quit();
+                    }
+                    break;
+                default:
+                    throw new RuntimeException("Unhandled msg what=" + what);
+            }
+        }
     }
 }
