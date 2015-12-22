@@ -91,7 +91,14 @@ public class ShareExportActivity extends BaseActivity
         DayView.setOnMomentSelectedListener(this);
         DayView.setMultiSelection(true);
         try {
-            allMoments = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this)).query();
+            List<Moment> momentInDatabase = momentDao.queryBuilder().where()
+                    .eq("owner", AccountManager.getAccountId(this)).query();
+            allMoments = new ArrayList<>();
+            for (Moment moment : momentInDatabase) {
+                if (moment.getFile().length() > 0) {
+                    allMoments.add(moment);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -184,27 +191,24 @@ public class ShareExportActivity extends BaseActivity
 
     @Override public void onBindView(Calendar calendar, DayView dayView) {
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(calendar.getTime());
-        try {
-            Moment moment = momentDao.queryBuilder().where().eq("time", time).queryForFirst();
-            for (Moment m : allMoments) {
-                if (TextUtils.equals(m.getTime(), time)) {
-                    moment = m;
-                    break;
-                }
+
+        Moment moment = null;
+        for (Moment m : allMoments) {
+            if (TextUtils.equals(m.getTime(), time)) {
+                moment = m;
+                break;
             }
-            if (moment != null) {
-                dayView.setEnabled(true);
-                dayView.setTag(moment);
-                Picasso.with(this).load(new File(moment.getThumbPath())).into(dayView);
-                if (selectedMoments.contains(moment))
-                    dayView.setSelected(true);
-                else dayView.setSelected(false);
-                Log.i(TAG, "moment found: " + moment.getTime());
-            } else {
-                dayView.setEnabled(false);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+        if (moment != null) {
+            dayView.setEnabled(true);
+            dayView.setTag(moment);
+            Picasso.with(this).load(new File(moment.getThumbPath())).into(dayView);
+            if (selectedMoments.contains(moment))
+                dayView.setSelected(true);
+            else dayView.setSelected(false);
+            Log.i(TAG, "moment found: " + moment.getTime());
+        } else {
+            dayView.setEnabled(false);
         }
     }
 

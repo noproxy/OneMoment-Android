@@ -90,10 +90,14 @@ public class PlayMomentActivity extends BaseActivity {
     @Override protected void onResume() {
         super.onResume();
         try {
-            playingMoments = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this)).and()
+            playingMoments = new ArrayList<>();
+            List<Moment> momentInDatabase = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this)).and()
                     .between("time", startDate, endDate).query();
-            for (Moment m : playingMoments) {
-                MomentLock.lockMoment(this, m);
+            for (Moment m : momentInDatabase) {
+                if (m.getFile().length() > 0){
+                    playingMoments.add(m);
+                    MomentLock.lockMoment(this, m);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -130,6 +134,7 @@ public class PlayMomentActivity extends BaseActivity {
     }
 
     @Background void shareClick() {
+        showProgress();
         appendSelectedVideos();
         if (videoCacheFile == null) {
             //TODO check append videos failed
