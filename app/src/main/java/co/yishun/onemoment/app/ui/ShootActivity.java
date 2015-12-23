@@ -113,6 +113,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         shootView = (IShootView) findViewById(R.id.shootView);
         if (shootView instanceof CameraGLSurfaceView) {
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
+            pageIndicatorDot = ((PageIndicatorDot) findViewById(R.id.pageIndicator));
+            pageIndicatorDot.setNum(FilterManager.FilterType.values().length);
 
             mCameraGLSurfaceView.setOnClickListener(v -> {
                 Log.i(TAG, "click to set filter");
@@ -127,7 +129,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
         recordFlashSwitch = (ImageSwitcher) findViewById(R.id.recordFlashSwitch);
         cameraSwitch = (ImageSwitcher) findViewById(R.id.cameraSwitch);
-        pageIndicatorDot = ((PageIndicatorDot) findViewById(R.id.pageIndicator));
+
         CircularProgressView shootBtn = ((CircularProgressView) findViewById(R.id.shootBtn));
         shootBtn.setOnStateListener(status -> {
             switch (status) {
@@ -139,9 +141,6 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         });
 
         setControllerBtn();
-
-        pageIndicatorDot.setNum(FilterManager.FilterType.values().length);
-
 
         recordFlashSwitch.getCurrentView().setOnClickListener(this::flashlightBtnClicked);
         recordFlashSwitch.getNextView().setOnClickListener(this::flashlightBtnClicked);
