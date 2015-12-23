@@ -125,6 +125,7 @@ public class MomentSyncImpl extends MomentSync {
     private void divideTask(List<ApiMoment> momentsOnServer, List<Moment> momentsOnDevice) {
         Log.i(TAG, "divide task, servers: " + momentsOnServer.size());
         Log.i(TAG, "divide task, local: " + momentsOnDevice.size());
+        TagsUpdateTask tagsUpdateTask = new TagsUpdateTask(mContext, this::onFail, this::onSuccess);
 
         final HashMap<String, ApiMoment> apiMomentHashMap = new HashMap<>(momentsOnServer.size());
         for (ApiMoment apiMoment : momentsOnServer)
@@ -140,6 +141,7 @@ public class MomentSyncImpl extends MomentSync {
                     toDelete.add(momentOnServer);
                 } else if (Long.parseLong(moment.getUnixTimeStamp()) < Long.parseLong(momentOnServer.getUnixTimeStamp())) {
                     toAdd.add(Pair.create(momentOnServer, moment));
+                    tagsUpdateTask.useRemoteTags(moment.getTime());
                 }
                 apiMomentHashMap.remove(moment.getTime());
             }
@@ -147,6 +149,7 @@ public class MomentSyncImpl extends MomentSync {
 
         for (ApiMoment apiMoment : apiMomentHashMap.values()) {
             toAdd.add(Pair.create(apiMoment, null));
+            tagsUpdateTask.useRemoteTags(apiMoment.getTime());
         }
 
         // add to database, add to check
@@ -182,6 +185,8 @@ public class MomentSyncImpl extends MomentSync {
                 toFix.add(moment);
             }
         }
+
+        tagsUpdateTask.stopUpdateTags();
 
         Log.i(TAG, "divide end.");
         Log.i(TAG, "to upload: " + toUpload.size());

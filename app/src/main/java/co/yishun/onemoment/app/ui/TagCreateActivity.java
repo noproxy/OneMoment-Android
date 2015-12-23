@@ -270,7 +270,6 @@ public class TagCreateActivity extends BaseActivity
 
                 if (1 == momentDao.create(moment)) {
                     Log.i(TAG, "new moment: " + moment);
-                    SyncManager.syncNow(this);
 
                     RealmHelper.removeTags(moment.getTime());
                     for (co.yishun.library.tag.VideoTag tag : editTagContainer.getVideoTags()) {
@@ -278,6 +277,8 @@ public class TagCreateActivity extends BaseActivity
                     }
 
                     momentDao.delete(result);
+                    SyncManager.syncNow(this);
+                    
                     for (Moment mToDe : result) {
                         FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.LARGE_THUMB).delete();
                         FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.MICRO_THUMB).delete();
