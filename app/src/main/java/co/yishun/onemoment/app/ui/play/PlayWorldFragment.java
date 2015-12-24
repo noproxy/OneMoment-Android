@@ -22,6 +22,7 @@ import co.yishun.library.OnemomentPlayerView;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
@@ -87,9 +88,9 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
     }
 
     @UiThread void getThumb(File large) {
-        Log.d(TAG, "set preview");
+        LogUtil.d(TAG, "set preview");
         if (large.length() == 0) {
-            Log.e(TAG, "file error");
+            LogUtil.e(TAG, "file error");
         }
         videoPlayView.setPreview(large);
         onLoad();

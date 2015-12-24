@@ -19,6 +19,7 @@ import org.androidannotations.annotations.UiThread;
 
 import java.io.File;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.function.Callback;
@@ -91,7 +92,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
                 }
             }
             SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, transitionX, transitionY, 0, finalRadius);
-            Log.d(TAG, transitionX + " " + transitionY + " " + finalRadius);
+            LogUtil.d(TAG, transitionX + " " + transitionY + " " + finalRadius);
             animator.setDuration(350);
             animator.start();
             sceneRoot.setVisibility(View.VISIBLE);
@@ -115,7 +116,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
 
             mCameraGLSurfaceView.setOnClickListener(v -> {
-                Log.i(TAG, "click to set filter");
+                LogUtil.i(TAG, "click to set filter");
                 currentFilter = (currentFilter + 1) % FilterManager.FilterType.values().length;
                 mCameraGLSurfaceView.nextFilter();
                 pageIndicatorDot.setCurrent(currentFilter);
@@ -185,7 +186,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     private void flashlightBtnClicked(View view) {
-        Log.i(TAG, "flashlight switch, from " + flashOn + " to " + !flashOn);
+        LogUtil.i(TAG, "flashlight switch, from " + flashOn + " to " + !flashOn);
         flashOn = !flashOn;
         shootView.setFlashlightOn(flashOn);
         recordFlashSwitch.setDisplayedChild(flashOn ? 1 : 0);
@@ -193,12 +194,12 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     @Override
     public void call() {
-        Log.i(TAG, "start record callback");
+        LogUtil.i(TAG, "start record callback");
     }
 
     @Override
     public void accept(File file) {
-        Log.i(TAG, "accept: " + file);
+        LogUtil.i(TAG, "accept: " + file);
         delayStart(file);
     }
 

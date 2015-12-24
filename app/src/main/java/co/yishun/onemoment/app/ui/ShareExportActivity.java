@@ -48,6 +48,7 @@ import java.util.concurrent.CountDownLatch;
 import co.yishun.library.calendarlibrary.DayView;
 import co.yishun.library.calendarlibrary.MomentCalendar;
 import co.yishun.library.calendarlibrary.MomentMonthView;
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
@@ -134,8 +135,8 @@ public class ShareExportActivity extends BaseActivity
             return;
         }
         File outFile = FileUtil.getExportVideoFile();
-        Log.d(TAG, "out : " + outFile.getPath());
-        Log.d(TAG, "origin : " + videoCacheFile.getPath());
+        LogUtil.d(TAG, "out : " + outFile.getPath());
+        LogUtil.d(TAG, "origin : " + videoCacheFile.getPath());
         FileUtil.copyFile(videoCacheFile, outFile);
         videoCacheFile.delete();
         hideProgress();
@@ -199,7 +200,7 @@ public class ShareExportActivity extends BaseActivity
                 if (selectedMoments.contains(moment))
                     dayView.setSelected(true);
                 else dayView.setSelected(false);
-                Log.i(TAG, "moment found: " + moment.getTime());
+                LogUtil.i(TAG, "moment found: " + moment.getTime());
             } else {
                 dayView.setEnabled(false);
             }
@@ -288,21 +289,21 @@ public class ShareExportActivity extends BaseActivity
 
     @SupposeBackground void uploadAndShare() {
         UploadManager uploadManager = new UploadManager();
-        Log.d(TAG, "upload " + videoCacheFile.getName());
+        LogUtil.d(TAG, "upload " + videoCacheFile.getName());
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoCacheFile.getName());
         if (token.code <= 0) {
-            Log.e(TAG, "get upload token error: " + token.msg);
+            LogUtil.e(TAG, "get upload token error: " + token.msg);
             return;
         }
         CountDownLatch latch = new CountDownLatch(1);
         uploadManager.put(videoCacheFile, videoCacheFile.getName(), token.token,
                 (s, responseInfo, jsonObject) -> {
-                    Log.i(TAG, responseInfo.toString());
+                    LogUtil.i(TAG, responseInfo.toString());
                     if (responseInfo.isOK()) {
-                        Log.d(TAG, "loaded " + responseInfo.path);
-                        Log.i(TAG, "profile upload ok");
+                        LogUtil.d(TAG, "loaded " + responseInfo.path);
+                        LogUtil.i(TAG, "profile upload ok");
                     } else {
-                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                        LogUtil.e(TAG, "profile upload error: " + responseInfo.error);
                     }
                     latch.countDown();
                 }, null
@@ -328,7 +329,7 @@ public class ShareExportActivity extends BaseActivity
             allTagArray.add(momentTags);
         }
         String tags = gson.toJson(allTagArray);
-        Log.d(TAG, tags);
+        LogUtil.d(TAG, tags);
 
         Account account = OneMomentV3.createAdapter().create(Account.class);
         ShareInfo shareInfo = account.share(videoCacheFile.getName(), AccountManager.getUserInfo(this)._id, tags);

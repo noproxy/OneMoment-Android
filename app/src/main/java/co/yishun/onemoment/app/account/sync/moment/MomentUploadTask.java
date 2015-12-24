@@ -7,6 +7,7 @@ import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.UploadToken;
@@ -35,11 +36,11 @@ public class MomentUploadTask implements Runnable {
 
     @Override
     public void run() {
-        Log.i(TAG, "upload a moment: " + mMoment);
+        LogUtil.i(TAG, "upload a moment: " + mMoment);
         String qiNiuKey = mMoment.getKey();
         UploadToken token = mMiscService.getUploadToken(mMoment.getKey());
         if (!token.isSuccess()) {
-            Log.e(TAG, "upload failed when get token");
+            LogUtil.e(TAG, "upload failed when get token");
             mOnFail.call();
         } else {
             mUploadManager.put(mMoment.getPath(), qiNiuKey, token.token, newHandler(), newOptions());
@@ -52,7 +53,7 @@ public class MomentUploadTask implements Runnable {
 
     private UpCompletionHandler newHandler() {
         return (key, responseInfo, response) -> {
-            Log.i(TAG, responseInfo.toString());
+            LogUtil.i(TAG, responseInfo.toString());
             (responseInfo.isOK() ? mOnSuccess : mOnFail).call();
         };
     }

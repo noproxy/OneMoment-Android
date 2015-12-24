@@ -8,6 +8,8 @@ import android.view.TextureView;
 
 import java.util.List;
 
+import co.yishun.onemoment.app.LogUtil;
+
 /**
  * Created by Carlos on 2015/10/6.
  */
@@ -31,7 +33,7 @@ public class CameraUtil {
 //        double minWidthDiff = Double.MAX_VALUE;
 
         double ratio = ((double) targetWidth) / targetHeight;
-        Log.i(TAG, "target height: " + targetHeight + ", target ratio: " + ratio);
+        LogUtil.i(TAG, "target height: " + targetHeight + ", target ratio: " + ratio);
         double minRatioDiff = Double.MAX_VALUE;
 
         for (Camera.Size size : sizes) {
@@ -46,9 +48,9 @@ public class CameraUtil {
                 //if ratio is the same, select whose height is the most close
                 optimalSize = size;
             }
-            Log.v("iter height", "width: " + size.width + ", height: " + size.height + ", ratio: " + sizeRatio);
+            LogUtil.v("iter height", "width: " + size.width + ", height: " + size.height + ", ratio: " + sizeRatio);
         }
-        Log.i("selected size", "width: " + optimalSize.width + ", height: " + optimalSize.height);
+        LogUtil.i("selected size", "width: " + optimalSize.width + ", height: " + optimalSize.height);
         return optimalSize;
     }
 
@@ -56,14 +58,14 @@ public class CameraUtil {
         int[] optimalRange = new int[]{0, Integer.MAX_VALUE};
         int averageDiff = Integer.MAX_VALUE;// ignore decimal
         for (int[] range : ranges) {
-            Log.d(TAG, range[0] + "  " + range[1]);
+            LogUtil.d(TAG, range[0] + "  " + range[1]);
             int a = (range[0] + range[1]) / 2;
             if (a - targetFps < averageDiff
                     || (a == averageDiff && range[1] - targetFps < optimalRange[1] - targetFps))
                 averageDiff = a;
             optimalRange = range;
         }
-        Log.d(TAG, optimalRange[0] + "  " + optimalRange[1]);
+        LogUtil.d(TAG, optimalRange[0] + "  " + optimalRange[1]);
         return optimalRange;
     }
 
@@ -73,8 +75,8 @@ public class CameraUtil {
         int viewWidth = previewView.getWidth();
         int viewHeight = previewView.getHeight();
         if (viewHeight != viewWidth)
-            Log.w(TAG, "preview view width not equals height, width is " + viewWidth + ", height is " + viewHeight);
-        else Log.v(TAG, "view width: " + viewWidth);
+            LogUtil.w(TAG, "preview view width not equals height, width is " + viewWidth + ", height is " + viewHeight);
+        else LogUtil.v(TAG, "view width: " + viewWidth);
 
         //assert rotation == 90, so width will be height
         float a = ((float) viewWidth) / size.height;

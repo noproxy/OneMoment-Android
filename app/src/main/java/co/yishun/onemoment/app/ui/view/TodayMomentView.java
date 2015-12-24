@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
@@ -84,7 +85,7 @@ public class TodayMomentView extends RelativeLayout {
         }
 
         public static TodayMoment noMomentToday(Date date) {
-            Log.i(TAG, "no moment today: " + date);
+            LogUtil.i(TAG, "no moment today: " + date);
             TodayMoment todayMoment = new TodayMoment();
             todayMoment.date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(date);
             todayMoment.tag = null;
@@ -92,7 +93,7 @@ public class TodayMomentView extends RelativeLayout {
         }
 
         public static TodayMoment momentTodayIs(Moment moment) {
-            Log.i(TAG, "momentTodayIs: " + moment);
+            LogUtil.i(TAG, "momentTodayIs: " + moment);
             TodayMoment todayMoment = new TodayMoment();
             todayMoment.moment = moment;
             todayMoment.date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Long.parseLong(moment.getUnixTimeStamp()) * 1000);

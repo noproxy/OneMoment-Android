@@ -14,12 +14,16 @@ import android.util.Log;
 
 import java.io.File;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.FilterType;
 import co.yishun.onemoment.app.ui.view.shoot.video.EncoderConfig;
+
+import static co.yishun.onemoment.app.LogUtil.e;
+import static co.yishun.onemoment.app.LogUtil.i;
 
 /**
  * Created by Carlos on 2015/10/13.
@@ -94,7 +98,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         mHasFrontCamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
         mCameraId = CameraUtil.findCameraId();
         mHasFrontCamera = mHasFrontCamera && mCameraId.front != -1;
-        Log.e(TAG, "front camera enable: " + mHasFrontCamera);
+        e(TAG, "front camera enable: " + mHasFrontCamera);
     }
 
     @Override
@@ -110,7 +114,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     }
 
     private void innerReleaseCamera() {
-        Log.i(TAG, "release camera:" + camera);
+        i(TAG, "release camera:" + camera);
         if (camera != null) {
             synchronized (mLock) {
                 try {
@@ -133,7 +137,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
     @Override
     public void releaseCamera() {
-        Log.i(TAG, "send msg: STOP");
+        i(TAG, "send msg: STOP");
         this.mBackgroundHandler.sendEmptyMessage(CameraHandler.STOP);
     }
 
@@ -145,7 +149,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
                 p.setFlashMode(isOn ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
                 camera.setParameters(p);
             } catch (Exception e) {
-                Log.e(TAG, "exception when set flash on! ", e);
+                LogUtil.e(TAG, "exception when set flash on! ", e);
             }
         }
     }
@@ -158,7 +162,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
     protected void setupCamera(SurfaceTexture surfaceTexture) {
         synchronized (mLock) {
-            Log.i(TAG, "locked to setup camera");
+            i(TAG, "locked to setup camera");
             innerReleaseCamera();
             camera = Camera.open(mIsBackCamera ? mCameraId.back : mCameraId.front);
             final Camera.Parameters parameters = camera.getParameters();
@@ -167,7 +171,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
             parameters.setPreviewSize(mSize.width, mSize.height);
             camera.setParameters(parameters);
             camera.setDisplayOrientation(90);
-            Log.i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
+            i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
 
 
             try {
@@ -183,7 +187,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
     @Override
     public boolean isFlashlightAvailable() {
-        Log.i(TAG, "mIsBackCamera: " + mIsBackCamera + ", mHasFlash " + mHasFlash);
+        i(TAG, "mIsBackCamera: " + mIsBackCamera + ", mHasFlash " + mHasFlash);
         return mIsBackCamera && mHasFlash;
     }
 
@@ -201,7 +205,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
         Handler uiHandler = new Handler(Looper.getMainLooper());
 //        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
-        Log.i(TAG, file.toString());
+        i(TAG, file.toString());
 //        queueEvent(() -> mCameraRenderer.setEncoderConfig(new EncoderConfig(file, 480, 480, 1024 * 1024)));
         queueEvent(() -> {
             mCameraRenderer.setRecordingEnabled(true);
@@ -242,7 +246,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
                         mSurfaceTexture.setOnFrameAvailableListener(CameraGLSurfaceView.this);
                         setupCamera(mSurfaceTexture);
                     } else {
-                        Log.e(TAG, "surfaceTexture Null!!");
+                        e(TAG, "surfaceTexture Null!!");
                     }
                     break;
                 case CameraHandler.RESUME:

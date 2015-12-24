@@ -21,6 +21,7 @@ import java.util.List;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
@@ -44,7 +45,7 @@ public class PlayTagVideoFragment extends PlayFragment {
     private World mWorld = OneMomentV3.createAdapter().create(World.class);
 
     @AfterViews void setup() {
-        Log.d("oneVideo", oneVideo.toString());
+        LogUtil.d("oneVideo", oneVideo.toString());
         Picasso.with(mContext).load(oneVideo.avatar).into(avatar);
 
         usernameTextView.setText(oneVideo.nickname);

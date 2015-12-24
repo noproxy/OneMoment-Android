@@ -37,6 +37,7 @@ import org.androidannotations.annotations.UiThread;
 import java.lang.ref.WeakReference;
 import java.util.Date;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
@@ -52,6 +53,8 @@ import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
+
+import static org.android.agoo.client.BaseRegistrar.getRegistrationId;
 
 @EActivity
 public class MainActivity extends BaseActivity implements AccountManager.OnUserInfoChangeListener {
@@ -125,7 +128,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
         RealmHelper.setup(this);
         PushAgent mPushAgent = PushAgent.getInstance(this);
-        Log.d(TAG, "token " + UmengRegistrar.getRegistrationId(this));
+        LogUtil.d(TAG, "token " + getRegistrationId(this));
         mPushAgent.enable();
 
         fragmentManager = getSupportFragmentManager();

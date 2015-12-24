@@ -57,6 +57,7 @@ import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 import co.yishun.library.EditTagContainer;
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
@@ -78,6 +79,10 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagSearchController_;
+
+import static co.yishun.onemoment.app.LogUtil.d;
+import static co.yishun.onemoment.app.LogUtil.e;
+import static co.yishun.onemoment.app.LogUtil.i;
 
 /**
  * Created by Carlos on 2015/11/2.
@@ -148,7 +153,7 @@ public class TagCreateActivity extends BaseActivity
             momentToSave.setLargeThumbPath(largeThumbImage);
             Picasso.with(this).load(new File(largeThumbImage)).into(momentPreviewImageView);
         } catch (IOException e) {
-            Log.e(TAG, "create thumb failed");
+            e(TAG, "create thumb failed");
             e.printStackTrace();
         }
     }
@@ -159,7 +164,7 @@ public class TagCreateActivity extends BaseActivity
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.activity_moment_create_title_text);
-        Log.i("setupToolbar", "set home as up true");
+        i("setupToolbar", "set home as up true");
     }
 
     void setupSearch() {
@@ -266,10 +271,10 @@ public class TagCreateActivity extends BaseActivity
             try {
                 result = w.and(w.eq("time", time), w.eq("owner", AccountManager.getUserInfo(this)._id)).query();
 
-                Log.i(TAG, "delete old today moment: " + Arrays.toString(result.toArray()));
+                i(TAG, "delete old today moment: " + Arrays.toString(result.toArray()));
 
                 if (1 == momentDao.create(moment)) {
-                    Log.i(TAG, "new moment: " + moment);
+                    i(TAG, "new moment: " + moment);
                     SyncManager.syncNow(this);
 
                     RealmHelper.removeTags(moment.getTime());
@@ -288,7 +293,7 @@ public class TagCreateActivity extends BaseActivity
                     return;
                 }
             } catch (SQLException e) {
-                Log.e(TAG, "failed to save moment", e);
+                LogUtil.e(TAG, "failed to save moment", e);
                 e.printStackTrace();
             }
             showSnackMsg(R.string.activity_tag_create_moment_fail);
@@ -314,22 +319,22 @@ public class TagCreateActivity extends BaseActivity
         videoPath = videoFile.getPath();
 
         UploadManager uploadManager = new UploadManager();
-        Log.d(TAG, "upload " + videoFile.getName());
+        d(TAG, "upload " + videoFile.getName());
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class)
                 .getUploadToken(videoFile.getName());
         if (token.code <= 0) {
-            Log.e(TAG, "get upload token error: " + token.msg);
+            e(TAG, "get upload token error: " + token.msg);
             return;
         }
         CountDownLatch latch = new CountDownLatch(1);
         uploadManager.put(videoFile, videoFile.getName(), token.token,
                 (s, responseInfo, jsonObject) -> {
-                    Log.i(TAG, responseInfo.toString());
+                    i(TAG, responseInfo.toString());
                     if (responseInfo.isOK()) {
-                        Log.d(TAG, "loaded " + responseInfo.path);
-                        Log.i(TAG, "profile upload ok");
+                        d(TAG, "loaded " + responseInfo.path);
+                        i(TAG, "profile upload ok");
                     } else {
-                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                        e(TAG, "profile upload error: " + responseInfo.error);
                     }
                     latch.countDown();
                 }, null
@@ -347,7 +352,7 @@ public class TagCreateActivity extends BaseActivity
             element.getAsJsonObject().remove("errorCode");
         }
         String tags = gson.toJson(tagArray);
-        Log.d(TAG, tags);
+        d(TAG, tags);
 
         World world = OneMomentV3.createAdapter().create(World.class);
         Video uploadVideo = world.addVideoToWorld(AccountManager.getUserInfo(this)._id,

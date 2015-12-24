@@ -18,6 +18,7 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.Account;
 
 
@@ -46,14 +47,14 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
     public UserInfo getUserInfo(@NonNull OAuthToken token) {
         OkHttpClient client = new OkHttpClient();
         String url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + token.getToken() + "&openid=" + token.getId();
-        Log.i(TAG, "get info: " + url);
+        LogUtil.i(TAG, "get info: " + url);
 
         try {
             Response response = client.newCall(new Request.Builder().url(url).build()).execute();
             UserInfoResponse infoResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(response.body().string(), UserInfoResponse.class);
             return from(infoResponse);
         } catch (Exception e) {
-            Log.i(TAG, "Exception when get wechat user info");
+            LogUtil.i(TAG, "Exception when get wechat user info");
             e.printStackTrace();
         }
         return null;
@@ -62,7 +63,7 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
     @Override
     public void login(@NonNull LoginListener listener) {
         // send oauth request
-        Log.i(TAG, "wechat login");
+        LogUtil.i(TAG, "wechat login");
         mListener = listener;
         final SendAuth.Req req = new SendAuth.Req();
         req.scope = SCOPR;
@@ -77,7 +78,7 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp resp) {
-        Log.i(TAG, "get resp: " + resp);
+        LogUtil.i(TAG, "get resp: " + resp);
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
 //      resp.toBundle(bundle);
@@ -108,14 +109,14 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
             String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" +
                     APP_ID + "&secret=0dd0eaf61b02d5154130d2ca55c6da4d&code=" +
                     code + "&grant_type=authorization_code";
-            Log.i(TAG, "handle code: " + url);
+            LogUtil.i(TAG, "handle code: " + url);
 
             try {
                 Response response = client.newCall(new Request.Builder().url(url).build()).execute();
                 TokenResponse tokenResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(response.body().string(), TokenResponse.class);
                 handler.post(() -> mListener.onSuccess(from(tokenResponse)));
             } catch (Exception e) {
-                Log.i(TAG, "Exception when request wechat login");
+                LogUtil.i(TAG, "Exception when request wechat login");
                 e.printStackTrace();
                 handler.post(mListener::onFail);
             }

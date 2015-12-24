@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 
 /**
@@ -90,12 +91,9 @@ public class VisiblePasswordView extends EditText {
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        Log.i("onMeasure",
-                "left: " + getLeft() + " right: " + getRight() + " top: " + getTop() + " bottom: " + getBottom()
-                        + " width: " + getWidth() + " height: " + getHeight() +
-                        " measuredWidth: " + getMeasuredWidth() + " measuredHeight: " + getMeasuredHeight()
-
-        );
+        LogUtil.i("onMeasure", "left: " + getLeft() + " right: " + getRight() + " top: " + getTop() + " bottom: " + getBottom()
+                + " width: " + getWidth() + " height: " + getHeight() +
+                " measuredWidth: " + getMeasuredWidth() + " measuredHeight: " + getMeasuredHeight());
         final int drawableWidth = Math.max(mDrawableInvisible.getIntrinsicWidth(), mDrawableVisible.getIntrinsicWidth());
         final int drawableHeight = Math.max(mDrawableInvisible.getIntrinsicHeight(), mDrawableVisible.getIntrinsicHeight());
 
@@ -171,9 +169,9 @@ public class VisiblePasswordView extends EditText {
     }
 
     private boolean isInVisibleIcon(float x, float y) {
-        Log.i("onTouch", "x: " + x + " y: " + y);
+        LogUtil.i("onTouch", "x: " + x + " y: " + y);
         boolean result = x > mTouchLeft && x < +mTouchRight && y > +mTouchTop && y < mTouchBottom;
-        Log.i("onTouch", "In visibility Area " + result + " {" +
+        LogUtil.i("onTouch", "In visibility Area " + result + " {" +
                 "left=" + left +
                 ", right=" + right +
                 ", top=" + top +

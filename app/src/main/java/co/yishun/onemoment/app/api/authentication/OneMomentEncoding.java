@@ -16,9 +16,14 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.converter.ConversionException;
 import retrofit.mime.TypedInput;
+
+import static co.yishun.onemoment.app.LogUtil.d;
+import static co.yishun.onemoment.app.LogUtil.i;
+import static co.yishun.onemoment.app.LogUtil.v;
 
 /**
  * Created by Carlos on 2015/8/5.
@@ -68,9 +73,9 @@ public class OneMomentEncoding {
             String de = new String(cipher2.doFinal(encoded));
 
 
-            Log.i(TAG, "de: " + de);
+            i(TAG, "de: " + de);
             byte[] deA = de.getBytes(Charsets.UTF_8);
-            Log.i(TAG, "deArray: " + deA);
+            i(TAG, "deArray: " + deA);
 
             return re.getBytes(Charsets.UTF_8);
         } catch (Exception e) {
@@ -84,14 +89,14 @@ public class OneMomentEncoding {
             string = CharStreams.toString(new InputStreamReader(body.in(), Charsets.UTF_8));
             return decode(string);
         } catch (Exception e) {
-            Log.e(TAG, "decode error", e);
+            LogUtil.e(TAG, "decode error", e);
             return OneMomentV3.FAKE_RESPONSE;
         }
     }
 
     private static String decode(String string) throws Exception {
         if (string == null) return null;
-        Log.v(TAG, "origin text: " + string);
+        v(TAG, "origin text: " + string);
         int split = string.indexOf(':');
         String iv = string.substring(0, split);
         String etext = string.substring(split + 1, string.length());
@@ -100,7 +105,7 @@ public class OneMomentEncoding {
 
 
         byte[] key = BaseEncoding.base64().decode(Constants.AES_KEY);
-        Log.d(TAG, "key: " + new String(key));
+        d(TAG, "key: " + new String(key));
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
         Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(ivT));
@@ -108,7 +113,7 @@ public class OneMomentEncoding {
         byte[] re = cipher.doFinal(etextT);
         String s = new String(re);
         String json = s.substring(0, s.lastIndexOf('}') + 1);
-        Log.v(TAG, "json: " + json);
+        v(TAG, "json: " + json);
         return json;
     }
 }

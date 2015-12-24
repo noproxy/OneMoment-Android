@@ -17,6 +17,7 @@ import java.util.Locale;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.ui.view.shoot.gles.FullFrameRect;
 import co.yishun.onemoment.app.ui.view.shoot.gles.GlUtil;
 import co.yishun.onemoment.app.ui.view.shoot.video.EncoderConfig;
@@ -155,7 +156,7 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
         if (mRecordingEnabled) {
             switch (mRecordingStatus) {
                 case RECORDING_OFF:
-                    Log.i(TAG, "RECORDING_OFF");
+                    LogUtil.i(TAG, "RECORDING_OFF");
                     mEncoderConfig.updateEglContext(EGL14.eglGetCurrentContext());
 //                    mVideoEncoder.startRecording();
                     try {
@@ -170,14 +171,14 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
 
                     break;
                 case RECORDING_RESUMED:
-                    Log.i(TAG, "RECORDING_RESUME");
+                    LogUtil.i(TAG, "RECORDING_RESUME");
                     mVideoEncoder.updateSharedContext(EGL14.eglGetCurrentContext());
                     mVideoEncoder.setTextureId(textureId);
                     mVideoEncoder.scaleMVPMatrix(mMvpScaleX, mMvpScaleY);
                     mRecordingStatus = RECORDING_ON;
                     break;
                 case RECORDING_ON:
-                    Log.i(TAG, "RECORDING_ON");
+                    LogUtil.i(TAG, "RECORDING_ON");
                     // yay
                     break;
                 default:
@@ -187,7 +188,7 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
             switch (mRecordingStatus) {
                 case RECORDING_ON:
                 case RECORDING_RESUMED:
-                    Log.i(TAG, "else RECORDING_RESUME");
+                    LogUtil.i(TAG, "else RECORDING_RESUME");
 //                    mVideoEncoder.stopRecording(() -> mCameraHandler.sendEmptyMessage(CameraGLSurfaceView.CameraHandler.END));
                     mMediaMuxerWrapper.stopRecording(() -> mCameraHandler.sendEmptyMessage(CameraGLSurfaceView.CameraHandler.END));
                     mRecordingStatus = RECORDING_OFF;

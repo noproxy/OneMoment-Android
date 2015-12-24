@@ -34,6 +34,12 @@ import android.util.Log;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import co.yishun.onemoment.app.LogUtil;
+
+import static co.yishun.onemoment.app.LogUtil.e;
+import static co.yishun.onemoment.app.LogUtil.i;
+import static co.yishun.onemoment.app.LogUtil.v;
+
 public class MediaAudioEncoder extends MediaEncoder {
     public static final int SAMPLES_PER_FRAME = 1024;    // AAC, bytes/frame/channel
     public static final int FRAMES_PER_BUFFER = 25;    // AAC, frame/buffer/sec
@@ -62,7 +68,7 @@ public class MediaAudioEncoder extends MediaEncoder {
      * @return
      */
     private static MediaCodecInfo selectAudioCodec(final String mimeType) {
-        if (DEBUG) Log.v(TAG, "selectAudioCodec:");
+        if (DEBUG) v(TAG, "selectAudioCodec:");
 
         MediaCodecInfo result = null;
         // get the list of available codecs
@@ -75,7 +81,7 @@ public class MediaAudioEncoder extends MediaEncoder {
             }
             final String[] types = codecInfo.getSupportedTypes();
             for (String type : types) {
-                if (DEBUG) Log.i(TAG, "supportedType:" + codecInfo.getName() + ",MIME=" + type);
+                if (DEBUG) i(TAG, "supportedType:" + codecInfo.getName() + ",MIME=" + type);
                 if (type.equalsIgnoreCase(mimeType)) {
                     result = codecInfo;
                     break LOOP;
@@ -87,16 +93,16 @@ public class MediaAudioEncoder extends MediaEncoder {
 
     @Override
     protected void prepare() throws IOException {
-        if (DEBUG) Log.v(TAG, "prepare:");
+        if (DEBUG) v(TAG, "prepare:");
         mTrackIndex = -1;
         mMuxerStarted = mIsEOS = false;
         // prepare MediaCodec for AAC encoding of audio data from inernal mic.
         final MediaCodecInfo audioCodecInfo = selectAudioCodec(MIME_TYPE);
         if (audioCodecInfo == null) {
-            Log.e(TAG, "Unable to find an appropriate codec for " + MIME_TYPE);
+            e(TAG, "Unable to find an appropriate codec for " + MIME_TYPE);
             return;
         }
-        if (DEBUG) Log.i(TAG, "selected codec: " + audioCodecInfo.getName());
+        if (DEBUG) i(TAG, "selected codec: " + audioCodecInfo.getName());
 
         final MediaFormat audioFormat = MediaFormat.createAudioFormat(MIME_TYPE, SAMPLE_RATE, 1);
         audioFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
@@ -105,11 +111,11 @@ public class MediaAudioEncoder extends MediaEncoder {
         audioFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 1);
 //		audioFormat.setLong(MediaFormat.KEY_MAX_INPUT_SIZE, inputFile.length());
 //      audioFormat.setLong(MediaFormat.KEY_DURATION, (long)durationInMs );
-        if (DEBUG) Log.i(TAG, "format: " + audioFormat);
+        if (DEBUG) i(TAG, "format: " + audioFormat);
         mMediaCodec = MediaCodec.createEncoderByType(MIME_TYPE);
         mMediaCodec.configure(audioFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         mMediaCodec.start();
-        if (DEBUG) Log.i(TAG, "prepare finishing");
+        if (DEBUG) i(TAG, "prepare finishing");
     }
 
     @Override
@@ -160,7 +166,7 @@ public class MediaAudioEncoder extends MediaEncoder {
                 if (audioRecord != null) {
                     try {
                         if (mIsCapturing) {
-                            if (DEBUG) Log.v(TAG, "AudioThread:start audio recording");
+                            if (DEBUG) v(TAG, "AudioThread:start audio recording");
                             final ByteBuffer buf = ByteBuffer.allocateDirect(SAMPLES_PER_FRAME);
                             int readBytes;
                             audioRecord.startRecording();
@@ -186,12 +192,12 @@ public class MediaAudioEncoder extends MediaEncoder {
                         audioRecord.release();
                     }
                 } else {
-                    Log.e(TAG, "failed to initialize AudioRecord");
+                    e(TAG, "failed to initialize AudioRecord");
                 }
             } catch (final Exception e) {
-                Log.e(TAG, "AudioThread#run", e);
+                LogUtil.e(TAG, "AudioThread#run", e);
             }
-            if (DEBUG) Log.v(TAG, "AudioThread:finished");
+            if (DEBUG) v(TAG, "AudioThread:finished");
         }
     }
 

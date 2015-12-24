@@ -34,6 +34,7 @@ import com.tencent.tauth.UiError;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
 
 /**
@@ -192,7 +193,7 @@ public class ShareController implements IWXAPIEventHandler {
     }
 
     public void onNewIntent(Intent intent) {
-        Log.d(TAG, "onNewIntent");
+        LogUtil.d(TAG, "onNewIntent");
 
         /**
          * The {@link com.sina.weibo.sdk.api.share.WeiboShareAPIImpl#handleWeiboResponse(Intent, IWeiboHandler.Response)}
@@ -209,7 +210,7 @@ public class ShareController implements IWXAPIEventHandler {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult");
+        LogUtil.d(TAG, "onActivityResult");
         if (mQQShareAPI != null)
             Tencent.onActivityResultData(requestCode, resultCode, data, qqShareListener);
     }

@@ -23,6 +23,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.account.remind.ReminderReceiver;
@@ -56,7 +57,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(getTitle());
-        Log.i("setupToolbar", "set home as up true");
+        LogUtil.i("setupToolbar", "set home as up true");
     }
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {

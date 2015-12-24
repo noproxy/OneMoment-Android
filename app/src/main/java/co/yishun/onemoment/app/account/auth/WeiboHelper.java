@@ -18,6 +18,10 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
+import co.yishun.onemoment.app.LogUtil;
+
+import static co.yishun.onemoment.app.LogUtil.e;
+import static co.yishun.onemoment.app.LogUtil.i;
 import static co.yishun.onemoment.app.account.auth.AccessTokenKeeper.KeeperType.Weibo;
 
 
@@ -65,7 +69,7 @@ public class WeiboHelper implements AuthHelper {
 
     @Override
     public void login(@NonNull LoginListener listener) {
-        Log.i(TAG, "start weibo login");
+        i(TAG, "start weibo login");
         ssoHandler.authorize(new WeiboAuthListener() {
             @Override
             public void onComplete(Bundle values) {
@@ -74,23 +78,23 @@ public class WeiboHelper implements AuthHelper {
                     OAuthToken token = convertToOAuthToken(accessToken);
                     AccessTokenKeeper.which(Weibo).writeAccessToken(mActivity.getApplicationContext(), token);
                     listener.onSuccess(token);
-                    Log.e(TAG, "weibo auth success");
+                    e(TAG, "weibo auth success");
                 } else {
                     String code = values.getString("code");
-                    Log.e(TAG, "weibo auth fail, code:" + code);
+                    e(TAG, "weibo auth fail, code:" + code);
                     listener.onFail();
                 }
             }
 
             @Override
             public void onWeiboException(WeiboException e) {
-                Log.e(TAG, "weibo auth exception", e);
+                LogUtil.e(TAG, "weibo auth exception", e);
                 listener.onFail();
             }
 
             @Override
             public void onCancel() {
-                Log.e(TAG, "weibo auth cancel");
+                e(TAG, "weibo auth cancel");
                 listener.onCancel();
             }
         });

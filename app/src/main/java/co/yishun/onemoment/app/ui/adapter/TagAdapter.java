@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.List;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -71,12 +72,12 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
         }
 
         void setImage(File large, File small) {
-            Log.d("Video", "get " + small.getName());
+            LogUtil.d("Video", "get " + small.getName());
             Picasso.with(mContext).load(small).into(itemImageView);
         }
 
         void setVideo(Video video) {
-            Log.d("Video", "get a video " + video.fileName);
+            LogUtil.d("Video", "get a video " + video.fileName);
         }
 
     }

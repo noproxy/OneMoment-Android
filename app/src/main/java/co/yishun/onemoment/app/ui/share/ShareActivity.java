@@ -18,6 +18,7 @@ import org.androidannotations.annotations.ViewById;
 import java.io.IOException;
 import java.net.URL;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -47,13 +48,13 @@ public class ShareActivity extends BaseActivity implements ShareController.Share
 
     @Override protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(TAG, "onNewIntent");
+        LogUtil.d(TAG, "onNewIntent");
         shareController.onNewIntent(intent);
     }
 
     @Override protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        LogUtil.d(TAG, "onResume");
     }
 
     @AfterViews void setUp() {

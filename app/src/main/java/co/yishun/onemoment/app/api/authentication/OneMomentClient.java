@@ -20,6 +20,7 @@ import java.util.TimeZone;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.data.FileUtil;
 import retrofit.client.Header;
@@ -28,6 +29,9 @@ import retrofit.client.Request;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
+
+import static co.yishun.onemoment.app.LogUtil.e;
+import static co.yishun.onemoment.app.LogUtil.i;
 
 
 /**
@@ -61,7 +65,7 @@ public class OneMomentClient extends OkClient {
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
 
         Token token1 = generateOmToken1();
-        Log.i(TAG, token1.toString());
+        i(TAG, token1.toString());
         TypedOutput body = request.getBody() == null ? null : new OneMomentTypedOut(request.getBody());
 
 
@@ -69,7 +73,7 @@ public class OneMomentClient extends OkClient {
         long expiredTime = Util.unixTimeStamp() + DEFAULT_EXPIRE_TIME;
 
         Token token2 = generateOmToken2(token1, request.getUrl(), body, expiredTime);
-        Log.i(TAG, token2.toString());
+        i(TAG, token2.toString());
 
         headers.add(new Header("Om-token2", token2.value()));
         headers.add(new Header("Om-et", String.valueOf(expiredTime)));
@@ -86,11 +90,11 @@ public class OneMomentClient extends OkClient {
             // fake 200 response to log error and store in ApiModel
             if (statusCode < 200 || statusCode >= 300) {// error
                 response = new Response(response.getUrl(), 200, "OK", response.getHeaders(), new FakeTypeInput());
-                Log.e(TAG, "http error! " + statusCode + " " + response.getReason());
+                e(TAG, "http error! " + statusCode + " " + response.getReason());
             }
             return response;
         } catch (Exception e) {
-            Log.e(TAG, "Exception in network request ! ", e);
+            LogUtil.e(TAG, "Exception in network request ! ", e);
             return new Response(request.getUrl(), 200, "OK", headers, new FakeTypeInput());
         }
     }

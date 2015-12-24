@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.ui.view.shoot.gles.GlUtil;
 
 
@@ -141,7 +142,7 @@ public class EglSurfaceBase {
     public boolean swapBuffers() {
         boolean result = mEglCore.swapBuffers(mEGLSurface);
         if (!result) {
-            Log.d(TAG, "WARNING: swapBuffers() failed");
+            LogUtil.d(TAG, "WARNING: swapBuffers() failed");
         }
         return result;
     }
@@ -199,6 +200,6 @@ public class EglSurfaceBase {
         } finally {
             if (bos != null) bos.close();
         }
-        Log.d(TAG, "Saved " + width + "x" + height + " frame as '" + filename + "'");
+        LogUtil.d(TAG, "Saved " + width + "x" + height + " frame as '" + filename + "'");
     }
 }

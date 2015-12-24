@@ -39,6 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
@@ -84,7 +85,7 @@ public class PlayMomentActivity extends BaseActivity {
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        Log.i("setupToolbar", "set home as up true");
+        LogUtil.i("setupToolbar", "set home as up true");
     }
 
     @Override protected void onResume() {
@@ -195,21 +196,21 @@ public class PlayMomentActivity extends BaseActivity {
     @SupposeBackground void uploadAndShare() {
         showProgress();
         UploadManager uploadManager = new UploadManager();
-        Log.d(TAG, "upload " + videoCacheFile.getName());
+        LogUtil.d(TAG, "upload " + videoCacheFile.getName());
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoCacheFile.getName());
         if (token.code <= 0) {
-            Log.e(TAG, "get upload token error: " + token.msg);
+            LogUtil.e(TAG, "get upload token error: " + token.msg);
             return;
         }
         CountDownLatch latch = new CountDownLatch(1);
         uploadManager.put(videoCacheFile, videoCacheFile.getName(), token.token,
                 (s, responseInfo, jsonObject) -> {
-                    Log.i(TAG, responseInfo.toString());
+                    LogUtil.i(TAG, responseInfo.toString());
                     if (responseInfo.isOK()) {
-                        Log.d(TAG, "loaded " + responseInfo.path);
-                        Log.i(TAG, "profile upload ok");
+                        LogUtil.d(TAG, "loaded " + responseInfo.path);
+                        LogUtil.i(TAG, "profile upload ok");
                     } else {
-                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                        LogUtil.e(TAG, "profile upload error: " + responseInfo.error);
                     }
                     latch.countDown();
                 }, null
@@ -235,7 +236,7 @@ public class PlayMomentActivity extends BaseActivity {
             allTagArray.add(momentTags);
         }
         String tags = gson.toJson(allTagArray);
-        Log.d(TAG, tags);
+        LogUtil.d(TAG, tags);
 
         Account account = OneMomentV3.createAdapter().create(Account.class);
         ShareInfo shareInfo = account.share(videoCacheFile.getName(), AccountManager.getUserInfo(this)._id, tags);

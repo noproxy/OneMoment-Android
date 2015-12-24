@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.api;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.Domain;
 
@@ -23,7 +24,7 @@ public class ApiUtil {
             if (domain.code >= 0) {
                 mResourceDomain = domain.domain.endsWith("/") ? domain.domain : domain.domain + "/";
             } else {
-                Log.e(TAG, "get domain error: " + domain.msg);
+                LogUtil.e(TAG, "get domain error: " + domain.msg);
             }
         }
         return mResourceDomain;
