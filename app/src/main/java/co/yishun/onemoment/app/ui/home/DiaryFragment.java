@@ -32,6 +32,7 @@ import java.util.Locale;
 import co.yishun.library.calendarlibrary.DayView;
 import co.yishun.library.calendarlibrary.MomentCalendar;
 import co.yishun.library.calendarlibrary.MomentMonthView;
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -147,7 +148,7 @@ public class DiaryFragment extends ToolbarFragment
                 dayView.setTag(moment);
                 //fix DayView, change to into(dayView)
                 Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(dayView);
-                Log.i(TAG, "moment found: " + moment.getTime());
+                LogUtil.i(TAG, "moment found: " + moment.getTime());
             } else {
                 dayView.setEnabled(false);
             }
@@ -158,7 +159,7 @@ public class DiaryFragment extends ToolbarFragment
 
     @Override
     public void onSelected(@NonNull DayView dayView) {
-        Log.i(TAG, "onSelected: " + dayView);
+        LogUtil.i(TAG, "onSelected: " + dayView);
         Moment moment = (Moment) dayView.getTag();
         selectMoment = moment;
         if (moment != null) {

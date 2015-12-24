@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.ui.MainActivity;
 
 /**
@@ -35,7 +36,7 @@ public abstract class ToolbarFragment extends BaseFragment {
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowTitleEnabled(false);
         ab.setLogo(getTitleDrawableRes());
-        Log.i("setupToolbar", "set home as up true");
+        LogUtil.i("setupToolbar", "set home as up true");
         return ab;
     }
 

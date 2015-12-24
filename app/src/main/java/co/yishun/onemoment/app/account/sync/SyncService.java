@@ -6,6 +6,8 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import co.yishun.onemoment.app.LogUtil;
+
 /**
  * This service is to listen the network status and sync in the background.
  * <p>
@@ -33,7 +35,7 @@ public class SyncService extends Service {
 
     @Override
     public IBinder onBind(@NonNull Intent intent) {
-        Log.i(TAG, "SyncService onBind");
+        LogUtil.i(TAG, "SyncService onBind");
         return mSyncAdapter.getSyncAdapterBinder();
     }
 

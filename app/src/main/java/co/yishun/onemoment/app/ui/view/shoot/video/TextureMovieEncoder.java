@@ -34,9 +34,13 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.ui.view.shoot.gles.FullFrameRect;
 
+import static co.yishun.onemoment.app.LogUtil.d;
+import static co.yishun.onemoment.app.LogUtil.i;
+import static co.yishun.onemoment.app.LogUtil.w;
 import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.FilterType;
 import static co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.getCameraFilter;
 
@@ -114,7 +118,7 @@ public class TextureMovieEncoder implements Runnable {
         format.setInteger(MediaFormat.KEY_BIT_RATE, mConfig.mBitRate);
         format.setInteger(MediaFormat.KEY_FRAME_RATE, FRAME_RATE);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, IFRAME_INTERVAL);
-        Log.d(TAG, "format: " + format);
+        d(TAG, "format: " + format);
 
         mMediaCodec = MediaCodec.createEncoderByType(MIME_TYPE);
         mMediaCodec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
@@ -134,10 +138,10 @@ public class TextureMovieEncoder implements Runnable {
      * encoder may not yet be fully configured.
      */
     public void startRecording() {
-        Log.d(TAG, "Encoder: startRecording()");
+        d(TAG, "Encoder: startRecording()");
         synchronized (mReadyFence) {
             if (mRunning) {
-                Log.w(TAG, "Encoder thread already running");
+                w(TAG, "Encoder thread already running");
                 return;
             }
             mRunning = true;
@@ -169,7 +173,7 @@ public class TextureMovieEncoder implements Runnable {
      * has completed).
      */
     public void stopRecording(Callback stopListener) {
-        Log.i(TAG, "stopRecording: " + stopListener);
+        i(TAG, "stopRecording: " + stopListener);
         Message message = mHandler.obtainMessage(MSG_STOP_RECORDING);
         message.obj = stopListener;
         mHandler.sendMessage(message);
@@ -231,7 +235,7 @@ public class TextureMovieEncoder implements Runnable {
             // first frame back has a zero timestamp.
             // MPEG4Writer thinks this is cause to abort() in native code, so it's very
             // important that we just ignore the frame.
-            Log.w(TAG, "HEY: got SurfaceTexture with timestamp of zero");
+            w(TAG, "HEY: got SurfaceTexture with timestamp of zero");
             return;
         }
         mHandler.sendMessage(mHandler.obtainMessage(MSG_FRAME_AVAILABLE, (int) (timestamp >> 32),
@@ -270,7 +274,7 @@ public class TextureMovieEncoder implements Runnable {
         }
         Looper.loop();
 
-        Log.d(TAG, "Encoder thread exiting");
+        d(TAG, "Encoder thread exiting");
         synchronized (mReadyFence) {
             mReady = mRunning = false;
             mHandler = null;
@@ -281,7 +285,7 @@ public class TextureMovieEncoder implements Runnable {
      * Starts recording.
      */
     private void handleStartRecording() {
-        Log.d(TAG, "handleStartRecording " + mConfig);
+        d(TAG, "handleStartRecording " + mConfig);
 
         mEglCore = new EglCore(mConfig.mEglContext, EglCore.FLAG_RECORDABLE);
         mInputWindowSurface = new WindowSurface(mEglCore, mInputSurface, true);
@@ -312,7 +316,7 @@ public class TextureMovieEncoder implements Runnable {
      * Handles a request to stop encoding.
      */
     private void handleStopRecording(@Nullable Callback callback) {
-        Log.d(TAG, "handleStopRecording");
+        d(TAG, "handleStopRecording");
         drainEncoder(true);
         if (callback != null) {
             callback.call();
@@ -340,7 +344,7 @@ public class TextureMovieEncoder implements Runnable {
      * that got torn down) and we need to hook up with the new one.
      */
     private void handleUpdateSharedContext(EGLContext newSharedContext) {
-        Log.d(TAG, "handleUpdatedSharedContext " + newSharedContext);
+        d(TAG, "handleUpdatedSharedContext " + newSharedContext);
 
         // Release the EGLSurface and EGLContext.
         mInputWindowSurface.releaseEglSurface();
@@ -364,7 +368,7 @@ public class TextureMovieEncoder implements Runnable {
     }
 
     private void releaseEncoder() {
-        Log.d(TAG, "releasing encoder objects");
+        d(TAG, "releasing encoder objects");
         if (mMediaCodec != null) {
             mMediaCodec.stop();
             mMediaCodec.release();
@@ -373,11 +377,11 @@ public class TextureMovieEncoder implements Runnable {
         if (mMuxerStarted) {
             final MediaMuxerWrapper muxer = mWeakMuxer.get();
             if (muxer != null) {
-                Log.d(TAG, "not null try to release");
+                d(TAG, "not null try to release");
                 try {
                     muxer.stop();
                 } catch (final Exception e) {
-                    Log.e(TAG, "failed stopping muxer", e);
+                    LogUtil.e(TAG, "failed stopping muxer", e);
                 }
             }
         }
@@ -397,10 +401,10 @@ public class TextureMovieEncoder implements Runnable {
 
     public void drainEncoder(boolean endOfStream) {
         final int TIMEOUT_USEC = 10000;
-        Log.d(TAG, "drainEncoder(" + endOfStream + ")");
+        d(TAG, "drainEncoder(" + endOfStream + ")");
         final MediaMuxerWrapper muxer = mWeakMuxer.get();
         if (endOfStream) {
-            Log.d(TAG, "sending EOS to encoder");
+            d(TAG, "sending EOS to encoder");
             mMediaCodec.signalEndOfInputStream();
         }
 
@@ -413,7 +417,7 @@ public class TextureMovieEncoder implements Runnable {
                 if (!endOfStream) {
                     break;      // out of while
                 } else {
-                    Log.d(TAG, "no output available, spinning to await EOS");
+                    d(TAG, "no output available, spinning to await EOS");
                 }
             } else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
                 // not expected for an encoder
@@ -424,7 +428,7 @@ public class TextureMovieEncoder implements Runnable {
                     throw new RuntimeException("format changed twice");
                 }
                 MediaFormat newFormat = mMediaCodec.getOutputFormat();
-                Log.d(TAG, "encoder output format changed: " + newFormat);
+                d(TAG, "encoder output format changed: " + newFormat);
 
                 // now that we have the Magic Goodies, start the muxer
 
@@ -444,7 +448,7 @@ public class TextureMovieEncoder implements Runnable {
                 }
                 mMuxerStarted = true;
             } else if (encoderStatus < 0) {
-                Log.w(TAG, "unexpected result from encoder.dequeueOutputBuffer: " + encoderStatus);
+                w(TAG, "unexpected result from encoder.dequeueOutputBuffer: " + encoderStatus);
                 // let's ignore it
             } else {
                 ByteBuffer encodedData = encoderOutputBuffers[encoderStatus];
@@ -456,7 +460,7 @@ public class TextureMovieEncoder implements Runnable {
                 if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
                     // The codec config data was pulled out and fed to the muxer when we got
                     // the INFO_OUTPUT_FORMAT_CHANGED status.  Ignore it.
-                    Log.d(TAG, "ignoring BUFFER_FLAG_CODEC_CONFIG");
+                    d(TAG, "ignoring BUFFER_FLAG_CODEC_CONFIG");
                     mBufferInfo.size = 0;
                 }
 
@@ -471,7 +475,7 @@ public class TextureMovieEncoder implements Runnable {
 
 //                    mMuxer.writeSampleData(mTrackIndex, encodedData, mBufferInfo);
                     mWeakMuxer.get().writeSampleData(mTrackIndex, encodedData, mBufferInfo);
-                    Log.d(TAG, "sent " + mBufferInfo.size + " bytes to muxer, ts=" +
+                    d(TAG, "sent " + mBufferInfo.size + " bytes to muxer, ts=" +
                             mBufferInfo.presentationTimeUs);
                 }
 
@@ -479,9 +483,9 @@ public class TextureMovieEncoder implements Runnable {
 
                 if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
                     if (!endOfStream) {
-                        Log.w(TAG, "reached end of stream unexpectedly");
+                        w(TAG, "reached end of stream unexpectedly");
                     } else {
-                        Log.d(TAG, "end of stream reached");
+                        d(TAG, "end of stream reached");
                     }
                     break;      // out of while
                 }
@@ -506,48 +510,48 @@ public class TextureMovieEncoder implements Runnable {
 
             TextureMovieEncoder encoder = mWeakEncoder.get();
             if (encoder == null || !encoder.mRunning) {
-                Log.w(TAG, "EncoderHandler.handleMessage: encoder is null");
+                w(TAG, "EncoderHandler.handleMessage: encoder is null");
                 return;
             }
 
             switch (what) {
                 case MSG_START_RECORDING:
-                    Log.i(TAG, "MSG_START_RECORDING");
+                    i(TAG, "MSG_START_RECORDING");
                     encoder.handleStartRecording();
                     break;
                 case MSG_STOP_RECORDING:
-                    Log.i(TAG, "MSG_STOP_RECORDING");
+                    i(TAG, "MSG_STOP_RECORDING");
                     encoder.handleStopRecording((co.yishun.onemoment.app.function.Callback) obj);
                     break;
 
                 case MSG_SCALE_MVP_MATRIX:
-                    Log.i(TAG, "MSG_SCALE_MVP_MATRIX");
+                    i(TAG, "MSG_SCALE_MVP_MATRIX");
                     encoder.handleSaleMVPMatrix((PointF) obj);
                     break;
 
                 case MSG_FRAME_AVAILABLE:
-                    Log.i(TAG, "MSG_FRAME_AVAILABLE");
+                    i(TAG, "MSG_FRAME_AVAILABLE");
                     long timestamp =
                             (((long) inputMessage.arg1) << 32) | (((long) inputMessage.arg2)
                                     & 0xffffffffL);
                     encoder.handleFrameAvailable((float[]) obj, timestamp);
                     break;
                 case MSG_SET_TEXTURE_ID:
-                    Log.i(TAG, "MSG_SET_TEXTURE_ID");
+                    i(TAG, "MSG_SET_TEXTURE_ID");
                     encoder.handleSetTexture(inputMessage.arg1);
                     break;
                 case MSG_UPDATE_SHARED_CONTEXT:
-                    Log.i(TAG, "MSG_UPDATE_SHARED_CONTEXT");
+                    i(TAG, "MSG_UPDATE_SHARED_CONTEXT");
                     encoder.handleUpdateSharedContext((EGLContext) inputMessage.obj);
                     break;
 
                 case MSG_UPDATE_FILTER:
-                    Log.i(TAG, "MSG_UPDATE_FILTER");
+                    i(TAG, "MSG_UPDATE_FILTER");
                     encoder.handleUpdateFilter((FilterType) inputMessage.obj);
                     break;
 
                 case MSG_QUIT:
-                    Log.i(TAG, "MSG_QUIT");
+                    i(TAG, "MSG_QUIT");
                     Looper looper = Looper.myLooper();
                     if (looper != null) {
                         looper.quit();

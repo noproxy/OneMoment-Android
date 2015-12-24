@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -123,8 +124,8 @@ public class MomentSyncImpl extends MomentSync {
     }
 
     private void divideTask(List<ApiMoment> momentsOnServer, List<Moment> momentsOnDevice) {
-        Log.i(TAG, "divide task, servers: " + momentsOnServer.size());
-        Log.i(TAG, "divide task, local: " + momentsOnDevice.size());
+        LogUtil.i(TAG, "divide task, servers: " + momentsOnServer.size());
+        LogUtil.i(TAG, "divide task, local: " + momentsOnDevice.size());
         TagsUpdateTask tagsUpdateTask = new TagsUpdateTask(mContext, this::onFail, this::onSuccess);
 
         final HashMap<String, ApiMoment> apiMomentHashMap = new HashMap<>(momentsOnServer.size());
@@ -188,11 +189,11 @@ public class MomentSyncImpl extends MomentSync {
 
         tagsUpdateTask.stopUpdateTags();
 
-        Log.i(TAG, "divide end.");
-        Log.i(TAG, "to upload: " + toUpload.size());
-        Log.i(TAG, "to add: " + toAdd.size());
-        Log.i(TAG, "to download: " + toFix.size());
-        Log.i(TAG, "to delete: " + toDelete.size());
+        LogUtil.i(TAG, "divide end.");
+        LogUtil.i(TAG, "to upload: " + toUpload.size());
+        LogUtil.i(TAG, "to add: " + toAdd.size());
+        LogUtil.i(TAG, "to download: " + toFix.size());
+        LogUtil.i(TAG, "to delete: " + toDelete.size());
     }
 
     //TODO clean disk room, delete useless file
@@ -220,10 +221,10 @@ public class MomentSyncImpl extends MomentSync {
 
 
         try {
-            Log.i(TAG, "Wait Sync Task end");
+            LogUtil.i(TAG, "Wait Sync Task end");
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            Log.i(TAG, "executor is interrupted!");
+            LogUtil.i(TAG, "executor is interrupted!");
             executor.shutdownNow();
         }
     }
@@ -252,7 +253,7 @@ public class MomentSyncImpl extends MomentSync {
         Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_PROGRESS);
         int progress = successTask * 100 / allTask;
         intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_PROGRESS_VALUE, progress);
-        Log.i(TAG, "sync update progress, send a broadcast. progress: " + progress);
+        LogUtil.i(TAG, "sync update progress, send a broadcast. progress: " + progress);
         mContext.sendBroadcast(intent);
     }
 
@@ -267,7 +268,7 @@ public class MomentSyncImpl extends MomentSync {
         Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_LOCAL_UPDATE);
         intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_DATE, date);
         intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP, timestamp);
-        Log.i(TAG, "sync update local, send a broadcast. date: " + date);
+        LogUtil.i(TAG, "sync update local, send a broadcast. date: " + date);
         mContext.sendBroadcast(intent);
     }
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 
 /**
@@ -91,12 +92,12 @@ public class CountDownView extends TextView {
 
     public void startCountDown() {
         if (status == STARTED) {
-            Log.w("CountDownView", "start count down but has been started, ignored!");
+            LogUtil.w("CountDownView", "start count down but has been started, ignored!");
             return;
         } else if (status == END) {
-            Log.i("CountDownView", "start count down again.");
+            LogUtil.i("CountDownView", "start count down again.");
         } else {
-            Log.i("CountDownView", "start count down.");
+            LogUtil.i("CountDownView", "start count down.");
         }
         status = STARTED;
         handler.postDelayed(runnable, COUNT_DOWN_DELAY);

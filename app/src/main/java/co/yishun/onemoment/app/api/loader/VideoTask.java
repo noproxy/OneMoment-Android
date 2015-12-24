@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.File;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
 
@@ -69,7 +70,7 @@ public class VideoTask {
     }
 
     public void cancel() {
-        Log.d(TAG, "cancel task");
+        LogUtil.d(TAG, "cancel task");
         if (downloadTask != null) {
             downloadTask.cancel(true);
         }
@@ -82,13 +83,13 @@ public class VideoTask {
         if (videoListener != null) {
             videoListener.onVideoLoad(video);
         } else {
-            Log.e(TAG, "video listener null");
+            LogUtil.e(TAG, "video listener null");
         }
         if ((type & TYPE_IMAGE) != TYPE_IMAGE) {
             return;
         }
         // check whether thumbnail exists
-        Log.d(TAG, "try to get image");
+        LogUtil.d(TAG, "try to get image");
         File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
         File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
         if (large.length() != 0 && small.length() != 0) {
@@ -101,11 +102,11 @@ public class VideoTask {
     }
 
     void getImage(File large, File small) {
-        Log.d(TAG, "get image");
+        LogUtil.d(TAG, "get image");
         if (imageListener != null) {
             imageListener.onImageCreate(large, small);
         } else {
-            Log.e(TAG, "image listener null");
+            LogUtil.e(TAG, "image listener null");
         }
     }
 

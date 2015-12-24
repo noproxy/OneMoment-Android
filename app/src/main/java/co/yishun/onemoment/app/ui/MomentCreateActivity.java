@@ -20,6 +20,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.sql.SQLException;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -76,7 +77,7 @@ public class MomentCreateActivity extends BaseActivity {
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.activity_moment_create_title_text);
-        Log.i("setupToolbar", "set home as up true");
+        LogUtil.i("setupToolbar", "set home as up true");
     }
 
     @AfterViews void setVideo() {

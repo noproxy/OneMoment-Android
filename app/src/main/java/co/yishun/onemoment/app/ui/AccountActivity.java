@@ -20,6 +20,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.auth.AccessTokenKeeper;
 import co.yishun.onemoment.app.account.auth.UserInfo;
@@ -57,7 +58,7 @@ public class AccountActivity extends PickCropActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "AccountActivity onCreate");
+        LogUtil.i(TAG, "AccountActivity onCreate");
         mAdapter = OneMomentV3.createAdapter();
         mAccount = mAdapter.create(Account.class);
         fragmentManager = getSupportFragmentManager();
@@ -76,7 +77,7 @@ public class AccountActivity extends PickCropActivity {
 
     @Click(R.id.fab)
     void onFABClicked(View view) {
-        Log.i(TAG, "fab clicked, currentFragment: " + mCurrentFragment);
+        LogUtil.i(TAG, "fab clicked, currentFragment: " + mCurrentFragment);
         if (mCurrentFragment != null) {
             mCurrentFragment.onFABClick(view);
         }

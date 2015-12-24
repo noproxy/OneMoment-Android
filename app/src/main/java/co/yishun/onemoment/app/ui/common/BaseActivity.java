@@ -19,8 +19,11 @@ import com.umeng.message.PushAgent;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
+
+import static java.lang.String.valueOf;
 
 /**
  * Created by Carlos on 2015/8/12.
@@ -80,7 +83,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setPageInfo();
-        Log.d(mPageName, String.valueOf(mIsPage));
+        LogUtil.d(mPageName, valueOf(mIsPage));
         if (mIsPage) {
             MobclickAgent.onPageStart(mPageName);
         }

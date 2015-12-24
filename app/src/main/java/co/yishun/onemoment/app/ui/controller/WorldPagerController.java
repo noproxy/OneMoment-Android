@@ -16,6 +16,7 @@ import org.androidannotations.annotations.UiThread;
 
 import java.util.List;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.WorldTag;
@@ -116,7 +117,7 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
 
     @Override
     public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
-        Log.i(TAG, "start load more, int numberOfItems, int numberBeforeMore, int currentItemPos: " + numberOfItems + ", " + numberBeforeMore + ", " + currentItemPos);
+        LogUtil.i(TAG, "start load more, int numberOfItems, int numberBeforeMore, int currentItemPos: " + numberOfItems + ", " + numberBeforeMore + ", " + currentItemPos);
         loadTags();
     }
 }

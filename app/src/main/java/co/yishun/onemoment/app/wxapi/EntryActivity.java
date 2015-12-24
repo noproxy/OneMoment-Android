@@ -16,6 +16,7 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.UiThread;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
@@ -34,6 +35,8 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.AccountActivity_;
 import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+
+import static java.lang.String.valueOf;
 
 /**
  * Created by yyz on 7/24/15.
@@ -79,19 +82,19 @@ public class EntryActivity extends BaseActivity implements LoginListener {
 
     @Override
     public void onSuccess(OAuthToken token) {
-        Log.i(TAG, String.valueOf(token));
+        LogUtil.i(TAG, valueOf(token));
         AsyncHandler_.getInstance_(this).handleToken(token);
     }
 
     @Override
     public void onFail() {
-        Log.e(TAG, "auth fail.");
+        LogUtil.e(TAG, "auth fail.");
         showSnackMsg("fail!");
     }
 
     @Override
     public void onCancel() {
-        Log.i(TAG, "user cancel auth");
+        LogUtil.i(TAG, "user cancel auth");
         if (snackbar.isShown()) snackbar.dismiss();
     }
 
@@ -192,10 +195,10 @@ class AsyncHandler {
             SyncManager.syncNow(mActivity);
             exitWithStartMain();
         } else if (user.errorCode == Constants.ErrorCode.ACCOUNT_DOESNT_EXIST) {
-            Log.i(TAG, "account not exist, start getting user info");
+            LogUtil.i(TAG, "account not exist, start getting user info");
             getUserInfo(token);
         } else {
-            Log.i(TAG, "sign in failed: " + user.msg);
+            LogUtil.i(TAG, "sign in failed: " + user.msg);
             mActivity.showSnackMsg(R.string.activity_wx_entry_login_fail);
         }
     }

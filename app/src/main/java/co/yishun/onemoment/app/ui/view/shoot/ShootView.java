@@ -20,10 +20,15 @@ import android.view.TextureView;
 import java.io.File;
 import java.io.IOException;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
+
+import static co.yishun.onemoment.app.LogUtil.d;
+import static co.yishun.onemoment.app.LogUtil.e;
+import static co.yishun.onemoment.app.LogUtil.i;
 
 /**
  * Created by Carlos on 2015/10/6.
@@ -67,7 +72,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     }
 
     private void init() {
-        Log.i(TAG, "ShootView init");
+        i(TAG, "ShootView init");
 //        ((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE)).setStreamMute(AudioManager.STREAM_SYSTEM, true);
 
         initHandler();
@@ -101,7 +106,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
                 getMeasuredHeight()
         );
 
-        Log.i(TAG, "size: " + size);
+        i(TAG, "size: " + size);
         setMeasuredDimension(size, size);
     }
 
@@ -121,7 +126,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
                 p.setFlashMode(isOn ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
                 camera.setParameters(p);
             } catch (Exception e) {
-                Log.e(TAG, "exception when set flash on! ", e);
+                LogUtil.e(TAG, "exception when set flash on! ", e);
             }
         }
     }
@@ -143,7 +148,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         parameters.setPreviewFpsRange(fps[0], fps[1]);
         camera.setParameters(parameters);
         camera.setDisplayOrientation(90);
-        Log.i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
+        i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
 
         try {
             startPreview();
@@ -164,13 +169,13 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     }
 
     private void startPreview() throws IOException {
-        Log.i(TAG, "ShootView preview");
+        i(TAG, "ShootView preview");
         if (isAvailable()) {
             camera.setPreviewTexture(this.getSurfaceTexture());
             camera.startPreview();
             applyTransform();
         } else {
-            Log.i(TAG, "not available");
+            i(TAG, "not available");
             needPreview = true;
         }
     }
@@ -180,7 +185,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         mCameraId = CameraUtil.findCameraId();
 
         mHasFrontCamera = mHasFrontCamera && mCameraId.front != -1;
-        Log.e(TAG, "front camera enable: " + mHasFrontCamera);
+        e(TAG, "front camera enable: " + mHasFrontCamera);
 
         innerSwitchCamera(true);// load camera first
         this.setSurfaceTextureListener(new SurfaceTextureListener() {
@@ -188,17 +193,17 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
                 try {
                     if (needPreview) {
-                        Log.d(TAG, "camera set texture");
+                        d(TAG, "camera set texture");
                         camera.setPreviewTexture(getSurfaceTexture());
                         camera.startPreview();
                         applyTransform();
                         // prepare contains camera.unlock(), which should after camera.setPreviewTexture()
                         prepare();
-                        Log.d(TAG, "camera set texture finish");
+                        d(TAG, "camera set texture finish");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d(TAG, "camera set texture fail");
+                    d(TAG, "camera set texture fail");
                 }
             }
 
@@ -243,7 +248,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         try {
             mRecorder.prepare();
         } catch (IOException e) {
-            Log.e(TAG, "MediaRecorder prepare exception", e);
+            LogUtil.e(TAG, "MediaRecorder prepare exception", e);
         }
     }
 

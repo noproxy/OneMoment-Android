@@ -34,6 +34,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.concurrent.CountDownLatch;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
@@ -90,7 +91,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(getString(R.string.activity_user_info_title));
-        Log.i("setupToolbar", "set home as up true");
+        LogUtil.i("setupToolbar", "set home as up true");
     }
 
     @Override
@@ -142,18 +143,18 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
             new WeiboHelper(this).login(new LoginListener() {
                 @Override
                 public void onSuccess(OAuthToken token) {
-                    Log.d(TAG, "login success");
+                    LogUtil.d(TAG, "login success");
                     bindWeibo(token);
                 }
 
                 @Override
                 public void onFail() {
-                    Log.d(TAG, "login fail");
+                    LogUtil.d(TAG, "login fail");
                 }
 
                 @Override
                 public void onCancel() {
-                    Log.d(TAG, "login cancel");
+                    LogUtil.d(TAG, "login cancel");
                 }
             });
         } else {
@@ -272,20 +273,20 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         UploadManager uploadManager = new UploadManager();
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(qiNiuKey);
         if (token.code <= 0) {
-            Log.e(TAG, "get upload token error: " + token.msg);
+            LogUtil.e(TAG, "get upload token error: " + token.msg);
             return;
         }
         CountDownLatch latch = new CountDownLatch(1);
         uploadManager.put(path, qiNiuKey, token.token,
                 (s, responseInfo, jsonObject) -> {
-                    Log.i(TAG, responseInfo.toString());
+                    LogUtil.i(TAG, responseInfo.toString());
                     if (responseInfo.isOK()) {
                         avatarUploadOk = true;
-                        Log.d(TAG, "loaded " + responseInfo.path);
-                        Log.i(TAG, "profile upload ok");
+                        LogUtil.d(TAG, "loaded " + responseInfo.path);
+                        LogUtil.i(TAG, "profile upload ok");
                     } else {
                         avatarUploadOk = false;
-                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                        LogUtil.e(TAG, "profile upload error: " + responseInfo.error);
                     }
                     latch.countDown();
                 }, null
@@ -306,7 +307,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         Account account = OneMomentV3.createAdapter().create(Account.class);
         User user = account.updateInfo(userId, nickname, gender, qiNiuKey, location);
         if (user.code <= 0) {
-            Log.i(TAG, "update info failed: " + user.msg);
+            LogUtil.i(TAG, "update info failed: " + user.msg);
             return;
         }
         AccountManager.updateOrCreateUserInfo(this, user);
@@ -318,7 +319,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         Account account = OneMomentV3.createAdapter().create(Account.class);
         User user = account.bindWeibo(AccountManager.getUserInfo(this)._id, userInfo.id, userInfo.name);
         if (user.code <= 0) {
-            Log.i(TAG, "bind weibo failed: " + user.msg);
+            LogUtil.i(TAG, "bind weibo failed: " + user.msg);
             if (user.errorCode == Constants.ErrorCode.ACCOUNT_EXISTS) {
                 showSnackMsg(getString(R.string.activity_user_info_weibo_id_bind_forbid));
             }
@@ -331,7 +332,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         Account account = OneMomentV3.createAdapter().create(Account.class);
         User user = account.unbindWeibo(AccountManager.getUserInfo(this)._id, weiboUid);
         if (user.code <= 0) {
-            Log.i(TAG, "unbind weibo failed: " + user.msg);
+            LogUtil.i(TAG, "unbind weibo failed: " + user.msg);
             return;
         }
         AccountManager.updateOrCreateUserInfo(this, user);

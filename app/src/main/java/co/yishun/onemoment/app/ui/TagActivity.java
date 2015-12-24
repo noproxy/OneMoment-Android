@@ -39,6 +39,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -201,7 +202,7 @@ public class TagActivity extends BaseActivity
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
         ab.setDisplayHomeAsUpEnabled(true);
-        Log.i("setupToolbar", "set home as up true");
+        LogUtil.i("setupToolbar", "set home as up true");
         return ab;
     }
 

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import java.util.Calendar;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 
 /**
@@ -23,7 +24,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "receive broadcast");
+        LogUtil.d(TAG, "receive broadcast");
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences.getBoolean(context.getString(R.string.pref_key_remind_everyday), true)) {
             resetDailyRemainder(context);
@@ -55,7 +56,7 @@ public class ReminderReceiver extends BroadcastReceiver {
     }
 
     private void cancelDailyReminder(Context context) {
-        Log.d(TAG, "cancel daily remind");
+        LogUtil.d(TAG, "cancel daily remind");
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent alarmIntent = PendingIntent.getService(context, 0,
                 new Intent(context, ReminderService.class), PendingIntent.FLAG_CANCEL_CURRENT);

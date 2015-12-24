@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.TimeZone;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.mime.TypedOutput;
 
@@ -48,7 +49,7 @@ public class OmToken2 implements Token {
         HashCode hashCode = Hashing.sha256().hashString(mOrigin, Charsets.UTF_8);
 
         mValue = BaseEncoding.base64().encode(hashCode.asBytes());
-        Log.i(TAG, mValue);
+        LogUtil.i(TAG, mValue);
     }
 
 

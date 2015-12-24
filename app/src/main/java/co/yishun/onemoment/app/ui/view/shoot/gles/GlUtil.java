@@ -33,6 +33,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import co.yishun.onemoment.app.LogUtil;
+
+import static android.opengl.GLES20.glGetProgramInfoLog;
+import static android.opengl.GLES20.glGetShaderInfoLog;
+
 public class GlUtil {
     /**
      * Identity matrix for general use.  Don't modify or life will get weird.
@@ -66,7 +71,7 @@ public class GlUtil {
         int program = GLES20.glCreateProgram();
         checkGlError("glCreateProgram");
         if (program == 0) {
-            Log.e(TAG, "Could not create program");
+            LogUtil.e(TAG, "Could not create program");
         }
         GLES20.glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
@@ -76,8 +81,8 @@ public class GlUtil {
         int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
         if (linkStatus[0] != GLES20.GL_TRUE) {
-            Log.e(TAG, "Could not link program: ");
-            Log.e(TAG, GLES20.glGetProgramInfoLog(program));
+            LogUtil.e(TAG, "Could not link program: ");
+            LogUtil.e(TAG, glGetProgramInfoLog(program));
             GLES20.glDeleteProgram(program);
             program = 0;
         }
@@ -92,8 +97,8 @@ public class GlUtil {
         int[] compiled = new int[1];
         GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            Log.e(TAG, "Could not compile shader " + shaderType + ":");
-            Log.e(TAG, " " + GLES20.glGetShaderInfoLog(shader));
+            LogUtil.e(TAG, "Could not compile shader " + shaderType + ":");
+            LogUtil.e(TAG, " " + glGetShaderInfoLog(shader));
             GLES20.glDeleteShader(shader);
             shader = 0;
         }
@@ -148,7 +153,7 @@ public class GlUtil {
         int error = GLES20.glGetError();
         if (error != GLES20.GL_NO_ERROR) {
             String msg = op + ": glError 0x" + Integer.toHexString(error);
-            Log.e(TAG, msg);
+            LogUtil.e(TAG, msg);
             throw new RuntimeException(msg);
         }
     }

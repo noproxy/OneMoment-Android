@@ -16,6 +16,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -62,7 +63,7 @@ public class VideoVotedUpActivity extends BaseActivity
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.video_vote_up_title);
-        Log.i("setupToolbar", "set home as up true");
+        LogUtil.i("setupToolbar", "set home as up true");
     }
 
     @Override

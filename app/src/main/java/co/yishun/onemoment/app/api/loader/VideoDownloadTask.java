@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
 
@@ -39,7 +40,7 @@ public class VideoDownloadTask extends LoaderTask {
     @Override
     protected Boolean doInBackground(Video... videos) {
         video = videos[0];
-        Log.d(TAG, "start video " + video.fileName);
+        LogUtil.d(TAG, "start video " + video.fileName);
         videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
 
         OkHttpClient httpClient = VideoTaskManager.httpClient;
@@ -49,13 +50,13 @@ public class VideoDownloadTask extends LoaderTask {
         FileOutputStream output = null;
         try {
             response = call.execute();
-            Log.d(TAG, "start net " + video.fileName + " " + this.toString());
+            LogUtil.d(TAG, "start net " + video.fileName + " " + this.toString());
             if (response.code() == 200) {
                 input = response.body().byteStream();
                 output = new FileOutputStream(videoFile);
                 long fileLength = response.body().contentLength();
                 if (fileLength == 0) {
-                    Log.e(TAG, "error file length " + this.toString());
+                    LogUtil.e(TAG, "error file length " + this.toString());
                     return false;
                 } else if (videoFile.length() == fileLength){
                     return true;
@@ -65,17 +66,17 @@ public class VideoDownloadTask extends LoaderTask {
                 byte data[] = new byte[2048];
                 long total = 0;
                 int count;
-                Log.d(TAG, "start while " + fileLength + " " + video.fileName + " " + this.toString());
+                LogUtil.d(TAG, "start while " + fileLength + " " + video.fileName + " " + this.toString());
                 while ((count = input.read(data)) != -1) {
                     if (isCancelled()) {
-                        Log.d(TAG, "cancel " + video.fileName + " " + this.toString());
+                        LogUtil.d(TAG, "cancel " + video.fileName + " " + this.toString());
                         input.close();
                         return false;
                     }
                     total += count;
                     output.write(data, 0, count);
                 }
-                Log.d(TAG, "end while " + video.fileName + " " + videoFile.length() + " " + fileLength + " " + this.toString());
+                LogUtil.d(TAG, "end while " + video.fileName + " " + videoFile.length() + " " + fileLength + " " + this.toString());
 
                 return total == fileLength;
             } else {
@@ -97,12 +98,12 @@ public class VideoDownloadTask extends LoaderTask {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
-            Log.d(TAG, "stop video" + " " + this.toString());
+            LogUtil.d(TAG, "stop video" + " " + this.toString());
             if (videoTaskReference.get() != null) {
                 videoTaskReference.get().getVideo(video);
             }
         } else {
-            Log.d(TAG, "error video " + result + " " + this.toString());
+            LogUtil.d(TAG, "error video " + result + " " + this.toString());
             if (videoFile != null && videoFile.exists()) {
                 videoFile.delete();
             }
@@ -113,7 +114,7 @@ public class VideoDownloadTask extends LoaderTask {
     @Override
     protected void onCancelled(Boolean result) {
         super.onCancelled(result);
-        Log.d(TAG, "cancel video " + result + " " + this.toString());
+        LogUtil.d(TAG, "cancel video " + result + " " + this.toString());
         if (videoFile != null && videoFile.exists() && (result == null || !result)) {
             videoFile.delete();
         }

@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiMoment;
@@ -22,6 +23,10 @@ import co.yishun.onemoment.app.data.VideoUtil;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
+
+import static co.yishun.onemoment.app.LogUtil.e;
+import static co.yishun.onemoment.app.LogUtil.i;
+import static co.yishun.onemoment.app.LogUtil.v;
 
 /**
  * Task to fix moment's video and thumbnail.
@@ -52,7 +57,7 @@ public class MomentFixTask implements Runnable {
         try {
             isSame = Etag.file(file).equals(apiMoment.hash);
         } catch (IOException e) {
-            Log.e(TAG, "exception when hash the fileSynced", e);
+            LogUtil.e(TAG, "exception when hash the fileSynced", e);
         }
         return isSame;
     }
@@ -63,12 +68,12 @@ public class MomentFixTask implements Runnable {
      * @return true if fix success.
      */
     private boolean fixVideo() {
-        Log.i(TAG, "download a moment: " + mMoment);
+        i(TAG, "download a moment: " + mMoment);
 
         if (mDomain == null) {
             Domain domain = mMiscService.getResourceDomain("video");
             if (!domain.isSuccess()) {
-                Log.e(TAG, "download failed when get resource domain");
+                e(TAG, "download failed when get resource domain");
                 mOnFail.call();
                 return false;
             } else {
@@ -80,13 +85,13 @@ public class MomentFixTask implements Runnable {
         File targetFile = mMoment.getFile();
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(mDomain + mMoment.getKey()).get().build();
-        Log.i(TAG, "start download: " + request.urlString());
+        i(TAG, "start download: " + request.urlString());
 
         Response response;
         try {
             response = client.newCall(request).execute();
         } catch (IOException e) {
-            Log.e(TAG, "exception when http call or close the stream", e);
+            LogUtil.e(TAG, "exception when http call or close the stream", e);
             mOnFail.call();
             return false;
         }
@@ -108,12 +113,12 @@ public class MomentFixTask implements Runnable {
                     out.write(data, 0, count);
 
                     if (Thread.interrupted()) {
-                        Log.i(TAG, "cancel download");// canceled task not failTask++
+                        i(TAG, "cancel download");// canceled task not failTask++
                         mOnFail.call();
                         return false;
                     }
                     int progress = (int) (total * 100 / target);
-                    Log.v(TAG, "progress: " + progress);
+                    v(TAG, "progress: " + progress);
                     mOnProgress.accept(progress);
                 }
                 out.flush();
@@ -122,12 +127,12 @@ public class MomentFixTask implements Runnable {
                 mOnSuccess.call();
                 return true;
             } else {
-                Log.i(TAG, "download video response != 200");
+                i(TAG, "download video response != 200");
                 mOnFail.call();
                 return false;
             }
         } catch (IOException e) {
-            Log.e(TAG, "download failed", e);
+            LogUtil.e(TAG, "download failed", e);
             mOnFail.call();
             return false;
         } finally {
@@ -160,7 +165,7 @@ public class MomentFixTask implements Runnable {
             fixThumb();
         }
 
-        Log.i(TAG, "fix end: " + mMoment);
+        i(TAG, "fix end: " + mMoment);
     }
 
     /**
@@ -177,7 +182,7 @@ public class MomentFixTask implements Runnable {
             }
 
             if (large.length() > 0 && small.length() > 0)
-                Log.i(TAG, "create Thumb ok: " + mMoment);
+                i(TAG, "create Thumb ok: " + mMoment);
             else
                 mOnSuccess.call();
         } catch (IOException e) {

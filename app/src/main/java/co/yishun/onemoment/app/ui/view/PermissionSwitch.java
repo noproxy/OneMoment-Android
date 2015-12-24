@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 
 /**
@@ -73,7 +74,7 @@ public class PermissionSwitch extends LinearLayout {
         // for different screen size
         DisplayMetrics metrics = new DisplayMetrics();
         ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-        Log.d(TAG, metrics.widthPixels + "  " + metrics.heightPixels);
+        LogUtil.d(TAG, metrics.widthPixels + "  " + metrics.heightPixels);
         if (metrics.widthPixels * 1f / metrics.heightPixels > 0.62f) {
             hintText.setVisibility(GONE);
         } else if (metrics.widthPixels * 1f / metrics.heightPixels > 0.6f) {
