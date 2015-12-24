@@ -80,6 +80,10 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
+
+    aaptOptions {
+        ignoreAssetsPattern 'x86:fonts:armeabi-v7a-neon'
+    }
 }
 
 def SUPPORT_VERSION = '23.1.1'
@@ -118,7 +122,6 @@ dependencies {
     compile 'com.qiniu:qiniu-android-sdk:7.0.9'
     compile 'io.realm:realm-android:0.82.2'
     compile 'com.umeng.analytics:analytics:5.6.1'
-    compile 'com.googlecode.mp4parser:isoparser:1.1.7'
 
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
@@ -138,6 +141,8 @@ dependencies {
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     compile 'me.toxz.circularprogressview:library:1.0.3'
     compile 'com.github.clans:fab:1.6.1'
+
+    compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
 }
 
 repositories {

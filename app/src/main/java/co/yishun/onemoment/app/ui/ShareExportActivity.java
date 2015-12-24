@@ -12,12 +12,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.googlecode.mp4parser.BasicContainer;
-import com.googlecode.mp4parser.authoring.Movie;
-import com.googlecode.mp4parser.authoring.Track;
-import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
-import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
-import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
 import com.j256.ormlite.dao.Dao;
 import com.qiniu.android.storage.UploadManager;
 import com.squareup.picasso.Picasso;
@@ -31,10 +25,6 @@ import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,8 +47,8 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.convert.VideoConcat;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
@@ -66,6 +56,8 @@ import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity_;
+
+//import co.yishun.onemoment.app.data.MomentLock;
 
 @EActivity(R.layout.activity_share_export)
 public class ShareExportActivity extends BaseActivity
@@ -85,6 +77,7 @@ public class ShareExportActivity extends BaseActivity
     private List<Moment> allMoments;
     private List<Moment> selectedMoments;
     private File videoCacheFile;
+    private boolean concatExport = true;
 
     @AfterViews void setupViews() {
         momentCalendar.setAdapter(this);
@@ -121,32 +114,18 @@ public class ShareExportActivity extends BaseActivity
             return;
         }
         showProgress();
-        appendSelectedVideos();
-        if (videoCacheFile == null) {
-            //TODO check append videos failed
-            return;
-        }
-        uploadAndShare();
+        concatExport = false;
+        concatSelectedVideos();
     }
 
-    @Click(R.id.exportText) void exportTextClicked() {
+    @Click(R.id.exportText) @Background void exportTextClicked() {
         if (selectedMoments.size() == 0) {
             showSnackMsg("Select at least one to share");
             return;
         }
         showProgress();
-        appendSelectedVideos();
-        if (videoCacheFile == null) {
-            //TODO check append videos failed
-            return;
-        }
-        File outFile = FileUtil.getExportVideoFile();
-        Log.d(TAG, "out : " + outFile.getPath());
-        Log.d(TAG, "origin : " + videoCacheFile.getPath());
-        FileUtil.copyFile(videoCacheFile, outFile);
-        videoCacheFile.delete();
-        hideProgress();
-        showSnackMsg("Export success");
+        concatExport = true;
+        concatSelectedVideos();
     }
 
     @Click(R.id.selectAllText) void selectAllTextClicked() {
@@ -224,70 +203,65 @@ public class ShareExportActivity extends BaseActivity
         }
     }
 
-    void appendSelectedVideos() {
-        List<String> paths = new ArrayList<>();
+    void concatSelectedVideos() {
+        List<File> files = new ArrayList<>();
         Collections.sort(selectedMoments);
         try {
             for (Moment moment : selectedMoments) {
-                paths.add(moment.getPath());
-                MomentLock.lockMoment(this, moment);
+                files.add(new File(moment.getPath()));
+//                MomentLock.lockMoment(this, moment);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
-            int count = paths.size();
-            Movie[] inMovies = new Movie[count];
-            for (int i = 0; i < count; i++) {
-                inMovies[i] = MovieCreator.build(paths.get(i));
-            }
-            List<Track> videoTracks = new LinkedList<Track>();
-            List<Track> audioTracks = new LinkedList<Track>();
-            for (Movie m : inMovies) {
-                for (Track t : m.getTracks()) {
-                    if (t.getHandler().equals("soun")) {
-                        audioTracks.add(t);
+        videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id
+                + Constants.URL_HYPHEN + selectedMoments.size() + Constants.URL_HYPHEN
+                + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
+
+        VideoConcat concat = new VideoConcat(this)
+                .setFiles(files, videoCacheFile)
+                .setListener(new VideoConcat.ConcatListener() {
+                    @Override public void onTransSuccess() {
+                        Log.d(TAG, "onTransSuccess: ");
                     }
-                    if (t.getHandler().equals("vide")) {
-                        videoTracks.add(t);
+
+                    @Override public void onFormatSuccess() {
+                        Log.d(TAG, "onFormatSuccess: ");
                     }
-                }
-            }
 
-            Movie result = new Movie();
+                    @Override public void onConcatSuccess() {
+                        Log.d(TAG, "onConcatSuccess: ");
+                        afterConcat();
+                    }
 
-            if (audioTracks.size() > 0) {
-                result.addTrack(new AppendTrack(audioTracks
-                        .toArray(new Track[audioTracks.size()])));
-            }
-            if (videoTracks.size() > 0) {
-                result.addTrack(new AppendTrack(videoTracks
-                        .toArray(new Track[videoTracks.size()])));
-            }
+                    @Override public void onFail() {
+                        Log.d(TAG, "onFail: ");
+                    }
+                }).start();
+    }
 
-            BasicContainer out = (BasicContainer) new DefaultMp4Builder()
-                    .build(result);
-
-            videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id
-                    + Constants.URL_HYPHEN + count + Constants.URL_HYPHEN
-                    + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
-            FileChannel fc = new RandomAccessFile(videoCacheFile, "rw").getChannel();
-            out.writeContainer(fc);
-            fc.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    void afterConcat() {
         try {
             for (Moment moment : selectedMoments) {
-                MomentLock.unlockMomentIfLocked(this, moment);
+//                MomentLock.unlockMomentIfLocked(this, moment);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (videoCacheFile == null) {
+            //TODO check append videos failed
+            return;
+        }
+        if (concatExport) {
+            File outFile = FileUtil.getExportVideoFile();
+            Log.d(TAG, "out : " + outFile.getPath());
+            Log.d(TAG, "origin : " + videoCacheFile.getPath());
+            FileUtil.copyFile(videoCacheFile, outFile);
+            videoCacheFile.delete();
+            hideProgress();
+            showSnackMsg("Export success");
+        } else
+            uploadAndShare();
     }
 
     @SupposeBackground void uploadAndShare() {

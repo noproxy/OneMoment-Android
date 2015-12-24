@@ -10,12 +10,6 @@ import android.widget.FrameLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.googlecode.mp4parser.BasicContainer;
-import com.googlecode.mp4parser.authoring.Movie;
-import com.googlecode.mp4parser.authoring.Track;
-import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
-import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
-import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
 import com.j256.ormlite.dao.Dao;
 import com.qiniu.android.storage.UploadManager;
 
@@ -28,27 +22,19 @@ import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
-import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -94,7 +80,7 @@ public class PlayMomentActivity extends BaseActivity {
             List<Moment> momentInDatabase = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this)).and()
                     .between("time", startDate, endDate).query();
             for (Moment m : momentInDatabase) {
-                if (m.getFile().length() > 0){
+                if (m.getFile().length() > 0) {
                     playingMoments.add(m);
                     MomentLock.lockMoment(this, m);
                 }
@@ -148,52 +134,6 @@ public class PlayMomentActivity extends BaseActivity {
         Collections.sort(playingMoments);
         for (Moment moment : playingMoments) {
             paths.add(moment.getPath());
-        }
-        try {
-            int count = paths.size();
-            Movie[] inMovies = new Movie[count];
-            for (int i = 0; i < count; i++) {
-                inMovies[i] = MovieCreator.build(paths.get(i));
-            }
-            List<Track> videoTracks = new LinkedList<Track>();
-            List<Track> audioTracks = new LinkedList<Track>();
-            for (Movie m : inMovies) {
-                for (Track t : m.getTracks()) {
-                    if (t.getHandler().equals("soun")) {
-                        audioTracks.add(t);
-                    }
-                    if (t.getHandler().equals("vide")) {
-                        videoTracks.add(t);
-                    }
-                }
-            }
-
-            Movie result = new Movie();
-
-            if (audioTracks.size() > 0) {
-                result.addTrack(new AppendTrack(audioTracks
-                        .toArray(new Track[audioTracks.size()])));
-            }
-            if (videoTracks.size() > 0) {
-                result.addTrack(new AppendTrack(videoTracks
-                        .toArray(new Track[videoTracks.size()])));
-            }
-
-            BasicContainer out = (BasicContainer) new DefaultMp4Builder()
-                    .build(result);
-
-            videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id
-                    + Constants.URL_HYPHEN + count + Constants.URL_HYPHEN
-                    + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
-            FileChannel fc = new RandomAccessFile(videoCacheFile, "rw").getChannel();
-            out.writeContainer(fc);
-            fc.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
