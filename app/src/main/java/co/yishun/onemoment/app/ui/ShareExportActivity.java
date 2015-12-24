@@ -207,7 +207,7 @@ public class ShareExportActivity extends BaseActivity
             if (selectedMoments.contains(moment))
                 dayView.setSelected(true);
             else dayView.setSelected(false);
-            Log.i(TAG, "moment found: " + moment.getTime());
+            LogUtil.i(TAG, "moment found: " + moment.getTime());
         } else {
             dayView.setEnabled(false);
         }
