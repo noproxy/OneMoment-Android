@@ -6,7 +6,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -53,7 +52,6 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.convert.VideoConcat;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -62,6 +60,8 @@ import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity_;
+import co.yishun.onemoment.app.video.VideoCommand;
+import co.yishun.onemoment.app.video.VideoConcat;
 
 //import co.yishun.onemoment.app.data.MomentLock;
 
@@ -228,8 +228,8 @@ public class ShareExportActivity extends BaseActivity
         try {
             for (File f : files) {
                 Movie movie = MovieCreator.build(f.getPath());
-                for (Track t  : movie.getTracks()){
-                    if (!t.getTrackMetaData().getMatrix().equals(Matrix.ROTATE_0)){
+                for (Track t : movie.getTracks()) {
+                    if (!t.getTrackMetaData().getMatrix().equals(Matrix.ROTATE_0)) {
                         filesNeedTrans.add(f);
                         break;
                     }
@@ -239,25 +239,27 @@ public class ShareExportActivity extends BaseActivity
             e.printStackTrace();
         }
 
-        VideoConcat concat = new VideoConcat(this)
+        new VideoConcat(this)
                 .setTransFile(filesNeedTrans)
                 .setConcatFile(files, videoCacheFile)
-                .setListener(new VideoConcat.ConcatListener() {
-                    @Override public void onTransSuccess() {
-                        Log.d(TAG, "onTransSuccess: ");
+                .setListener(new VideoCommand.VideoCommandListener() {
+                    @Override public void onSuccess(VideoCommand.VideoCommandType type) {
+                        switch (type) {
+                            case COMMAND_TRANSPOSE:
+                                LogUtil.d(TAG, "onTransSuccess: ");
+                                break;
+                            case COMMAND_FORMAT:
+                                LogUtil.d(TAG, "onFormatSuccess: ");
+                                break;
+                            case COMMAND_CONCAT:
+                                LogUtil.d(TAG, "onConcatSuccess: ");
+                                afterConcat();
+                                break;
+                        }
                     }
 
-                    @Override public void onFormatSuccess() {
-                        Log.d(TAG, "onFormatSuccess: ");
-                    }
-
-                    @Override public void onConcatSuccess() {
-                        Log.d(TAG, "onConcatSuccess: ");
-                        afterConcat();
-                    }
-
-                    @Override public void onFail() {
-                        Log.d(TAG, "onFail: ");
+                    @Override public void onFail(VideoCommand.VideoCommandType type) {
+                        LogUtil.d(TAG, "onFail: ");
                     }
                 }).start();
     }
@@ -276,8 +278,8 @@ public class ShareExportActivity extends BaseActivity
         }
         if (concatExport) {
             File outFile = FileUtil.getExportVideoFile();
-            Log.d(TAG, "out : " + outFile.getPath());
-            Log.d(TAG, "origin : " + videoCacheFile.getPath());
+            LogUtil.d(TAG, "out : " + outFile.getPath());
+            LogUtil.d(TAG, "origin : " + videoCacheFile.getPath());
             FileUtil.copyFile(videoCacheFile, outFile);
             videoCacheFile.delete();
             hideProgress();

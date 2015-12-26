@@ -1,18 +1,13 @@
-package co.yishun.onemoment.app.convert;
+package co.yishun.onemoment.app.video;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,63 +17,24 @@ import co.yishun.onemoment.app.data.FileUtil;
 /**
  * Created on 2015/12/24.
  */
-public class VideoConcat {
+public class VideoConcat extends VideoCommand {
     private static final String TAG = "VideoConcat";
     private final List<StringBuilder> mTransCommands;
     private final List<StringBuilder> mFormatCommands;
     private final StringBuilder mConcatCommand;
-    private final FFmpeg mFFmpeg;
-    private ConcatListener mListener;
-    private Context mContext;
     private List<String> mTransPath;
     private FFmpegExecuteResponseHandler mTransHandler;
     private FFmpegExecuteResponseHandler mFormatHandler;
     private FFmpegExecuteResponseHandler mConcatHandler;
 
     public VideoConcat(Context context) {
+        super(context);
         LogUtil.i(TAG, " get instance time: " + System.currentTimeMillis());
-        this.mContext = context;
         mTransCommands = new ArrayList<>();
         mFormatCommands = new ArrayList<>();
         mConcatCommand = new StringBuilder();
         mTransPath = new ArrayList<>();
         createHandler();
-        mFFmpeg = FFmpeg.getInstance(context);
-
-        try {
-            loadLibraryProxy(context, mFFmpeg, new FFmpegLoadBinaryResponseHandler() {
-                @Override
-                public void onFailure() {
-                    LogUtil.e(TAG, "load error");
-                }
-
-                @Override
-                public void onSuccess() {
-                    LogUtil.i(TAG, "load success");
-                }
-
-                @Override
-                public void onStart() {
-                    LogUtil.i(TAG, "load start");
-                }
-
-                @Override
-                public void onFinish() {
-                    LogUtil.i(TAG, "load finish");
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogUtil.e(TAG, "proxy load exception", e);
-        }
-    }
-
-    // force load armeabi-v7a, because others are removed by gradle
-    private static void loadLibraryProxy(Context context, FFmpeg ffmpeg, FFmpegLoadBinaryResponseHandler handler) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException, ClassNotFoundException {
-        Constructor constructor = Class.forName("com.github.hiteshsondhi88.libffmpeg.FFmpegLoadLibraryAsyncTask").getDeclaredConstructors()[0];
-        constructor.setAccessible(true);
-        AsyncTask<Void, Void, Boolean> task = (AsyncTask<Void, Void, Boolean>) constructor.newInstance(context, "armeabi-v7a", handler);
-        task.execute();
     }
 
     public VideoConcat setTransFile(List<File> files) {
@@ -168,44 +124,20 @@ public class VideoConcat {
         return this;
     }
 
-    public VideoConcat start() {
-        trans();
-        format();
-        concat();
-        return this;
-    }
-
-    public VideoConcat setListener(ConcatListener concatListener) {
-        mListener = concatListener;
-        return this;
-    }
-
-    void trans() {
+    @Override public void start() {
         try {
             for (StringBuilder sb : mTransCommands) {
                 String cmd = sb.toString();
                 LogUtil.i(TAG, "trans cmd: " + cmd);
                 mFFmpeg.execute(cmd, mTransHandler);
             }
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            e.printStackTrace();
-        }
-    }
 
-    void format() {
-        try {
             for (StringBuilder sb : mFormatCommands) {
                 String cmd = sb.toString();
                 LogUtil.i(TAG, "format cmd: " + cmd);
                 mFFmpeg.execute(cmd, mFormatHandler);
             }
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            e.printStackTrace();
-        }
-    }
 
-    void concat() {
-        try {
             String cmd = mConcatCommand.toString();
             LogUtil.i(TAG, "concat cmd: " + cmd);
             mFFmpeg.execute(cmd, mConcatHandler);
@@ -214,10 +146,15 @@ public class VideoConcat {
         }
     }
 
+    public VideoConcat setListener(VideoCommandListener concatListener) {
+        mListener = concatListener;
+        return this;
+    }
+
     private void createHandler() {
         mTransHandler = new FFmpegExecuteResponseHandler() {
             @Override public void onSuccess(String message) {
-                if (mListener != null) mListener.onTransSuccess();
+                if (mListener != null) mListener.onSuccess(VideoCommandType.COMMAND_TRANSPOSE);
             }
 
             @Override public void onProgress(String message) {
@@ -225,7 +162,7 @@ public class VideoConcat {
             }
 
             @Override public void onFailure(String message) {
-                if (mListener != null) mListener.onFail();
+                if (mListener != null) mListener.onFail(VideoCommandType.COMMAND_TRANSPOSE);
             }
 
             @Override public void onStart() {}
@@ -235,7 +172,7 @@ public class VideoConcat {
 
         mFormatHandler = new FFmpegExecuteResponseHandler() {
             @Override public void onSuccess(String message) {
-                if (mListener != null) mListener.onFormatSuccess();
+                if (mListener != null) mListener.onSuccess(VideoCommandType.COMMAND_FORMAT);
             }
 
             @Override public void onProgress(String message) {
@@ -243,7 +180,7 @@ public class VideoConcat {
             }
 
             @Override public void onFailure(String message) {
-                if (mListener != null) mListener.onFail();
+                if (mListener != null) mListener.onFail(VideoCommandType.COMMAND_FORMAT);
             }
 
             @Override public void onStart() {}
@@ -259,29 +196,19 @@ public class VideoConcat {
                 for (File c : children) {
                     c.delete();
                 }
-                if (mListener != null) mListener.onConcatSuccess();
+                if (mListener != null) mListener.onSuccess(VideoCommandType.COMMAND_CONCAT);
             }
 
             @Override public void onProgress(String message) {}
 
             @Override public void onFailure(String message) {
                 LogUtil.i(TAG, "concat onFailure: " + message);
-                if (mListener != null) mListener.onFail();
+                if (mListener != null) mListener.onFail(VideoCommandType.COMMAND_CONCAT);
             }
 
             @Override public void onStart() {}
 
             @Override public void onFinish() {}
         };
-    }
-
-    public interface ConcatListener {
-        void onTransSuccess();
-
-        void onFormatSuccess();
-
-        void onConcatSuccess();
-
-        void onFail();
     }
 }

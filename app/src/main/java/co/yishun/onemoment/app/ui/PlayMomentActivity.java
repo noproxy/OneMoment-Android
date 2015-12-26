@@ -43,7 +43,8 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.convert.VideoConcat;
+import co.yishun.onemoment.app.video.VideoCommand;
+import co.yishun.onemoment.app.video.VideoConcat;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.RealmHelper;
@@ -169,25 +170,27 @@ public class PlayMomentActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        VideoConcat concat = new VideoConcat(this)
+        new VideoConcat(this)
                 .setTransFile(filesNeedTrans)
                 .setConcatFile(files, videoCacheFile)
-                .setListener(new VideoConcat.ConcatListener() {
-                    @Override public void onTransSuccess() {
-                        Log.d(TAG, "onTransSuccess: ");
+                .setListener(new VideoCommand.VideoCommandListener() {
+                    @Override public void onSuccess(VideoCommand.VideoCommandType type) {
+                        switch (type) {
+                            case COMMAND_TRANSPOSE:
+                                LogUtil.d(TAG, "onTransSuccess: ");
+                                break;
+                            case COMMAND_FORMAT:
+                                LogUtil.d(TAG, "onFormatSuccess: ");
+                                break;
+                            case COMMAND_CONCAT:
+                                LogUtil.d(TAG, "onConcatSuccess: ");
+                                afterConcat();
+                                break;
+                        }
                     }
 
-                    @Override public void onFormatSuccess() {
-                        Log.d(TAG, "onFormatSuccess: ");
-                    }
-
-                    @Override public void onConcatSuccess() {
-                        Log.d(TAG, "onConcatSuccess: ");
-                        afterConcat();
-                    }
-
-                    @Override public void onFail() {
-                        Log.d(TAG, "onFail: ");
+                    @Override public void onFail(VideoCommand.VideoCommandType type) {
+                        LogUtil.d(TAG, "onFail: ");
                     }
                 }).start();
     }
