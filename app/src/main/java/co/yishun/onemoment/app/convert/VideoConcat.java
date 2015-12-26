@@ -253,6 +253,12 @@ public class VideoConcat {
 
         mConcatHandler = new FFmpegExecuteResponseHandler() {
             @Override public void onSuccess(String message) {
+                //delete format files,
+                File formatDir = FileUtil.getCacheFile(mContext, "format");
+                File children[] = formatDir.listFiles();
+                for (File c : children) {
+                    c.delete();
+                }
                 if (mListener != null) mListener.onConcatSuccess();
             }
 
