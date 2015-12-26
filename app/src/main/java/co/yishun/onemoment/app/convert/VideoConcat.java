@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.convert;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
@@ -17,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.data.FileUtil;
 
 /**
@@ -36,7 +36,7 @@ public class VideoConcat {
     private FFmpegExecuteResponseHandler mConcatHandler;
 
     public VideoConcat(Context context) {
-        Log.i(TAG, " get instance time: " + System.currentTimeMillis());
+        LogUtil.i(TAG, " get instance time: " + System.currentTimeMillis());
         this.mContext = context;
         mTransCommands = new ArrayList<>();
         mFormatCommands = new ArrayList<>();
@@ -49,27 +49,27 @@ public class VideoConcat {
             loadLibraryProxy(context, mFFmpeg, new FFmpegLoadBinaryResponseHandler() {
                 @Override
                 public void onFailure() {
-                    Log.e(TAG, "load error");
+                    LogUtil.e(TAG, "load error");
                 }
 
                 @Override
                 public void onSuccess() {
-                    Log.i(TAG, "load success");
+                    LogUtil.i(TAG, "load success");
                 }
 
                 @Override
                 public void onStart() {
-                    Log.i(TAG, "load start");
+                    LogUtil.i(TAG, "load start");
                 }
 
                 @Override
                 public void onFinish() {
-                    Log.i(TAG, "load finish");
+                    LogUtil.i(TAG, "load finish");
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "proxy load exception", e);
+            LogUtil.e(TAG, "proxy load exception", e);
         }
     }
 
@@ -184,7 +184,7 @@ public class VideoConcat {
         try {
             for (StringBuilder sb : mTransCommands) {
                 String cmd = sb.toString();
-                Log.i(TAG, "trans cmd: " + cmd);
+                LogUtil.i(TAG, "trans cmd: " + cmd);
                 mFFmpeg.execute(cmd, mTransHandler);
             }
         } catch (FFmpegCommandAlreadyRunningException e) {
@@ -196,7 +196,7 @@ public class VideoConcat {
         try {
             for (StringBuilder sb : mFormatCommands) {
                 String cmd = sb.toString();
-                Log.i(TAG, "format cmd: " + cmd);
+                LogUtil.i(TAG, "format cmd: " + cmd);
                 mFFmpeg.execute(cmd, mFormatHandler);
             }
         } catch (FFmpegCommandAlreadyRunningException e) {
@@ -207,7 +207,7 @@ public class VideoConcat {
     void concat() {
         try {
             String cmd = mConcatCommand.toString();
-            Log.i(TAG, "concat cmd: " + cmd);
+            LogUtil.i(TAG, "concat cmd: " + cmd);
             mFFmpeg.execute(cmd, mConcatHandler);
         } catch (FFmpegCommandAlreadyRunningException e) {
             e.printStackTrace();
@@ -221,7 +221,7 @@ public class VideoConcat {
             }
 
             @Override public void onProgress(String message) {
-                Log.i(TAG, "onProgress: Trans " + message);
+                LogUtil.i(TAG, "onProgress: Trans " + message);
             }
 
             @Override public void onFailure(String message) {
@@ -239,7 +239,7 @@ public class VideoConcat {
             }
 
             @Override public void onProgress(String message) {
-                Log.i(TAG, "onProgress: Format " + message);
+                LogUtil.i(TAG, "onProgress: Format " + message);
             }
 
             @Override public void onFailure(String message) {
@@ -265,7 +265,7 @@ public class VideoConcat {
             @Override public void onProgress(String message) {}
 
             @Override public void onFailure(String message) {
-                Log.i(TAG, "concat onFailure: " + message);
+                LogUtil.i(TAG, "concat onFailure: " + message);
                 if (mListener != null) mListener.onFail();
             }
 

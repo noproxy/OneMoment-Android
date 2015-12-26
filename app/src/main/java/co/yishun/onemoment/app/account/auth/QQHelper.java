@@ -15,6 +15,10 @@ import org.json.JSONObject;
 
 import java.util.concurrent.CountDownLatch;
 
+import co.yishun.onemoment.app.LogUtil;
+
+import static java.lang.String.valueOf;
+
 /**
  * A proxy implement to auth by Tencent open api.
  * <p>
@@ -76,8 +80,8 @@ public class QQHelper implements AuthHelper {
         return new IUiListener() {
             @Override
             public void onComplete(Object o) {
-                Log.e(TAG, "tencent auth success");
-                Log.d(TAG, o.toString());
+                LogUtil.e(TAG, "tencent auth success");
+                LogUtil.d(TAG, o.toString());
 
                 /*
                 {"access_token":"AA65A9B44143F26EC3D807B82E2CEB30","expires_in":"7776000","openid":"FD86E47D72173F60C8D1FB39FE0E5B24","pay_token":"9814D7483AA85184B955106BBDBAA349","ret":"0","pf":"desktop_m_qq-10000144-android-2002-","pfkey":"c6408025713ffec6b1f659dcd3424531","sendinstall":"0","auth_time":"1433066096308","page_type":"1"}
@@ -100,17 +104,16 @@ public class QQHelper implements AuthHelper {
 
             @Override
             public void onError(UiError uiError) {
-                Log.e(TAG, "tencent auth error: { " +
+                LogUtil.e(TAG, "tencent auth error: { " +
                         "message: " + uiError.errorMessage + ", " +
                         "detail: " + uiError.errorDetail + ", " +
-                        "code: " + uiError.errorCode + "} "
-                );
+                        "code: " + uiError.errorCode + "} ");
                 loginListener.onFail();
             }
 
             @Override
             public void onCancel() {
-                Log.e(TAG, "tencent auth cancel");
+                LogUtil.e(TAG, "tencent auth cancel");
                 loginListener.onCancel();
             }
         };
@@ -120,8 +123,8 @@ public class QQHelper implements AuthHelper {
         return new IUiListener() {
             @Override
             public void onComplete(Object o) {
-                Log.e(TAG, "get qq info success");
-                Log.i(TAG, String.valueOf(o));
+                LogUtil.e(TAG, "get qq info success");
+                LogUtil.i(TAG, valueOf(o));
 
                 try {
                     if (mInfo != null && o != null) {
@@ -143,7 +146,7 @@ public class QQHelper implements AuthHelper {
                         try {
                             mInfo.avatar_large = jsonObject.getString("figureurl_qq_2");
                         } catch (JSONException e) {
-                            Log.e(TAG, "no qq profile");
+                            LogUtil.e(TAG, "no qq profile");
                             mInfo.avatar_large = jsonObject.getString("figureurl_2");
                         }
 
@@ -158,23 +161,22 @@ public class QQHelper implements AuthHelper {
                 {"ret":0,"msg":"","is_lost":0,"nickname":"( λ )","gender":"男","province":"加利福尼亚","city":"圣何塞","figureurl":"http:\/\/qzapp.qlogo.cn\/qzapp\/222222\/FD86E47D72173F60C8D1FB39FE0E5B24\/30","figureurl_1":"http:\/\/qzapp.qlogo.cn\/qzapp\/222222\/FD86E47D72173F60C8D1FB39FE0E5B24\/50","figureurl_2":"http:\/\/qzapp.qlogo.cn\/qzapp\/222222\/FD86E47D72173F60C8D1FB39FE0E5B24\/100","figureurl_qq_1":"http:\/\/q.qlogo.cn\/qqapp\/222222\/FD86E47D72173F60C8D1FB39FE0E5B24\/40","figureurl_qq_2":"http:\/\/q.qlogo.cn\/qqapp\/222222\/FD86E47D72173F60C8D1FB39FE0E5B24\/100","is_yellow_vip":"0","vip":"0","yellow_vip_level":"0","level":"0","is_yellow_year_vip":"0"}
                  */
                 mLatch.countDown();
-                Log.i(TAG, mInfo == null ? "info: null" : mInfo.toString());
+                LogUtil.i(TAG, mInfo == null ? "info: null" : mInfo.toString());
             }
 
             @Override
             public void onError(UiError uiError) {
-                Log.e(TAG, "get qq info  error: { " +
+                LogUtil.e(TAG, "get qq info  error: { " +
                         "message: " + uiError.errorMessage + ", " +
                         "detail: " + uiError.errorDetail + ", " +
-                        "code: " + uiError.errorCode + "} "
-                );
+                        "code: " + uiError.errorCode + "} ");
                 mLatch.countDown();
                 mInfo = null;
             }
 
             @Override
             public void onCancel() {
-                Log.e(TAG, "get qq info cancel");
+                LogUtil.e(TAG, "get qq info cancel");
                 mLatch.countDown();
                 mInfo = null;
             }

@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 
 /**
@@ -55,7 +56,7 @@ public class VideoUtil {
      */
     private static String createThumbImage(Context context, String videoPath, QiniuKeyProvider provider, int kind) throws IOException {
         File thumbFile = FileUtil.getThumbnailStoreFile(context, provider, kind == MediaStore.Images.Thumbnails.FULL_SCREEN_KIND ? FileUtil.Type.LARGE_THUMB : FileUtil.Type.MICRO_THUMB);
-        Log.i(TAG, "create thumb image: " + thumbFile.getPath());
+        LogUtil.i(TAG, "create thumb image: " + thumbFile.getPath());
         if (thumbFile.exists()) thumbFile.delete();
         FileOutputStream fOut = new FileOutputStream(thumbFile);
         Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, kind);
@@ -63,7 +64,7 @@ public class VideoUtil {
             bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
         } else {
             //TODO some video cannot get thumbnail
-            Log.e(TAG, "video: " + videoPath + ", create thumbnail failed.");
+            LogUtil.e(TAG, "video: " + videoPath + ", create thumbnail failed.");
         }
         fOut.flush();
         fOut.close();
@@ -81,7 +82,7 @@ public class VideoUtil {
         if (bitmap != null) {
             bitmap.compress(Bitmap.CompressFormat.PNG, 85, largeFOS);
         } else {
-            Log.e(TAG, "video: " + videoPath + ", create thumbnail failed.");
+            LogUtil.e(TAG, "video: " + videoPath + ", create thumbnail failed.");
         }
         largeFOS.flush();
         largeFOS.close();
@@ -94,7 +95,7 @@ public class VideoUtil {
         if (bitmap != null) {
             bitmap.compress(Bitmap.CompressFormat.PNG, 85, smallFOS);
         } else {
-            Log.e(TAG, "video: " + videoPath + ", create thumbnail failed.");
+            LogUtil.e(TAG, "video: " + videoPath + ", create thumbnail failed.");
         }
         smallFOS.flush();
         smallFOS.close();

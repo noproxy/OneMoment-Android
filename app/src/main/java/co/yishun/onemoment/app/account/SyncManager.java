@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
 import android.util.Log;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.data.compat.Contract;
 
@@ -50,9 +51,9 @@ public class SyncManager {
      * request sync at once.
      */
     public static void syncNow(Context context, Boolean ignoreNetwork) {
-        Log.v(TAG, "sync at once");
+        LogUtil.v(TAG, "sync at once");
         Account account = AccountManager.getAccount(context);
-        Log.i(TAG, "sync account: " + account);
+        LogUtil.i(TAG, "sync account: " + account);
         Bundle b = new Bundle();
         b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
@@ -67,7 +68,7 @@ public class SyncManager {
         boolean canCellular = pref.getBoolean(context.getString(R.string.pref_key_sync_cellular_data), false);
         long frequency = Long.parseLong(pref.getString(context.getString(R.string.pref_key_sync_frequency), "60"));// unit: minutes
 
-        Log.i(TAG, "notifySyncSettingsChange, isSync: " + isSync);
+        LogUtil.i(TAG, "notifySyncSettingsChange, isSync: " + isSync);
 
         Bundle b = new Bundle();
         b.putBoolean(SYNC_IGNORE_NETWORK, canCellular);

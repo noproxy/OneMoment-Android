@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Account;
@@ -66,7 +67,7 @@ public class TagsUpdateTask implements Runnable {
         //make sure the looper is ready to receive message
         while (!mReady) {
         }
-        Log.d(TAG, "ready");
+        LogUtil.d(TAG, "ready");
     }
 
     @Override public void run() {
@@ -86,15 +87,15 @@ public class TagsUpdateTask implements Runnable {
 
         initRealm();
         if (mRemoteExist) {
-            Log.i(TAG, "download success");
+            LogUtil.i(TAG, "download success");
             Looper.loop();
         } else {
-            Log.i(TAG, "download fail");
+            LogUtil.i(TAG, "download fail");
             Looper looper = Looper.myLooper();
             if (looper != null) looper.quit();
         }
 
-        Log.d(TAG, "TagUpdate thread exiting");
+        LogUtil.d(TAG, "TagUpdate thread exiting");
         synchronized (mReadyFence) {
             mReady = false;
             mHandler = null;
@@ -152,13 +153,13 @@ public class TagsUpdateTask implements Runnable {
     private boolean downloadRealm(String link, File remoteRealmFile) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(link).get().build();
-        Log.i(TAG, "download realm: " + request.urlString());
+        LogUtil.i(TAG, "download realm: " + request.urlString());
 
         Response response;
         try {
             response = client.newCall(request).execute();
         } catch (IOException e) {
-            Log.e(TAG, "exception when http call or close the stream", e);
+            LogUtil.e(TAG, "exception when http call or close the stream", e);
             mOnFail.call();
             return false;
         }
@@ -180,12 +181,12 @@ public class TagsUpdateTask implements Runnable {
                     out.write(data, 0, count);
 
                     if (Thread.interrupted()) {
-                        Log.i(TAG, "cancel download");// canceled task not failTask++
+                        LogUtil.i(TAG, "cancel download");// canceled task not failTask++
                         mOnFail.call();
                         return false;
                     }
                     int progress = (int) (total * 100 / target);
-                    Log.i(TAG, "tag file " + progress);
+                    LogUtil.i(TAG, "tag file " + progress);
                 }
                 out.flush();
                 out.close();
@@ -217,11 +218,11 @@ public class TagsUpdateTask implements Runnable {
         File realmFile = new File(mLocalRealm.getConfiguration().getRealmFolder(),
                 mLocalRealm.getConfiguration().getRealmFileName());
 
-        Log.d(TAG, "upload " + realmFile.getName());
+        LogUtil.d(TAG, "upload " + realmFile.getName());
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class)
                 .getUploadToken(realmFile.getName(), "tag");
         if (token.code <= 0) {
-            Log.e(TAG, "get upload token error: " + token.msg);
+            LogUtil.e(TAG, "get upload token error: " + token.msg);
             mOnFail.call();
             return false;
         }
@@ -229,12 +230,12 @@ public class TagsUpdateTask implements Runnable {
         UploadManager uploadManager = new UploadManager();
         uploadManager.put(realmFile, realmFile.getName(), token.token,
                 (s, responseInfo, jsonObject) -> {
-                    Log.i(TAG, responseInfo.toString());
+                    LogUtil.i(TAG, responseInfo.toString());
                     if (responseInfo.isOK()) {
-                        Log.d(TAG, "loaded " + responseInfo.path);
-                        Log.i(TAG, "profile upload ok");
+                        LogUtil.d(TAG, "loaded " + responseInfo.path);
+                        LogUtil.i(TAG, "profile upload ok");
                     } else {
-                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                        LogUtil.e(TAG, "profile upload error: " + responseInfo.error);
                     }
                 }, null
         );
@@ -244,27 +245,27 @@ public class TagsUpdateTask implements Runnable {
     public void useRemoteTags(String date) {
         synchronized (mReadyFence) {
             if (!mReady) {
-                Log.i(TAG, " not ready error");
+                LogUtil.i(TAG, " not ready error");
                 return;
             }
         }
-        Log.i(TAG, "try to send MSG_REALM_TAG_REMOTE");
+        LogUtil.i(TAG, "try to send MSG_REALM_TAG_REMOTE");
         mHandler.sendMessage(mHandler.obtainMessage(MSG_REALM_TAG_REMOTE, date));
     }
 
     public void stopUpdateTags() {
         synchronized (mReadyFence) {
             if (!mReady) {
-                Log.i(TAG, " not ready error");
+                LogUtil.i(TAG, " not ready error");
                 return;
             }
         }
-        Log.i(TAG, "try to send MSG_QUIT");
+        LogUtil.i(TAG, "try to send MSG_QUIT");
         mHandler.sendMessage(mHandler.obtainMessage(MSG_QUIT));
     }
 
     private void handleUseRemoteTags(String date) {
-        Log.d(TAG, "let's update tags of " + date);
+        LogUtil.d(TAG, "let's update tags of " + date);
         if (mRemoteExist) {
             mLocalRealm.beginTransaction();
             mLocalRealm.where(OMLocalVideoTag.class).equalTo("tagDate", date).findAll().clear();
@@ -287,11 +288,11 @@ public class TagsUpdateTask implements Runnable {
                 case MSG_REALM_TAG_LOCAL:
                     break;
                 case MSG_REALM_TAG_REMOTE:
-                    Log.i(TAG, "MSG_REALM_TAG_REMOTE");
+                    LogUtil.i(TAG, "MSG_REALM_TAG_REMOTE");
                     mWeakTask.get().handleUseRemoteTags((String) obj);
                     break;
                 case MSG_QUIT:
-                    Log.i(TAG, "MSG_QUIT");
+                    LogUtil.i(TAG, "MSG_QUIT");
                     Looper looper = Looper.myLooper();
                     if (looper != null) {
                         looper.quit();

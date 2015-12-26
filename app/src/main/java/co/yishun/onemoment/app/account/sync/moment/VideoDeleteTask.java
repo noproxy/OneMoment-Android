@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.account.sync.moment;
 
 import android.util.Log;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiMoment;
@@ -22,9 +23,9 @@ public class VideoDeleteTask implements Runnable {
 
     @Override
     public void run() {
-        Log.i(TAG, "delete a video: " + mApiMoment);
+        LogUtil.i(TAG, "delete a video: " + mApiMoment);
         mMiscService.deleteVideo(mApiMoment.getKey());
-        Log.i(TAG, "delete a video end: " + mApiMoment);
+        LogUtil.i(TAG, "delete a video end: " + mApiMoment);
     }
 
 }

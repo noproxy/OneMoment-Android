@@ -31,6 +31,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.function.Callback;
 
 @TargetApi(18)
@@ -100,13 +101,13 @@ public class MediaMuxerWrapper {
      */
     /*package*/
     synchronized boolean start() {
-        if (DEBUG) Log.v(TAG, "start:");
+        if (DEBUG) LogUtil.v(TAG, "start:");
         mStatredCount++;
         if ((mEncoderCount > 0) && (mStatredCount == mEncoderCount)) {
             mMediaMuxer.start();
             mIsStarted = true;
             notifyAll();
-            if (DEBUG) Log.v(TAG, "MediaMuxer started:");
+            if (DEBUG) LogUtil.v(TAG, "MediaMuxer started:");
         }
         return mIsStarted;
     }
@@ -116,13 +117,13 @@ public class MediaMuxerWrapper {
      */
     /*package*/
     synchronized void stop() {
-        if (DEBUG) Log.v(TAG, "stop:mStatredCount=" + mStatredCount);
+        if (DEBUG) LogUtil.v(TAG, "stop:mStatredCount=" + mStatredCount);
         mStatredCount--;
         if ((mEncoderCount > 0) && (mStatredCount <= 0)) {
             mMediaMuxer.stop();
             mMediaMuxer.release();
             mIsStarted = false;
-            if (DEBUG) Log.v(TAG, "MediaMuxer stopped:");
+            if (DEBUG) LogUtil.v(TAG, "MediaMuxer stopped:");
         }
     }
 
@@ -138,7 +139,7 @@ public class MediaMuxerWrapper {
             throw new IllegalStateException("muxer already started");
         final int trackIx = mMediaMuxer.addTrack(format);
         if (DEBUG)
-            Log.i(TAG, "addTrack:trackNum=" + mEncoderCount + ",trackIx=" + trackIx + ",format=" + format);
+            LogUtil.i(TAG, "addTrack:trackNum=" + mEncoderCount + ",trackIx=" + trackIx + ",format=" + format);
         return trackIx;
     }
 

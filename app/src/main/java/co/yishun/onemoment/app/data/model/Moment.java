@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.config.Constants;
@@ -178,7 +179,7 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
         public MomentBuilder fromFile(File cacheFile) {
             File file = FileUtil.getMomentStoreFile(mContext);
             if (!cacheFile.renameTo(file)) {
-                Log.e(TAG, "mv file failed");
+                LogUtil.e(TAG, "mv file failed");
                 throw new UnsupportedOperationException("Unable to move video");
             }
             mPath = file.getPath();

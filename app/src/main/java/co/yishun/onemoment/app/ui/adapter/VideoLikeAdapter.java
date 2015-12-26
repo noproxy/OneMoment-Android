@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -102,7 +103,7 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<TagVideo, Vide
                             }
                         } catch (IOException e) {
                             // create thumbnail failed, video file may be damaged, redownload
-                            Log.e(TAG, "IOException when create thumbImage of the old video");
+                            LogUtil.e(TAG, "IOException when create thumbImage of the old video");
                             e.printStackTrace();
                             if (!fileSynced.delete()) {
                                 return false;

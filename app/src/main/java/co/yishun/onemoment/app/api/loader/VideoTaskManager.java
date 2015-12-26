@@ -16,6 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.Video;
 import java8.util.stream.StreamSupport;
 
@@ -57,10 +58,10 @@ public class VideoTaskManager {
 
     public void executeTask(LoaderTask task, Video... params) {
         asyncTaskList.add(task);
-        Log.d(TAG, asyncTaskList.size() + "");
+        LogUtil.d(TAG, asyncTaskList.size() + "");
 
         if (poolQueue.size() >= 96) {
-            Log.d(TAG, "pool size over");
+            LogUtil.d(TAG, "pool size over");
 //            taskMap.put(task, params);
             taskMap.add(new TaskEntry<>(task, params));
         } else {
@@ -70,7 +71,7 @@ public class VideoTaskManager {
 
     public void removeTask(LoaderTask task) {
         asyncTaskList.remove(task);
-        Log.d(TAG, asyncTaskList.size() + "");
+        LogUtil.d(TAG, asyncTaskList.size() + "");
         for (int i = 0; i < taskMap.size(); ) {
             if (taskMap.get(i).key == task) {
                 taskMap.remove(i);
@@ -78,7 +79,7 @@ public class VideoTaskManager {
             } else i++;
         }
         if (poolQueue.size() < 96) {
-            Log.d(TAG, "pool size ok");
+            LogUtil.d(TAG, "pool size ok");
             if (taskMap.size() > 0) {
                 TaskEntry<LoaderTask, Video[]> e = taskMap.get(0);
                 taskMap.remove(0);

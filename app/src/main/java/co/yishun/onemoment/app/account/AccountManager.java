@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 
@@ -87,7 +88,7 @@ public class AccountManager {
     private static boolean saveUserInfo(Context context, User user) {
         try {
             String path = getUserInfoDir(context);
-            Log.i(TAG, "save identity info, path: " + path);
+            LogUtil.i(TAG, "save identity info, path: " + path);
             FileOutputStream fout = new FileOutputStream(path);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(user);

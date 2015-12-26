@@ -11,6 +11,8 @@ import org.androidannotations.annotations.OnActivityResult;
 
 import java.io.File;
 
+import co.yishun.onemoment.app.LogUtil;
+
 /**
  * Created by Carlos on 2015/8/12.
  */
@@ -32,7 +34,7 @@ public abstract class PickCropActivity extends BaseActivity {
                 onPictureSelectedFailed(e);
             }
         } else {
-            Log.i(TAG, "RESULT_CANCELED");
+            LogUtil.i(TAG, "RESULT_CANCELED");
         }
     }
 
@@ -42,7 +44,7 @@ public abstract class PickCropActivity extends BaseActivity {
             onPictureCropped(mCroppedPictureUri);
         } else {
             mCroppedPictureUri = null;
-            Log.i(TAG, "RESULT_CANCELED");
+            LogUtil.i(TAG, "RESULT_CANCELED");
         }
     }
 

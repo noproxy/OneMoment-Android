@@ -28,6 +28,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
@@ -129,7 +130,7 @@ public class SearchActivity extends BaseActivity implements AbstractRecyclerView
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowTitleEnabled(false);
-        Log.i("setupToolbar", "set home as up true");
+        LogUtil.i("setupToolbar", "set home as up true");
         return ab;
     }
 

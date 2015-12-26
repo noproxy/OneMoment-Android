@@ -17,6 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import co.yishun.onemoment.app.LogUtil;
+
+import static android.text.format.DateFormat.is24HourFormat;
+
 public class TimePreference extends DialogPreference {
     private static final String TAG = "TimePreference";
     private int lastHour = 0;
@@ -32,7 +36,7 @@ public class TimePreference extends DialogPreference {
         picker = new TimePicker(getContext());
         DateFormat.is24HourFormat(getContext());
         picker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
-        Log.d(TAG, DateFormat.is24HourFormat(getContext()) + "");
+        LogUtil.d(TAG, is24HourFormat(getContext()) + "");
         return picker;
     }
 

@@ -27,6 +27,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.concurrent.CountDownLatch;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
@@ -43,6 +44,9 @@ import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.view.GenderSpinner;
 import co.yishun.onemoment.app.ui.view.LocationSpinner;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static co.yishun.onemoment.app.LogUtil.e;
+import static co.yishun.onemoment.app.LogUtil.i;
 
 /**
  * Created by Carlos on 2015/8/11.
@@ -125,7 +129,7 @@ public class IntegrateInfoFragment extends AccountFragment
         UploadManager uploadManager = new UploadManager();
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(qiNiuKey);
         if (token.code <= 0) {
-            Log.e(TAG, "get upload token error: " + token.msg);
+            e(TAG, "get upload token error: " + token.msg);
             return false;
         }
         // don't need
@@ -137,13 +141,13 @@ public class IntegrateInfoFragment extends AccountFragment
         CountDownLatch latch = new CountDownLatch(1);
         uploadManager.put(path, qiNiuKey, token.token,
                 (s, responseInfo, jsonObject) -> {
-                    Log.i(TAG, responseInfo.toString());
+                    i(TAG, responseInfo.toString());
                     if (responseInfo.isOK()) {
                         avatarUploadOk = true;
-                        Log.i(TAG, "profile upload ok");
+                        i(TAG, "profile upload ok");
                     } else {
                         avatarUploadOk = false;
-                        Log.e(TAG, "profile upload error: " + responseInfo.error);
+                        e(TAG, "profile upload error: " + responseInfo.error);
                     }
                     latch.countDown();
                 }, null
@@ -160,7 +164,7 @@ public class IntegrateInfoFragment extends AccountFragment
 
         User user = mActivity.getAccountService().updateInfo(userId, null, null, qiNiuKey, null);
         if (user.code <= 0) {
-            Log.i(TAG, "update info failed: " + user.msg);
+            i(TAG, "update info failed: " + user.msg);
             return false;
         }
         AccountManager.updateOrCreateUserInfo(mActivity, user);
@@ -222,7 +226,7 @@ public class IntegrateInfoFragment extends AccountFragment
     @Override
     public void onPictureSelectedFailed(Exception e) {
         mActivity.showSnackMsg(R.string.activity_phone_account_fail_select_pic);
-        Log.e(TAG, "select picture fail", e);
+        LogUtil.e(TAG, "select picture fail", e);
     }
 
     @Override

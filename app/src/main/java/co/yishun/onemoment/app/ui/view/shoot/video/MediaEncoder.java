@@ -30,6 +30,13 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 
+import co.yishun.onemoment.app.LogUtil;
+
+import static co.yishun.onemoment.app.LogUtil.d;
+import static co.yishun.onemoment.app.LogUtil.i;
+import static co.yishun.onemoment.app.LogUtil.v;
+import static co.yishun.onemoment.app.LogUtil.w;
+
 public abstract class MediaEncoder implements Runnable {
     protected static final int TIMEOUT_USEC = 10000;    // 10[msec]
     private static final boolean DEBUG = true;    // TODO set false on release
@@ -120,7 +127,7 @@ public abstract class MediaEncoder implements Runnable {
                 }
             }
         } // end of while
-        if (DEBUG) Log.d(TAG, "Encoder thread exiting");
+        if (DEBUG) d(TAG, "Encoder thread exiting");
         synchronized (mSync) {
             mRequestStop = true;
             mIsCapturing = false;
@@ -136,7 +143,7 @@ public abstract class MediaEncoder implements Runnable {
     abstract void prepare() throws IOException;
 
     void startRecording() {
-        if (DEBUG) Log.v(TAG, "startRecording");
+        if (DEBUG) v(TAG, "startRecording");
         synchronized (mSync) {
             mIsCapturing = true;
             mRequestStop = false;
@@ -148,7 +155,7 @@ public abstract class MediaEncoder implements Runnable {
      * the method to request stop encoding
      */
     void stopRecording() {
-        if (DEBUG) Log.v(TAG, "stopRecording");
+        if (DEBUG) v(TAG, "stopRecording");
         synchronized (mSync) {
             if (!mIsCapturing || mRequestStop) {
                 return;
@@ -164,7 +171,7 @@ public abstract class MediaEncoder implements Runnable {
      * Release all releated objects
      */
     protected void release() {
-        if (DEBUG) Log.d(TAG, "release:");
+        if (DEBUG) d(TAG, "release:");
         mIsCapturing = false;
         if (mMediaCodec != null) {
             try {
@@ -172,17 +179,17 @@ public abstract class MediaEncoder implements Runnable {
                 mMediaCodec.release();
                 mMediaCodec = null;
             } catch (final Exception e) {
-                Log.e(TAG, "failed releasing MediaCodec", e);
+                LogUtil.e(TAG, "failed releasing MediaCodec", e);
             }
         }
         if (mMuxerStarted) {
             final MediaMuxerWrapper muxer = mWeakMuxer.get();
             if (muxer != null) {
-                Log.d(TAG, "not null try to release");
+                d(TAG, "not null try to release");
                 try {
                     muxer.stop();
                 } catch (final Exception e) {
-                    Log.e(TAG, "failed stopping muxer", e);
+                    LogUtil.e(TAG, "failed stopping muxer", e);
                 }
             }
         }
@@ -190,7 +197,7 @@ public abstract class MediaEncoder implements Runnable {
     }
 
     protected void signalEndOfInputStream() {
-        if (DEBUG) Log.d(TAG, "sending EOS to encoder");
+        if (DEBUG) d(TAG, "sending EOS to encoder");
         // signalEndOfInputStream is only avairable for video encoding with surface
         // and equivalent sending a empty buffer with BUFFER_FLAG_END_OF_STREAM flag.
         encode(null, 0, getPTSUs());
@@ -218,7 +225,7 @@ public abstract class MediaEncoder implements Runnable {
                 if (length <= 0) {
                     // send EOS
                     mIsEOS = true;
-                    if (DEBUG) Log.i(TAG, "send BUFFER_FLAG_END_OF_STREAM");
+                    if (DEBUG) i(TAG, "send BUFFER_FLAG_END_OF_STREAM");
                     mMediaCodec.queueInputBuffer(inputBufferIndex, 0, 0,
                             presentationTimeUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     break;
@@ -245,7 +252,7 @@ public abstract class MediaEncoder implements Runnable {
         final MediaMuxerWrapper muxer = mWeakMuxer.get();
         if (muxer == null) {
 //        	throw new NullPointerException("muxer is unexpectedly null");
-            Log.w(TAG, "muxer is unexpectedly null");
+            w(TAG, "muxer is unexpectedly null");
             return;
         }
         LOOP:
@@ -259,11 +266,11 @@ public abstract class MediaEncoder implements Runnable {
                         break;        // out of while
                 }
             } else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-                if (DEBUG) Log.v(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
+                if (DEBUG) v(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
                 // this shoud not come when encoding
                 encoderOutputBuffers = mMediaCodec.getOutputBuffers();
             } else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                if (DEBUG) Log.v(TAG, "INFO_OUTPUT_FORMAT_CHANGED");
+                if (DEBUG) v(TAG, "INFO_OUTPUT_FORMAT_CHANGED");
                 // this status indicate the output format of codec is changed
                 // this should come only once before actual encoded data
                 // but this status never come on Android4.3 or less
@@ -290,7 +297,7 @@ public abstract class MediaEncoder implements Runnable {
             } else if (encoderStatus < 0) {
                 // unexpected status
                 if (DEBUG)
-                    Log.w(TAG, "drain:unexpected result from encoder#dequeueOutputBuffer: " + encoderStatus);
+                    w(TAG, "drain:unexpected result from encoder#dequeueOutputBuffer: " + encoderStatus);
             } else {
                 final ByteBuffer encodedData = encoderOutputBuffers[encoderStatus];
                 if (encodedData == null) {
@@ -302,7 +309,7 @@ public abstract class MediaEncoder implements Runnable {
                     // but MediaCodec#getOutputFormat can not call here(because INFO_OUTPUT_FORMAT_CHANGED don't come yet)
                     // therefor we should expand and prepare output format from buffer data.
                     // This sample is for API>=18(>=Android 4.3), just ignore this flag here
-                    if (DEBUG) Log.d(TAG, "drain:BUFFER_FLAG_CODEC_CONFIG");
+                    if (DEBUG) d(TAG, "drain:BUFFER_FLAG_CODEC_CONFIG");
                     mBufferInfo.size = 0;
                 }
 

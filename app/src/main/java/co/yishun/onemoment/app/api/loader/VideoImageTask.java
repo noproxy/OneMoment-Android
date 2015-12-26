@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.VideoUtil;
@@ -31,14 +32,14 @@ public class VideoImageTask extends LoaderTask {
     @Override
     protected Boolean doInBackground(Video... videos) {
         final Video video = videos[0];
-        Log.d(TAG, "start image " + video.fileName + " " + this.toString());
+        LogUtil.d(TAG, "start image " + video.fileName + " " + this.toString());
         File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
         large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
         small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
         try {
             // there is some reason lead to thumb created fail, it depends. So try 3 times, make it less error
             if (videoFile.length() == 0) {
-                Log.e(TAG, "video not found " + videoFile.getName());
+                LogUtil.e(TAG, "video not found " + videoFile.getName());
                 return false;
             }
             for (int i = 0; i < 3; i++) {
@@ -55,13 +56,13 @@ public class VideoImageTask extends LoaderTask {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
-            Log.d(TAG, "stop image");
+            LogUtil.d(TAG, "stop image");
             if (videoTaskReference.get() != null) {
                 videoTaskReference.get().getImage(large, small);
             }
         } else {
             onCancelled(false);
-            Log.e(TAG, "error");
+            LogUtil.e(TAG, "error");
         }
         VideoTaskManager.getInstance().removeTask(this);
     }
@@ -69,7 +70,7 @@ public class VideoImageTask extends LoaderTask {
     @Override
     protected void onCancelled(Boolean result) {
         super.onCancelled(result);
-        Log.d(TAG, "cancel image " + result + " " + this.toString());
+        LogUtil.d(TAG, "cancel image " + result + " " + this.toString());
         if (result == null || !result) {
             if (large != null && !getLarge && large.exists()) large.delete();
         }

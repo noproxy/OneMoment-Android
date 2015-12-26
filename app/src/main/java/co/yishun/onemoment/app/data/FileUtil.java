@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
@@ -97,9 +98,9 @@ public class FileUtil {
         if (unixTimeStamp == null) {
             unixTimeStamp = String.valueOf(new Date().getTime() / 1000);
         }
-        Log.i(TAG, "timestamp: " + unixTimeStamp);
+        LogUtil.i(TAG, "timestamp: " + unixTimeStamp);
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Long.parseLong(unixTimeStamp) * 1000);
-        Log.i(TAG, "formatted time: " + time);
+        LogUtil.i(TAG, "formatted time: " + time);
         return new File(dir, type.getPrefix(context) + time + URL_HYPHEN + unixTimeStamp + type.getSuffix());
     }
 
@@ -182,7 +183,7 @@ public class FileUtil {
 
         if (appCacheDir == null) {
             String cacheDirPath = "/data/data/" + context.getPackageName() + "/cache/";
-            Log.d(FileUtil.class.getName(), "Can't define system cache directory! use " + cacheDirPath);
+            LogUtil.d(FileUtil.class.getName(), "Can't define system cache directory! use " + cacheDirPath);
             appCacheDir = new File(cacheDirPath);
         }
 
@@ -194,7 +195,7 @@ public class FileUtil {
         File cacheDir = context.getExternalCacheDir();
         if (cacheDir != null && !cacheDir.exists()) {
             if (!cacheDir.mkdirs()) {
-                Log.d(FileUtil.class.getName(), "无法创建SDCard cache");
+                LogUtil.d(FileUtil.class.getName(), "无法创建SDCard cache");
                 return null;
             }
 

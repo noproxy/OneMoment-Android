@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.Banner;
@@ -67,7 +68,7 @@ public class OneMomentConverter implements Converter {
         try {
             errorCode = jsonObject.get("error_code").getAsInt();
         } catch (Exception e) {
-            Log.v(TAG, "no error code, catch. ");
+            LogUtil.v(TAG, "no error code, catch. ");
         }
 
 
@@ -127,7 +128,7 @@ public class OneMomentConverter implements Converter {
                     models = tags;
                 } else {
                     models = new ArrayList<>();
-                    Log.e(TAG, "unknown generic type, json: " + json);
+                    LogUtil.e(TAG, "unknown generic type, json: " + json);
                 }
             }
         } else {
@@ -166,7 +167,7 @@ public class OneMomentConverter implements Converter {
     public TypedOutput toBody(Object object) {
         // will be encoded in OneMomentClient, so don't encode here
         String json = mGson.toJson(object);
-        Log.i(TAG, object + ", " + json);
+        LogUtil.i(TAG, object + ", " + json);
         return new JsonTypedOutput(json.getBytes(Charsets.UTF_8), Charsets.UTF_8.name());
     }
 
