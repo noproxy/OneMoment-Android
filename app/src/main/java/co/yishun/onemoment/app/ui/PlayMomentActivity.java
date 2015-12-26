@@ -10,6 +10,10 @@ import android.widget.FrameLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.googlecode.mp4parser.authoring.Movie;
+import com.googlecode.mp4parser.authoring.Track;
+import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
+import com.googlecode.mp4parser.util.Matrix;
 import com.j256.ormlite.dao.Dao;
 import com.qiniu.android.storage.UploadManager;
 
@@ -22,6 +26,7 @@ import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,12 +34,16 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
+import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.convert.VideoConcat;
+import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -121,7 +130,7 @@ public class PlayMomentActivity extends BaseActivity {
 
     @Background void shareClick() {
         showProgress();
-        appendSelectedVideos();
+        concatSelectedVideos();
         if (videoCacheFile == null) {
             //TODO check append videos failed
             return;
@@ -129,12 +138,72 @@ public class PlayMomentActivity extends BaseActivity {
         uploadAndShare();
     }
 
-    void appendSelectedVideos() {
-        List<String> paths = new ArrayList<>();
+    void concatSelectedVideos() {
+        List<File> files = new ArrayList<>();
         Collections.sort(playingMoments);
-        for (Moment moment : playingMoments) {
-            paths.add(moment.getPath());
+        try {
+            for (Moment moment : playingMoments) {
+                files.add(new File(moment.getPath()));
+//                MomentLock.lockMoment(this, moment);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id
+                + Constants.URL_HYPHEN + playingMoments.size() + Constants.URL_HYPHEN
+                + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
+
+        List<File> filesNeedTrans = new ArrayList<>();
+        try {
+            for (File f : files) {
+                Movie movie = MovieCreator.build(f.getPath());
+                for (Track t : movie.getTracks()) {
+                    if (!t.getTrackMetaData().getMatrix().equals(Matrix.ROTATE_0)) {
+                        filesNeedTrans.add(f);
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        VideoConcat concat = new VideoConcat(this)
+                .setTransFile(filesNeedTrans)
+                .setConcatFile(files, videoCacheFile)
+                .setListener(new VideoConcat.ConcatListener() {
+                    @Override public void onTransSuccess() {
+                        Log.d(TAG, "onTransSuccess: ");
+                    }
+
+                    @Override public void onFormatSuccess() {
+                        Log.d(TAG, "onFormatSuccess: ");
+                    }
+
+                    @Override public void onConcatSuccess() {
+                        Log.d(TAG, "onConcatSuccess: ");
+                        afterConcat();
+                    }
+
+                    @Override public void onFail() {
+                        Log.d(TAG, "onFail: ");
+                    }
+                }).start();
+    }
+
+    void afterConcat() {
+        try {
+            for (Moment moment : playingMoments) {
+//                MomentLock.unlockMomentIfLocked(this, moment);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (videoCacheFile == null) {
+            //TODO check append videos failed
+            return;
+        }
+        uploadAndShare();
     }
 
     @SupposeBackground void uploadAndShare() {
