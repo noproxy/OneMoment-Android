@@ -143,6 +143,7 @@ dependencies {
     compile 'com.github.clans:fab:1.6.1'
 
     compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
+    compile 'com.googlecode.mp4parser:isoparser:1.1.7'
 }
 
 repositories {

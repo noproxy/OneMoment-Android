@@ -12,6 +12,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.googlecode.mp4parser.authoring.Movie;
+import com.googlecode.mp4parser.authoring.Track;
+import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
+import com.googlecode.mp4parser.util.Matrix;
 import com.j256.ormlite.dao.Dao;
 import com.qiniu.android.storage.UploadManager;
 import com.squareup.picasso.Picasso;
@@ -25,6 +29,7 @@ import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -218,8 +223,24 @@ public class ShareExportActivity extends BaseActivity
                 + Constants.URL_HYPHEN + selectedMoments.size() + Constants.URL_HYPHEN
                 + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
 
+        List<File> filesNeedTrans = new ArrayList<>();
+        try {
+            for (File f : files) {
+                Movie movie = MovieCreator.build(f.getPath());
+                for (Track t  : movie.getTracks()){
+                    if (!t.getTrackMetaData().getMatrix().equals(Matrix.ROTATE_0)){
+                        filesNeedTrans.add(f);
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         VideoConcat concat = new VideoConcat(this)
-                .setFiles(files, videoCacheFile)
+                .setTransFile(filesNeedTrans)
+                .setConcatFile(files, videoCacheFile)
                 .setListener(new VideoConcat.ConcatListener() {
                     @Override public void onTransSuccess() {
                         Log.d(TAG, "onTransSuccess: ");

@@ -30,6 +30,7 @@ public class VideoConcat {
     private final FFmpeg mFFmpeg;
     private ConcatListener mListener;
     private Context mContext;
+    private List<String> mTransPath;
     private FFmpegExecuteResponseHandler mTransHandler;
     private FFmpegExecuteResponseHandler mFormatHandler;
     private FFmpegExecuteResponseHandler mConcatHandler;
@@ -40,6 +41,7 @@ public class VideoConcat {
         mTransCommands = new ArrayList<>();
         mFormatCommands = new ArrayList<>();
         mConcatCommand = new StringBuilder();
+        mTransPath = new ArrayList<>();
         createHandler();
         mFFmpeg = FFmpeg.getInstance(context);
 
@@ -79,12 +81,36 @@ public class VideoConcat {
         task.execute();
     }
 
-    public VideoConcat setFiles(List<File> files, File outputFile) {
+    public VideoConcat setTransFile(List<File> files) {
         //ffmpeg -i v3.mp4 -vf transpose=passthrough=portrait v3p.mp4
+        mTransPath.clear();
         File transDir = FileUtil.getCacheFile(mContext, "trans");
         if (!transDir.exists()) transDir.mkdir();
         String transPath = transDir.getPath() + "/";
 
+        for (int i = 0; i < files.size(); i++) {
+            File in = files.get(i);
+            int end = in.getName().lastIndexOf('.');
+            if (end < 0) end = in.getName().length() - 1;
+            String inName = in.getName().substring(0, end);
+
+            StringBuilder command = new StringBuilder();
+            command.append(" -i ")
+                    .append(in.getPath())
+                    .append(" -vf transpose=passthrough=portrait ")
+                    .append(" -preset ultrafast ")
+                    .append(" -threads 5 ")
+                    .append(" -strict -2 ")
+                    .append(" -n ")
+                    .append(transPath).append(inName).append(".mp4");
+            mTransCommands.add(command);
+
+            mTransPath.add(transPath + inName + ".mp4");
+        }
+        return this;
+    }
+
+    public VideoConcat setConcatFile(List<File> files, File outputFile) {
         File formatDir = FileUtil.getCacheFile(mContext, "format");
         if (!formatDir.exists()) formatDir.mkdir();
         String formatPath = formatDir.getPath() + "/";
@@ -107,21 +133,21 @@ public class VideoConcat {
             if (end < 0) end = in.getName().length() - 1;
             String inName = in.getName().substring(0, end);
 
+            String inPath = in.getPath();
+            for (String trans : mTransPath) {
+                if (trans.contains(inName)) {
+                    inPath = trans;
+                    break;
+                }
+            }
+
             StringBuilder command = new StringBuilder();
             command.append(" -i ")
-                    .append(in.getPath())
-                    .append(" -vf transpose=passthrough=portrait ")
+                    .append(inPath)
+                    .append(" -vcodec copy -acodec copy -vbsf h264_mp4toannexb ")
                     .append(" -preset ultrafast ")
                     .append(" -threads 5 ")
                     .append(" -strict -2 ")
-                    .append(" -y ")
-                    .append(transPath).append(inName).append(".mp4");
-            mTransCommands.add(command);
-
-            command = new StringBuilder();
-            command.append(" -i ")
-                    .append(transPath).append(inName).append(".mp4")
-                    .append(" -vcodec copy -acodec copy -vbsf h264_mp4toannexb ")
                     .append(" -y ")
                     .append(formatPath).append(inName).append(".ts");
             mFormatCommands.add(command);
@@ -133,6 +159,9 @@ public class VideoConcat {
         mConcatCommand.append(" -f concat -i ")
                 .append(input.getPath())
                 .append(" -acodec copy -vcodec copy -absf aac_adtstoasc ")
+                .append(" -preset ultrafast ")
+                .append(" -threads 5 ")
+                .append(" -strict -2 ")
                 .append(" -y ")
                 .append(outputFile.getPath());
 
