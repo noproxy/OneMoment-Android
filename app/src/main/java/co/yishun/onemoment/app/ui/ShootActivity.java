@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.ui;
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
@@ -22,6 +21,7 @@ import java.io.File;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -29,6 +29,8 @@ import co.yishun.onemoment.app.ui.view.PageIndicatorDot;
 import co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView;
 import co.yishun.onemoment.app.ui.view.shoot.IShootView;
 import co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager;
+import co.yishun.onemoment.app.video.VideoCommand;
+import co.yishun.onemoment.app.video.VideoConvert;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 import me.toxz.circularprogressview.library.CircularProgressView;
@@ -199,7 +201,28 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @Override
     public void accept(File file) {
         LogUtil.i(TAG, "accept: " + file);
-        delayStart(file);
+        if (shootView instanceof CameraGLSurfaceView)
+            delayStart(file);
+        else {
+            showProgress();
+            delayAccept(file);
+        }
+    }
+
+    @UiThread(delay = 800) void delayAccept(File file) {
+        File newFile = FileUtil.getVideoCacheFile(this);
+        new VideoConvert(this).setFiles(file, newFile)
+                .setListener(new VideoCommand.VideoCommandListener() {
+                    @Override public void onSuccess(VideoCommand.VideoCommandType type) {
+                        file.delete();
+                        delayStart(newFile);
+                        hideProgress();
+                    }
+
+                    @Override public void onFail(VideoCommand.VideoCommandType type) {
+                        hideProgress();
+                    }
+                }).start();
     }
 
     @UiThread(delay = 200) void delayStart(File file) {

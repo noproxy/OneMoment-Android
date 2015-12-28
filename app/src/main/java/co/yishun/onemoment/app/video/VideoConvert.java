@@ -5,12 +5,16 @@ import android.content.Context;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 
+
 import java.io.File;
+
+import co.yishun.onemoment.app.LogUtil;
 
 /**
  * Created on 2015/12/26.
  */
 public class VideoConvert extends VideoCommand {
+    private static final String TAG = "VideoConvert";
     StringBuilder mCommand = new StringBuilder();
     private FFmpegExecuteResponseHandler mHandler;
 
@@ -28,8 +32,8 @@ public class VideoConvert extends VideoCommand {
         mCommand.append(" -i ")
                 .append(input.getPath())
                 .append(" -vf")
-                .append(" transpose=passthrough=portrait")
-                .append(" crop='if(gt(iw,ih),ih,iw)':'if(gt(iw,ih),ih,iw)',scale=480:480")
+                .append(" crop='min(iw,ih)':'min(iw,ih)',scale=480:480,")
+                .append("transpose=passthrough=portrait")
                 .append(" -t 1.2")
                 .append(" -y")
                 .append(" -preset ultrafast")
@@ -42,7 +46,9 @@ public class VideoConvert extends VideoCommand {
 
     @Override public void start() {
         try {
-            mFFmpeg.execute(mCommand.toString(), mHandler);
+            String cmd = mCommand.toString();
+            LogUtil.i(TAG, "convert cmd : " + cmd);
+            mFFmpeg.execute(cmd, mHandler);
         } catch (FFmpegCommandAlreadyRunningException e) {
             e.printStackTrace();
         }
@@ -54,9 +60,12 @@ public class VideoConvert extends VideoCommand {
                 if (mListener != null) mListener.onSuccess(VideoCommandType.COMMAND_CONVERT);
             }
 
-            @Override public void onProgress(String message) {}
+            @Override public void onProgress(String message) {
+                LogUtil.e(TAG, message);
+            }
 
             @Override public void onFailure(String message) {
+                LogUtil.e(TAG, message);
                 if (mListener != null) mListener.onFail(VideoCommandType.COMMAND_CONVERT);
             }
 
