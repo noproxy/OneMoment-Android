@@ -1,18 +1,16 @@
 package co.yishun.onemoment.app.wxapi;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.ProgressSnackBar;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.UiThread;
 
@@ -34,7 +32,7 @@ import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.AccountActivity_;
 import co.yishun.onemoment.app.ui.MainActivity_;
-import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.common.WXRespActivity;
 
 import static java.lang.String.valueOf;
 
@@ -45,21 +43,17 @@ import static java.lang.String.valueOf;
  * WXEntryActivity is also used for share, so create a transparent WXEntryActivity.
  * </p>
  */
-// This Activity cannot use AndroidAnnotations because of WeChat login require EntryActivity naming
-public class EntryActivity extends BaseActivity implements LoginListener {
+@EActivity(R.layout.activity_login)
+public class EntryActivity extends WXRespActivity implements LoginListener {
     private static final String TAG = "EntryActivity";
-    static AuthHelper mAuthHelper;
-    static Account mAccountService;
+    private AuthHelper mAuthHelper;
+    private Account mAccountService;
     private Snackbar snackbar;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+    @AfterViews void setUp() {
         mAccountService = OneMomentV3.createAdapter().create(Account.class);
         if (mAuthHelper != null && mAuthHelper instanceof WeChatHelper)
             ((WeChatHelper) mAuthHelper).handleIntent(getIntent());
-        findViewById(R.id.loginByWeChat).setOnClickListener(this::loginByWeChatClicked);
     }
 
     public void loginByPhoneClicked(final View view) {
@@ -68,9 +62,9 @@ public class EntryActivity extends BaseActivity implements LoginListener {
 
     public void loginByWeChatClicked(final View view) {
         if (isAppInstalled("com.tencent.mm")) {
+            showSnackProgress();
             mAuthHelper = new WeChatHelper(this);
             mAuthHelper.login(this);
-            showSnackProgress();
         } else
             showSnackMsg("WeChat not installed!");
     }
@@ -83,7 +77,7 @@ public class EntryActivity extends BaseActivity implements LoginListener {
     @Override
     public void onSuccess(OAuthToken token) {
         LogUtil.i(TAG, valueOf(token));
-        AsyncHandler_.getInstance_(this).handleToken(token);
+        handleToken(token);
     }
 
     @Override
@@ -132,10 +126,9 @@ public class EntryActivity extends BaseActivity implements LoginListener {
         mIsPage = false;
     }
 
-    @Override protected void onDestroy() {
-        EntryActivity.mAuthHelper = null;
-        EntryActivity.mAccountService = null;
-        super.onDestroy();
+    @Override protected void onWXRespIntent(Intent intent) {
+        if (mAuthHelper != null && mAuthHelper instanceof WeChatHelper)
+            ((WeChatHelper) mAuthHelper).handleIntent(intent);
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -144,23 +137,8 @@ public class EntryActivity extends BaseActivity implements LoginListener {
             ((QQHelper) mAuthHelper).handleIntent(requestCode, resultCode, data);
 
         if (mAuthHelper instanceof WeiboHelper) {
-            ((WeiboHelper)mAuthHelper).handleIntent(requestCode, resultCode, data);
+            ((WeiboHelper) mAuthHelper).handleIntent(requestCode, resultCode, data);
         }
-    }
-}
-
-@EBean
-class AsyncHandler {
-    private static final String TAG = "AsyncHandler";
-    private EntryActivity mActivity;
-    private AuthHelper mAuthHelper;
-    private Account mAccountService;
-
-
-    public AsyncHandler(Context context) {
-        mActivity = (EntryActivity) context;
-        mAuthHelper = EntryActivity.mAuthHelper;
-        mAccountService = EntryActivity.mAccountService;
     }
 
     /**
@@ -190,16 +168,16 @@ class AsyncHandler {
      */
     @SupposeBackground void handleUser(User user, OAuthToken token) {
         if (user.code == 1) {
-            AccountManager.saveAccount(mActivity, user);
-            mActivity.showSnackMsg(R.string.activity_wx_entry_login_success);
-            SyncManager.syncNow(mActivity);
+            AccountManager.saveAccount(this, user);
+            showSnackMsg(R.string.activity_wx_entry_login_success);
+            SyncManager.syncNow(this);
             exitWithStartMain();
         } else if (user.errorCode == Constants.ErrorCode.ACCOUNT_DOESNT_EXIST) {
             LogUtil.i(TAG, "account not exist, start getting user info");
             getUserInfo(token);
         } else {
             LogUtil.i(TAG, "sign in failed: " + user.msg);
-            mActivity.showSnackMsg(R.string.activity_wx_entry_login_fail);
+            showSnackMsg(R.string.activity_wx_entry_login_fail);
         }
     }
 
@@ -210,9 +188,9 @@ class AsyncHandler {
      */
     @SupposeBackground void getUserInfo(OAuthToken token) {
         UserInfo info = mAuthHelper.getUserInfo(token);
-        mActivity.showSnackMsg(R.string.activity_wx_entry_auth_success);
-        mActivity.getApplicationContext().startActivity(AccountActivity_.intent(mActivity).userInfo(info).type(getType(mAuthHelper)).get().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        mActivity.finish();
+        showSnackMsg(R.string.activity_wx_entry_auth_success);
+        startActivity(AccountActivity_.intent(this).userInfo(info).type(getType(mAuthHelper)).get().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        finish();
         //TODO startActivity from mActivity context will fail on Huawei. Reason is not clear now.
         //TODO bug: snackbar not work
     }
@@ -228,8 +206,8 @@ class AsyncHandler {
     }
 
     @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS) void exitWithStartMain() {
-        MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
-        mActivity.finish();
+        MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
+        finish();
     }
 }
 

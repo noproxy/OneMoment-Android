@@ -17,6 +17,7 @@ import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.remind.ReminderReceiver;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.wxapi.EntryActivity;
+import co.yishun.onemoment.app.wxapi.EntryActivity_;
 
 /**
  * Created by yyz on 7/23/15.
@@ -76,7 +77,7 @@ public class SplashActivity extends BaseActivity {
         } else if (AccountManager.isLogin(this))
             MainActivity_.intent(this).start();
         else
-            startActivity(new Intent(this, EntryActivity.class));
+            EntryActivity_.intent(this).start();
     }
 
     @Override

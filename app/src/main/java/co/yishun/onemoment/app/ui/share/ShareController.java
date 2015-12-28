@@ -243,7 +243,6 @@ public class ShareController implements IWXAPIEventHandler {
                 shareListener.onFail();
                 break;
         }
-        shareListener.onSuccess();
     }
 
     public interface ShareResultListener {

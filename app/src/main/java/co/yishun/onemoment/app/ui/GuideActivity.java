@@ -18,6 +18,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.ui.view.PageIndicatorDot;
 import co.yishun.onemoment.app.wxapi.EntryActivity;
+import co.yishun.onemoment.app.wxapi.EntryActivity_;
 
 @EActivity(R.layout.activity_guide)
 public class GuideActivity extends AppCompatActivity {
@@ -64,7 +65,7 @@ public class GuideActivity extends AppCompatActivity {
             if (AccountManager.isLogin(this))
                 MainActivity_.intent(this).start();
             else
-                startActivity(new Intent(this, EntryActivity.class));
+                EntryActivity_.intent(this).start();
         }
         finish();
     }

@@ -22,12 +22,13 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.common.WXRespActivity;
 
 /**
  * Created by Jinge on 2015/12/12.
  */
 @EActivity(R.layout.activity_share)
-public class ShareActivity extends BaseActivity implements ShareController.ShareResultListener {
+public class ShareActivity extends WXRespActivity implements ShareController.ShareResultListener {
     public static final String TAG = "ShareActivity";
     public static final int TYPE_SHARE_MOMENT = 0;
     public static final int TYPE_SHARE_WORLD = 1;
@@ -46,6 +47,11 @@ public class ShareActivity extends BaseActivity implements ShareController.Share
             shareController.onNewIntent(getIntent());
     }
 
+    @Override protected void onWXRespIntent(Intent intent) {
+        LogUtil.i(TAG, "onWxresp intent");
+        shareController.onNewIntent(intent);
+    }
+
     @Override protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         LogUtil.d(TAG, "onNewIntent");
@@ -54,6 +60,7 @@ public class ShareActivity extends BaseActivity implements ShareController.Share
 
     @Override protected void onResume() {
         super.onResume();
+        if(mReceiver == null) LogUtil.d(TAG, "receiver is null");
         LogUtil.d(TAG, "onResume");
     }
 

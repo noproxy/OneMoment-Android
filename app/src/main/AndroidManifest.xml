@@ -86,7 +86,7 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.NoDisplay"/>
         <activity
-            android:name=".wxapi.EntryActivity"
+            android:name=".wxapi.EntryActivity_"
             android:theme="@style/AppTheme.EntryActivity"/>
         <activity
             android:name=".ui.AccountActivity_"
