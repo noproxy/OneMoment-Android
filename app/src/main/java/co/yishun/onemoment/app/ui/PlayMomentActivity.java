@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.ui;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -43,8 +42,6 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.video.VideoCommand;
-import co.yishun.onemoment.app.video.VideoConcat;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.RealmHelper;
@@ -56,6 +53,8 @@ import co.yishun.onemoment.app.ui.play.PlayMomentFragment;
 import co.yishun.onemoment.app.ui.play.PlayMomentFragment_;
 import co.yishun.onemoment.app.ui.share.ShareActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity_;
+import co.yishun.onemoment.app.video.VideoCommand;
+import co.yishun.onemoment.app.video.VideoConcat;
 
 @EActivity(R.layout.activity_play_moment)
 public class PlayMomentActivity extends BaseActivity {
@@ -143,13 +142,8 @@ public class PlayMomentActivity extends BaseActivity {
     void concatSelectedVideos() {
         List<File> files = new ArrayList<>();
         Collections.sort(playingMoments);
-        try {
-            for (Moment moment : playingMoments) {
-                files.add(new File(moment.getPath()));
-//                MomentLock.lockMoment(this, moment);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (Moment moment : playingMoments) {
+            files.add(new File(moment.getPath()));
         }
         videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id
                 + Constants.URL_HYPHEN + playingMoments.size() + Constants.URL_HYPHEN
@@ -196,13 +190,6 @@ public class PlayMomentActivity extends BaseActivity {
     }
 
     void afterConcat() {
-        try {
-            for (Moment moment : playingMoments) {
-//                MomentLock.unlockMomentIfLocked(this, moment);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         if (videoCacheFile == null) {
             //TODO check append videos failed
             return;

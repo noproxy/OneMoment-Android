@@ -6,10 +6,12 @@ import android.support.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.data.model.Moment;
 
 /**
@@ -26,8 +28,8 @@ public class MomentLock {
                 throw new Exception();
             }
         }
-        FileInputStream inputStream = new FileInputStream(lockFile);
-        FileChannel channel = inputStream.getChannel();
+        RandomAccessFile randomAccessFile = new RandomAccessFile(lockFile, "rw");
+        FileChannel channel = randomAccessFile.getChannel();
         FileLock fileLock = channel.lock();
         mLockMap.put(lock, fileLock);
     }

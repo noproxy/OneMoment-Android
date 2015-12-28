@@ -63,7 +63,7 @@ import co.yishun.onemoment.app.ui.share.ShareActivity_;
 import co.yishun.onemoment.app.video.VideoCommand;
 import co.yishun.onemoment.app.video.VideoConcat;
 
-//import co.yishun.onemoment.app.data.MomentLock;
+import co.yishun.onemoment.app.data.MomentLock;
 
 @EActivity(R.layout.activity_share_export)
 public class ShareExportActivity extends BaseActivity
@@ -215,7 +215,7 @@ public class ShareExportActivity extends BaseActivity
         try {
             for (Moment moment : selectedMoments) {
                 files.add(new File(moment.getPath()));
-//                MomentLock.lockMoment(this, moment);
+                MomentLock.lockMoment(this, moment);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -267,7 +267,7 @@ public class ShareExportActivity extends BaseActivity
     void afterConcat() {
         try {
             for (Moment moment : selectedMoments) {
-//                MomentLock.unlockMomentIfLocked(this, moment);
+                MomentLock.unlockMomentIfLocked(this, moment);
             }
         } catch (Exception e) {
             e.printStackTrace();
