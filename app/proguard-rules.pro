@@ -243,6 +243,11 @@
 # https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=1417751808&token=&lang=zh_CN
 -keep class com.tencent.mm.sdk.** { *; }
 
+# OrmLite uses reflection
+-keepclassmembers class * extends com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper{
+  public <init>(android.content.Context);
+}
+
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
 -keep public class * extends android.app.Service
