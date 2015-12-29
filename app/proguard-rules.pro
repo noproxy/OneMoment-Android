@@ -74,11 +74,10 @@
 
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
-#-keep class com.google.gson.stream.** { *; }
+-keep class com.google.gson.stream.** { *; }
 
 # Application classes that will be serialized/deserialized over Gson
-#-keep class co.yishun.onemoment.app.net.result.** { *; }
-#-keep class co.yishun.onemoment.app.net.request.sync.** { *; }
+-keep class co.yishun.onemoment.app.api.model.** { *; }
 
 ##---------------End: proguard configuration for Gson  ----------
 
@@ -245,3 +244,5 @@
 -keep public class * extends android.app.Application
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
+
+-keep class co.yishun.onemoment.app.api.* { *; }
