@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -15,6 +16,8 @@ import org.androidannotations.api.SdkVersionHelper;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.remind.ReminderReceiver;
+import co.yishun.onemoment.app.api.Misc;
+import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.wxapi.EntryActivity;
 import co.yishun.onemoment.app.wxapi.EntryActivity_;
@@ -27,8 +30,7 @@ public class SplashActivity extends BaseActivity {
     public static final String RUNTIME_PREFERENCE = "run_preference";
     public static final String PREFERENCE_IS_FIRST_LAUNCH = "is_first_launch";
 
-    @ViewById
-    ImageView splashImageView;
+    @ViewById ImageView splashImageView;
 
     @SuppressLint("InlinedApi")
     @Override
@@ -44,27 +46,18 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateCover();
         startRecording();
     }
 
-    @AfterViews void setResource() {
-        // do nothing because don't need different image
-//        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-//        boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
-//
-//        if (hasBackKey && hasHomeKey) {
-//            // no navigation bar, unless it is enabled in the settings
-//            splashImageView.setImageResource(R.drawable.bg_welcome_no_nav);
-//        } else {
-//            // 99% sure there's a navigation bar
-//            splashImageView.setImageResource(R.drawable.bg_welcome);
-//        }
+    @Background void updateCover(){
+        Misc misc = OneMomentV3.createAdapter().create(Misc.class);
+        misc.getSplashCover();
     }
 
     boolean isFirstLaunch() {
         return getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE).getBoolean(PREFERENCE_IS_FIRST_LAUNCH, true);
     }
-
 
     @UiThread(delay = 1600) void startRecording() {
         sendBroadcast(new Intent(ReminderReceiver.ACTION_UPDATE_REMIND));

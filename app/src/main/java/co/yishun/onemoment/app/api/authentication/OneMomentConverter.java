@@ -1,7 +1,5 @@
 package co.yishun.onemoment.app.api.authentication;
 
-import android.util.Log;
-
 import com.google.common.base.Charsets;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -25,6 +23,7 @@ import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.ShareInfo;
+import co.yishun.onemoment.app.api.model.SplashCover;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.User;
@@ -85,13 +84,11 @@ public class OneMomentConverter implements Converter {
 
 
         if (code == 1) {
-            if (rawType == ShareInfo.class) {
-                JsonObject data = jsonObject.get("data").getAsJsonObject();
-                model = mGson.fromJson(data, type);
-            } else if (rawType == User.class) {
+            if (rawType == User.class) {
                 JsonObject data = jsonObject.get("data").getAsJsonObject();
                 model = mGson.fromJson(data.get("account"), type);
-            } else if (rawType == Link.class | rawType == UploadToken.class | rawType == Domain.class) {
+            } else if (rawType == Link.class | rawType == UploadToken.class | rawType == Domain.class |
+                    rawType == ShareInfo.class | rawType == SplashCover.class) {
                 JsonObject data = jsonObject.get("data").getAsJsonObject();
                 model = mGson.fromJson(data, type);
             } else if (rawType == Video.class) {

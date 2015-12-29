@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
 import co.yishun.onemoment.app.api.model.Domain;
+import co.yishun.onemoment.app.api.model.SplashCover;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -40,6 +41,8 @@ public interface Misc {
     @FormUrlEncoded
     @POST("misc/delete_tag/{account_id}")
     void deleteTag(@Path("account_id") @NonNull String userId);
+
+    @GET("/misc/app/cover/default") SplashCover getSplashCover();
 
     @StringDef({"friends", "long_video", "world"})
     @interface ShareType {
