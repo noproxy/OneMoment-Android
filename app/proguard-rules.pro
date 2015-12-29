@@ -244,9 +244,16 @@
 -keep class com.tencent.mm.sdk.** { *; }
 
 # OrmLite uses reflection
+-keep class com.j256.**
+-keepclassmembers class com.j256.** { *; }
+-keep enum com.j256.**
+-keepclassmembers enum com.j256.** { *; }
+-keep interface com.j256.**
+-keepclassmembers interface com.j256.** { *; }
 -keepclassmembers class * extends com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper{
   public <init>(android.content.Context);
 }
+-keepclassmembers class co.yishun.onemoment.app.data.model.Moment { *; }
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
