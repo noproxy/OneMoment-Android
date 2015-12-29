@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
  * Created by Jinge on 2015/12/29.
  */
 public class SplashCover extends ApiModel{
-    String url;
+    public String url;
     @SerializedName("update_ts")
-    long updateTime;
-    int stay;
+    public long updateTime;
+    public int stay;
 }
