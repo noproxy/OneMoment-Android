@@ -264,7 +264,7 @@ public class ShareExportActivity extends BaseActivity
                 }).start();
     }
 
-    void afterConcat() {
+    @Background void afterConcat() {
         try {
             for (Moment moment : selectedMoments) {
                 MomentLock.unlockMomentIfLocked(this, moment);

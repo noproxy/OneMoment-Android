@@ -132,11 +132,6 @@ public class PlayMomentActivity extends BaseActivity {
     @Background void shareClick() {
         showProgress();
         concatSelectedVideos();
-        if (videoCacheFile == null) {
-            //TODO check append videos failed
-            return;
-        }
-        uploadAndShare();
     }
 
     void concatSelectedVideos() {
@@ -189,7 +184,7 @@ public class PlayMomentActivity extends BaseActivity {
                 }).start();
     }
 
-    void afterConcat() {
+    @Background void afterConcat() {
         if (videoCacheFile == null) {
             //TODO check append videos failed
             return;
