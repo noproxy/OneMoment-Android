@@ -3,11 +3,7 @@ package co.yishun.library;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,7 +45,9 @@ public class PlayTagContainer extends TagContainer {
         for (int i = 0; i < videoTags.size(); i++) {
             VideoTag videoTag = videoTags.get(i);
             TextView textView = setTextView(videoTag);
-            addView(textView);
+            if (getChildCount() >= 2)
+                addView(textView, getChildCount() - 2);
+            else addView(textView);
         }
     }
 
