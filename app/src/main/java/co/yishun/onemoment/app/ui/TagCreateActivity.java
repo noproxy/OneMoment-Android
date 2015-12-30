@@ -142,6 +142,20 @@ public class TagCreateActivity extends BaseActivity
         adapter = new TagSearchAdapter(this, this);
         recyclerView.setAdapter(adapter);
         setPreviewImage();
+
+        editTagContainer.setOnAddTagListener((x, y) -> {
+            tagX = x;
+            tagY = y;
+            setupSearch();
+        });
+
+        editTagContainer.post(() -> {
+            if (forWorld && worldTag != null && !"".equals(worldTag.name)) {
+                tagX = 50;
+                tagY = 50;
+                addTag(worldTag.name);
+            }
+        });
     }
 
     private void setPreviewImage() {
@@ -222,14 +236,6 @@ public class TagCreateActivity extends BaseActivity
         addView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         nextBtn.setVisibility(View.VISIBLE);
-    }
-
-    @AfterViews void setEditTagContainer() {
-        editTagContainer.setOnAddTagListener((x, y) -> {
-            tagX = x;
-            tagY = y;
-            setupSearch();
-        });
     }
 
     boolean addTag(String tag) {
