@@ -121,7 +121,7 @@ dependencies {
     compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
     compile 'com.umeng.analytics:analytics:5.5.3'
     compile 'com.qiniu:qiniu-android-sdk:7.0.9'
-    compile 'io.realm:realm-android:0.87.1'
+    compile 'io.realm:realm-android:0.82.2'
     compile 'com.umeng.analytics:analytics:5.6.1'
 
     compile 'com.j256.ormlite:ormlite-core:4.48'
