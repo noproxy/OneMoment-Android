@@ -73,18 +73,6 @@ public class PlayMomentActivity extends BaseActivity {
     private File videoCacheFile;
 
     @AfterViews void setUpViews() {
-    }
-
-    @AfterViews void setupToolbar() {
-        setSupportActionBar(toolbar);
-        final ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setDisplayHomeAsUpEnabled(true);
-        LogUtil.i("setupToolbar", "set home as up true");
-    }
-
-    @Override protected void onResume() {
-        super.onResume();
         try {
             playingMoments = new ArrayList<>();
             List<Moment> momentInDatabase = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this)).and()
@@ -104,8 +92,16 @@ public class PlayMomentActivity extends BaseActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, playMomentFragment).commit();
     }
 
-    @Override protected void onPause() {
-        super.onPause();
+    @AfterViews void setupToolbar() {
+        setSupportActionBar(toolbar);
+        final ActionBar ab = getSupportActionBar();
+        assert ab != null;
+        ab.setDisplayHomeAsUpEnabled(true);
+        LogUtil.i("setupToolbar", "set home as up true");
+    }
+
+    @Override protected void onDestroy() {
+        super.onDestroy();
         try {
             for (Moment m : playingMoments) {
                 MomentLock.unlockMomentIfLocked(this, m);
@@ -129,12 +125,14 @@ public class PlayMomentActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Background void shareClick() {
+    void shareClick() {
         showProgress();
+        if (playMomentFragment != null)
+            playMomentFragment.pause();
         concatSelectedVideos();
     }
 
-    void concatSelectedVideos() {
+    @Background void concatSelectedVideos() {
         List<File> files = new ArrayList<>();
         Collections.sort(playingMoments);
         for (Moment moment : playingMoments) {

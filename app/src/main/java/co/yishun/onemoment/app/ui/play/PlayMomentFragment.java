@@ -46,8 +46,8 @@ public class PlayMomentFragment extends PlayFragment
                     .eq("owner", AccountManager.getAccountId(getContext())).and()
                     .between("time", startDate, endDate).query();
             if (momentList.size()> 0){
-                videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
                 Collections.sort(momentList);
+                videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
                 for (Moment moment : momentList) {
                     if (moment.getFile().length() == 0) continue;
                     List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());
@@ -68,6 +68,10 @@ public class PlayMomentFragment extends PlayFragment
             e.printStackTrace();
         }
 
+    }
+
+    public void pause() {
+        videoPlayView.pause();
     }
 
     @Override public void setPageInfo() {

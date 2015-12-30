@@ -149,6 +149,9 @@ public class OnemomentPlayerView extends RelativeLayout
     public void reset() {
         stop();
         mVideoPreview.setVisibility(VISIBLE);
+        if (mWithAvatar)
+            mAvatarView.scrollToZero();
+
         if (mVideoResources.size() >= 1) {
             if (mVideoChangeListener != null) {
                 mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
