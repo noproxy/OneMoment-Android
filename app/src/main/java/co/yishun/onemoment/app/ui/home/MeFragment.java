@@ -82,7 +82,7 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
 
     @Override
     protected int getTitleDrawableRes() {
-        return R.drawable.pic_me_tittle;
+        return R.drawable.pic_me_title;
     }
 
 

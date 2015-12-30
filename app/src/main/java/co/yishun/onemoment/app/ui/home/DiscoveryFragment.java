@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -38,7 +37,7 @@ public class DiscoveryFragment extends ToolbarFragment implements View.OnClickLi
 
 
     @Override protected int getTitleDrawableRes() {
-        return R.drawable.pic_explore_tittle;
+        return R.drawable.pic_explore_title;
     }
 
     @Override

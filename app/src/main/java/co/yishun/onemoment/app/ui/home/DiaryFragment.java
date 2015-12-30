@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -130,7 +129,7 @@ public class DiaryFragment extends ToolbarFragment
 
     @Override
     protected int getTitleDrawableRes() {
-        return R.drawable.pic_diary_tittle;
+        return R.drawable.pic_diary_title;
     }
 
     @Override
