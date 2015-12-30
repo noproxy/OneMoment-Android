@@ -46,6 +46,8 @@ public class PlayActivity extends BaseActivity {
     @Extra int type;
     @Extra TagVideo oneVideo;
     @Extra WorldTag worldTag;
+    @Extra boolean isPrivate = false;
+
     @ViewById Toolbar toolbar;
 
     private FragmentManager fragmentManager;

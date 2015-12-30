@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui.play;
 
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -43,6 +42,7 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
         VideoTask.OnVideoListener {
     private static final String TAG = "platworld";
     @FragmentArg WorldTag worldTag;
+    @FragmentArg boolean isPrivate = false;
 
     @ViewById TextView voteCountTextView;
     @ViewById TextView usernameTextView;
@@ -55,10 +55,13 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
     private boolean mReady = false;
 
     @Background void getData() {
-        List<TagVideo> videos = mWorld.getVideoOfTag(worldTag.name, offset,
-                10, AccountManager.getUserInfo(mContext)._id, seed);
+        List<TagVideo> videos = isPrivate ?
+                mWorld.getPrivateVideoOfTag(worldTag.name, offset,
+                        10, AccountManager.getUserInfo(mContext)._id) :
+                mWorld.getVideoOfTag(worldTag.name, offset,
+                        10, AccountManager.getUserInfo(mContext)._id, seed);
         if (videos.size() == 0) {
-            if (offset == 0){
+            if (offset == 0) {
                 onLoadError(R.string.fragment_play_world_video_null);
             }
             return;
