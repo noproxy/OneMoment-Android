@@ -121,14 +121,14 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     }
 
     @Override public void onSuccess() {
-        showSnackMsg("Share Success");
+        showSnackMsg(R.string.activity_share_share_success);
     }
 
     @Override public void onFail() {
-        showSnackMsg("Share Fail");
+        showSnackMsg(R.string.activity_share_share_fail);
     }
 
     @Override public void onCancel() {
-        showSnackMsg("Share Cancel");
+        showSnackMsg(R.string.activity_share_share_cancel);
     }
 }

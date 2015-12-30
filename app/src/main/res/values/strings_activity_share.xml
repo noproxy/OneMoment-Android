@@ -8,4 +8,8 @@
 
     <string name="activity_share_share_moment">Share Moment</string>
     <string name="activity_share_share_world">Share World</string>
+
+    <string name="activity_share_share_success">Share Success</string>
+    <string name="activity_share_share_fail">Share Fail</string>
+    <string name="activity_share_share_cancel">Share Cancel</string>
 </resources>
