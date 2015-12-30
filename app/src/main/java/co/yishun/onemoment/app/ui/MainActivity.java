@@ -1,5 +1,11 @@
 package co.yishun.onemoment.app.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,12 +22,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,7 +35,6 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UmengRegistrar;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
@@ -191,7 +196,50 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             startShoot(v, false);
             fam.close(false);
         });
+        createCustomAnimation(fam);
+    }
 
+    private void createCustomAnimation(FloatingActionMenu menu) {
+        ImageView menuIcon = menu.getMenuIconView();
+
+        AnimatorSet openSet = new AnimatorSet();
+        ObjectAnimator openBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal",
+                getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorPrimary));
+        openBackground.setEvaluator(new ArgbEvaluator());
+        openBackground.setDuration(200);
+
+        ObjectAnimator openRotate = ObjectAnimator.ofFloat(menuIcon, "rotation", 0f, -180f);
+        openRotate.setDuration(200);
+        openRotate.addListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationStart(Animator animation) {
+                menu.setMenuButtonColorNormalResId(R.color.colorPrimary);
+                menu.setMenuButtonColorPressedResId(R.color.colorPrimaryDark);
+                menuIcon.setImageResource(R.drawable.ic_action_close);
+            }
+        });
+        openSet.play(openRotate).with(openBackground);
+        openSet.setInterpolator(new OvershootInterpolator(1));
+
+        AnimatorSet closeSet = new AnimatorSet();
+        ObjectAnimator closeBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal",
+                getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent));
+        closeBackground.setEvaluator(new ArgbEvaluator());
+        closeBackground.setDuration(200);
+
+        ObjectAnimator closeRotate = ObjectAnimator.ofFloat(menuIcon, "rotation", -90, 0f);
+        closeRotate.setDuration(200);
+        closeRotate.addListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationStart(Animator animation) {
+                menu.setMenuButtonColorNormalResId(R.color.colorAccent);
+                menu.setMenuButtonColorPressedResId(R.color.colorAccentDark);
+                menuIcon.setImageResource(R.drawable.ic_fab);
+            }
+        });
+        closeSet.play(closeRotate).with(closeBackground);
+        closeSet.setInterpolator(new OvershootInterpolator(1));
+
+        menu.setIconToggleAnimatorSet(openSet);
+        menu.setOnMenuToggleListener(opened -> menu.setIconToggleAnimatorSet(opened ? closeSet : openSet));
     }
 
     private void registerSyncListener() {
