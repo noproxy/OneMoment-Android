@@ -3,8 +3,6 @@ package co.yishun.onemoment.app.ui.controller;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import com.malinskiy.superrecyclerview.SuperRecyclerView;
-
 import org.androidannotations.annotations.EBean;
 
 import java.util.ArrayList;
@@ -12,6 +10,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
@@ -29,21 +28,24 @@ public class TagSearchController extends RecyclerController<Integer, RecyclerVie
     }
 
     public void setUp(AbstractRecyclerViewAdapter<String, TagSearchAdapter.TagSearchViewHolder> adapter,
-                         RecyclerView recyclerView, String words) {
+                      RecyclerView recyclerView, String words) {
         mWords = words;
         super.setUp(adapter, recyclerView, 0);
     }
 
     @Override
     protected List<String> onLoad() {
-        List<WorldTag> worldTags = mWorld.getSuggestedTagName(mWords);
-        if (worldTags.size() == 0) {
-            return null;
-        }
-        List<String> tagNames = new ArrayList<>(worldTags.size());
-        for(WorldTag worldTag : worldTags) {
-            tagNames.add(worldTag.name);
-        }
-        return tagNames;
+        ListWithError<WorldTag> worldTags = mWorld.getSuggestedTagName(mWords);
+        if (worldTags.isSuccess()) {
+            List<String> tagNames = new ArrayList<>(worldTags.size());
+            for (WorldTag worldTag : worldTags) {
+                tagNames.add(worldTag.name);
+            }
+            return tagNames;
+        } else return null;
+    }
+
+    @Override protected void onLoadError() {
+        //TODO load error
     }
 }

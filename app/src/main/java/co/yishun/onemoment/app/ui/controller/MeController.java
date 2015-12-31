@@ -11,6 +11,7 @@ import java.util.List;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.SearchAdapter;
@@ -30,13 +31,15 @@ public class MeController extends IntOffsetRefreshableRecyclerController<SuperRe
 
     @Override
     protected List<WorldTag> onLoad() {
-        List<WorldTag> list = mWorld.getJoinedWorldTags(AccountManager.getUserInfo(mContext)._id, isPublic ? "public" : "private", getOffset(), COUNT_EVERY_PAGE);
-        if (list.size() == 0) {
-            //TODO loading error
-            return null;
-        }
-        setOffset(getOffset() + COUNT_EVERY_PAGE);
-        return list;
+        ListWithError<WorldTag> list = mWorld.getJoinedWorldTags(AccountManager.getUserInfo(mContext)._id, isPublic ? "public" : "private", getOffset(), COUNT_EVERY_PAGE);
+        if (list.isSuccess()) {
+            setOffset(getOffset() + COUNT_EVERY_PAGE);
+            return list;
+        } else return null;
+    }
+
+    @Override protected void onLoadError() {
+        //TODO load error
     }
 
     public void setUp(AbstractRecyclerViewAdapter<WorldTag, SearchAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, boolean isPublic) {

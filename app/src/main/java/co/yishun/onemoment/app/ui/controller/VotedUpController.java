@@ -13,6 +13,7 @@ import java.util.List;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
@@ -36,13 +37,17 @@ public class VotedUpController extends IntOffsetRefreshableRecyclerController<Su
 
     @Override
     protected List<TagVideo> onLoad() {
-        List<TagVideo> list = mWorld.getLikedVideos(AccountManager.getUserInfo(mContext)._id, getOffset(), 10);
-        if (list.size() == 0) {
-            //TODO loading error
+        ListWithError<TagVideo> list = mWorld.getLikedVideos(AccountManager.getUserInfo(mContext)._id, getOffset(), 10);
+        if (list.isSuccess()) {
+            setOffset(getOffset() + list.size());
+            return list;
+        } else {
             return null;
         }
-        setOffset(getOffset() + list.size());
-        return list;
+    }
+
+    @Override protected void onLoadError() {
+        //TODO load error
     }
 
     @Override
