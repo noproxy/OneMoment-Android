@@ -57,4 +57,6 @@
     <string name="fragment_phone_verify_sign_up_error_password_invalid">Password is invalid.</string>
 
     <string name="activity_guide_enter">Enter</string>
+
+    <string name="text_load_error">Load failed, please check network!</string>
 </resources>

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
 import com.malinskiy.superrecyclerview.OnMoreListener;
@@ -17,8 +17,10 @@ import org.androidannotations.annotations.UiThread;
 import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.model.Banner;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.BannerHeaderProvider;
 import co.yishun.onemoment.app.ui.adapter.HeaderRecyclerAdapter;
@@ -90,13 +92,19 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
     }
 
     synchronized void synchronizedLoadTags() {
-        List<WorldTag> list = mWorld.getWorldTagList(5, ranking, isRecommend ? "recommend" : "time");
-        if (list.size() == 0) {
-            //TODO loading error
+        ListWithError<WorldTag> list = mWorld.getWorldTagList(5, ranking, isRecommend ? "recommend" : "time");
+        if (!list.isSuccess()) {
+            onLoadError();
             return;
         }
         ranking = list.get(list.size() - 1).ranking;
         onLoadTags(list);
+    }
+
+    @UiThread void onLoadError() {
+        Toast.makeText(mRecyclerView.getContext(), R.string.text_load_error, Toast.LENGTH_SHORT).show();
+        mRecyclerView.loadEnd();
+        mRecyclerView.getSwipeToRefresh().setRefreshing(false);
     }
 
 
