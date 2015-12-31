@@ -10,6 +10,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.SearchAdapter;
@@ -34,10 +35,9 @@ public class SearchController extends RecyclerController<Integer, SuperRecyclerV
 
     @Override
     protected List<WorldTag> onLoad() {
-        List<WorldTag> worldTags = mWorld.getSuggestedTagName(mWords);
-        if (worldTags.size() == 0) {
-            return null;
-        }
-        return worldTags;
+        ListWithError<WorldTag> worldTags = mWorld.getSuggestedTagName(mWords);
+        if (worldTags.isSuccess()) {
+            return worldTags;
+        } else return null;
     }
 }

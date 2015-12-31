@@ -13,6 +13,7 @@ import java.util.List;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.WorldTag;
@@ -46,17 +47,15 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
 
     @Override
     protected List<TagVideo> onLoad() {
-        List<TagVideo> list;
+        ListWithError<TagVideo> list;
         if (mIsPrivate)
             list = mWorld.getPrivateVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id);
         else
             list = mWorld.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id, seed);
-        if (list.size() == 0) {
-            //TODO loading error
-            return null;
-        }
-        setOffset(getOffset() + list.size());
-        return list;
+        if (list.isSuccess()) {
+            setOffset(getOffset() + list.size());
+            return list;
+        } else return null;
     }
 
     @Override

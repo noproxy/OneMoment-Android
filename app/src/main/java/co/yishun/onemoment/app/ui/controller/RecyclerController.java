@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.ui.controller;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -14,6 +15,7 @@ import org.androidannotations.annotations.UiThread;
 
 import java.util.List;
 
+import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 
 /**
@@ -55,8 +57,7 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     }
 
 
-    @Background
-    void load() {
+    @Background void load() {
         onLoadEnd(synchronizedLoad());
     }
 
@@ -70,21 +71,33 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     /**
      * load data from network, this will be call in the background.
      *
-     * @return list of I
+     * @return list of I, null if error occurs in loading.
      */
     protected abstract List<I> onLoad();
 
+    /**
+     * Respond to error occurs in loading. You should make a reflection to user now. But you don't need to care about the load progress view.
+     * <p>
+     * By default, this method make a snackbar to tell user error in loading.
+     */
     @UiThread
-    void onLoadEnd(List<I> list) {
+    protected void onLoadError() {
+        Snackbar.make(getRecyclerView(), R.string.text_load_error, Snackbar.LENGTH_LONG).show();
+    }
+
+    @UiThread void onLoadEnd(List<I> list) {
         if (list != null) {
             getAdapter().addAll(list);
-            if (mRecyclerView instanceof SuperRecyclerView) {
-                ((SuperRecyclerView) mRecyclerView).getSwipeToRefresh().setRefreshing(false);
-            }
-            if (mRecyclerView instanceof HeaderCompatibleSuperRecyclerView) {
-                ((HeaderCompatibleSuperRecyclerView) mRecyclerView).loadEnd();
-            }
 
+        } else {
+            onLoadError();
+        }
+
+        if (mRecyclerView instanceof SuperRecyclerView) {
+            ((SuperRecyclerView) mRecyclerView).getSwipeToRefresh().setRefreshing(false);
+        }
+        if (mRecyclerView instanceof HeaderCompatibleSuperRecyclerView) {
+            ((HeaderCompatibleSuperRecyclerView) mRecyclerView).loadEnd();
         }
     }
 }
