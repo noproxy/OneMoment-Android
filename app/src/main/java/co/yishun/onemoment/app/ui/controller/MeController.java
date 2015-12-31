@@ -38,10 +38,6 @@ public class MeController extends IntOffsetRefreshableRecyclerController<SuperRe
         } else return null;
     }
 
-    @Override protected void onLoadError() {
-        //TODO load error
-    }
-
     public void setUp(AbstractRecyclerViewAdapter<WorldTag, SearchAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, boolean isPublic) {
         this.isPublic = isPublic;// must first!
         super.setUp(adapter, recyclerView);

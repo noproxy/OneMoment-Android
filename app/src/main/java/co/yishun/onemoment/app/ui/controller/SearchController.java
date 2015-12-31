@@ -40,8 +40,4 @@ public class SearchController extends RecyclerController<Integer, SuperRecyclerV
             return worldTags;
         } else return null;
     }
-
-    @Override protected void onLoadError() {
-        //TODO　load error
-    }
 }

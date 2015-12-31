@@ -46,10 +46,6 @@ public class VotedUpController extends IntOffsetRefreshableRecyclerController<Su
         }
     }
 
-    @Override protected void onLoadError() {
-        //TODO load error
-    }
-
     @Override
     @UiThread void onLoadEnd(List<TagVideo> list) {
         if (list != null) {

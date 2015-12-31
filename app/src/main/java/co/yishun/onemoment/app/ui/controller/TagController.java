@@ -58,10 +58,6 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
         } else return null;
     }
 
-    @Override protected void onLoadError() {
-        //TODO load error
-    }
-
     @Override
     @UiThread void onLoadEnd(List<TagVideo> list) {
         if (list != null) {

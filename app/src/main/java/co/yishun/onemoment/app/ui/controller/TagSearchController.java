@@ -44,8 +44,4 @@ public class TagSearchController extends RecyclerController<Integer, RecyclerVie
             return tagNames;
         } else return null;
     }
-
-    @Override protected void onLoadError() {
-        //TODO load error
-    }
 }
