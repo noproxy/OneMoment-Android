@@ -55,8 +55,7 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     }
 
 
-    @Background
-    void load() {
+    @Background void load() {
         onLoadEnd(synchronizedLoad());
     }
 
@@ -70,12 +69,14 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     /**
      * load data from network, this will be call in the background.
      *
-     * @return list of I
+     * @return list of I, null if error occurs in loading.
      */
     protected abstract List<I> onLoad();
 
     @UiThread
-    void onLoadEnd(List<I> list) {
+    protected abstract void onLoadError();
+
+    @UiThread void onLoadEnd(List<I> list) {
         if (list != null) {
             getAdapter().addAll(list);
             if (mRecyclerView instanceof SuperRecyclerView) {
@@ -84,7 +85,8 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
             if (mRecyclerView instanceof HeaderCompatibleSuperRecyclerView) {
                 ((HeaderCompatibleSuperRecyclerView) mRecyclerView).loadEnd();
             }
-
+        } else {
+            onLoadError();
         }
     }
 }
