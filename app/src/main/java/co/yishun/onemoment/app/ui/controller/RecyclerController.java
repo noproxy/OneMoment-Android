@@ -73,20 +73,25 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
      */
     protected abstract List<I> onLoad();
 
+    /**
+     * error occurs in loading. You should respond to user now. But you don't need to care about the load progress view.
+     */
     @UiThread
     protected abstract void onLoadError();
 
     @UiThread void onLoadEnd(List<I> list) {
         if (list != null) {
             getAdapter().addAll(list);
-            if (mRecyclerView instanceof SuperRecyclerView) {
-                ((SuperRecyclerView) mRecyclerView).getSwipeToRefresh().setRefreshing(false);
-            }
-            if (mRecyclerView instanceof HeaderCompatibleSuperRecyclerView) {
-                ((HeaderCompatibleSuperRecyclerView) mRecyclerView).loadEnd();
-            }
+
         } else {
             onLoadError();
+        }
+
+        if (mRecyclerView instanceof SuperRecyclerView) {
+            ((SuperRecyclerView) mRecyclerView).getSwipeToRefresh().setRefreshing(false);
+        }
+        if (mRecyclerView instanceof HeaderCompatibleSuperRecyclerView) {
+            ((HeaderCompatibleSuperRecyclerView) mRecyclerView).loadEnd();
         }
     }
 }
