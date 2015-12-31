@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -202,7 +201,8 @@ public class IntegrateInfoFragment extends AccountFragment
                 mActivity.showSnackMsg(R.string.fragment_integrate_info_error_nickname_invalid);
                 break;
             default:
-                mActivity.showSnackMsg(R.string.unknown_error);
+                int error = user.errorCode;
+                mActivity.showSnackMsg(getString(R.string.unknown_error) + ":" + error);
                 break;
         }
         mActivity.hideProgress();
