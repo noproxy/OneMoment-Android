@@ -34,14 +34,16 @@ public class TagSearchController extends RecyclerController<Integer, RecyclerVie
     }
 
     @Override
-    protected List<String> onLoad() {
+    protected ListWithError<String> onLoad() {
         ListWithError<WorldTag> worldTags = mWorld.getSuggestedTagName(mWords);
-        if (worldTags.isSuccess()) {
-            List<String> tagNames = new ArrayList<>(worldTags.size());
-            for (WorldTag worldTag : worldTags) {
-                tagNames.add(worldTag.name);
-            }
-            return tagNames;
-        } else return null;
+        List<String> tagNames = new ArrayList<>(worldTags.size());
+        for (WorldTag worldTag : worldTags) {
+            tagNames.add(worldTag.name);
+        }
+        ListWithError<String> result = new ListWithError<>(tagNames);
+        result.code = worldTags.code;
+        result.errorCode = worldTags.errorCode;
+        result.msg = worldTags.msg;
+        return result;
     }
 }

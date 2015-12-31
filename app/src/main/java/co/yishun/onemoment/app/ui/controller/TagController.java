@@ -8,8 +8,6 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
 
-import java.util.List;
-
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -46,20 +44,17 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
     }
 
     @Override
-    protected List<TagVideo> onLoad() {
+    protected ListWithError<TagVideo> onLoad() {
         ListWithError<TagVideo> list;
         if (mIsPrivate)
             list = mWorld.getPrivateVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id);
         else
             list = mWorld.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id, seed);
-        if (list.isSuccess()) {
-            setOffset(getOffset() + list.size());
-            return list;
-        } else return null;
+        return list;
     }
 
     @Override
-    @UiThread void onLoadEnd(List<TagVideo> list) {
+    @UiThread void onLoadEnd(ListWithError<TagVideo> list) {
         if (list != null) {
             ((TagAdapter) getAdapter()).addItems(list, getOffset());
         } else {

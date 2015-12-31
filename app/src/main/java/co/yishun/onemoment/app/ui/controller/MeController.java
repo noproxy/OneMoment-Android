@@ -6,8 +6,6 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.androidannotations.annotations.EBean;
 
-import java.util.List;
-
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
@@ -30,12 +28,10 @@ public class MeController extends IntOffsetRefreshableRecyclerController<SuperRe
     }
 
     @Override
-    protected List<WorldTag> onLoad() {
+    protected ListWithError<WorldTag> onLoad() {
         ListWithError<WorldTag> list = mWorld.getJoinedWorldTags(AccountManager.getUserInfo(mContext)._id, isPublic ? "public" : "private", getOffset(), COUNT_EVERY_PAGE);
-        if (list.isSuccess()) {
-            setOffset(getOffset() + COUNT_EVERY_PAGE);
-            return list;
-        } else return null;
+        setOffset(getOffset() + COUNT_EVERY_PAGE);
+        return list;
     }
 
     public void setUp(AbstractRecyclerViewAdapter<WorldTag, SearchAdapter.SimpleViewHolder> adapter, SuperRecyclerView recyclerView, boolean isPublic) {

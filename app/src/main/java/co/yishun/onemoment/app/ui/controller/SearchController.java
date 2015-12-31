@@ -6,8 +6,6 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.androidannotations.annotations.EBean;
 
-import java.util.List;
-
 import co.yishun.onemoment.app.api.World;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ListWithError;
@@ -34,10 +32,7 @@ public class SearchController extends RecyclerController<Integer, SuperRecyclerV
     }
 
     @Override
-    protected List<WorldTag> onLoad() {
-        ListWithError<WorldTag> worldTags = mWorld.getSuggestedTagName(mWords);
-        if (worldTags.isSuccess()) {
-            return worldTags;
-        } else return null;
+    protected ListWithError<WorldTag> onLoad() {
+        return mWorld.getSuggestedTagName(mWords);
     }
 }
