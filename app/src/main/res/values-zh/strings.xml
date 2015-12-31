@@ -77,12 +77,4 @@
     <string name="fragment_phone_verify_verify_progress">正在验证，请稍后…</string>
     <string name="view_today_moment_no_moment">今天还没有一瞬</string>
     <string name="view_today_moment_no_tag">没有添加标签</string>
-
-    <string name="activity_guide_enter">进入一瞬</string>
-    <string name="activity_settings_sync_now">正在同步…</string>
-    <string name="activity_user_info_sign_out">退出登录</string>
-    <string name="activity_user_info_sign_out_dialog_cancel">取消</string>
-    <string name="activity_user_info_sign_out_dialog_content">确定要退出账号？</string>
-    <string name="activity_user_info_sign_out_dialog_ok">退出</string>
-    <string name="activity_user_info_sign_out_dialog_title">退出登录</string>
 </resources>
