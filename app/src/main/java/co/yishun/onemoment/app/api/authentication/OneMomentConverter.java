@@ -144,7 +144,7 @@ public class OneMomentConverter implements Converter {
                 model = new Video();
             } else if (rawType == SplashCover.class) {
                 model = new SplashCover();
-            } else if (rawType == List.class) {
+            } else if (rawType == List.class || rawType == ListWithError.class) {
                 models = new ListWithError<>(new ArrayList<>(0));
             }
         }
