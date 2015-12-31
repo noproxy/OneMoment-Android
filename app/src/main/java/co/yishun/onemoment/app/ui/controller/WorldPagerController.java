@@ -93,12 +93,12 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
 
     synchronized void synchronizedLoadTags() {
         ListWithError<WorldTag> list = mWorld.getWorldTagList(5, ranking, isRecommend ? "recommend" : "time");
-        if (!list.isSuccess()) {
+        if (list.isSuccess()) {
+            ranking = list.get(list.size() - 1).ranking;
+            onLoadTags(list);
+        } else {
             onLoadError();
-            return;
         }
-        ranking = list.get(list.size() - 1).ranking;
-        onLoadTags(list);
     }
 
     @UiThread void onLoadError() {
