@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.ui.controller;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -14,6 +15,7 @@ import org.androidannotations.annotations.UiThread;
 
 import java.util.List;
 
+import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 
 /**
@@ -74,10 +76,14 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     protected abstract List<I> onLoad();
 
     /**
-     * error occurs in loading. You should respond to user now. But you don't need to care about the load progress view.
+     * Respond to error occurs in loading. You should make a reflection to user now. But you don't need to care about the load progress view.
+     * <p>
+     * By default, this method make a snackbar to tell user error in loading.
      */
     @UiThread
-    protected abstract void onLoadError();
+    protected void onLoadError() {
+        Snackbar.make(getRecyclerView(), R.string.text_load_error, Snackbar.LENGTH_LONG).show();
+    }
 
     @UiThread void onLoadEnd(List<I> list) {
         if (list != null) {
