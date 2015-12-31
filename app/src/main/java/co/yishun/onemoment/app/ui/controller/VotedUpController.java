@@ -51,8 +51,10 @@ public class VotedUpController extends IntOffsetRefreshableRecyclerController<Su
         if (list != null) {
             ((TagAdapter) getAdapter()).addItems(list, getOffset());
         } else {
+            onLoadError();
             getRecyclerView().hideMoreProgress();
         }
+        getRecyclerView().getSwipeToRefresh().setRefreshing(false);
     }
 
     @Override
