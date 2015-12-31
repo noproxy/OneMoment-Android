@@ -55,11 +55,14 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
 
     @Override
     @UiThread void onLoadEnd(ListWithError<TagVideo> list) {
-        if (list != null) {
-            ((TagAdapter) getAdapter()).addItems(list, getOffset());
-        } else {
+
+        if (list == null || !list.isSuccess()) {
+            onLoadError();
             getRecyclerView().hideMoreProgress();
+        } else {
+            ((TagAdapter) getAdapter()).addItems(list, getOffset());
         }
+        getRecyclerView().getSwipeToRefresh().setRefreshing(false);
     }
 
     @Override
