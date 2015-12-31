@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 
 import com.j256.ormlite.dao.Dao;
@@ -125,8 +124,7 @@ public class MomentSyncImpl extends MomentSync {
     private void divideTask(List<ApiMoment> momentsOnServer, List<Moment> momentsOnDevice) {
         LogUtil.i(TAG, "divide task, servers: " + momentsOnServer.size());
         LogUtil.i(TAG, "divide task, local: " + momentsOnDevice.size());
-        TagsUpdateTask tagsUpdateTask = new TagsUpdateTask(mContext, this::onFail, this::onSuccess);
-
+        TagsUpdateTask tagsUpdateTask = new TagsUpdateTask(mContext, () -> LogUtil.e(TAG, "tag fix fail"), () -> LogUtil.i(TAG, "tag fix success"));
         final HashMap<String, ApiMoment> apiMomentHashMap = new HashMap<>(momentsOnServer.size());
         for (ApiMoment apiMoment : momentsOnServer)
             apiMomentHashMap.put(apiMoment.getTime(), apiMoment);

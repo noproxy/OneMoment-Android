@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.account.sync.moment;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.qiniu.android.utils.Etag;
 import com.squareup.okhttp.OkHttpClient;
@@ -123,7 +122,6 @@ public class MomentFixTask implements Runnable {
                 out.flush();
                 out.close();
                 inputStream.close();
-                mOnProgress.onUpdate(mMoment, progress);
                 return true;
             } else {
                 i(TAG, "download video response != 200");

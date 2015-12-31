@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.account.sync.moment;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -54,7 +53,7 @@ public class MomentUploadTask implements Runnable {
     private UpCompletionHandler newHandler() {
         return (key, responseInfo, response) -> {
             LogUtil.i(TAG, responseInfo.toString());
-            (responseInfo.isOK() ? mOnSuccess : mOnFail).call();
+            (responseInfo.isOK() ? mOnSuccess : mOnFail).accept(mMoment);
         };
     }
 
