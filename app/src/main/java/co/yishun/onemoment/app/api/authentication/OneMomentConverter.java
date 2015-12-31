@@ -21,6 +21,7 @@ import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.Link;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.SplashCover;
@@ -72,7 +73,7 @@ public class OneMomentConverter implements Converter {
 
 
         ApiModel model = null;
-        List<? extends ApiModel> models = null;
+        ListWithError<? extends ApiModel> models = null;
 
         Type rawType;
         try {
@@ -94,26 +95,26 @@ public class OneMomentConverter implements Converter {
             } else if (rawType == Video.class) {
                 JsonObject data = jsonObject.get("data").getAsJsonObject();
                 model = mGson.fromJson(data.get("video"), type);
-            } else if (rawType == List.class) {
+            } else if (rawType == List.class || rawType == ListWithError.class) {
                 Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 if (genericType == Banner.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
-                    models = mGson.fromJson(data.get("banners").getAsJsonArray(), type);
+                    models = new ListWithError<>(mGson.fromJson(data.get("banners").getAsJsonArray(), type));
                 } else if (genericType == ApiMoment.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
-                    models = mGson.<List<ApiMoment>>fromJson(data.get("videos").getAsJsonArray(), type);
+                    models = new ListWithError<>(mGson.<List<ApiMoment>>fromJson(data.get("videos").getAsJsonArray(), type));
                 } else if (genericType == Video.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     List<Video> videos = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
                     Domain domain = mGson.fromJson(data, Domain.class);
                     StreamSupport.stream(videos).filter(v -> v != null).forEach(video -> video.domain = domain);
-                    models = videos;
+                    models = new ListWithError<>(videos);
                 } else if (genericType == WorldTag.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     List<WorldTag> tags = mGson.fromJson(data.get("tags").getAsJsonArray(), type);
                     Domain domain = mGson.fromJson(data, Domain.class);
                     StreamSupport.stream(tags).filter(v -> v != null).forEach(tag -> tag.domain = domain);
-                    models = tags;
+                    models = new ListWithError<>(tags);
                 } else if (genericType == TagVideo.class) {
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
                     List<TagVideo> tags = mGson.fromJson(data.get("videos").getAsJsonArray(), type);
@@ -122,9 +123,9 @@ public class OneMomentConverter implements Converter {
                     Seed seed = mGson.fromJson(data, Seed.class);
                     StreamSupport.stream(tags).filter(v -> v != null).forEach(tag -> tag.seed = seed);
 
-                    models = tags;
+                    models = new ListWithError<>(tags);
                 } else {
-                    models = new ArrayList<>();
+                    models = new ListWithError<>(new ArrayList<>());
                     LogUtil.e(TAG, "unknown generic type, json: " + json);
                 }
             }
@@ -141,11 +142,16 @@ public class OneMomentConverter implements Converter {
                 model = new Domain();
             } else if (rawType == Video.class) {
                 model = new Video();
+            } else if (rawType == SplashCover.class) {
+                model = new SplashCover();
             } else if (rawType == List.class) {
-                models = new ArrayList<>(0);
+                models = new ListWithError<>(new ArrayList<>(0));
             }
         }
         if (models != null) {
+            models.code = code;
+            models.errorCode = errorCode;
+            models.msg = msg;
             return models;
         }
         if (model == null) {
