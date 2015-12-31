@@ -16,6 +16,13 @@ public class ApiModel implements Serializable {
 
     }
 
+    public ApiModel(int code, int errorCode, String msg) {
+        this.code = code;
+        this.errorCode = errorCode;
+        this.msg = msg;
+    }
+
+    @Deprecated
     public ApiModel(int code, String msg) {
         this.code = code;
         this.msg = msg;
