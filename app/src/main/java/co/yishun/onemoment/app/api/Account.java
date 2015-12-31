@@ -5,11 +5,10 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.Link;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.User;
 import retrofit.http.Field;
@@ -123,8 +122,7 @@ public interface Account {
     );
 
 
-    @GET("/account/videos/{account_id}")
-    List<ApiMoment> getVideoList(
+    @GET("/account/videos/{account_id}") ListWithError<ApiMoment> getVideoList(
             @Path("account_id") @NonNull String userId
     );
 
@@ -139,6 +137,26 @@ public interface Account {
             @Field("phone") @NonNull String phone,
             @Field("password") @NonNull String newPassword
     );
+
+    @FormUrlEncoded
+    @POST("/account/bind_weibo/{account_id}")
+    User bindWeibo(
+            @NonNull @Path("account_id") String userId,
+            @NonNull @Field("weibo_uid") String weiboUid,
+            @NonNull @Field("weibo_nickname") String weiboNickname
+    );
+
+    @FormUrlEncoded
+    @POST("/account/unbind_weibo/{account_id}")
+    User unbindWeibo(@NonNull @Path("account_id") String userId,
+                     @NonNull @Field("weibo_uid") String weiboUid);
+
+    @FormUrlEncoded
+    @POST("/account/share")
+    ShareInfo share(
+            @NonNull @Field("filename") String filename,
+            @NonNull @Field("account_id") String userId,
+            @Nullable @Field("tags") String tags);
 
     enum Gender {
         @SerializedName("f")
@@ -194,25 +212,5 @@ public interface Account {
         }
 
     }
-
-    @FormUrlEncoded
-    @POST("/account/bind_weibo/{account_id}")
-    User bindWeibo(
-            @NonNull @Path("account_id") String userId,
-            @NonNull @Field("weibo_uid") String weiboUid,
-            @NonNull @Field("weibo_nickname") String weiboNickname
-    );
-
-    @FormUrlEncoded
-    @POST("/account/unbind_weibo/{account_id}")
-    User unbindWeibo(@NonNull @Path("account_id") String userId,
-                     @NonNull @Field("weibo_uid") String weiboUid);
-
-    @FormUrlEncoded
-    @POST("/account/share")
-    ShareInfo share(
-            @NonNull @Field("filename") String filename,
-            @NonNull @Field("account_id") String userId,
-            @Nullable @Field("tags") String tags);
 }
 
