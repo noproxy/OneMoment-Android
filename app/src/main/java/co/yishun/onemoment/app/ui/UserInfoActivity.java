@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -226,30 +225,33 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         if (user == null) {
             return;
         }
-        Picasso.with(this).load(AccountManager.getUserInfo(this).avatarUrl).into(avatarImage);
+        Picasso.with(this).load(user.avatarUrl).into(avatarImage);
 
-        nicknameFragment.setContent(AccountManager.getUserInfo(this).nickname);
+        nicknameFragment.setContent(user.nickname);
         String weiboID;
-        if (TextUtils.isEmpty(AccountManager.getUserInfo(this).weiboUid)) {
+        if (TextUtils.isEmpty(user.weiboUid)) {
             weiboID = getString(R.string.activity_user_info_weibo_id_unbound);
         } else {
-            weiboID = AccountManager.getUserInfo(this).weiboNickname;
+            weiboID = user.weiboNickname;
         }
         weiboFragment.setContent(weiboID);
         String gender;
-        switch (AccountManager.getUserInfo(this).gender) {
-            case FEMALE:
-                gender = "♀";
-                break;
-            case MALE:
-                gender = "♂";
-                break;
-            default:
-                gender = getString(R.string.activity_user_info_gender_unknown);
-                break;
-        }
+        Account.Gender orin = user.gender;
+        if (orin != null)
+            switch (user.gender) {
+                case FEMALE:
+                    gender = "♀";
+                    break;
+                case MALE:
+                    gender = "♂";
+                    break;
+                default:
+                    gender = getString(R.string.activity_user_info_gender_unknown);
+                    break;
+            }
+        else gender = getString(R.string.activity_user_info_gender_unknown);
         genderFragment.setContent(gender);
-        locationFragment.setContent(AccountManager.getUserInfo(this).location);
+        locationFragment.setContent(user.location);
     }
 
     @Override
