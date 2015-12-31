@@ -21,7 +21,6 @@ import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.data.VideoUtil;
 import co.yishun.onemoment.app.data.model.Moment;
-import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
 
 import static co.yishun.onemoment.app.LogUtil.e;
@@ -40,11 +39,11 @@ public class MomentFixTask implements Runnable {
     private static Domain mDomain;
     private final ApiMoment mApiMoment;
     private final Moment mMoment;
-    private final Callback mOnFail;
-    private final Callback mOnSuccess;
-    private final Consumer<Integer> mOnProgress;
+    private final Consumer<Moment> mOnFail;
+    private final Consumer<Moment> mOnSuccess;
+    private final OnProgressUpdate mOnProgress;
 
-    public MomentFixTask(@NonNull Moment moment, @Nullable ApiMoment mApiMoment, Callback mOnFail, Callback mOnSuccess, Consumer<Integer> mOnProgress) {
+    public MomentFixTask(@NonNull Moment moment, @Nullable ApiMoment mApiMoment, Consumer<Moment> mOnFail, Consumer<Moment> mOnSuccess, OnProgressUpdate mOnProgress) {
         this.mApiMoment = mApiMoment;
         this.mMoment = moment;
         this.mOnFail = mOnFail;
@@ -74,7 +73,7 @@ public class MomentFixTask implements Runnable {
             Domain domain = mMiscService.getResourceDomain("video");
             if (!domain.isSuccess()) {
                 e(TAG, "download failed when get resource domain");
-                mOnFail.call();
+                mOnFail.accept(mMoment);
                 return false;
             } else {
                 mDomain = domain;
@@ -92,7 +91,7 @@ public class MomentFixTask implements Runnable {
             response = client.newCall(request).execute();
         } catch (IOException e) {
             LogUtil.e(TAG, "exception when http call or close the stream", e);
-            mOnFail.call();
+            mOnFail.accept(mMoment);
             return false;
         }
 
@@ -114,26 +113,26 @@ public class MomentFixTask implements Runnable {
 
                     if (Thread.interrupted()) {
                         i(TAG, "cancel download");// canceled task not failTask++
-                        mOnFail.call();
+                        mOnFail.accept(mMoment);
                         return false;
                     }
                     int progress = (int) (total * 100 / target);
                     v(TAG, "progress: " + progress);
-                    mOnProgress.accept(progress);
+                    mOnProgress.onUpdate(mMoment, progress);
                 }
                 out.flush();
                 out.close();
                 inputStream.close();
-                mOnSuccess.call();
+                mOnProgress.onUpdate(mMoment, progress);
                 return true;
             } else {
                 i(TAG, "download video response != 200");
-                mOnFail.call();
+                mOnFail.accept(mMoment);
                 return false;
             }
         } catch (IOException e) {
             LogUtil.e(TAG, "download failed", e);
-            mOnFail.call();
+            mOnFail.accept(mMoment);
             return false;
         } finally {
             try {
@@ -184,9 +183,13 @@ public class MomentFixTask implements Runnable {
             if (large.length() > 0 && small.length() > 0)
                 i(TAG, "create Thumb ok: " + mMoment);
             else
-                mOnSuccess.call();
+                mOnSuccess.accept(mMoment);
         } catch (IOException e) {
-            mOnFail.call();
+            mOnFail.accept(mMoment);
         }
+    }
+
+    public interface OnProgressUpdate {
+        void onUpdate(Moment moment, int progress);
     }
 }

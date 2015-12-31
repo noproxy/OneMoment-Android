@@ -13,7 +13,7 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.model.Moment;
-import co.yishun.onemoment.app.function.Callback;
+import co.yishun.onemoment.app.function.Consumer;
 
 /**
  * Task to upload a moment to server.
@@ -24,10 +24,10 @@ public class MomentUploadTask implements Runnable {
     private static final String TAG = "MomentUploadTask";
     private final static UploadManager mUploadManager = new UploadManager();
     private final Moment mMoment;
-    private final Callback mOnFail;
-    private final Callback mOnSuccess;
+    private final Consumer<Moment> mOnFail;
+    private final Consumer<Moment> mOnSuccess;
 
-    public MomentUploadTask(@NonNull Moment moment, @NonNull Callback onFail, @NonNull Callback onSuccess) {
+    public MomentUploadTask(@NonNull Moment moment, @NonNull Consumer<Moment> onFail, @NonNull Consumer<Moment> onSuccess) {
         mMoment = moment;
         this.mOnFail = onFail;
         this.mOnSuccess = onSuccess;
@@ -41,7 +41,7 @@ public class MomentUploadTask implements Runnable {
         UploadToken token = mMiscService.getUploadToken(mMoment.getKey());
         if (!token.isSuccess()) {
             LogUtil.e(TAG, "upload failed when get token");
-            mOnFail.call();
+            mOnFail.accept(mMoment);
         } else {
             mUploadManager.put(mMoment.getPath(), qiNiuKey, token.token, newHandler(), newOptions());
         }

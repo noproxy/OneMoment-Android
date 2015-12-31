@@ -20,7 +20,6 @@ public class SyncManager {
     public static final String SYNC_IGNORE_NETWORK = "boolean_ignore_network";
 
     public static final String SYNC_BROADCAST_ACTION_LOCAL_UPDATE = "co.yishun.onemoment.app.sync.action.localupdate";
-    public static final String SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_DATE = "extra_update_date";
     public static final String SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP = "extra_update_timestamp";
 
     public static final String SYNC_BROADCAST_ACTION_START = "co.yishun.onemoment.app.sync.action.start";

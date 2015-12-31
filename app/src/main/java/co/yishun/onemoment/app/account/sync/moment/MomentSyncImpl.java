@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
 
@@ -229,15 +228,15 @@ public class MomentSyncImpl extends MomentSync {
         }
     }
 
-    private void onFail() {
+    private void onFail(Moment moment) {
 
     }
 
-    private void onSuccess() {
-
+    private void onSuccess(Moment moment) {
+        onSyncMomentUpdate(moment);
     }
 
-    private void onProgress(Integer progress) {
+    private void onProgress(Moment moment, Integer progress) {
 
     }
 
@@ -262,13 +261,12 @@ public class MomentSyncImpl extends MomentSync {
      * a new moment or update existed moment, it will be called. Upload task won't cause
      * local moment changes.
      *
-     * @param date of the changed moment.
      */
-    private void onSyncLocalUpdate(@NonNull String date, long timestamp) {
+    private void onSyncMomentUpdate(Moment moment) {
+        String timestamp = moment.getUnixTimeStamp();
         Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_LOCAL_UPDATE);
-        intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_DATE, date);
         intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP, timestamp);
-        LogUtil.i(TAG, "sync update local, send a broadcast. date: " + date);
+        LogUtil.i(TAG, "sync update local, send a broadcast. timestamp: " + timestamp);
         mContext.sendBroadcast(intent);
     }
 }
