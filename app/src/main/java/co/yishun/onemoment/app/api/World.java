@@ -29,8 +29,7 @@ import retrofit.http.Query;
  * Created by Carlos on 2015/8/8.
  */
 public interface World {
-    @GET("/world/banners")
-    List<Banner> getBanners(@Query("limit") int bannerNumLimit);
+    @GET("/world/banners") ListWithError<Banner> getBanners(@Query("limit") int bannerNumLimit);
 
     @FormUrlEncoded
     @POST("/world/like/video/{video_id}")
@@ -45,21 +44,21 @@ public interface World {
     @Sort String sort);
 
     @GET("/world/videos/liked")
-    List<TagVideo> getLikedVideos(@Query("account_id") @NonNull String userId, @Query("offset") int offset, @Query("limit") int limit);
+    ListWithError<TagVideo> getLikedVideos(@Query("account_id") @NonNull String userId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/world/tags/joined")
-    List<WorldTag> getJoinedWorldTags(@Query("account_id") @NonNull String userId, @Query("type") @NonNull @WorldTag.Type String type, @Query("offset") int offset, @Query("limit") int limit);
+    ListWithError<WorldTag> getJoinedWorldTags(@Query("account_id") @NonNull String userId, @Query("type") @NonNull @WorldTag.Type String type, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("/world/videos")
-    List<TagVideo> getVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
+    ListWithError<TagVideo> getVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
             , @Query("account_id") @Nullable String userId, @Query("seed") @Nullable Seed seed);
 
     @GET("/world/private_videos")
-    List<TagVideo> getPrivateVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
+    ListWithError<TagVideo> getPrivateVideoOfTag(@Query("tag_name") @NonNull String tagName, @Query("offset") int offset, @Query("limit") int limit
             , @Query("account_id") @Nullable String userId);
 
     @GET("/world/tag/suggest")
-    List<WorldTag> getSuggestedTagName(@Query("words") @NonNull String tagName);
+    ListWithError<WorldTag> getSuggestedTagName(@Query("words") @NonNull String tagName);
 
     @POST("/world/video")
     @FormUrlEncoded

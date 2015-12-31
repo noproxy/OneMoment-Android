@@ -1,10 +1,10 @@
 package co.yishun.onemoment.app.ui.controller;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
 import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
 import com.malinskiy.superrecyclerview.OnMoreListener;
@@ -75,12 +75,12 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
     }
 
     @Background void loadBanners() {
-        List<Banner> banners = mWorld.getBanners(3);
-        if (banners.size() == 0) {
-            //TODO loading error
-            return;
+        ListWithError<Banner> banners = mWorld.getBanners(3);
+        if (banners.isSuccess()) {
+            onLoadBanners(banners);
+        } else {
+            LogUtil.i(TAG, "load banner error");
         }
-        onLoadBanners(banners);
     }
 
     @UiThread void onLoadBanners(List<Banner> banners) {
@@ -102,7 +102,7 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
     }
 
     @UiThread void onLoadError() {
-        Toast.makeText(mRecyclerView.getContext(), R.string.text_load_error, Toast.LENGTH_SHORT).show();
+        Snackbar.make(mRecyclerView, R.string.text_load_error, Snackbar.LENGTH_LONG).show();
         mRecyclerView.loadEnd();
         mRecyclerView.getSwipeToRefresh().setRefreshing(false);
     }
