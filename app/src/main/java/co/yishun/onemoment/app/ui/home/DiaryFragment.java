@@ -142,7 +142,7 @@ public class DiaryFragment extends ToolbarFragment
     public void onBindView(Calendar calendar, DayView dayView) {
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(calendar.getTime());
         try {
-            Moment moment = momentDao.queryBuilder().where().eq("time", time).eq("owner", AccountManager.getAccountId(getContext())).queryForFirst();
+            Moment moment = momentDao.queryBuilder().where().eq("time", time).and().eq("owner", AccountManager.getAccountId(getContext())).queryForFirst();
             if (moment != null) {
                 dayView.setEnabled(true);
                 dayView.setTag(moment);
