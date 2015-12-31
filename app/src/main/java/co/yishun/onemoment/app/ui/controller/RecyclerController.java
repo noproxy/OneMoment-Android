@@ -85,6 +85,11 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
         Snackbar.make(getRecyclerView(), R.string.text_load_error, Snackbar.LENGTH_LONG).show();
     }
 
+    /**
+     * Add loaded result to adapter, call {@link #onLoadError()} if error occur and remove refresh and loading view.
+     * <p>
+     * Don't forget to call {@link #onLoadError()} and to remove refresh and loading view if you override.
+     */
     @UiThread void onLoadEnd(List<I> list) {
         if (list != null) {
             getAdapter().addAll(list);
