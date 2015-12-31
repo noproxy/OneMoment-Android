@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -117,13 +116,16 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     private void startShoot(View view, boolean forWorld) {
-        if (!forWorld) goToShootDiary = true;
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
                 .transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
-        navigationTo(R.id.navigation_item_1);
-        navigationView.setCheckedItem(R.id.navigation_item_1);
+
+        if (!forWorld) {
+            goToShootDiary = true;
+            navigationTo(R.id.navigation_item_1);
+            navigationView.setCheckedItem(R.id.navigation_item_1);
+        }
     }
 
     @Override
