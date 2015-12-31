@@ -11,6 +11,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Banner;
+import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -40,7 +41,7 @@ public interface World {
     ApiModel unlikeVideo(@Path("video_id") @NonNull String videoId, @Field("account_id") @NonNull String userId);
 
     @GET("/world/tags")
-    List<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("ranking") @Nullable String ranking, @Query("sort") @Nullable
+    ListWithError<WorldTag> getWorldTagList(@Query("limit") int limit, @Query("ranking") @Nullable String ranking, @Query("sort") @Nullable
     @Sort String sort);
 
     @GET("/world/videos/liked")
