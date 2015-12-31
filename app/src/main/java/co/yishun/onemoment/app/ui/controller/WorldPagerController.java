@@ -27,6 +27,8 @@ import co.yishun.onemoment.app.ui.adapter.HeaderRecyclerAdapter;
 import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
 
 /**
+ * Not extend {@link RecyclerController} because this need to load banner as well as World Tag list.
+ * <p>
  * Created by Carlos on 2015/8/16.
  */
 @EBean
