@@ -50,6 +50,8 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
             list = mWorld.getPrivateVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id);
         else
             list = mWorld.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id, seed);
+
+        setOffset(getOffset() + list.size());
         return list;
     }
 
