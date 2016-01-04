@@ -31,12 +31,13 @@ public class BannerHeaderProvider implements HeaderRecyclerAdapter.HeaderProvide
 
     @Override
     public View getHeaderView(ViewGroup viewGroup) {
-        View rootView = LayoutInflater.from(context).inflate(R.layout.layout_world_header_slider, viewGroup, false);
-        worldSlider = (SliderLayout) rootView.findViewById(R.id.worldSlider);
+        worldSlider = new SliderLayout(context);
+        ViewGroup.LayoutParams params  = new ViewGroup.LayoutParams(viewGroup.getWidth(), (int) (viewGroup.getWidth() / 16.0f * 9));
+        viewGroup.addView(worldSlider, params);
         worldSlider.addSlider(generateDefaultSliderView());
         worldSlider.addSlider(generateDefaultSliderView());
         worldSlider.addSlider(generateDefaultSliderView());
-        return rootView;
+        return worldSlider;
     }
 
     private BaseSliderView generateBannerSliderView(Banner banner) {
