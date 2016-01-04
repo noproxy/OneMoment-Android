@@ -29,7 +29,7 @@ import retrofit.http.Query;
  * Created by Carlos on 2015/8/8.
  */
 public interface World {
-    @GET("/world/banners") ListWithError<Banner> getBanners(@Query("limit") int bannerNumLimit);
+    @GET("/world/banners") ListWithError<Banner> getBanners(@Query("limit") Integer bannerNumLimit);
 
     @FormUrlEncoded
     @POST("/world/like/video/{video_id}")

@@ -77,7 +77,7 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
     }
 
     @Background void loadBanners() {
-        ListWithError<Banner> banners = mWorld.getBanners(3);
+        ListWithError<Banner> banners = mWorld.getBanners(null);
         if (banners.isSuccess()) {
             onLoadBanners(banners);
         } else {
