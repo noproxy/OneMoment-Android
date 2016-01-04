@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -14,11 +15,13 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.TextureView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
@@ -50,6 +53,10 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     private HandlerThread mHandlerThread;
     private RecordHandler mBackgroundHandler;
 
+    private Camera.AutoFocusCallback myAutoFocusCallback = (success, camera1) -> {
+        if (success) camera1.cancelAutoFocus();
+    };
+
     public ShootView(Context context) {
         super(context);
         init();
@@ -78,6 +85,43 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         initHandler();
         initCamera();
         initFlash();
+    }
+
+    public void doTouchFocus(final Rect tfocusRect) {
+        try {
+            List<Camera.Area> focusList = new ArrayList<Camera.Area>();
+            Camera.Area focusArea = new Camera.Area(tfocusRect, 1000);
+            focusList.add(focusArea);
+
+            Camera.Parameters param = camera.getParameters();
+            param.setFocusAreas(focusList);
+            param.setMeteringAreas(focusList);
+            camera.setParameters(param);
+
+            camera.autoFocus(myAutoFocusCallback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN){
+            float x = event.getX();
+            float y = event.getY();
+            Rect touchRect = new Rect(
+                    (int) (x - 100),
+                    (int) (y - 100),
+                    (int) (x + 100),
+                    (int) (y + 100));
+            final Rect targetFocusRect = new Rect(
+                    touchRect.left * 2000 / this.getWidth() - 1000,
+                    touchRect.top * 2000 / this.getHeight() - 1000,
+                    touchRect.right * 2000 / this.getWidth() - 1000,
+                    touchRect.bottom * 2000 / this.getHeight() - 1000);
+            doTouchFocus(targetFocusRect);
+        }
+        return true;
     }
 
     private void initHandler() {
