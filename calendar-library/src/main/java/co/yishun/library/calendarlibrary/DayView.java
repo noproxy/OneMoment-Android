@@ -122,7 +122,7 @@ public class DayView extends ImageView implements View.OnClickListener {
         //        super.onDraw(canvas);
         final float ox = canvas.getWidth() / 2;
         final float oy = canvas.getHeight() / 2;
-        final float r = Math.min(ox, oy);
+        final float r = Math.min(ox, oy) * 0.85f;
 
         if (getDrawable() != null) {
             updatePaint(getBitmapFromDrawable(getDrawable()));
