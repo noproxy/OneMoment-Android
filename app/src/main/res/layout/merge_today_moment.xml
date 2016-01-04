@@ -15,8 +15,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="32dp"
-        android:background="@drawable/btn_no_moment"
-        android:src="@drawable/ic_diary"
+        android:src="@drawable/ic_diary_no_moment"
         app:border_color="@color/colorProfileImageBorder"
         app:border_width="2dp"
         />
