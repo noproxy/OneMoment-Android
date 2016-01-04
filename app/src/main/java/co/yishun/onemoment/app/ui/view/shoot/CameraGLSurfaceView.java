@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui.view.shoot;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Handler;
@@ -10,11 +11,14 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.MotionEvent;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.function.Callback;
@@ -44,6 +48,16 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     private SurfaceTexture mSurfaceTexture;
     private File file;
     private Consumer<File> onEndListener;
+    private float mPressedX;
+    private float mPressedY;
+    private float mMoveLimit;
+    private float mSlideLimit;
+    private boolean mMoved = false;
+    private OnFilterChangeListener mFilterListener;
+
+    private Camera.AutoFocusCallback myAutoFocusCallback = (success, camera1) -> {
+        if (success) camera1.cancelAutoFocus();
+    };
 
     public CameraGLSurfaceView(Context context) {
         super(context);
@@ -53,10 +67,6 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     public CameraGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
-    }
-
-    public void nextFilter() {
-        mCameraRenderer.nextFilter();
     }
 
     private void init() {
@@ -71,7 +81,74 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         setRenderMode(RENDERMODE_WHEN_DIRTY);
 
         initFlashlightAndCamera();
+        mMoveLimit = getResources().getDimension(R.dimen.camera_surface_view_move);
+        mSlideLimit = getResources().getDimension(R.dimen.camera_surface_view_slide);
     }
+
+    public void setFilterListener(OnFilterChangeListener listener) {
+        mFilterListener = listener;
+    }
+
+    public void doTouchFocus(final Rect tfocusRect) {
+        try {
+            List<Camera.Area> focusList = new ArrayList<Camera.Area>();
+            Camera.Area focusArea = new Camera.Area(tfocusRect, 1000);
+            focusList.add(focusArea);
+
+            Camera.Parameters param = camera.getParameters();
+            param.setFocusAreas(focusList);
+            param.setMeteringAreas(focusList);
+            camera.setParameters(param);
+
+            camera.autoFocus(myAutoFocusCallback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mPressedX = event.getX();
+                mPressedY = event.getY();
+                mMoved = false;
+                return true;
+            case MotionEvent.ACTION_MOVE:
+                if (Math.abs(event.getX() - mPressedX) > mMoveLimit || Math.abs(event.getY() - mPressedY) > mMoveLimit)
+                    mMoved = true;
+                return true;
+            case MotionEvent.ACTION_UP:
+                if (!mMoved) {
+                    float x = event.getX();
+                    float y = event.getY();
+                    Rect touchRect = new Rect(
+                            (int) (x - 100),
+                            (int) (y - 100),
+                            (int) (x + 100),
+                            (int) (y + 100));
+                    final Rect targetFocusRect = new Rect(
+                            touchRect.left * 2000 / this.getWidth() - 1000,
+                            touchRect.top * 2000 / this.getHeight() - 1000,
+                            touchRect.right * 2000 / this.getWidth() - 1000,
+                            touchRect.bottom * 2000 / this.getHeight() - 1000);
+                    doTouchFocus(targetFocusRect);
+                } else {
+                    if (event.getX() - mPressedX > mSlideLimit) {
+                        mCameraRenderer.preFilter();
+                    } else if (event.getX() - mPressedX < -mSlideLimit) {
+                        mCameraRenderer.nextFilter();
+                    }
+
+                    if(mFilterListener != null) {
+                        mFilterListener.onFilterIndexChange(mCameraRenderer.getCurrentFilterIndex());
+                    }
+                }
+                return true;
+        }
+        return false;
+    }
+
 
     public void onDestroy() {
         mBackgroundHandler.removeCallbacksAndMessages(null);
@@ -263,5 +340,9 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
                     break;
             }
         }
+    }
+
+    public interface OnFilterChangeListener{
+        void onFilterIndexChange(int index);
     }
 }

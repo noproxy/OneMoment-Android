@@ -3,12 +3,10 @@ package co.yishun.onemoment.app.ui.view.shoot;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
-import android.media.MediaRecorder;
 import android.opengl.EGL14;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.Message;
-import android.util.Log;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -49,6 +47,7 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
 
     private FilterType mCurrentFilterType;
     private FilterType mNewFilterType;
+    private int mNewFilterIndex;
     private TextureMovieEncoder mVideoEncoder;
 
     private boolean mRecordingEnabled;
@@ -66,6 +65,7 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
         mApplicationContext = context.getApplicationContext();
         mCameraHandler = cameraHandler;
         mCurrentFilterType = mNewFilterType = FilterType.Normal;
+        mNewFilterIndex = 0;
 //        mVideoEncoder = TextureMovieEncoder.getInstance();
         mEncoderConfig = config;
         try {
@@ -84,14 +84,16 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
         mRecordingEnabled = recordingEnabled;
     }
 
-    protected void nextFilter() {
-        for (int i = 0; i < types.length; i++) {
-            if (types[i] == mCurrentFilterType) {
-                mNewFilterType = types[(i + 1) % types.length];
-                return;
-            }
-        }
+    public void nextFilter() {
+        mNewFilterIndex = (mNewFilterIndex + 1) % types.length;
+    }
 
+    public void preFilter() {
+        mNewFilterIndex = (mNewFilterIndex - 1) % types.length;
+    }
+
+    public int getCurrentFilterIndex() {
+        return mNewFilterIndex;
     }
 
     public void setCameraPreviewSize(int width, int height) {
@@ -141,9 +143,9 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         mSurfaceTexture.updateTexImage();
-        if (mNewFilterType != mCurrentFilterType) {
-            mFullScreen.changeProgram(getCameraFilter(mNewFilterType, mApplicationContext));
-            mCurrentFilterType = mNewFilterType;
+        if (types[mNewFilterIndex] != mCurrentFilterType) {
+            mFullScreen.changeProgram(getCameraFilter(types[mNewFilterIndex], mApplicationContext));
+            mCurrentFilterType = types[mNewFilterIndex];
         }
         mFullScreen.getFilter().setTextureSize(mIncomingWidth, mIncomingHeight);
         mSurfaceTexture.getTransformMatrix(mSTMatrix);

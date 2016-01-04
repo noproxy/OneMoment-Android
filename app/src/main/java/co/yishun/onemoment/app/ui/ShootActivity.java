@@ -119,12 +119,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
             pageIndicatorDot = ((PageIndicatorDot) findViewById(R.id.pageIndicator));
             pageIndicatorDot.setNum(FilterManager.FilterType.values().length);
 
-            mCameraGLSurfaceView.setOnClickListener(v -> {
-                LogUtil.i(TAG, "click to set filter");
-                currentFilter = (currentFilter + 1) % FilterManager.FilterType.values().length;
-                mCameraGLSurfaceView.nextFilter();
-                pageIndicatorDot.setCurrent(currentFilter);
-            });
+            mCameraGLSurfaceView.setFilterListener(index -> pageIndicatorDot.setCurrent(index));
         }
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(findViewById(R.id.maskImageView), "alpha", 1f, 0f).setDuration(350);
