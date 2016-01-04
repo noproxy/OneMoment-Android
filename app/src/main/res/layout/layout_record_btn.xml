@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:background="@drawable/ripple_only"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_capture_flashon"
+            android:src="@drawable/ic_capture_flashoff"
             app:tintColorStateList="@drawable/bg_normal_color_selector"
             app:tintUpdateDelay="1000"
             />
@@ -33,7 +33,7 @@
             android:layout_gravity="center"
             android:background="@drawable/ripple_only"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_capture_flashoff"
+            android:src="@drawable/ic_capture_flashon"
             app:tintColorStateList="@drawable/bg_normal_color_selector"
             app:tintUpdateDelay="1000"
             />
