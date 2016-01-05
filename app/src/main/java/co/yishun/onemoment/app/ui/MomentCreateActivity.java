@@ -2,7 +2,7 @@ package co.yishun.onemoment.app.ui;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -15,6 +15,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OrmLiteDao;
+import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -90,6 +91,13 @@ public class MomentCreateActivity extends BaseActivity {
     @UiThread(delay = 500) void playVideo() {
         videoView.seekTo(0);
         videoView.start();
+    }
+
+    @Touch(R.id.videoView) void videoClick(View view, MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            videoView.seekTo(0);
+            videoView.start();
+        }
     }
 
     @Click void nextBtnClicked(View view) {
