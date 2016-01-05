@@ -226,8 +226,8 @@ public class PlayMomentActivity extends BaseActivity {
                 JsonObject element = new JsonObject();
                 String[] position = tag.getTagPosition().split(" ");
                 element.addProperty("name", tag.getTagText());
-                element.addProperty("x", Float.valueOf(position[0]));
-                element.addProperty("y", Float.valueOf(position[1]));
+                element.addProperty("x", Float.valueOf(position[0]) * 100f);
+                element.addProperty("y", Float.valueOf(position[1]) * 100f);
                 momentTags.add(element);
             }
             allTagArray.add(momentTags);

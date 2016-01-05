@@ -54,8 +54,8 @@ public class PlayMomentFragment extends PlayFragment
                     List<VideoTag> videoTags = new ArrayList<>();
                     for (OMLocalVideoTag omlTag : omLocalVideoTags) {
                         String[] position = omlTag.getTagPosition().split(" ");
-                        videoTags.add(new BaseVideoTag(omlTag.getTagText(), Float.parseFloat(position[0]),
-                                Float.parseFloat(position[1])));
+                        videoTags.add(new BaseVideoTag(omlTag.getTagText(), Float.parseFloat(position[0]) * 100f,
+                                Float.parseFloat(position[1]) * 100f));
                     }
                     NetworkVideo videoResource = new NetworkVideo(videoTags, moment.getPath());
                     videoPlayView.addVideoResource(videoResource);

@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,7 +89,7 @@ import static co.yishun.onemoment.app.LogUtil.i;
 @EActivity(R.layout.activity_tag_create)
 public class TagCreateActivity extends BaseActivity
         implements AbstractRecyclerViewAdapter.OnItemClickListener<String>,
-                   TextView.OnEditorActionListener, TextWatcher {
+        TextView.OnEditorActionListener, TextWatcher {
     public static final int REQUEST_CODE_SEARCH = 1;
     private static final String TAG = "TagCreateActivity";
     @ViewById Toolbar toolbar;
@@ -284,7 +283,7 @@ public class TagCreateActivity extends BaseActivity
 
                     RealmHelper.removeTags(moment.getTime());
                     for (co.yishun.library.tag.VideoTag tag : editTagContainer.getVideoTags()) {
-                        RealmHelper.addTodayTag(tag.getText(), tag.getX(), tag.getY());
+                        RealmHelper.addTodayTag(tag.getText(), tag.getX() / 100f, tag.getY() / 100f);
                     }
 
                     momentDao.delete(result);

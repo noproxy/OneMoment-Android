@@ -38,11 +38,20 @@ public class RealmHelper {
         realm.commitTransaction();
     }
 
+    /**
+     *
+     * @param x should be converted to (0, 1.0)
+     * @param y should be converted to (0, 1.0)
+     */
     public static void addTodayTag(String text, float x, float y) {
-        addTag(new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault())
-                .format(new Date()), text, String.valueOf(x) + " " + String.valueOf(y));
+        addTag(new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(new Date()), text, x, y);
     }
 
+    /**
+     *
+     * @param x should be converted to (0, 1.0)
+     * @param y should be converted to (0, 1.0)
+     */
     public static void addTag(String date, String text, float x, float y) {
         addTag(date, text, String.valueOf(x) + " " + String.valueOf(y));
     }
