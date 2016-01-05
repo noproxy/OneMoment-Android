@@ -6,6 +6,6 @@
     <string name="activity_moment_create_private_text">私密</string>
     <string name="activity_moment_create_public_text">公开</string>
     <string name="activity_moment_create_public_hint">所有人可见</string>
-    <string name="activity_moment_create_count_text_prefix">The</string>
-    <string name="activity_moment_create_count_text_suffix">Moment</string>
+    <string name="activity_moment_create_count_text_prefix">第</string>
+    <string name="activity_moment_create_count_text_suffix">个一瞬</string>
 </resources>
