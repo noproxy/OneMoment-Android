@@ -45,11 +45,9 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     @ViewById
     TextView nickNameTextView;
     @ViewById
-    TextView votedCountTextView;
+    TextView voteCountTextView;
     @ViewById
-    TextView voteCountTextView;// "Voted 21"
-    @ViewById
-    ImageView profileImageView;// "Vote 3"
+    ImageView profileImageView;
     private Context mContext;
 
     @Override
@@ -146,8 +144,6 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
         }
         Picasso.with(getContext()).load(user.avatarUrl).into(profileImageView);
         nickNameTextView.setText(user.nickname);
-        String voted = String.format(mContext.getResources().getString(R.string.fragment_me_voted_format_text), String.valueOf(user.likedWorlds.length));
-        votedCountTextView.setText(voted);
         String vote = String.format(mContext.getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.likedWorldVideos.length));
         voteCountTextView.setText(vote);
     }

@@ -40,23 +40,12 @@
         android:paddingBottom="6dp"
         android:paddingTop="8dp"
         >
-
-        <TextView
-            android:id="@+id/votedCountTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:paddingRight="8dp"
-            android:text="Voted 21"
-            tools:text="Voted 21"
-            />
-
+        
         <TextView
             android:id="@+id/voteCountTextView"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
             android:gravity="start"
             android:paddingLeft="8dp"
             android:text="Vote 3"
