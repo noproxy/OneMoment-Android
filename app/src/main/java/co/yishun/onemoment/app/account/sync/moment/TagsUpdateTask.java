@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.qiniu.android.storage.UploadManager;
 import com.squareup.okhttp.OkHttpClient;
@@ -31,6 +30,7 @@ import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.Migration;
 import co.yishun.onemoment.app.data.model.OMDataBase;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.function.Callback;
@@ -106,9 +106,9 @@ public class TagsUpdateTask implements Runnable {
     }
 
     private void initRealm() {
-        mLocalRealm = Realm.getInstance(new RealmConfiguration.Builder(mContext)
+        mLocalRealm = Realm.getInstance(new RealmConfiguration.Builder(mContext).migration(new Migration())
                 .name("tag-" + AccountManager.getUserInfo(mContext)._id + ".realm").build());
-
+        mLocalRealm.beginTransaction();
         OMDataBase localDatabase = mLocalRealm.where(OMDataBase.class).findFirst();
         if (localDatabase == null) {
             localDatabase = mLocalRealm.createObject(OMDataBase.class);
@@ -119,18 +119,19 @@ public class TagsUpdateTask implements Runnable {
         }
 
         if (mRemoteExist) {
-            mRemoteRealm = Realm.getInstance(new RealmConfiguration.Builder(remoteRealmFolder)
-                    .name(remoteRealmFileName).build());
+            RealmConfiguration configuration = new RealmConfiguration.Builder(remoteRealmFolder)
+                    .name(remoteRealmFileName).migration(new Migration()).build();
+            mRemoteRealm = Realm.getInstance(configuration);
+            Realm.compactRealm(configuration);
 
             long localCreate = Long.parseLong(localDatabase.getCreateTime().substring(9));
             long remoteCreate = Long.parseLong(mRemoteRealm.where(OMDataBase.class).findFirst().getCreateTime().substring(9));
             if (localCreate > remoteCreate) {
-                mLocalRealm.beginTransaction();
                 mLocalRealm.where(OMDataBase.class).findFirst().setCreateTime(
                         mRemoteRealm.where(OMDataBase.class).findFirst().getCreateTime());
-                mLocalRealm.commitTransaction();
             }
         }
+        mLocalRealm.commitTransaction();
     }
 
     private void restoreRealm() {
@@ -143,8 +144,9 @@ public class TagsUpdateTask implements Runnable {
                         mRemoteRealm.where(OMDataBase.class).findFirst().getUpdateTime());
                 mLocalRealm.commitTransaction();
             }
+            Realm.compactRealm(mLocalRealm.getConfiguration());
             File fileToDelete[] = remoteRealmFolder.listFiles((dir, filename) -> filename.contains(remoteRealmFileName));
-            for (File file : fileToDelete){
+            for (File file : fileToDelete) {
                 file.delete();
             }
         }

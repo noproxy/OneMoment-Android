@@ -1,15 +1,16 @@
 package co.yishun.onemoment.app.data.model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Required;
 
 /**
  * Created on 2015/10/27.
  */
 public class OMLocalVideoTag extends RealmObject {
 
-    private String tagDate;
-    private String tagText;
-    private String tagPosition;
+    @Required private String tagDate;
+    @Required private String tagText;
+    @Required private String tagPosition;
 
     public String getTagDate() {
         return tagDate;

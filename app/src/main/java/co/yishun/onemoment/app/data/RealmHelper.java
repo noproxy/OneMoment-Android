@@ -22,7 +22,7 @@ public class RealmHelper {
     public static void setup(Context context) {
         String userId = AccountManager.getUserInfo(context)._id;
         RealmConfiguration config = new RealmConfiguration.Builder(context)
-                .name("tag-" + userId + ".realm").build();
+                .name("tag-" + userId + ".realm").migration(new Migration()).build();
         Realm.setDefaultConfiguration(config);
 
         Realm realm = Realm.getDefaultInstance();
@@ -39,7 +39,6 @@ public class RealmHelper {
     }
 
     /**
-     *
      * @param x should be converted to (0, 1.0)
      * @param y should be converted to (0, 1.0)
      */
@@ -48,7 +47,6 @@ public class RealmHelper {
     }
 
     /**
-     *
      * @param x should be converted to (0, 1.0)
      * @param y should be converted to (0, 1.0)
      */
@@ -79,11 +77,11 @@ public class RealmHelper {
         return realm.where(OMLocalVideoTag.class).equalTo("tagDate", date).findAll();
     }
 
-    public static void removeTodayTags(){
+    public static void removeTodayTags() {
         removeTags(new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(new Date()));
     }
 
-    public static void removeTags(String date){
+    public static void removeTags(String date) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         getTags(date).clear();

@@ -1,13 +1,14 @@
 package co.yishun.onemoment.app.data.model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Required;
 
 /**
  * Created on 2015/10/27.
  */
 public class OMDataBase extends RealmObject {
-    private String createTime;
-    private String updateTime;
+    @Required private String createTime;
+    @Required private String updateTime;
 
     public String getCreateTime() {
         return createTime;
