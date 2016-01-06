@@ -108,7 +108,6 @@ public class DiaryFragment extends ToolbarFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.fragment_diary_action_share:
-                //TODO add share function
                 ShareExportActivity_.intent(this.getActivity()).start();
                 return true;
             case R.id.fragment_diary_action_all_play:

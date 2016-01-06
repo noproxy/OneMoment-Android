@@ -31,7 +31,6 @@ import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 /**
  * Created by yyz on 7/20/15.
  */
-//TODO handle not extend BaseActivity
 @EActivity(R.layout.activity_video_voted_up)
 public class VideoVotedUpActivity extends BaseActivity
         implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {

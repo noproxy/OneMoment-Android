@@ -122,7 +122,6 @@ public class MeFragment extends TabPagerFragment implements AbstractRecyclerView
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.fragment_me_action_modify_info:
-                //TODO start activity to update user info
                 UserInfoActivity_.intent(this).start();
                 return true;
             default:

@@ -118,7 +118,6 @@ public class PlayMomentActivity extends BaseActivity {
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.activity_play_moment_share) {
-            //TODO add share moment here
             shareClick();
             return true;
         }
