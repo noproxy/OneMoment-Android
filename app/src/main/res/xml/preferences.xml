@@ -47,15 +47,14 @@
             android:title="@string/pref_title_remind_everyday"
             />
         <co.yishun.onemoment.app.ui.view.TimePreference
-            android:key="@string/pref_key_remind_time"
             android:dependency="remind_everyday"
-            android:title="@string/pref_title_remind_time"
+            android:key="@string/pref_key_remind_time"
             android:layout="@layout/layout_preference_mtd"
             android:negativeButtonText="@android:string/cancel"
             android:positiveButtonText="@android:string/ok"
             android:summary="@string/pref_summary_remind_time_default"
-            >
-        </co.yishun.onemoment.app.ui.view.TimePreference>
+            android:title="@string/pref_title_remind_time"
+            />
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
             android:dependency="remind_everyday"

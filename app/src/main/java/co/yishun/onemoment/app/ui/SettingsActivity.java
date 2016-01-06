@@ -16,7 +16,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 
 import org.androidannotations.annotations.AfterViews;
@@ -98,7 +97,9 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         SyncManager.notifySyncSettingsChange(this);
 
-        sendBroadcast(new Intent(ReminderReceiver.ACTION_UPDATE_REMIND));
+        if (TextUtils.equals(key, getString(R.string.pref_key_remind_time)) ||
+                TextUtils.equals(key, getString(R.string.pref_key_remind_everyday)))
+            sendBroadcast(new Intent(ReminderReceiver.ACTION_UPDATE_REMIND));
     }
 
     public static class SettingsFragment extends PreferenceFragment {
