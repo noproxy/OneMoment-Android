@@ -6,6 +6,7 @@ import android.view.WindowManager;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.library.OnemomentPlayerView;
@@ -37,6 +38,7 @@ public abstract class PlayFragment extends BaseFragment {
 
     protected void onLoad() {
         videoPlayView.hideLoading();
+        delayStart();
         isLoading = false;
     }
 
@@ -45,6 +47,11 @@ public abstract class PlayFragment extends BaseFragment {
         if (isLoading) {
             ((BaseActivity) getActivity()).showSnackMsg(resId);
         }
+    }
+
+    @UiThread(delay = 500) void delayStart() {
+        videoPlayView.start();
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Click(R.id.videoPlayView) void videoClick() {
