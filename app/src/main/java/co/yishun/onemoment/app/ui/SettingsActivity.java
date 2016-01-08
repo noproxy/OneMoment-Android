@@ -18,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.umeng.update.UmengUpdateAgent;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
@@ -137,6 +139,11 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
             this.findPreference(getString(R.string.pref_key_sync_now)).setOnPreferenceClickListener(preference -> {
                 SyncManager.syncNow(getActivity());
                 ((SettingsActivity) getActivity()).showSnackMsg(R.string.activity_settings_sync_now);
+                return true;
+            });
+            findPreference(getString(R.string.pref_key_version)).setOnPreferenceClickListener(preference -> {
+                UmengUpdateAgent.update(this.getActivity());
+                LogUtil.d(TAG, "version");
                 return true;
             });
         }
