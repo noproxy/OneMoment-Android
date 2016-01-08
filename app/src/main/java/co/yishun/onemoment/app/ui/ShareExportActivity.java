@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -25,6 +27,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.SupposeBackground;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
@@ -53,6 +56,7 @@ import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.MomentLock;
 import co.yishun.onemoment.app.data.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
@@ -62,8 +66,6 @@ import co.yishun.onemoment.app.ui.share.ShareActivity;
 import co.yishun.onemoment.app.ui.share.ShareActivity_;
 import co.yishun.onemoment.app.video.VideoCommand;
 import co.yishun.onemoment.app.video.VideoConcat;
-
-import co.yishun.onemoment.app.data.MomentLock;
 
 @EActivity(R.layout.activity_share_export)
 public class ShareExportActivity extends BaseActivity
@@ -84,6 +86,9 @@ public class ShareExportActivity extends BaseActivity
     private List<Moment> selectedMoments;
     private File videoCacheFile;
     private boolean concatExport = true;
+    private MaterialDialog concatProgress;
+    private int totalTask = 1;
+    private int completeTask = 0;
 
     @AfterViews void setupViews() {
         momentCalendar.setAdapter(this);
@@ -112,6 +117,24 @@ public class ShareExportActivity extends BaseActivity
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.activity_share_export_title);
         ab.setHomeAsUpIndicator(R.drawable.ic_action_back_close);
+    }
+
+    @UiThread void showConcatProgress() {
+        hideProgress();
+        concatProgress = new MaterialDialog.Builder(this).progress(false, 100, true)
+                .theme(Theme.LIGHT).cancelable(false)
+                .content(getString(R.string.activity_share_export_progress_concatenating)).build();
+        concatProgress.show();
+    }
+
+    @UiThread void updateConcatProgress() {
+        concatProgress.setProgress((int) (completeTask * 100.0f / totalTask));
+    }
+
+    @UiThread void hideConcatProgress() {
+        if (concatProgress != null) {
+            concatProgress.hide();
+        }
     }
 
     @Click(R.id.shareText) @Background void shareTextClicked() {
@@ -239,6 +262,10 @@ public class ShareExportActivity extends BaseActivity
             e.printStackTrace();
         }
 
+        totalTask = (int) ((filesNeedTrans.size() + files.size()) / 0.9f);
+        completeTask = 0;
+        showConcatProgress();
+
         new VideoConcat(this)
                 .setTransFile(filesNeedTrans)
                 .setConcatFile(files, videoCacheFile)
@@ -247,15 +274,19 @@ public class ShareExportActivity extends BaseActivity
                         switch (type) {
                             case COMMAND_TRANSPOSE:
                                 LogUtil.d(TAG, "onTransSuccess: ");
+                                completeTask++;
                                 break;
                             case COMMAND_FORMAT:
                                 LogUtil.d(TAG, "onFormatSuccess: ");
+                                completeTask++;
                                 break;
                             case COMMAND_CONCAT:
                                 LogUtil.d(TAG, "onConcatSuccess: ");
+                                completeTask = totalTask;
                                 afterConcat();
                                 break;
                         }
+                        updateConcatProgress();
                     }
 
                     @Override public void onFail(VideoCommand.VideoCommandType type) {
@@ -265,6 +296,7 @@ public class ShareExportActivity extends BaseActivity
     }
 
     @Background void afterConcat() {
+        hideConcatProgress();
         try {
             for (Moment moment : selectedMoments) {
                 MomentLock.unlockMomentIfLocked(this, moment);
@@ -289,6 +321,7 @@ public class ShareExportActivity extends BaseActivity
     }
 
     @SupposeBackground void uploadAndShare() {
+        showProgress(R.string.activity_share_export_progress_uploading);
         UploadManager uploadManager = new UploadManager();
         LogUtil.d(TAG, "upload " + videoCacheFile.getName());
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoCacheFile.getName());
