@@ -19,7 +19,7 @@ import io.realm.RealmResults;
  * Created on 2015/10/27.
  */
 public class RealmHelper {
-    private static Migration migration = new Migration();
+    public static Migration migration = new Migration();
     public static void setup(Context context) {
         String userId = AccountManager.getUserInfo(context)._id;
         RealmConfiguration config = new RealmConfiguration.Builder(context)
