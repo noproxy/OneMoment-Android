@@ -60,4 +60,5 @@
     <string name="pref_key_remind_time" translatable="false">remind_everyday_time</string>
     <string name="pref_key_remind_vibrate" translatable="false">remind_everyday_vibrate</string>
     <string name="pref_key_remind_everyday" translatable="false">remind_everyday</string>
+    <string name="pref_key_version" translatable="false">version</string>
 </resources>

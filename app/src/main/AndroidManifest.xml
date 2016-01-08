@@ -349,6 +349,16 @@
             android:name="com.umeng.message.local.UmengLocalNotificationService"
             android:exported="false"/>
 
+        <!--Umeng Update-->
+        <service
+            android:name="com.umeng.update.net.DownloadingService"
+            android:process=":DownloadingService" >
+        </service>
+        <activity
+            android:name="com.umeng.update.UpdateDialogActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="kCbiUVqj0L2QAo3vHgMefShZ"/>
