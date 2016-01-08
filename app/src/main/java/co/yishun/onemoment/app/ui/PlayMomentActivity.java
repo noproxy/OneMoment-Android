@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -22,6 +24,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.SupposeBackground;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
@@ -71,6 +74,9 @@ public class PlayMomentActivity extends BaseActivity {
     private PlayMomentFragment playMomentFragment;
     private List<Moment> playingMoments;
     private File videoCacheFile;
+    private MaterialDialog concatProgress;
+    private int totalTask = 1;
+    private int completeTask = 0;
 
     @AfterViews void setUpViews() {
         try {
@@ -131,6 +137,24 @@ public class PlayMomentActivity extends BaseActivity {
         concatSelectedVideos();
     }
 
+    @UiThread void showConcatProgress() {
+        hideProgress();
+        concatProgress = new MaterialDialog.Builder(this).progress(false, 100, true)
+                .theme(Theme.LIGHT).cancelable(false)
+                .content(getString(R.string.activity_share_export_progress_concatenating)).build();
+        concatProgress.show();
+    }
+
+    @UiThread void updateConcatProgress() {
+        concatProgress.setProgress((int) (completeTask * 100.0f / totalTask));
+    }
+
+    @UiThread void hideConcatProgress() {
+        if (concatProgress != null) {
+            concatProgress.hide();
+        }
+    }
+
     @Background void concatSelectedVideos() {
         List<File> files = new ArrayList<>();
         Collections.sort(playingMoments);
@@ -155,6 +179,9 @@ public class PlayMomentActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        totalTask = (int) ((filesNeedTrans.size() + files.size()) / 0.9f);
+        completeTask = 0;
+        showConcatProgress();
 
         new VideoConcat(this)
                 .setTransFile(filesNeedTrans)
@@ -164,15 +191,19 @@ public class PlayMomentActivity extends BaseActivity {
                         switch (type) {
                             case COMMAND_TRANSPOSE:
                                 LogUtil.d(TAG, "onTransSuccess: ");
+                                completeTask++;
                                 break;
                             case COMMAND_FORMAT:
                                 LogUtil.d(TAG, "onFormatSuccess: ");
+                                completeTask++;
                                 break;
                             case COMMAND_CONCAT:
                                 LogUtil.d(TAG, "onConcatSuccess: ");
+                                completeTask = totalTask;
                                 afterConcat();
                                 break;
                         }
+                        updateConcatProgress();
                     }
 
                     @Override public void onFail(VideoCommand.VideoCommandType type) {
@@ -182,6 +213,7 @@ public class PlayMomentActivity extends BaseActivity {
     }
 
     @Background void afterConcat() {
+        hideConcatProgress();
         if (videoCacheFile == null) {
             //TODO check append videos failed
             return;
@@ -190,7 +222,7 @@ public class PlayMomentActivity extends BaseActivity {
     }
 
     @SupposeBackground void uploadAndShare() {
-        showProgress();
+        showProgress(R.string.activity_share_export_progress_uploading);
         UploadManager uploadManager = new UploadManager();
         LogUtil.d(TAG, "upload " + videoCacheFile.getName());
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoCacheFile.getName());
