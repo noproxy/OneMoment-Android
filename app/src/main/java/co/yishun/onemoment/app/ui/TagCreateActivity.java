@@ -70,7 +70,7 @@ import co.yishun.onemoment.app.api.model.VideoTag;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.RealmHelper;
+import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.data.VideoUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;

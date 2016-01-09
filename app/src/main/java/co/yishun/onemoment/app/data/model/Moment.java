@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.data.model;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -19,7 +18,7 @@ import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.RealmHelper;
+import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.data.compat.Contract;
 
 

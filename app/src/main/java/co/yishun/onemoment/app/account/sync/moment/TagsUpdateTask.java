@@ -30,8 +30,8 @@ import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.Migration;
-import co.yishun.onemoment.app.data.RealmHelper;
+import co.yishun.onemoment.app.data.realm.LocalRealmMigration;
+import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.data.model.OMDataBase;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.function.Callback;
@@ -107,7 +107,7 @@ public class TagsUpdateTask implements Runnable {
     }
 
     private void initRealm() {
-        mLocalRealm = Realm.getInstance(new RealmConfiguration.Builder(mContext).migration(RealmHelper.migration)
+        mLocalRealm = Realm.getInstance(new RealmConfiguration.Builder(mContext).migration(RealmHelper.localRealmMigration)
                 .name("tag-" + AccountManager.getUserInfo(mContext)._id + ".realm").build());
         mLocalRealm.beginTransaction();
         OMDataBase localDatabase = mLocalRealm.where(OMDataBase.class).findFirst();
@@ -121,7 +121,7 @@ public class TagsUpdateTask implements Runnable {
 
         if (mRemoteExist) {
             RealmConfiguration configuration = new RealmConfiguration.Builder(remoteRealmFolder)
-                    .name(remoteRealmFileName).migration(new Migration()).build();
+                    .name(remoteRealmFileName).migration(new LocalRealmMigration()).build();
             mRemoteRealm = Realm.getInstance(configuration);
             Realm.compactRealm(configuration);
 

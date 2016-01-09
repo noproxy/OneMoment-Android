@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.data;
+package co.yishun.onemoment.app.data.realm;
 
 import android.content.Context;
 
@@ -19,11 +19,11 @@ import io.realm.RealmResults;
  * Created on 2015/10/27.
  */
 public class RealmHelper {
-    public static Migration migration = new Migration();
+    public static LocalRealmMigration localRealmMigration = new LocalRealmMigration();
     public static void setup(Context context) {
         String userId = AccountManager.getUserInfo(context)._id;
         RealmConfiguration config = new RealmConfiguration.Builder(context)
-                .name("tag-" + userId + ".realm").migration(migration).build();
+                .name("tag-" + userId + ".realm").migration(localRealmMigration).build();
         Realm.setDefaultConfiguration(config);
 
         Realm realm = Realm.getDefaultInstance();
