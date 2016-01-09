@@ -45,6 +45,7 @@ public class TagsUpdateTask implements Runnable {
     public static final int MSG_REALM_TAG_LOCAL = 0x1;
     public static final int MSG_REALM_TAG_REMOTE = 0x2;
     public static final int MSG_QUIT = 0x4;
+    public static LocalRealmMigration remoteRealmMigration = new LocalRealmMigration();
     private static final String TAG = "TagsUpdateTask";
     private final Object mReadyFence = new Object();
     private final Context mContext;
@@ -121,7 +122,7 @@ public class TagsUpdateTask implements Runnable {
 
         if (mRemoteExist) {
             RealmConfiguration configuration = new RealmConfiguration.Builder(remoteRealmFolder)
-                    .name(remoteRealmFileName).migration(new LocalRealmMigration()).build();
+                    .name(remoteRealmFileName).migration(remoteRealmMigration).build();
             mRemoteRealm = Realm.getInstance(configuration);
             Realm.compactRealm(configuration);
 
