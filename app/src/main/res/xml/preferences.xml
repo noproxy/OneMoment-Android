@@ -99,7 +99,6 @@
         </com.jenzz.materialpreference.Preference>
         <com.jenzz.materialpreference.Preference
             android:key="@string/pref_key_version"
-            android:defaultValue="@string/app_version_code"
             android:summary="@string/app_version"
             android:title="@string/app_name"
             />

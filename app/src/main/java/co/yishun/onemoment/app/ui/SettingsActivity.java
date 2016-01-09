@@ -2,6 +2,8 @@ package co.yishun.onemoment.app.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -19,6 +21,9 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.umeng.update.UmengUpdateAgent;
+import com.umeng.update.UmengUpdateListener;
+import com.umeng.update.UpdateResponse;
+import com.umeng.update.UpdateStatus;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -141,9 +146,22 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
                 ((SettingsActivity) getActivity()).showSnackMsg(R.string.activity_settings_sync_now);
                 return true;
             });
-            findPreference(getString(R.string.pref_key_version)).setOnPreferenceClickListener(preference -> {
+
+            Preference versionPreference = findPreference(getString(R.string.pref_key_version));
+            versionPreference.setOnPreferenceClickListener(preference -> {
+                ((BaseActivity)this.getActivity()).showSnackMsg(R.string.activity_settings_check_update);
                 UmengUpdateAgent.update(this.getActivity());
-                LogUtil.d(TAG, "version");
+                UmengUpdateAgent.setUpdateAutoPopup(false);
+                UmengUpdateAgent.setUpdateListener((updateStatus, updateResponse) -> {
+                    switch (updateStatus) {
+                        case UpdateStatus.Yes: // has update
+                            UmengUpdateAgent.showUpdateDialog(this.getActivity(), updateResponse);
+                            break;
+                        case UpdateStatus.No:
+                            ((BaseActivity)this.getActivity()).showSnackMsg(R.string.activity_settings_no_new_version);
+                            break;
+                    }
+                });
                 return true;
             });
         }

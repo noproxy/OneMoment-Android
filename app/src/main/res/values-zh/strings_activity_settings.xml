@@ -2,6 +2,8 @@
     <string name="title_settings">设置</string>
 
     <string name="activity_settings_sync_now">同步中…</string>
+    <string name="activity_settings_check_update">新版检查中…</string>
+    <string name="activity_settings_no_new_version">当前已是最新版本</string>
 
     <!-- settings for Data & Sync -->
     <string name="pref_title_sync">数据 &amp; 同步</string>

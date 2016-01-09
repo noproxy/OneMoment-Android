@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">One Moment</string>
-    <string name="app_version_code">2.0.0 dev</string>
     <string name="app_version">Version 2.0.0 dev</string>
 
     <string name="hello_world" translatable="false">Hello world!</string>
