@@ -66,8 +66,8 @@ public class SplashActivity extends BaseActivity {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
         preferences = getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
-        new DataMigration(this);
         delayShowCover();
+        new DataMigration(this);
     }
 
     @Override

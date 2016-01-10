@@ -76,9 +76,21 @@ public class DataMigration {
 
     public DataMigration(Context mContext) {
         this.mContext = mContext;
-        if (migrateUserData()){
+        if (checkVersion() && migrateUserData()) {
             migrateAppMoment();
             migratePref();
+        }
+    }
+
+    private boolean checkVersion() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        PackageInfo packageInfo;
+        try {
+            packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+            return preferences.getInt(mContext.getString(R.string.pref_key_version), 0) < packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return true;
         }
     }
 
@@ -119,6 +131,14 @@ public class DataMigration {
                     + AccountManager.getUserInfo(mContext)._id
                     + oldName.substring(oldName.indexOf("-"));
             old.renameTo(new File(thumbDir, newName));
+        }
+
+        File[] oldMoments = momentDir.listFiles((dir, filename) -> filename.startsWith("LOC"));
+        for (File moment : oldMoments) {
+            String oldName = moment.getName();
+            String newName = AccountManager.getUserInfo(mContext)._id
+                    + oldName.substring(oldName.indexOf("-"));
+            moment.renameTo(new File(momentDir, newName));
         }
     }
 

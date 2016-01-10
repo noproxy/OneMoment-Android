@@ -30,6 +30,7 @@ import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.ui.AccountActivity_;
 import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.common.WXRespActivity;
@@ -206,6 +207,7 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
     }
 
     @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS) void exitWithStartMain() {
+        new DataMigration(this);
         MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
         finish();
     }
