@@ -74,9 +74,9 @@ public class DataMigration {
 
     private Context mContext;
 
-    public DataMigration(Context mContext) {
+    public DataMigration(Context mContext, boolean versionCheck) {
         this.mContext = mContext;
-        if (checkVersion() && migrateUserData()) {
+        if ((!versionCheck || checkVersion()) && migrateUserData()) {
             migrateAppMoment();
             migratePref();
         }
@@ -87,10 +87,13 @@ public class DataMigration {
         PackageInfo packageInfo;
         try {
             packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
-            return preferences.getInt(mContext.getString(R.string.pref_key_version), 0) < packageInfo.versionCode;
+            if (preferences.getInt(mContext.getString(R.string.pref_key_version), 0) < packageInfo.versionCode) {
+                preferences.edit().putInt(mContext.getString(R.string.pref_key_version), packageInfo.versionCode).apply();
+                return true;
+            } else return false;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            return true;
+            return false;
         }
     }
 
@@ -102,18 +105,19 @@ public class DataMigration {
             if (userInfoFile.length() > 0) {
                 FileInputStream fileInputStream = new FileInputStream(userInfoFile);
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-                AccountResult.Data data = (AccountResult.Data) objectInputStream.readObject();
-                User user = new User();
-                user._id = data.get_id();
-                user.nickname = data.getNickname();
-                user.gender = Account.Gender.format(data.getGender());
-                user.location = data.getArea();
-                user.avatarUrl = data.getAvatar_url();
-                AccountManager.saveAccount(mContext, user);
-                return true;
-            } else {
-                return false;
-            }
+                Object o = objectInputStream.readObject();
+                if (o instanceof AccountResult.Data) {
+                    AccountResult.Data data = (AccountResult.Data) o;
+                    User user = new User();
+                    user._id = data.get_id();
+                    user.nickname = data.getNickname();
+                    user.gender = Account.Gender.format(data.getGender());
+                    user.location = data.getArea();
+                    user.avatarUrl = data.getAvatar_url();
+                    AccountManager.saveAccount(mContext, user);
+                    return true;
+                } else return false;
+            } else return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -143,13 +147,5 @@ public class DataMigration {
     }
 
     private void migratePref() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        PackageInfo packageInfo;
-        try {
-            packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
-            preferences.edit().putInt(mContext.getString(R.string.pref_key_version), packageInfo.versionCode).apply();
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 }

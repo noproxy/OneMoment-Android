@@ -67,7 +67,7 @@ public class SplashActivity extends BaseActivity {
         }
         preferences = getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
         delayShowCover();
-        new DataMigration(this);
+        new DataMigration(this, true);
     }
 
     @Override

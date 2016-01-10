@@ -207,7 +207,7 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
     }
 
     @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS) void exitWithStartMain() {
-        new DataMigration(this);
+        new DataMigration(this, false);
         MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
         finish();
     }
