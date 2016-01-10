@@ -33,6 +33,7 @@ import co.yishun.onemoment.app.account.remind.ReminderReceiver;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.SplashCover;
+import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.wxapi.EntryActivity_;
@@ -65,12 +66,13 @@ public class SplashActivity extends BaseActivity {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
         preferences = getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
+        new DataMigration(this);
+        delayShowCover();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        delayShowCover();
     }
 
     boolean isFirstLaunch() {

@@ -104,7 +104,7 @@ public class FileUtil {
         return new File(dir, type.getPrefix(context) + time + URL_HYPHEN + unixTimeStamp + type.getSuffix());
     }
 
-    private static File getMediaStoreDir(Context context, @MediaDir String dirType) {
+    public static File getMediaStoreDir(Context context, @MediaDir String dirType) {
         return context.getDir(dirType, Context.MODE_PRIVATE);
     }
 
