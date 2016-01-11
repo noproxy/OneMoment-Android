@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import co.yishun.onemoment.app.LogUtil;
@@ -118,7 +119,10 @@ public class DataMigration {
                     return true;
                 } else return false;
             } else return false;
-        } catch (Exception e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return false;
         }
