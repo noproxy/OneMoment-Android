@@ -131,6 +131,7 @@ public class DataMigration {
                     user.location = data.getArea();
                     user.avatarUrl = data.getAvatar_url();
                     AccountManager.saveAccount(mContext, user);
+                    AccountManager.deleteOldAccount(mContext, user);
                     return true;
                 } else return false;
             } else return false;

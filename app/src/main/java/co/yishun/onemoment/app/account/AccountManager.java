@@ -4,7 +4,7 @@ import android.accounts.Account;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,6 +77,22 @@ public class AccountManager {
         getAccountManager(context).removeAccount(account, null, null);
         SyncManager.disableSync();
 
+        account = null;
+    }
+
+    /**
+     * delete account create in version 1.x
+     * because {@link Account#name} of account in 1.x equals {@link User#_id}, while
+     * {@link Account#name} of account in 1.x equals {@link User#nickname}.
+     */
+    public static void deleteOldAccount(Context context, User user) {
+        Account[] accounts = getAccountManager(context).getAccountsByType(ACCOUNT_TYPE);
+        for (Account a : accounts) {
+            if (TextUtils.equals(a.name, user._id)) {
+                getAccountManager(context).removeAccount(a, null, null);
+                break;
+            }
+        }
         account = null;
     }
 
