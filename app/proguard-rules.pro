@@ -199,6 +199,14 @@
         public <methods>;
 }
 
+#for umeng update
+-keep class com.umeng.update.** {
+        public <fields>;
+        public <methods>;
+}
+
+-dontwarn com.umeng.update.**
+
 -dontwarn com.xiaomi.**
 
 -dontwarn com.ut.mini.**
