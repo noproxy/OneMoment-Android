@@ -148,8 +148,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="tencent222222"/>
-                <!-- TODO change test id to 1104574591 -->
+                <data android:scheme="tencent1104574591"/>
             </intent-filter>
         </activity>
         <activity

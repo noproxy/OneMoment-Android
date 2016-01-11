@@ -25,7 +25,7 @@ import static java.lang.String.valueOf;
  * Created by yyz on 5/30/15.
  */
 public class QQHelper implements AuthHelper {
-    public static final String APP_ID = "222222";//TODO change from test id to "1104574591"
+    public static final String APP_ID = "1104574591";
     public static final String SCOPE = "get_user_info";//scope we need access
     private static final String TAG = "QQHelper";
 
