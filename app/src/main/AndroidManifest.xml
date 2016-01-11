@@ -83,7 +83,6 @@
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
-            android:launchMode="singleInstance"
             android:theme="@android:style/Theme.NoDisplay"/>
         <activity
             android:name=".wxapi.EntryActivity_"
@@ -216,8 +215,7 @@
                 android:value=".ui.MainActivity_"/>
         </activity>
         <activity
-            android:name=".ui.share.ShareActivity_"
-            android:launchMode="singleTask"
+            android:name=".ui.ShareActivity_"
             android:theme="@style/AppTheme.ShareActivity">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>

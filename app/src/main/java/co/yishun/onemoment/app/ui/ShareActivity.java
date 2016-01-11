@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui.share;
+package co.yishun.onemoment.app.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +23,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.common.WXRespActivity;
+import co.yishun.onemoment.app.ui.share.ShareController;
 
 /**
  * Created by Jinge on 2015/12/12.

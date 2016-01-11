@@ -17,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,8 +50,6 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagController_;
-import co.yishun.onemoment.app.ui.share.ShareActivity;
-import co.yishun.onemoment.app.ui.share.ShareActivity_;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 
 /**

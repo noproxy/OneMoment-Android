@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -31,8 +30,6 @@ import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
 import co.yishun.onemoment.app.ui.play.PlayWorldFragment;
 import co.yishun.onemoment.app.ui.play.PlayWorldFragment_;
-import co.yishun.onemoment.app.ui.share.ShareActivity;
-import co.yishun.onemoment.app.ui.share.ShareActivity_;
 
 /**
  * Created on 2015/10/26.

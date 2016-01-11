@@ -57,13 +57,11 @@ import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.MomentLock;
-import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
+import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
-import co.yishun.onemoment.app.ui.share.ShareActivity;
-import co.yishun.onemoment.app.ui.share.ShareActivity_;
 import co.yishun.onemoment.app.video.VideoCommand;
 import co.yishun.onemoment.app.video.VideoConcat;
 
