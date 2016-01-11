@@ -5,11 +5,17 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.sql.SQLException;
+import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -17,6 +23,8 @@ import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
+import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.net.result.AccountResult;
 
 /**
@@ -74,11 +82,18 @@ public class DataMigration {
      */
 
     private Context mContext;
+    private Dao<Moment, Integer> momentDao;
 
     public DataMigration(Context mContext, boolean versionCheck) {
         this.mContext = mContext;
+        try {
+            momentDao = OpenHelperManager.getHelper(mContext, MomentDatabaseHelper.class).getDao(Moment.class);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
         if ((!versionCheck || checkVersion()) && migrateUserData()) {
-            migrateAppMoment();
+            migrateMoment();
             migratePref();
         }
     }
@@ -128,25 +143,42 @@ public class DataMigration {
         }
     }
 
-    private void migrateAppMoment() {
-        File momentDir = FileUtil.getMediaStoreDir(mContext, FileUtil.MOMENT_STORE_DIR);
+    private void migrateMoment() {
         File thumbDir = FileUtil.getMediaStoreDir(mContext, FileUtil.THUMB_STORE_DIR);
-        LogUtil.d(TAG, momentDir.getPath());
-        File[] oldThumbs = momentDir.listFiles((dir, filename) -> (filename.startsWith("LAT") || (filename.startsWith("MIT"))));
-        for (File old : oldThumbs) {
-            String oldName = old.getName();
-            String newName = oldName.substring(0, oldName.indexOf("-") + 1)
-                    + AccountManager.getUserInfo(mContext)._id
-                    + oldName.substring(oldName.indexOf("-"));
-            old.renameTo(new File(thumbDir, newName));
-        }
+        try {
+            List<Moment> localMoments = momentDao.queryForAll();
+            for (Moment m : localMoments) {
+                if (TextUtils.equals(m.getOwnerID(), "LOC")) {
+                    File oldMoment = m.getFile();
+                    String oldMomentName = oldMoment.getName();
+                    String newMomentName = AccountManager.getUserInfo(mContext)._id
+                            + oldMomentName.substring(oldMomentName.indexOf("-"));
+                    oldMoment.renameTo(new File(oldMoment.getParent(), newMomentName));
+                    m.setPath(oldMoment.getPath());
+                }
 
-        File[] oldMoments = momentDir.listFiles((dir, filename) -> filename.startsWith("LOC"));
-        for (File moment : oldMoments) {
-            String oldName = moment.getName();
-            String newName = AccountManager.getUserInfo(mContext)._id
-                    + oldName.substring(oldName.indexOf("-"));
-            moment.renameTo(new File(momentDir, newName));
+                File oldLargeThumb = m.getLargeThumbPathFile();
+                String oldLargeThumbName = oldLargeThumb.getName();
+                String newLargeThumbName = oldLargeThumbName.substring(0, oldLargeThumbName.indexOf("-") + 1)
+                        + AccountManager.getUserInfo(mContext)._id
+                        + oldLargeThumbName.substring(oldLargeThumbName.indexOf("-"));
+                File newLargeThumb = new File(thumbDir, newLargeThumbName);
+                oldLargeThumb.renameTo(newLargeThumb);
+                m.setLargeThumbPath(newLargeThumb.getPath());
+
+                File oldSmallThumb = m.getThumbPathFile();
+                String oldSmallThumbName = oldSmallThumb.getName();
+                String newSmallThumbName = oldSmallThumbName.substring(0, oldSmallThumbName.indexOf("-") + 1)
+                        + AccountManager.getUserInfo(mContext)._id
+                        + oldSmallThumbName.substring(oldSmallThumbName.indexOf("-"));
+                File newSmallThumb = new File(thumbDir, newSmallThumbName);
+                oldSmallThumb.renameTo(newSmallThumb);
+                m.setThumbPath(newSmallThumb.getPath());
+
+                momentDao.createOrUpdate(m);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
