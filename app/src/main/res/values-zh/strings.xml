@@ -79,4 +79,5 @@
     <string name="view_today_moment_no_tag">没有添加标签</string>
     <string name="activity_guide_enter">进入一瞬</string>
     <string name="text_load_error">加载失败，请检查网络状态！</string>
+    <string name="activity_splash_data_migration">更新中…</string>
 </resources>

@@ -6,9 +6,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -25,6 +28,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -35,6 +42,8 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.SplashCover;
 import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
+import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.wxapi.EntryActivity_;
 
@@ -66,8 +75,10 @@ public class SplashActivity extends BaseActivity {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
         preferences = getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
-        delayShowCover();
+        showProgress(R.string.activity_splash_data_migration);
         new DataMigration(this, true);
+        hideProgress();
+        delayShowCover();
     }
 
     @Override
