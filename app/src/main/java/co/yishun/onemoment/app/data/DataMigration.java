@@ -103,10 +103,9 @@ public class DataMigration {
         PackageInfo packageInfo;
         try {
             packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
-            if (preferences.getInt(mContext.getString(R.string.pref_key_version), 0) < packageInfo.versionCode) {
-                preferences.edit().putInt(mContext.getString(R.string.pref_key_version), packageInfo.versionCode).apply();
-                return true;
-            } else return false;
+            boolean versionNeedMigration = preferences.getInt(mContext.getString(R.string.pref_key_version), 0) < 10;
+            preferences.edit().putInt(mContext.getString(R.string.pref_key_version), packageInfo.versionCode).apply();
+            return versionNeedMigration;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return false;
