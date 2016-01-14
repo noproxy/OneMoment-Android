@@ -84,31 +84,57 @@ public class DataMigration {
     private Context mContext;
     private Dao<Moment, Integer> momentDao;
 
-    public DataMigration(Context mContext, boolean versionCheck) {
+    private DataMigration(Context mContext) throws SQLException {
         this.mContext = mContext;
+        momentDao = OpenHelperManager.getHelper(mContext, MomentDatabaseHelper.class).getDao(Moment.class);
+    }
+
+    public static void dataInit(Context context) {
         try {
-            momentDao = OpenHelperManager.getHelper(mContext, MomentDatabaseHelper.class).getDao(Moment.class);
+            DataMigration dataMigration = new DataMigration(context);
+            if (dataMigration.checkVersion()) {
+                dataMigration.migrateVersion();
+                dataMigration.migrateUserData();
+                dataMigration.migrateThumbs();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return;
         }
-        if ((!versionCheck || checkVersion()) && migrateUserData()) {
-            migrateMoment();
-            migratePref();
+    }
+
+    public static boolean hasLOCMoments(Context context) {
+        try {
+            DataMigration dataMigration = new DataMigration(context);
+            return dataMigration.hasLOCMoment();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static void moveLOCMomentsToUser(Context context) {
+        try {
+            DataMigration dataMigration = new DataMigration(context);
+            dataMigration.moveLOCMomentsToOwner(AccountManager.getUserInfo(context)._id);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     private boolean checkVersion() {
+        LogUtil.e(TAG, "check version");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return preferences.getInt(mContext.getString(R.string.pref_key_version), 0) < 10;
+    }
+
+    private void migrateVersion() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         PackageInfo packageInfo;
         try {
             packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
-            boolean versionNeedMigration = preferences.getInt(mContext.getString(R.string.pref_key_version), 0) < 10;
             preferences.edit().putInt(mContext.getString(R.string.pref_key_version), packageInfo.versionCode).apply();
-            return versionNeedMigration;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
@@ -143,25 +169,17 @@ public class DataMigration {
         }
     }
 
-    private void migrateMoment() {
+    private void migrateThumbs() {
         File thumbDir = FileUtil.getMediaStoreDir(mContext, FileUtil.THUMB_STORE_DIR);
         try {
             List<Moment> localMoments = momentDao.queryForAll();
             for (Moment m : localMoments) {
-                if (TextUtils.equals(m.getOwnerID(), "LOC")) {
-                    File oldMoment = m.getFile();
-                    String oldMomentName = oldMoment.getName();
-                    String newMomentName = AccountManager.getUserInfo(mContext)._id
-                            + oldMomentName.substring(oldMomentName.indexOf("-"));
-                    oldMoment.renameTo(new File(oldMoment.getParent(), newMomentName));
-                    m.setPath(oldMoment.getPath());
-                }
+                String ownerId = m.getOwnerID();
 
                 File oldLargeThumb = m.getLargeThumbPathFile();
                 String oldLargeThumbName = oldLargeThumb.getName();
                 String newLargeThumbName = oldLargeThumbName.substring(0, oldLargeThumbName.indexOf("-") + 1)
-                        + AccountManager.getUserInfo(mContext)._id
-                        + oldLargeThumbName.substring(oldLargeThumbName.indexOf("-"));
+                        + ownerId + oldLargeThumbName.substring(oldLargeThumbName.indexOf("-"));
                 File newLargeThumb = new File(thumbDir, newLargeThumbName);
                 oldLargeThumb.renameTo(newLargeThumb);
                 m.setLargeThumbPath(newLargeThumb.getPath());
@@ -169,8 +187,7 @@ public class DataMigration {
                 File oldSmallThumb = m.getThumbPathFile();
                 String oldSmallThumbName = oldSmallThumb.getName();
                 String newSmallThumbName = oldSmallThumbName.substring(0, oldSmallThumbName.indexOf("-") + 1)
-                        + AccountManager.getUserInfo(mContext)._id
-                        + oldSmallThumbName.substring(oldSmallThumbName.indexOf("-"));
+                        + ownerId + oldSmallThumbName.substring(oldSmallThumbName.indexOf("-"));
                 File newSmallThumb = new File(thumbDir, newSmallThumbName);
                 oldSmallThumb.renameTo(newSmallThumb);
                 m.setThumbPath(newSmallThumb.getPath());
@@ -182,6 +199,48 @@ public class DataMigration {
         }
     }
 
-    private void migratePref() {
+    private boolean hasLOCMoment() {
+        boolean check = false;
+        try {
+            List<Moment> momentsNoUser = momentDao.queryBuilder().where().eq("owner", "LOC").query();
+            check = momentsNoUser.size() != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return check;
+    }
+
+    private void moveLOCMomentsToOwner(String userId) {
+        File thumbDir = FileUtil.getMediaStoreDir(mContext, FileUtil.THUMB_STORE_DIR);
+        try {
+            List<Moment> localMoments = momentDao.queryForAll();
+            for (Moment m : localMoments) {
+                if (TextUtils.equals(m.getOwnerID(), "LOC")) {
+                    File oldMoment = m.getFile();
+                    String oldMomentName = oldMoment.getName();
+                    String newMomentName = oldMomentName.replace("LOC", userId);
+                    oldMoment.renameTo(new File(oldMoment.getParent(), newMomentName));
+                    m.setPath(oldMoment.getPath());
+
+                    File oldLargeThumb = m.getLargeThumbPathFile();
+                    String oldLargeThumbName = oldLargeThumb.getName();
+                    String newLargeThumbName = oldLargeThumbName.replace("LOC", userId);
+                    File newLargeThumb = new File(thumbDir, newLargeThumbName);
+                    oldLargeThumb.renameTo(newLargeThumb);
+                    m.setLargeThumbPath(newLargeThumb.getPath());
+
+                    File oldSmallThumb = m.getThumbPathFile();
+                    String oldSmallThumbName = oldSmallThumb.getName();
+                    String newSmallThumbName = oldSmallThumbName.replace("LOC", userId);
+                    File newSmallThumb = new File(thumbDir, newSmallThumbName);
+                    oldSmallThumb.renameTo(newSmallThumb);
+                    m.setThumbPath(newSmallThumb.getPath());
+
+                    momentDao.createOrUpdate(m);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

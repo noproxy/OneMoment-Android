@@ -62,4 +62,8 @@
     <string name="activity_user_info_weibo_id_bind_forbid">Weibo has been binded, bind failed.</string>
 
     <string name="activity_splash_data_migration">Updating…</string>
+
+    <string name="activity_main_move_LOC_moments">Move moments shot when you logout to current account?</string>
+    <string name="activity_main_move_LOC_moments_positive">OK</string>
+    <string name="activity_main_move_LOC_moments_negative">Not Now</string>
 </resources>

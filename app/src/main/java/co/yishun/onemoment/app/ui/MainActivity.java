@@ -30,12 +30,16 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 
 import java.lang.ref.WeakReference;
@@ -45,10 +49,9 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
-import co.yishun.onemoment.app.api.Account;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.home.DiaryFragment;
@@ -66,12 +69,12 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private static WeakReference<FloatingActionMenu> floatingActionMenu;
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
+    @Extra boolean checkLOC = false;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     private FragmentManager fragmentManager;
     private int currentItemId = 0;
     private WorldFragment worldFragment;
-    private Account mAccount = OneMomentV3.createAdapter().create(Account.class);
     private ImageView profileImageView;
     private TextView usernameTextView;
     private TextView locationTextView;
@@ -109,6 +112,20 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mSyncChangedReceiver);
+    }
+
+    @AfterInject void showMoveLOCDialog() {
+        if (checkLOC)
+            new MaterialDialog.Builder(this).theme(Theme.LIGHT)
+                    .content(R.string.activity_main_move_LOC_moments)
+                    .positiveText(R.string.activity_main_move_LOC_moments_positive)
+                    .negativeText(R.string.activity_main_move_LOC_moments_negative)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override public void onPositive(MaterialDialog dialog) {
+                            super.onPositive(dialog);
+                            DataMigration.moveLOCMomentsToUser(MainActivity.this);
+                        }
+                    }).build().show();
     }
 
     private void updateDiary() {

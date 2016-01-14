@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.ProgressSnackBar;
 import android.support.design.widget.Snackbar;
 import android.view.View;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -207,8 +210,8 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
     }
 
     @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS) void exitWithStartMain() {
-        new DataMigration(this, false);
-        MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
+        MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
+                .checkLOC(DataMigration.hasLOCMoments(this)).start();
         finish();
     }
 }

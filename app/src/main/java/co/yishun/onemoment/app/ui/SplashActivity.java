@@ -76,7 +76,7 @@ public class SplashActivity extends BaseActivity {
         }
         preferences = getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
         showProgress(R.string.activity_splash_data_migration);
-        new DataMigration(this, true);
+        DataMigration.dataInit(this);
         hideProgress();
         delayShowCover();
     }

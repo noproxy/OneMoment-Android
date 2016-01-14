@@ -269,3 +269,8 @@
 -keep class co.yishun.onemoment.app.api.* { *; }
 
 -keep class co.yishun.onemoment.app.net.result.** { *; }
+
+-keep class co.yishun.onemoment.app.data.DataMigration {
+        public <fields>;
+        public <methods>;
+}
