@@ -103,7 +103,7 @@ public class VideoTaskManager {
 
     public void quit() {
         for (AsyncTask asyncTask : asyncTaskList) {
-            asyncTask.cancel(false);
+            asyncTask.cancel(true);
         }
         asyncTaskList.clear();
     }

@@ -21,6 +21,7 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
 public abstract class PlayFragment extends BaseFragment {
 
     protected Context mContext;
+    protected BaseActivity mActivity;
     @ViewById OnemomentPlayerView videoPlayView;
 
     private boolean isLoading;
@@ -34,6 +35,12 @@ public abstract class PlayFragment extends BaseFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        mActivity = (BaseActivity) getActivity();
+    }
+
+    @Override public void onDetach() {
+        super.onDetach();
+        mActivity = null;
     }
 
     protected void onLoad() {
@@ -51,7 +58,8 @@ public abstract class PlayFragment extends BaseFragment {
 
     @UiThread(delay = 500) void delayStart() {
         videoPlayView.start();
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (mActivity != null)
+            mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Click(R.id.videoPlayView) void videoClick() {
