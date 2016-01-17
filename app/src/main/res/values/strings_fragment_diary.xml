@@ -2,4 +2,5 @@
 <resources>
     <string name="fragment_diary_action_share">Share</string>
     <string name="fragment_diary_action_all_play">All play</string>
+    <string name="fragment_diary_no_moment">No Moment</string>
 </resources>

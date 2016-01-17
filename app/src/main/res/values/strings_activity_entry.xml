@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_entry_login_success">Login Success.</string>
+    <string name="activity_entry_login_fail">Login failed.</string>
+    <string name="activity_entry_auth_success">Auth Success.</string>
+    <string name="activity_entry_login_progress">Login…</string>
+
+    <string name="activity_entry_we_chat_not_install">WeChat not installed!</string>
+</resources>

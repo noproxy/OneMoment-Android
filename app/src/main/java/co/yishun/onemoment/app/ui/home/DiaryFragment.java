@@ -114,7 +114,7 @@ public class DiaryFragment extends ToolbarFragment
                 try {
                     List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true).query();
                     if (momentList.size() == 0)
-                        ((MainActivity) this.getActivity()).showSnackMsg("No moment");
+                        ((MainActivity) this.getActivity()).showSnackMsg(R.string.fragment_diary_no_moment);
                     else
                         PlayMomentActivity_.intent(this.getActivity()).startDate(momentList.get(0).getTime())
                                 .endDate(momentList.get(momentList.size() - 1).getTime()).start();

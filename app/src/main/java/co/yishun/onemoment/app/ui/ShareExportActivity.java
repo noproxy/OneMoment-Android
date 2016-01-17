@@ -137,7 +137,7 @@ public class ShareExportActivity extends BaseActivity
 
     @Click(R.id.shareText) @Background void shareTextClicked() {
         if (selectedMoments.size() == 0) {
-            showSnackMsg("Select at least one to share");
+            showSnackMsg(R.string.activity_share_export_no_moment_select);
             return;
         }
         showProgress();
@@ -147,7 +147,7 @@ public class ShareExportActivity extends BaseActivity
 
     @Click(R.id.exportText) @Background void exportTextClicked() {
         if (selectedMoments.size() == 0) {
-            showSnackMsg("Select at least one to share");
+            showSnackMsg(R.string.activity_share_export_no_moment_select);
             return;
         }
         showProgress();
@@ -313,7 +313,7 @@ public class ShareExportActivity extends BaseActivity
             FileUtil.copyFile(videoCacheFile, outFile);
             videoCacheFile.delete();
             hideProgress();
-            showSnackMsg("Export success");
+            showSnackMsg(R.string.activity_share_export_export_success);
         } else
             uploadAndShare();
     }
