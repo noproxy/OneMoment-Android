@@ -26,6 +26,11 @@
         <item>Latest</item>
     </string-array>
 
+    <string-array name="discovery_page_title">
+        <item>Recommend</item>
+        <item>Latest</item>
+    </string-array>
+
     <string name="discovery_video_voted_up">Videos Voted Up</string>
     <string name="video_vote_up_title">Voted Up</string>
     <string name="discovery_alarm">alarm everyday</string>
