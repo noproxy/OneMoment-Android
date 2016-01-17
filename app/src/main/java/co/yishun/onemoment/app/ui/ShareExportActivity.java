@@ -119,7 +119,7 @@ public class ShareExportActivity extends BaseActivity
 
     @UiThread void showConcatProgress() {
         hideProgress();
-        concatProgress = new MaterialDialog.Builder(this).progress(false, 100, true)
+        concatProgress = new MaterialDialog.Builder(this).progress(false, 100, false)
                 .theme(Theme.LIGHT).cancelable(false)
                 .content(getString(R.string.activity_share_export_progress_concatenating)).build();
         concatProgress.show();
