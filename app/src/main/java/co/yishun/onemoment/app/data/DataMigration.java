@@ -219,8 +219,9 @@ public class DataMigration {
                     File oldMoment = m.getFile();
                     String oldMomentName = oldMoment.getName();
                     String newMomentName = oldMomentName.replace("LOC", userId);
-                    oldMoment.renameTo(new File(oldMoment.getParent(), newMomentName));
-                    m.setPath(oldMoment.getPath());
+                    File newMoment = new File(oldMoment.getParent(), newMomentName);
+                    oldMoment.renameTo(newMoment);
+                    m.setPath(newMoment.getPath());
 
                     File oldLargeThumb = m.getLargeThumbPathFile();
                     String oldLargeThumbName = oldLargeThumb.getName();
@@ -236,6 +237,7 @@ public class DataMigration {
                     oldSmallThumb.renameTo(newSmallThumb);
                     m.setThumbPath(newSmallThumb.getPath());
 
+                    m.setOwner(userId);
                     momentDao.createOrUpdate(m);
                 }
             }
