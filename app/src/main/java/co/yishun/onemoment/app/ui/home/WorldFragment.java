@@ -72,7 +72,7 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
 
     @Override
     protected int getContentViewId(Bundle savedInstanceState) {
-        return R.layout.fragment_world;
+        return R.layout.fragment_discovery;
     }
 
     @Override

@@ -21,6 +21,11 @@
         <item>最新</item>
     </string-array>
 
+    <string-array name="discovery_page_title">
+        <item>推荐</item>
+        <item>最新</item>
+    </string-array>
+
     <string name="discovery_video_voted_up">喜欢的视频</string>
     <string name="video_vote_up_title">喜欢的视频</string>
     <string name="discovery_alarm">每日提醒</string>
