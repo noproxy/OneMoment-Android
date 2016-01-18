@@ -310,6 +310,18 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         User user = account.updateInfo(userId, nickname, gender, qiNiuKey, location);
         if (user.code <= 0) {
             LogUtil.i(TAG, "update info failed: " + user.msg);
+            switch (user.errorCode) {
+                case Constants.ErrorCode.NICKNAME_EXISTS:
+                    showSnackMsg(R.string.fragment_integrate_info_error_nickname_exist);
+                    break;
+                case Constants.ErrorCode.NICKNAME_FORMAT_ERROR:
+                    showSnackMsg(R.string.fragment_integrate_info_error_nickname_invalid);
+                    break;
+                default:
+                    int error = user.errorCode;
+                    showSnackMsg(getString(R.string.unknown_error) + ":" + error);
+                    break;
+            }
             return;
         }
         AccountManager.updateOrCreateUserInfo(this, user);
