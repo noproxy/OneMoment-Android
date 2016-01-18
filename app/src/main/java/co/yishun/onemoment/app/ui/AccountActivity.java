@@ -27,6 +27,7 @@ import co.yishun.onemoment.app.account.auth.UserInfo;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.ui.account.AccountFragment;
+import co.yishun.onemoment.app.ui.account.GetPasswordFragment_;
 import co.yishun.onemoment.app.ui.account.IntegrateInfoFragment_;
 import co.yishun.onemoment.app.ui.account.PhoneLoginFragment;
 import co.yishun.onemoment.app.ui.account.PhoneLoginFragment_;
@@ -106,11 +107,16 @@ public class AccountActivity extends PickCropActivity {
     public void setCurrentFragment(AccountFragment fragment) {
         mCurrentFragment = fragment;
         findViewById(R.id.signUpByPhone).setVisibility(mCurrentFragment instanceof PhoneLoginFragment ? View.VISIBLE : View.INVISIBLE);
+        findViewById(R.id.getPassword).setVisibility(mCurrentFragment instanceof PhoneLoginFragment ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Click
     void signUpByPhoneClicked(View view) {
         openFragment(PhoneSignUpFragment_.builder().build());
+    }
+
+    @Click void getPasswordClicked(View view) {
+        openFragment(GetPasswordFragment_.builder().build());
     }
 
     @NonNull @Override
