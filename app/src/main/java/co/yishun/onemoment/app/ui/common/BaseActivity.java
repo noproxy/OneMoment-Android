@@ -8,8 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -22,6 +23,9 @@ import org.androidannotations.annotations.UiThread;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.ui.AccountActivity;
+import co.yishun.onemoment.app.ui.SplashActivity;
+import co.yishun.onemoment.app.wxapi.EntryActivity;
 
 import static java.lang.String.valueOf;
 
@@ -34,11 +38,36 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected boolean mIsPage = true;
     protected String mPageName = "BaseActivity";
     private MaterialDialog mProgressDialog;
+    private String statusTag = "status";
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         PushAgent.getInstance(this).onAppStart();
+    }
+
+    protected void setStatusBarOnKitKat() {
+        FrameLayout content = (FrameLayout) findViewById(android.R.id.content);
+        View status = content.findViewWithTag(statusTag);
+        if (status != null) content.removeView(status);
+
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        status = new View(this);
+        status.setBackgroundResource(R.color.colorPrimaryDark);
+        status.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, result));
+        status.setTag(statusTag);
+        content.addView(status, 0);
+    }
+
+    @Override public void onContentChanged() {
+        super.onContentChanged();
+        if (!(this instanceof SplashActivity || this instanceof EntryActivity || this instanceof AccountActivity)) {
+            setStatusBarOnKitKat();
+        }
     }
 
     @CallSuper @NonNull public View getSnackbarAnchorWithView(@Nullable View view) {
