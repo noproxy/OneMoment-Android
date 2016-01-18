@@ -130,4 +130,11 @@
         <item name="android:background">@drawable/bg_btn_menu</item>
     </style>
 
+
+    <style name="PhoneLoginLinearLayout">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.4</item>
+        <item name="android:paddingBottom">88dp</item>
+    </style>
+
 </resources>
