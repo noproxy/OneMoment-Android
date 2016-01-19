@@ -91,7 +91,7 @@ public interface Account {
     @POST("/account/send_verify_sms")
     ApiModel sendVerifySms(
             @Field("phone") @NonNull String phone,
-            @Field("String") @Nullable String signUpOrResetPassword
+            @Field("check") @Nullable String signUpOrResetPassword
     );
 
     @FormUrlEncoded

@@ -12,4 +12,11 @@
     <style name="AppTheme.Widget.ImageButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
+
+
+    <style name="PhoneLoginLinearLayout">
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:paddingTop">32dp</item>
+    </style>
 </resources>

@@ -16,5 +16,5 @@
     <string name="fragment_phone_verify_sms_fail">Send fail, please retry.</string>
     <string name="fragment_phone_verify_sms_fail_account_exist">Send fail! Account exist, please login directly.</string>
 
-
+    <string name="fragment_phone_verify_reset_password_success">Password Reset</string>
 </resources>

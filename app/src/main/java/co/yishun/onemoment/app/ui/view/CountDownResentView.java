@@ -100,6 +100,7 @@ public class CountDownResentView extends FrameLayout implements View.OnClickList
         countEnded = false;
         mEndTextView.setVisibility(INVISIBLE);
         mNotEndViewGroup.setVisibility(VISIBLE);
+        mCountDownView.setStartNumber(mStartNum);
         mCountDownView.setOnCountDownEndListener(this);
         mCountDownView.startCountDown();
     }

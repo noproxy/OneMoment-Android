@@ -7,9 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.ProgressSnackBar;
 import android.support.design.widget.Snackbar;
 import android.view.View;
-import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -70,11 +67,11 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
             mAuthHelper = new WeChatHelper(this);
             mAuthHelper.login(this);
         } else
-            showSnackMsg("WeChat not installed!");
+            showSnackMsg(R.string.activity_entry_we_chat_not_install);
     }
 
     private void showSnackProgress() {
-        snackbar = Snackbar.make(getSnackbarAnchorWithView(null), R.string.activity_wx_entry_login_progress, Snackbar.LENGTH_INDEFINITE);
+        snackbar = Snackbar.make(getSnackbarAnchorWithView(null), R.string.activity_entry_login_progress, Snackbar.LENGTH_INDEFINITE);
         ProgressSnackBar.with(snackbar).show();
     }
 
@@ -87,7 +84,7 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
     @Override
     public void onFail() {
         LogUtil.e(TAG, "auth fail.");
-        showSnackMsg("fail!");
+        showSnackMsg(R.string.activity_entry_login_fail);
     }
 
     @Override
@@ -173,7 +170,7 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
     @SupposeBackground void handleUser(User user, OAuthToken token) {
         if (user.code == 1) {
             AccountManager.saveAccount(this, user);
-            showSnackMsg(R.string.activity_wx_entry_login_success);
+            showSnackMsg(R.string.activity_entry_login_success);
             SyncManager.syncNow(this);
             exitWithStartMain();
         } else if (user.errorCode == Constants.ErrorCode.ACCOUNT_DOESNT_EXIST) {
@@ -181,7 +178,7 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
             getUserInfo(token);
         } else {
             LogUtil.i(TAG, "sign in failed: " + user.msg);
-            showSnackMsg(R.string.activity_wx_entry_login_fail);
+            showSnackMsg(R.string.activity_entry_login_fail);
         }
     }
 
@@ -192,7 +189,7 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
      */
     @SupposeBackground void getUserInfo(OAuthToken token) {
         UserInfo info = mAuthHelper.getUserInfo(token);
-        showSnackMsg(R.string.activity_wx_entry_auth_success);
+        showSnackMsg(R.string.activity_entry_auth_success);
         startActivity(AccountActivity_.intent(this).userInfo(info).type(getType(mAuthHelper)).get().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         finish();
         //TODO startActivity from mActivity context will fail on Huawei. Reason is not clear now.

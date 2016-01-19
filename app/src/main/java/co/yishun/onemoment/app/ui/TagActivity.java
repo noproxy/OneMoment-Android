@@ -122,11 +122,6 @@ public class TagActivity extends BaseActivity
         ViewGroup sceneRoot = coordinatorLayout;
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
 
-        ObjectAnimator animator = ObjectAnimator.ofInt(sceneRoot, "backgroundColor",
-                0x00ffffff, getResources().getColor(R.color.colorPrimary)).setDuration(500);
-        animator.setEvaluator(new ArgbEvaluator());
-        animator.start();
-
         TransitionSet set = (TransitionSet) TransitionInflater.from(this).inflateTransition(R.transition.activity_tag_transition);
         TransitionManager.go(scene, set);
 

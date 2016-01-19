@@ -59,10 +59,10 @@
     <string name="activity_tag_create_tag_empty_error">请输入标签内容！</string>
     <string name="activity_tag_create_tag_hint">点击任何位置创建标签\n拖动到这里删除</string>
     <string name="activity_tag_create_tag_number_error">最多只能添加3个标签</string>
-    <string name="activity_wx_entry_auth_success">授权成功</string>
-    <string name="activity_wx_entry_login_fail">登陆失败</string>
-    <string name="activity_wx_entry_login_progress">正在登录…</string>
-    <string name="activity_wx_entry_login_success">登陆成功</string>
+    <string name="activity_entry_auth_success">授权成功</string>
+    <string name="activity_entry_login_fail">登陆失败</string>
+    <string name="activity_entry_login_progress">正在登录…</string>
+    <string name="activity_entry_login_success">登陆成功</string>
     <string name="fragment_diary_action_all_play">全部播放</string>
     <string name="fragment_diary_action_share">分享</string>
     <string name="fragment_integrate_info_error_avatar_upload_failed">上传头像失败，请重试。</string>
@@ -88,4 +88,8 @@
     <string name="activity_main_move_LOC_moments">是否将退出登录状态下拍摄的视频移动到当前账号？</string>
     <string name="activity_main_move_LOC_moments_positive">确定</string>
     <string name="activity_main_move_LOC_moments_negative">下次再说</string>
+    <string name="activity_entry_we_chat_not_install">未安装微信</string>
+    <string name="activity_share_export_export_success">导出成功</string>
+    <string name="activity_share_export_no_moment_select">请至少选择一个视频</string>
+    <string name="fragment_diary_no_moment">没有可供播放的一瞬</string>
 </resources>

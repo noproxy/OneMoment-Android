@@ -16,4 +16,5 @@
     <string name="fragment_phone_login_layout_hint_phone">手机号码</string>
 
     <string name="fragment_phone_login_layout_sign_up">注册</string>
+    <string name="fragment_phone_login_layout_get_password">重置密码</string>
 </resources>
