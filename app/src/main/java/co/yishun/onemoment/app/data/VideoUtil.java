@@ -24,7 +24,7 @@ import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
  */
 public class VideoUtil {
     public static final int OPTIONS_RECYCLE_INPUT = 0x2;
-    public static final int TARGET_SIZE_MICRO_THUMBNAIL = 96;
+    public static final int TARGET_SIZE_MICRO_THUMBNAIL = 192;
     private static final String TAG = "VideoUtil";
     private static final int OPTIONS_SCALE_UP = 0x1;
 
