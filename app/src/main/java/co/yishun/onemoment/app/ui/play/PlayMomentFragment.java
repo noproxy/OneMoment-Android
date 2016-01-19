@@ -47,7 +47,6 @@ public class PlayMomentFragment extends PlayFragment
                     .between("time", startDate, endDate).query();
             if (momentList.size()> 0){
                 Collections.sort(momentList);
-                videoPlayView.setPreview(new File(momentList.get(0).getLargeThumbPath()));
                 for (Moment moment : momentList) {
                     if (moment.getFile().length() == 0) continue;
                     List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());
