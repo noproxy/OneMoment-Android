@@ -27,7 +27,7 @@ public class GetPasswordFragment extends PhonePasswordFragment {
     }
 
     private void next() {
-        mActivity.openFragment(VerifyFragment_.builder().phoneNum(getPhoneNum()).password(getPassword()).type(VerifyFragment.EXTRA_TYPE_SIGN_UP).build());
+        mActivity.openFragment(VerifyFragment_.builder().phoneNum(getPhoneNum()).password(getPassword()).type(VerifyFragment.EXTRA_TYPE_FIND_PASSWORD).build());
     }
 
     @Override public void setPageInfo() {

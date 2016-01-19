@@ -57,8 +57,8 @@
                 android:id="@+id/getPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:gravity="center"
                 android:text="@string/fragment_phone_login_layout_get_password"
                 android:textColor="@color/colorAccent"/>
