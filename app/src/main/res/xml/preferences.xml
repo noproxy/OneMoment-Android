@@ -102,6 +102,18 @@
             android:summary="@string/app_version"
             android:title="@string/app_name"
             />
+        <com.jenzz.materialpreference.Preference
+            android:key="@string/pref_key_feedback"
+            android:summary="@string/pref_summary_about_feedback"
+            android:title="@string/pref_title_about_feedback">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/pref_data_about_feedback">
+                <extra
+                    android:name="android.intent.extra.TEXT"
+                    android:value="@string/pref_extra_text_about_feedback"/>
+            </intent>
+        </com.jenzz.materialpreference.Preference>
     </com.jenzz.materialpreference.PreferenceCategory>
 
 

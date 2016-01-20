@@ -227,6 +227,13 @@
             android:name=".ui.GuideActivity_"
             android:theme="@style/AppTheme.GuideActivity">
         </activity>
+        <activity
+            android:name=".ui.UrlDetailActivity_"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity_"/>
+        </activity>
 
         <service android:name=".account.remind.ReminderService">
         </service>
@@ -349,11 +356,11 @@
         <!--Umeng Update-->
         <service
             android:name="com.umeng.update.net.DownloadingService"
-            android:process=":DownloadingService" >
+            android:process=":DownloadingService">
         </service>
         <activity
             android:name="com.umeng.update.UpdateDialogActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <meta-data

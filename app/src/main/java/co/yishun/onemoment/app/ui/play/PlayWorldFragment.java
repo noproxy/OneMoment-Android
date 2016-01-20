@@ -89,17 +89,9 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         videoPlayView.setToLocal(video.domain + video.fileName, videoFile.getPath());
         if (!mReady) {
-            backgroundGetThumb(video, videoFile.getPath());
+            onLoad();
+            mReady = true;
         }
-    }
-
-    @UiThread void getThumb(File large) {
-        LogUtil.d(TAG, "set preview");
-        if (large.length() == 0) {
-            LogUtil.e(TAG, "file error");
-        }
-        videoPlayView.setPreview(large);
-        onLoad();
     }
 
     @UiThread void addVideo(TagVideo video) {
@@ -112,7 +104,8 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
         if (videoFile.length() > 0) {
             videoResource.setPath(videoFile.getPath());
             if (!mReady) {
-                backgroundGetThumb(video, videoFile.getPath());
+                onLoad();
+                mReady = true;
             }
         } else {
             new VideoTask(mContext, video, VideoTask.TYPE_VIDEO)
@@ -122,21 +115,6 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
         videoPlayView.addVideoResource(videoResource);
         tagVideos.add(video);
         videoPlayView.addAvatarUrl((video).avatar);
-    }
-
-    @Background void backgroundGetThumb(Video video, String path) {
-        mReady = true;
-        File large = FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB);
-        File small = FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.MICRO_THUMB);
-        try {
-            for (int i = 0; i < 3; i++) {
-                if (small.length() > 0) break;
-                VideoUtil.createThumbs(path, large, small);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        getThumb(large);
     }
 
     @Click(R.id.voteCountTextView)

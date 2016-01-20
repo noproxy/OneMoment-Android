@@ -41,11 +41,36 @@
         />
 
     <TextView
+        android:id="@+id/momentNumText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/divider"
+        android:layout_toRightOf="@id/dateTextView"
+        android:layout_marginLeft="8dp"
+        android:textSize="12sp"
+        android:textAppearance="?android:textAppearanceSmall"
+        tool:text="23th moment"/>
+
+    <TextView
         android:id="@+id/tagTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider"
         tool:text="No moment today"/>
+
+    <TextView
+        android:id="@+id/startPlayTextView"
+        android:background="@drawable/bg_text_start_today"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:text="@string/view_today_moment_play_from_this_day"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:layout_below="@id/tagTextView"/>
 
 
 </merge>

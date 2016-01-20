@@ -4,6 +4,7 @@
     <string name="activity_settings_sync_now">同步中…</string>
     <string name="activity_settings_check_update">新版检查中…</string>
     <string name="activity_settings_no_new_version">当前已是最新版本</string>
+    <string name="activity_settings_no_email_app">您需要安装邮件应用来发送反馈</string>
 
     <!-- settings for Data & Sync -->
     <string name="pref_title_sync">数据 &amp; 同步</string>
@@ -51,5 +52,10 @@
     <string name="pref_data_about_remark">market://details?id=co.yishun.onemoment.app</string>
     <string name="pref_title_about_app_name">@string/app_name</string>
     <string name="pref_title_about_app_version">@string/app_version</string>
+
+    <string name="pref_title_about_feedback">反馈</string>
+    <string name="pref_summary_about_feedback">通过邮件反馈</string>
+    <string name="pref_data_about_feedback">mailto:onemoment@bingyan.net?subject=一瞬——意见反馈</string>
+    <string name="pref_extra_text_about_feedback">请在下方写下您的反馈，我们会尽快查看并可能与您进一步联系：\n\n\n来自安卓手机</string>
 
 </resources>

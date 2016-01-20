@@ -66,7 +66,6 @@ public class PlayTagVideoFragment extends PlayFragment {
         }
         NetworkVideo videoResource = new NetworkVideo(tags, videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);
-        videoPlayView.setPreview(FileUtil.getThumbnailStoreFile(mContext, video, FileUtil.Type.LARGE_THUMB));
         videoPlayView.addAvatarUrl(((TagVideo) video).avatar);
         onLoad();
     }
