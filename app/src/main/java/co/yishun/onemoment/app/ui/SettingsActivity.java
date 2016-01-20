@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -162,6 +163,15 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
                             break;
                     }
                 });
+                return true;
+            });
+            findPreference(getString(R.string.pref_key_feedback)).setOnPreferenceClickListener(preference -> {
+                Intent intent = preference.getIntent();
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e){
+                    ((BaseActivity)this.getActivity()).showSnackMsg(R.string.activity_settings_no_email_app);
+                }
                 return true;
             });
         }

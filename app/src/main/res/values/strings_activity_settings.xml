@@ -4,6 +4,7 @@
     <string name="activity_settings_sync_now">Sync…</string>
     <string name="activity_settings_check_update">Checking new version…</string>
     <string name="activity_settings_no_new_version">No New Version Found</string>
+    <string name="activity_settings_no_email_app">You need to install an Email app to feedback.</string>
 
     <!-- settings for Data & Sync -->
     <string name="pref_title_sync">Data &amp; sync</string>
@@ -53,6 +54,10 @@
     <string name="pref_data_about_remark">market://details?id=co.yishun.onemoment.app</string>
     <string name="pref_title_about_app_name">@string/app_name</string>
     <string name="pref_title_about_app_version">@string/app_version</string>
+    <string name="pref_title_about_feedback">Feedback</string>
+    <string name="pref_summary_about_feedback">Feedback with email</string>
+    <string name="pref_data_about_feedback">mailto:onemoment@bingyan.net?subject=Feedback: OneMoment</string>
+    <string name="pref_extra_text_about_feedback">Please write feedback for us, we will reply soon: \n\n\nFrom Android Phone</string>
 
     <string name="pref_key_remind_ringtone" translatable="false">remind_everyday_ringtone</string>
     <string name="pref_key_sync_now" translatable="false">sync_now</string>
@@ -63,4 +68,5 @@
     <string name="pref_key_remind_vibrate" translatable="false">remind_everyday_vibrate</string>
     <string name="pref_key_remind_everyday" translatable="false">remind_everyday</string>
     <string name="pref_key_version" translatable="false">version</string>
+    <string name="pref_key_feedback" translatable="false">feedback</string>
 </resources>
