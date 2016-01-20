@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="8dp"
+    android:elevation="@dimen/card_elevation"
+    android:stateListAnimator="@anim/card_elevation"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="@dimen/card_elevation"
+    app:cardMaxElevation="@dimen/card_elevation_pressed"
+    app:contentPadding="0dp"
+    >
+
+    <co.yishun.onemoment.app.ui.view.RadioCornerImageView
+        android:id="@+id/itemImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#77777700"
+        android:paddingBottom="24dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="24dp"
+        >
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:gravity="center"
+            android:text="坚持就是胜利"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+            />
+
+        <TextView
+            android:id="@+id/numTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
+            android:textColor="@color/textColorPrimaryInverse"
+            android:textSize="12sp"
+            android:text="56 People"
+            />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
