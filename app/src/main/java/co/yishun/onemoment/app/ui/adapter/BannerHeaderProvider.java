@@ -16,6 +16,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Banner;
+import co.yishun.onemoment.app.ui.UrlDetailActivity_;
 
 /**
  * Created by Carlos on 2015/8/14.
@@ -51,8 +52,7 @@ public class BannerHeaderProvider implements HeaderRecyclerAdapter.HeaderProvide
                     String url = banner.href;
                     if (!url.startsWith("http://") && !url.startsWith("https://"))
                         url = "http://" + url;
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    context.startActivity(browserIntent);
+                    UrlDetailActivity_.intent(context).url(url).start();
                 });
                 return imageView;
             }
