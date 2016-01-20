@@ -17,8 +17,27 @@
         android:fitsSystemWindows="true"
         >
 
-        <include layout="@layout/layout_toolbar_no_elevation"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="@dimen/toolbar_elevation"
+            app:contentInsetStart="72dp"
+            />
 
     </android.support.design.widget.AppBarLayout>
+
+    <com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:layout_empty="@layout/layout_empty"
+        app:layout_progress="@layout/layout_progress"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

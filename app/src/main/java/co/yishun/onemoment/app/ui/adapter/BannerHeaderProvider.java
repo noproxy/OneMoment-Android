@@ -23,7 +23,7 @@ import co.yishun.onemoment.app.ui.UrlDetailActivity_;
  */
 public class BannerHeaderProvider implements HeaderRecyclerAdapter.HeaderProvider {
     SliderLayout worldSlider;
-    private Context context;
+    protected Context context;
 
 
     public BannerHeaderProvider(Context context) {
