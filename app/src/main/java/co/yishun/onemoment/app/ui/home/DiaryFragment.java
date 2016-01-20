@@ -104,6 +104,17 @@ public class DiaryFragment extends ToolbarFragment
             PlayMomentActivity_.intent(this.getActivity()).startDate(selectMoment.getTime()).endDate(selectMoment.getTime()).start();
     }
 
+    @Click(R.id.startPlayTextView) void startFromDay() {
+        try {
+            List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true)
+                    .where().eq("owner", AccountManager.getUserInfo(getContext())._id).query();
+            PlayMomentActivity_.intent(this.getActivity()).startDate(selectMoment.getTime())
+                    .endDate(momentList.get(momentList.size() - 1).getTime()).start();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -112,7 +123,8 @@ public class DiaryFragment extends ToolbarFragment
                 return true;
             case R.id.fragment_diary_action_all_play:
                 try {
-                    List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true).query();
+                    List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true)
+                            .where().eq("owner", AccountManager.getUserInfo(getContext())._id).query();
                     if (momentList.size() == 0)
                         ((MainActivity) this.getActivity()).showSnackMsg(R.string.fragment_diary_no_moment);
                     else

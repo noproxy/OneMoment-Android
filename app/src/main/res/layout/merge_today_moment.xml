@@ -58,5 +58,19 @@
         android:layout_below="@id/divider"
         tool:text="No moment today"/>
 
+    <TextView
+        android:id="@+id/startPlayTextView"
+        android:background="@drawable/bg_text_start_today"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:text="@string/view_today_moment_play_from_this_day"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:layout_below="@id/tagTextView"/>
+
 
 </merge>

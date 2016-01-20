@@ -34,6 +34,7 @@ public class TodayMomentView extends RelativeLayout {
     private TextView mDateTextView;
     private TextView mTagTextView;
     private TextView mMomentNumTextView;
+    private TextView mStartPlayTextView;
     private CircleImageView mMomentImageView;
 
     public TodayMomentView(Context context) {
@@ -63,6 +64,7 @@ public class TodayMomentView extends RelativeLayout {
         mDateTextView = (TextView) findViewById(R.id.dateTextView);
         mTagTextView = (TextView) findViewById(R.id.tagTextView);
         mMomentNumTextView = (TextView) findViewById(R.id.momentNumText);
+        mStartPlayTextView = (TextView) findViewById(R.id.startPlayTextView);
         mMomentImageView = (CircleImageView) findViewById(R.id.momentPreviewImageView);
         setTodayMoment(TodayMoment.noMomentToday(new Date()));
     }
@@ -85,10 +87,13 @@ public class TodayMomentView extends RelativeLayout {
             spannableString.setSpan(new ForegroundColorSpan(colorAccent), prefix.length() + num.length(),
                     prefix.length() + num.length() + suffix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             mMomentNumTextView.setText(spannableString);
+
+            mStartPlayTextView.setVisibility(VISIBLE);
         } else {
             mMomentImageView.setImageResource(R.drawable.ic_diary_no_moment);
             mTagTextView.setText(NO_MOMENT);
             mMomentNumTextView.setVisibility(INVISIBLE);
+            mStartPlayTextView.setVisibility(INVISIBLE);
         }
     }
 
