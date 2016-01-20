@@ -41,6 +41,17 @@
         />
 
     <TextView
+        android:id="@+id/momentNumText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/divider"
+        android:layout_toRightOf="@id/dateTextView"
+        android:layout_marginLeft="8dp"
+        android:textSize="12sp"
+        android:textAppearance="?android:textAppearanceSmall"
+        tool:text="23th moment"/>
+
+    <TextView
         android:id="@+id/tagTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

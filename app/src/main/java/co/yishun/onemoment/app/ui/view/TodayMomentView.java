@@ -4,8 +4,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ public class TodayMomentView extends RelativeLayout {
     private final String NO_TAG = getResources().getString(R.string.view_today_moment_no_tag);
     private TextView mDateTextView;
     private TextView mTagTextView;
+    private TextView mMomentNumTextView;
     private CircleImageView mMomentImageView;
 
     public TodayMomentView(Context context) {
@@ -59,6 +62,7 @@ public class TodayMomentView extends RelativeLayout {
 
         mDateTextView = (TextView) findViewById(R.id.dateTextView);
         mTagTextView = (TextView) findViewById(R.id.tagTextView);
+        mMomentNumTextView = (TextView) findViewById(R.id.momentNumText);
         mMomentImageView = (CircleImageView) findViewById(R.id.momentPreviewImageView);
         setTodayMoment(TodayMoment.noMomentToday(new Date()));
     }
@@ -69,9 +73,22 @@ public class TodayMomentView extends RelativeLayout {
             Moment moment = todayMoment.moment;
             Picasso.with(getContext()).load(new File(moment.getThumbPath())).error(R.drawable.pic_world_default).into(mMomentImageView);
             mTagTextView.setText(todayMoment.tag == null ? NO_TAG : todayMoment.tag);
+
+            mMomentNumTextView.setVisibility(VISIBLE);
+            String num = String.valueOf(todayMoment.momentIndex);
+            String prefix = getResources().getString(R.string.activity_moment_create_count_text_prefix);
+            String suffix = getResources().getString(R.string.activity_moment_create_count_text_suffix);
+            int colorAccent = getResources().getColor(R.color.colorAccent);
+            SpannableString spannableString = new SpannableString(prefix + num + suffix);
+            spannableString.setSpan(new ForegroundColorSpan(colorAccent), 0,
+                    prefix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new ForegroundColorSpan(colorAccent), prefix.length() + num.length(),
+                    prefix.length() + num.length() + suffix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mMomentNumTextView.setText(spannableString);
         } else {
             mMomentImageView.setImageResource(R.drawable.ic_diary_no_moment);
             mTagTextView.setText(NO_MOMENT);
+            mMomentNumTextView.setVisibility(INVISIBLE);
         }
     }
 
@@ -80,6 +97,7 @@ public class TodayMomentView extends RelativeLayout {
         private String date;
         private Moment moment;
         private String tag;
+        private long momentIndex;
 
         private TodayMoment() {
         }
@@ -92,10 +110,11 @@ public class TodayMomentView extends RelativeLayout {
             return todayMoment;
         }
 
-        public static TodayMoment momentTodayIs(Moment moment) {
+        public static TodayMoment momentTodayIs(Moment moment, long count) {
             LogUtil.i(TAG, "momentTodayIs: " + moment);
             TodayMoment todayMoment = new TodayMoment();
             todayMoment.moment = moment;
+            todayMoment.momentIndex = count;
             todayMoment.date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Long.parseLong(moment.getUnixTimeStamp()) * 1000);
             List<OMLocalVideoTag> tags = Moment.readTags(moment);
             if (tags != null && tags.size() > 0) {

@@ -162,7 +162,13 @@ public class DiaryFragment extends ToolbarFragment
         Moment moment = (Moment) dayView.getTag();
         selectMoment = moment;
         if (moment != null) {
-            todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.momentTodayIs(moment));
+            long momentIndex = 0;
+            try {
+                momentIndex = momentDao.queryBuilder().where().le("time", moment.getTime()).and().eq("owner", AccountManager.getAccountId(getContext())).countOf();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.momentTodayIs(moment, momentIndex));
         } else {
             todayMomentView.setTodayMoment(TodayMomentView.TodayMoment.noMomentToday(new Date()));
             // TODO everyday can be select, update calendar selection.
