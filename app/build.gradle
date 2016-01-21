@@ -5,6 +5,10 @@ apply plugin: 'me.tatarka.retrolambda'
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
+retrolambda {
+    jvmArgs '-noverify'
+}
+
 android {
     useLibrary 'org.apache.http.legacy'
     signingConfigs() {
