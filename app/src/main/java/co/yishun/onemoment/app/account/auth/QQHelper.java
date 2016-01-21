@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.util.concurrent.CountDownLatch;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.config.Constants;
 
 import static java.lang.String.valueOf;
 
@@ -25,7 +26,7 @@ import static java.lang.String.valueOf;
  * Created by yyz on 5/30/15.
  */
 public class QQHelper implements AuthHelper {
-    public static final String APP_ID = "1104574591";
+    public static final String APP_ID = Constants.QQ_APP_ID;
     public static final String SCOPE = "get_user_info";//scope we need access
     private static final String TAG = "QQHelper";
 

@@ -19,6 +19,7 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.config.Constants;
 
 import static co.yishun.onemoment.app.LogUtil.e;
 import static co.yishun.onemoment.app.LogUtil.i;
@@ -31,7 +32,7 @@ import static co.yishun.onemoment.app.account.auth.AccessTokenKeeper.KeeperType.
  * Created by Carlos on 2015/4/1.
  */
 public class WeiboHelper implements AuthHelper {
-    public static final String APP_KEY = "4070980764";
+    public static final String APP_KEY = Constants.WEIBO_APP_ID;
     public static final String APP_SECRET = "b264b30b5cae0497af3f7cb16aabe2c9";
     public static final String AUTH_REDIRECT_URL = "http://sns.whalecloud.com/sina2/callback";
 
