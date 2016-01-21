@@ -5,15 +5,24 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
+import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
@@ -277,6 +286,90 @@ public class FileUtil {
         return new File(context.getFilesDir(), filename);
     }
 
+    public static boolean unZip(String zipPath, String outputPath) {
+        InputStream inputStream = null;
+        ZipInputStream zipInputStream = null;
+        FileOutputStream fileOutputStream = null;
+        try {
+            String filename;
+            inputStream = new FileInputStream(zipPath);
+            zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
+            ZipEntry zipEntry;
+            File entryFile;
+            byte[] buffer = new byte[1024];
+            int count;
+
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                filename = zipEntry.getName();
+                entryFile = new File(outputPath, filename);
+                if (zipEntry.isDirectory()) {
+                    entryFile.mkdirs();
+                    continue;
+                }
+
+                if (entryFile.exists()) entryFile.delete();
+                fileOutputStream = new FileOutputStream(entryFile);
+                while ((count = zipInputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, count);
+                }
+                fileOutputStream.close();
+                zipInputStream.closeEntry();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (inputStream != null) inputStream.close();
+                if (zipInputStream != null) zipInputStream.close();
+                if (fileOutputStream != null) fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public static String calculateMD5(File updateFile) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            LogUtil.e(TAG, "Exception while getting digest", e);
+            return null;
+        }
+
+        InputStream is;
+        try {
+            is = new FileInputStream(updateFile);
+        } catch (FileNotFoundException e) {
+            LogUtil.e(TAG, "Exception while getting FileInputStream", e);
+            return null;
+        }
+
+        byte[] buffer = new byte[8192];
+        int read;
+        try {
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] md5sum = digest.digest();
+            BigInteger bigInt = new BigInteger(1, md5sum);
+            String output = bigInt.toString(16);
+            // Fill to 32 chars
+            output = String.format("%32s", output).replace(' ', '0');
+            return output;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to process file for MD5", e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                LogUtil.e(TAG, "Exception on closing MD5 input stream", e);
+            }
+        }
+    }
 
     public enum Type {
         SYNCED {

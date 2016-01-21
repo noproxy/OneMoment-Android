@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.api.model;
+package co.yishun.onemoment.app.api.modelv4;
 
 import java.util.List;
 

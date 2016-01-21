@@ -31,9 +31,12 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.remind.ReminderReceiver;
+import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.SplashCover;
+import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -49,8 +52,12 @@ public class SplashActivity extends BaseActivity {
     public static final String PREFERENCE_SPLASH_UPDATE_TIME = "splash_update_time";
     public static final String PREFERENCE_SPLASH_COVER_NAME = "splash_cover_name";
     public static final String PREFERENCE_SPLASH_STAY = "splash_stay";
+    public static final String PREFERENCE_HYBRID_NAME = "hybrid_name";
+    public static final String PREFERENCE_HYBRID_UPDATE_TIME = "hybrid_update_time";
+    public static final String PREFERENCE_HYBRID_MD5 = "hybrid_md5";
+    public static final String PREFERENCE_HYBRID_LENGTH = "hybrid_length";
     public static final String DEFAULT_SPLASH_COVER_NAME = "splash_cover_0.png";
-    public static final String TAG = "SplashActivity";
+    private static final String TAG = "SplashActivity";
 
     @ViewById
     ImageView splashImageView;
@@ -70,7 +77,7 @@ public class SplashActivity extends BaseActivity {
         }
         preferences = getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
         showProgress(R.string.activity_splash_data_migration);
-        DataMigration.dataInit(this.getApplicationContext());
+        DataMigration.dataInit(this);
         hideProgress();
         delayShowCover();
     }
@@ -99,6 +106,10 @@ public class SplashActivity extends BaseActivity {
         }
         // use static AsyncTask to ensure not keeping this activity's reference
         new CoverUpdateTask(this).execute(coverFile);
+
+        String hybrdFileName = preferences.getString(PREFERENCE_HYBRID_NAME, "");
+        File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
+        new HybridUpdateTask(this).execute(hybrdFile);
     }
 
     void endWithStartMain() {
@@ -182,6 +193,71 @@ public class SplashActivity extends BaseActivity {
                 }
             }
 
+            return null;
+        }
+    }
+
+    private final class HybridUpdateTask extends AsyncTask<File, Void, Void> {
+
+        private final SharedPreferences preferences;
+
+        private HybridUpdateTask(final Context context) {
+            this.preferences = context.getApplicationContext().getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
+        }
+
+        @Override
+        protected Void doInBackground(File... params) {
+            File hybridFile = params[0];
+            HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
+            int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRID_UPDATE_TIME, 0);
+            if (hybrdData.updateTime > lastUpdateTime) {
+                String url = "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip";
+                OkHttpClient client = new OkHttpClient();
+                Call call = client.newCall(new Request.Builder().url(url).build());
+                InputStream input = null;
+                FileOutputStream output = null;
+                try {
+                    Response response = call.execute();
+                    if (response.code() == 200) {
+                        input = response.body().byteStream();
+                        long inputLength = response.body().contentLength();
+                        LogUtil.d(TAG, "get image " + url + " length " + inputLength);
+                        if (inputLength == 0) {
+                            return null;
+                        }
+                        File newFile = new File(hybridFile.getParent(), "hybrd_" + hybrdData.updateTime + ".zip");
+                        if (newFile.exists()) newFile.delete();
+                        newFile.createNewFile();
+                        LogUtil.d(TAG, "into " + newFile.getPath());
+                        output = new FileOutputStream(newFile);
+
+                        byte data[] = new byte[2048];
+                        int count;
+                        while ((count = input.read(data)) != -1) {
+                            output.write(data, 0, count);
+                        }
+
+                        preferences.edit()
+                                .putString(PREFERENCE_HYBRID_NAME, newFile.getName())
+                                .putInt(PREFERENCE_HYBRID_UPDATE_TIME, hybrdData.updateTime)
+                                .putString(PREFERENCE_HYBRID_MD5, hybrdData.md5)
+                                .putLong(PREFERENCE_HYBRID_LENGTH, hybrdData.length)
+                                .apply();
+                        hybridFile.delete();
+                        LogUtil.i(TAG, "finish image download");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (output != null)
+                            output.close();
+                        if (input != null)
+                            input.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
             return null;
         }
     }
