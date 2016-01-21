@@ -234,6 +234,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity_"/>
         </activity>
+        <activity android:name=".ui.common.CommonWebActivity_">
+
+        </activity>
 
         <service android:name=".account.remind.ReminderService">
         </service>
