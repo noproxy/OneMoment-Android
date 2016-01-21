@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.common;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.CallSuper;
@@ -54,15 +55,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         mActivity = null;
     }
 
-    @CallSuper protected void setUpWebView() {
+    @SuppressLint("SetJavaScriptEnabled") @CallSuper protected void setUpWebView() {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new BaseWebClient());
         webView.loadUrl(mUrl);
-        webView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                webGetAccountId(null);
-            }
-        });
     }
 
     private boolean webGetAccount(List<String> args) {
@@ -71,7 +67,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private boolean webGetAccountId(List<String> args) {
-        webView.loadUrl("ctx.iosjsbridgereturn('[{'_id':'561866817d40b548c05e4c7f'}]')");
+        webView.loadUrl("ctx.getAccountId('[{'_id':'561866817d40b548c05e4c7f'}]')");
         return true;
     }
 
@@ -178,19 +174,5 @@ public abstract class BaseWebFragment extends BaseFragment {
     class UrlModel {
         String call;
         List<String> args;
-    }
-
-    public class JSInterface {
-
-        private WebView mAppView;
-
-        public JSInterface(WebView appView) {
-            this.mAppView = appView;
-        }
-
-        public void doEchoTest(String echo) {
-            Toast toast = Toast.makeText(mAppView.getContext(), echo, Toast.LENGTH_SHORT);
-            toast.show();
-        }
     }
 }
