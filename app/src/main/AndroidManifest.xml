@@ -207,6 +207,9 @@
             android:name=".ui.UrlDetailActivity_"
             android:parentActivityName=".ui.MainActivity_"
             android:theme="@style/AppTheme"/>
+        <activity android:name=".ui.common.CommonWebActivity_">
+
+        </activity>
 
         <service android:name=".account.remind.ReminderService">
         </service>
