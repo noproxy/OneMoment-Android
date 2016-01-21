@@ -20,6 +20,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.Account;
+import co.yishun.onemoment.app.config.Constants;
 
 
 /**
@@ -27,7 +28,7 @@ import co.yishun.onemoment.app.api.Account;
  */
 public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
     // 59b32a874e16913c1a3f0d50b047d608
-    public static final String APP_ID = "wx669ce174488102f4";
+    public static final String APP_ID = Constants.WE_CHAT_APP_ID;
     public static final String STATE = "just_for_safety";
     public static final String SCOPR = "snsapi_userinfo";
     private static final String TAG = "WeChatHelper";
