@@ -2,12 +2,18 @@ package co.yishun.onemoment.app.ui.common;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.google.gson.Gson;
+
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 
@@ -17,6 +23,9 @@ import co.yishun.onemoment.app.LogUtil;
 @EFragment
 public abstract class BaseWebFragment extends BaseFragment {
     private static final String TAG = "BaseWebFragment";
+
+    @FragmentArg String mUrl = "file:///data/data/co.yishun.onemoment.app/files/build/pages/pages_list/pages_list.html";
+
     @ViewById protected WebView webView;
     protected BaseActivity mActivity;
 
@@ -31,14 +40,12 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     @CallSuper protected void setUpWebView() {
-        webView.loadUrl("http://www.baidu.com/");
+        webView.loadUrl(mUrl);
+        webView.setWebViewClient(new BaseWebClient());
+    }
 
-        webView.setWebViewClient(new WebViewClient() {
-            @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                LogUtil.d(TAG, url);
-                return super.shouldOverrideUrlLoading(view, url);
-            }
-        });
+    protected void startNativeActivity() {
+
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -49,5 +56,37 @@ public abstract class BaseWebFragment extends BaseFragment {
             }
         }
         return false;
+    }
+
+    private class BaseWebClient extends WebViewClient {
+        @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            LogUtil.d(TAG, url);
+            if (url.startsWith("ysjs://")){
+                String json = url.substring(7);
+                UrlModel urlModel = new Gson().fromJson(json, UrlModel.class);
+                if (TextUtils.equals(urlModel.call, "")) {
+
+                }
+                return false;
+            }
+            return super.shouldOverrideUrlLoading(view, url);
+        }
+
+        @Override public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
+            LogUtil.d(TAG, event.getKeyCode() + " " + event.getAction());
+            if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                    return true;
+                }
+                return true;
+            }
+            return super.shouldOverrideKeyEvent(view, event);
+        }
+    }
+
+    class UrlModel {
+        String call;
+        List<String> args;
     }
 }
