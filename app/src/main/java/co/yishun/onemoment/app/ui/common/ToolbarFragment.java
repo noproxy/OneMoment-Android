@@ -17,8 +17,9 @@ import co.yishun.onemoment.app.ui.MainActivity;
 /**
  * Created by yyz on 7/14/15.
  */
+@EFragment
 public abstract class ToolbarFragment extends BaseFragment {
-    protected Toolbar toolbar;
+    @ViewById protected Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
