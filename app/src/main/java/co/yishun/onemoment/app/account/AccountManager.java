@@ -6,9 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -105,11 +109,12 @@ public class AccountManager {
         try {
             String path = getUserInfoDir(context);
             LogUtil.i(TAG, "save identity info, path: " + path);
-            FileOutputStream fout = new FileOutputStream(path);
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(user);
-            oos.close();
             mUser = user;
+            String userJson = new Gson().toJson(mUser);
+            FileWriter fileWriter = new FileWriter(path);
+            fileWriter.write(userJson);
+            fileWriter.flush();
+            fileWriter.close();
             onUserInfoChange(user);
             return true;
         } catch (Exception ex) {
@@ -131,11 +136,11 @@ public class AccountManager {
     private static void loadUserInfo(Context context) {
         try {
             String path = getUserInfoDir(context);
-            FileInputStream fin = null;
-            fin = new FileInputStream(path);
-            ObjectInputStream ois = new ObjectInputStream(fin);
-            mUser = (User) ois.readObject();
-        } catch (ClassNotFoundException | IOException e) {
+            LogUtil.i(TAG, "load identity info, path: " + path);
+            FileReader fileReader = new FileReader(path);
+            mUser = new Gson().fromJson(fileReader, User.class);
+            fileReader.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
