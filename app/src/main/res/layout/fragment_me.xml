@@ -17,69 +17,22 @@
         android:fitsSystemWindows="true"
         >
 
-        <FrameLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            >
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:contentInsetStart="72dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bg_me_header"/>
-            <!-- not include because of background-->
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:contentInsetStart="72dp"
-                app:layout_scrollFlags="scroll|enterAlways"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
-
-                <include layout="@layout/layout_me_header"/>
-
-
-                <!--
-                This is removed from TabLayout:
-                    android:paddingLeft="26dp"
-                    android:paddingRight="26dp"
-
-                Because in latest design support library 23.1.0, paddingLeft/End
-                    is not drawn correctly. It not looks like symmetrical. So, removed both.
-                -->
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    app:tabIndicatorColor="@color/colorAccent"
-                    app:tabIndicatorHeight="2dp"
-                    app:tabMinWidth="32dp"
-                    app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/colorAccent"
-                    app:tabTextColor="@color/textColorPrimary"
-                    />
-            </LinearLayout>
-
-        </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+    <FrameLayout
+        android:id="@+id/containerFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
+
 </android.support.design.widget.CoordinatorLayout>

@@ -30,13 +30,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView
-        android:id="@+id/recyclerView"
+    <FrameLayout
+        android:id="@+id/containerFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        app:layout_empty="@layout/layout_empty"
-        app:layout_progress="@layout/layout_progress"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
 
