@@ -28,6 +28,10 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.ui.CreateWorldActivity_;
+import co.yishun.onemoment.app.ui.SettingsActivity_;
+import co.yishun.onemoment.app.ui.ShootActivity_;
+import co.yishun.onemoment.app.ui.UserInfoActivity_;
 
 /**
  * Created by Jinge on 2016/1/21.
@@ -52,6 +56,8 @@ public abstract class BaseWebFragment extends BaseFragment {
     protected BaseActivity mActivity;
     protected MaterialDialog dialog;
     protected File mHybrdDir;
+    protected float touchX;
+    protected float touchY;
 
     @FragmentArg protected String mUrl;
 
@@ -76,6 +82,11 @@ public abstract class BaseWebFragment extends BaseFragment {
     @SuppressLint("SetJavaScriptEnabled") @CallSuper protected void setUpWebView() {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new BaseWebClient());
+        webView.setOnTouchListener((v, event) -> {
+            touchX = event.getX();
+            touchY = event.getY();
+            return false;
+        });
         webView.loadUrl(mUrl);
     }
 
@@ -99,9 +110,21 @@ public abstract class BaseWebFragment extends BaseFragment {
         String des = args.get(0);
         if (TextUtils.equals(des, "web")) {
             CommonWebActivity_.intent(mActivity).title(args.get(1)).url(args.get(2)).start();
-            return true;
+        } else if (TextUtils.equals(des, "camera")) {
+            ShootActivity_.intent(mActivity).transitionX((int) (touchX + webView.getX()))
+                    .transitionY((int) (touchY + webView.getY())).start();
+        } else if (TextUtils.equals(des, "setting")) {
+            SettingsActivity_.intent(mActivity).start();
+        } else if (TextUtils.equals(des, "create_world")) {
+            CreateWorldActivity_.intent(mActivity).start();
+        } else if (TextUtils.equals(des, "edit")) {
+            UserInfoActivity_.intent(mActivity).start();
+        } else if (TextUtils.equals(des, "world_square")) {
+            //TODO jump to world detail activity
+//            TagActivity_.intent(mActivity).start();
+        } else {
+            LogUtil.e(TAG, "unhandled jump type");
         }
-        LogUtil.e(TAG, "unhandled jump type");
         return true;
     }
 
@@ -117,13 +140,12 @@ public abstract class BaseWebFragment extends BaseFragment {
             dialog = new MaterialDialog.Builder(mActivity).theme(Theme.LIGHT)
                     .content(args.get(1)).progress(true, 0).build();
             dialog.show();
-            return true;
         } else if (TextUtils.equals(type, "message")) {
             dialog = new MaterialDialog.Builder(mActivity).theme(Theme.LIGHT).content(args.get(1)).build();
             dialog.show();
-            return true;
+        } else {
+            LogUtil.e(TAG, "unhandled alert type");
         }
-        LogUtil.e(TAG, "unhandled alert type");
         return true;
     }
 
@@ -138,11 +160,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         String type = args.get(0);
         if (TextUtils.equals(type, "choose_world")) {
             //TODO add result after choose a world
-            return true;
         } else {
-            mActivity.finish();
+            LogUtil.e(TAG, "unhandled finish type");
         }
-        LogUtil.e(TAG, "unhandled finish type");
+        mActivity.finish();
         return true;
     }
 

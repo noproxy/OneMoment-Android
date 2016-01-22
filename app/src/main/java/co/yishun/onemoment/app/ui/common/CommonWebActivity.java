@@ -11,7 +11,7 @@ import co.yishun.onemoment.app.R;
 @EActivity(R.layout.activity_web_view)
 public class CommonWebActivity extends BaseWebActivity {
 
-    @AfterViews void setUpViews() {
+    @AfterViews void setupViews() {
         setupToolbar();
     }
 

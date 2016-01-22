@@ -8,6 +8,8 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import co.yishun.onemoment.app.R;
+
 /**
  * Created by Jinge on 2016/1/21.
  */
@@ -18,6 +20,7 @@ public abstract class BaseWebActivity extends BaseActivity {
     @Extra protected String url;
 
     @ViewById protected Toolbar toolbar;
+    protected BaseWebFragment mWebFragment;
 
     @CallSuper protected void setupToolbar() {
         setSupportActionBar(toolbar);
@@ -26,5 +29,11 @@ public abstract class BaseWebActivity extends BaseActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowTitleEnabled(true);
         ab.setTitle(title);
+    }
+
+    protected void setupFragment() {
+        mWebFragment = CommonWebFragment_.builder().mUrl(url).build();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerFrameLayout, mWebFragment).commit();
     }
 }
