@@ -210,6 +210,15 @@
         <activity android:name=".ui.common.CommonWebActivity_">
 
         </activity>
+        <activity android:name=".ui.common.EmptyWebActivity_">
+
+        </activity>
+        <activity android:name=".ui.PersonalWorldActivity_">
+
+        </activity>
+        <activity android:name=".ui.CreateWorldActivity_">
+
+        </activity>
 
         <service android:name=".account.remind.ReminderService">
         </service>
