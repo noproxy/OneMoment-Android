@@ -18,9 +18,14 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
+import co.yishun.onemoment.app.BuildConfig;
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 
@@ -37,6 +42,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     public static final String FUNC_ALERT = "alert";
     public static final String FUNC_CANCEL_AlERT = "cancel_alert";
     public static final String FUNC_FINISH = "finish";
+    public static final String FUNC_GET_ENV = "getEnv";
 
 
     private static final String TAG = "BaseWebFragment";
@@ -71,15 +77,22 @@ public abstract class BaseWebFragment extends BaseFragment {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new BaseWebClient());
         webView.loadUrl(mUrl);
+        LogUtil.d(TAG, "test : " + toJs(AccountManager.getUserInfo(mActivity)));
+    }
+
+    private boolean webGetEnv(List<String> args) {
+        String env = BuildConfig.DEBUG ? "development" : "production";
+        webView.loadUrl(toJs(env));
+        return true;
     }
 
     private boolean webGetAccount(List<String> args) {
-        webView.loadUrl("javascript:ctx.androidreturn('[{'_id':'561866817d40b548c05e4c7f'}]')");
+        webView.loadUrl(toJs(AccountManager.getUserInfo(mActivity)));
         return true;
     }
 
     private boolean webGetAccountId(List<String> args) {
-        webView.loadUrl("ctx.getAccountId('[{'_id':'561866817d40b548c05e4c7f'}]')");
+        webView.loadUrl(toJs(AccountManager.getUserInfo(mActivity)._id));
         return true;
     }
 
@@ -94,7 +107,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private boolean webLog(List<String> args) {
-        LogUtil.i(TAG, "webLog call");
+        LogUtil.i(TAG, "js log : " + args.get(0));
         return true;
     }
 
@@ -127,9 +140,41 @@ public abstract class BaseWebFragment extends BaseFragment {
         if (TextUtils.equals(type, "choose_world")) {
             //TODO add result after choose a world
             return true;
+        } else {
+            mActivity.finish();
         }
         LogUtil.e(TAG, "unhandled finish type");
         return true;
+    }
+
+    public String decode(String raw) {
+        String result;
+        try {
+            result = URLDecoder.decode(raw, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            result = "decoder error";
+            LogUtil.e(TAG, "decoder error : " + raw);
+        }
+        return result;
+    }
+
+    public List<String> decode(List<String> rawStrings) {
+        List<String> results = new ArrayList<>();
+        for (String s : rawStrings) results.add(decode(s));
+        return results;
+    }
+
+    public String toJs(Object o) {
+        String arg;
+        if (o instanceof String) {
+            arg = (String) o;
+        } else {
+            arg = new Gson().toJson(o);
+            arg = arg.replace("\"", "\\\"");
+            LogUtil.d(TAG, arg);
+        }
+        return "ctx.androidreturn('" + arg + "')";
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -152,7 +197,11 @@ public abstract class BaseWebFragment extends BaseFragment {
             if (url.startsWith(URL_PREFIX)) {
                 String json = url.substring(URL_PREFIX.length());
                 UrlModel urlModel = new Gson().fromJson(json, UrlModel.class);
-                if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT)) {
+                urlModel.args = decode(urlModel.args);
+
+                if (TextUtils.equals(urlModel.call, FUNC_GET_ENV)) {
+                    return webGetEnv(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT)) {
                     return webGetAccount(urlModel.args);
                 } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT_ID)) {
                     return webGetAccountId(urlModel.args);
