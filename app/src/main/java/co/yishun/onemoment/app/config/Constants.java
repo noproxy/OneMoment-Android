@@ -23,6 +23,8 @@ public class Constants {
     public static final String EXPORT_VIDEO_PREFIX = "yishunExport-";
 
     public static final String HYBRD_UNZIP_DIR = "hybrd";
+    public static final String FILE_URL_PREFIX = "file://";
+    public static final String APP_URL_PREFIX = "ysjs://";
 
     public static final String IDENTITY_DIR = "identity";
     public static final String IDENTITY_INFO_FILE_NAME = "info";
