@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -28,6 +29,7 @@ import java.io.InputStream;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.remind.ReminderReceiver;
 import co.yishun.onemoment.app.api.APIV4;
@@ -36,6 +38,7 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.SplashCover;
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
+import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -53,6 +56,7 @@ public class SplashActivity extends BaseActivity {
     public static final String PREFERENCE_SPLASH_STAY = "splash_stay";
     public static final String PREFERENCE_HYBRD_NAME = "hybrd_name";
     public static final String PREFERENCE_HYBRD_UPDATE_TIME = "hybrd_update_time";
+    public static final String PREFERENCE_HYBRD_UNZIP_TIME = "hybrd_unzip_time";
     public static final String PREFERENCE_HYBRD_MD5 = "hybrd_md5";
     public static final String PREFERENCE_HYBRD_LENGTH = "hybrd_length";
     public static final String DEFAULT_SPLASH_COVER_NAME = "splash_cover_0.png";
@@ -102,7 +106,7 @@ public class SplashActivity extends BaseActivity {
         }
         updateCover(coverFile);
 
-        String hybrdFileName = preferences.getString(PREFERENCE_HYBRD_NAME, "");
+        String hybrdFileName = preferences.getString(PREFERENCE_HYBRD_NAME, "hybrd.zip");
         File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
         updateHybrd(hybrdFile);
     }
@@ -175,8 +179,13 @@ public class SplashActivity extends BaseActivity {
     }
 
     @Background void updateHybrd(File hybrdFile) {
-        HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
         int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRD_UPDATE_TIME, 0);
+        int lastUnzipTime =preferences.getInt(PREFERENCE_HYBRD_UNZIP_TIME, 0);
+        if (lastUnzipTime < lastUpdateTime) {
+            FileUtil.unZip(hybrdFile.getPath(), FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR).getPath());
+            preferences.edit().putInt(PREFERENCE_HYBRD_UNZIP_TIME, (int) Util.unixTimeStamp()).apply();
+        }
+        HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
         if (hybrdData.updateTime > lastUpdateTime) {
             String url = "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip";
             OkHttpClient client = new OkHttpClient();
@@ -188,7 +197,7 @@ public class SplashActivity extends BaseActivity {
                 if (response.code() == 200) {
                     input = response.body().byteStream();
                     long inputLength = response.body().contentLength();
-                    LogUtil.d(TAG, "get image " + url + " length " + inputLength);
+                    LogUtil.d(TAG, "get hybrd " + url + " length " + inputLength);
                     if (inputLength == 0) {
                         return;
                     }
@@ -204,14 +213,17 @@ public class SplashActivity extends BaseActivity {
                         output.write(data, 0, count);
                     }
 
-                    preferences.edit()
-                            .putString(PREFERENCE_HYBRD_NAME, newFile.getName())
-                            .putInt(PREFERENCE_HYBRD_UPDATE_TIME, hybrdData.updateTime)
-                            .putString(PREFERENCE_HYBRD_MD5, hybrdData.md5)
-                            .putLong(PREFERENCE_HYBRD_LENGTH, hybrdData.length)
-                            .apply();
-                    hybrdFile.delete();
-                    LogUtil.i(TAG, "finish image download");
+                    String newMd5 = FileUtil.calculateMD5(newFile);
+                    if (TextUtils.equals(hybrdData.md5, newMd5)) {
+                        preferences.edit()
+                                .putString(PREFERENCE_HYBRD_NAME, newFile.getName())
+                                .putInt(PREFERENCE_HYBRD_UPDATE_TIME, hybrdData.updateTime)
+                                .putString(PREFERENCE_HYBRD_MD5, hybrdData.md5)
+                                .putLong(PREFERENCE_HYBRD_LENGTH, hybrdData.length)
+                                .apply();
+                        hybrdFile.delete();
+                        LogUtil.i(TAG, "finish hybrd download");
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
