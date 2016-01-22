@@ -170,13 +170,16 @@
             android:theme="@style/AppTheme.PlayActivity">
         </activity>
         <activity
-            android:name=".ui.MomentCreateActivity_"
+            android:name=".ui.VideoEditActivity_"
             android:parentActivityName=".ui.MainActivity_"
-            android:theme="@style/AppTheme.MomentCreateActivity"/>
+            android:theme="@style/AppTheme.TagCreateActivity"/>
         <activity
             android:name=".ui.TagCreateActivity_"
-            android:parentActivityName=".ui.MomentCreateActivity_"
-            android:theme="@style/AppTheme.TagCreateActivity"/>
+            android:theme="@style/AppTheme.TagCreateActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.VideoEditActivity_"/>
+        </activity>
         <activity
             android:name=".ui.UserInfoActivity_"
             android:parentActivityName=".ui.MainActivity_"
