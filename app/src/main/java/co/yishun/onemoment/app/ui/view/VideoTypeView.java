@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ public class VideoTypeView extends RelativeLayout {
 
     private int colorOrange;
     private int colorGray;
+    private int oneDp;
 
     public VideoTypeView(Context context) {
         super(context);
@@ -54,6 +56,7 @@ public class VideoTypeView extends RelativeLayout {
 
     private void init() {
         inflate(getContext(), R.layout.layout_video_type, this);
+        oneDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
 
         mWorldTextView = (TextView) findViewById(R.id.worldTextView);
         mDayTextView = (TextView) findViewById(R.id.dayTextView);
@@ -71,16 +74,30 @@ public class VideoTypeView extends RelativeLayout {
         mDiaryTextView.setBackground(mDiaryDrawable);
     }
 
-    @Override protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    public void setWorldCheck() {
+        
     }
 
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         LogUtil.d("size R", getWidth() + "  " + getHeight());
-        mWorldTextView.setHeight(getHeight() / 2);
-        mDayTextView.setHeight(getHeight() / 2);
-        mDiaryTextView.setHeight(getHeight() / 2);
+
+        int textHeight = 0;
+        int margin = 0;
+
+        if (getHeight() >= 92 * oneDp) {
+            textHeight = 34 * oneDp;
+            margin = 10 * oneDp;
+        } else {
+            textHeight = 28 * oneDp;
+            margin = (getHeight() - textHeight) / 3;
+        }
+
+        mWorldTextView.setHeight(textHeight);
+        mDayTextView.setHeight(textHeight);
+        mDiaryTextView.setHeight(textHeight);
+        ((LayoutParams) mWorldTextView.getLayoutParams()).bottomMargin = margin;
+
         mWorldDrawable.setSize(mWorldTextView.getWidth(), mWorldTextView.getHeight());
         mDayDrawable.setSize(mDayTextView.getWidth(), mDayTextView.getHeight());
         mDiaryDrawable.setSize(mDiaryTextView.getWidth(), mDiaryTextView.getHeight());
@@ -94,12 +111,13 @@ public class VideoTypeView extends RelativeLayout {
         public TextBgDrawable(int color) {
             mPaint = new Paint();
             mPaint.setStyle(Paint.Style.STROKE);
+
             mPaint.setAntiAlias(true);
             mPaint.setColor(color);
-            mPaint.setStrokeWidth(getResources().getDimension(R.dimen.md_divider_height));
-            mRect = new RectF(0, 0, getWidth(), getHeight());
+            mPaint.setStrokeWidth(oneDp);
+            mRect = new RectF(0, 0, getWidth() , getHeight());
+            mRect.inset(oneDp / 2, oneDp/2);
             LogUtil.d("size ", getWidth() + "  " + getHeight());
-            mRadius = getHeight() / 2;
         }
 
         public void setColor(int color) {
@@ -108,6 +126,7 @@ public class VideoTypeView extends RelativeLayout {
 
         public void setSize(int width, int height) {
             mRect.set(0, 0, width, height);
+            mRect.inset(oneDp / 2, oneDp/2);
             mRadius = height / 2;
         }
 
