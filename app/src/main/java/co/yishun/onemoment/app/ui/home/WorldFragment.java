@@ -6,7 +6,11 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
+
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.CommonWebFragment;
 import co.yishun.onemoment.app.ui.common.CommonWebFragment_;
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
@@ -16,12 +20,14 @@ import co.yishun.onemoment.app.ui.common.ToolbarFragment;
  */
 @EFragment(R.layout.fragment_world)
 public class WorldFragment extends ToolbarFragment {
-    CommonWebFragment meWebFragment;
+    CommonWebFragment worldWebFragment;
     @ViewById FrameLayout containerFrameLayout;
 
     @AfterViews void setUpViews() {
-        meWebFragment = CommonWebFragment_.builder().build();
-        getFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, meWebFragment).commit();
+        File hybrdFile = FileUtil.getInternalFile(getActivity(), Constants.HYBRD_UNZIP_DIR);
+        String url = Constants.FILE_URL_PREFIX + new File(hybrdFile, "build/pages/world/world.html").getPath();
+        worldWebFragment = CommonWebFragment_.builder().mUrl(url).build();
+        getFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, worldWebFragment).commit();
     }
 
     @Override protected int getTitleDrawableRes() {

@@ -2,33 +2,34 @@ package co.yishun.onemoment.app.ui.common;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.CallSuper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.google.gson.Gson;
 
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
 import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.FileUtil;
 
 /**
  * Created by Jinge on 2016/1/21.
  */
 @EFragment
 public abstract class BaseWebFragment extends BaseFragment {
-    public static final String URL_PREFIX = "ysjs://";
+    public static final String URL_PREFIX = Constants.APP_URL_PREFIX;
     public static final String FUNC_GET_ACCOUNT_ID = "get_account_id";
     public static final String FUNC_GET_ACCOUNT = "get_account";
     public static final String FUNC_JUMP = "jump";
@@ -39,11 +40,14 @@ public abstract class BaseWebFragment extends BaseFragment {
 
 
     private static final String TAG = "BaseWebFragment";
+
     @ViewById protected WebView webView;
+
     protected BaseActivity mActivity;
     protected MaterialDialog dialog;
-    @FragmentArg
-    String mUrl = "file:///data/data/co.yishun.onemoment.app/files/build/pages/mine/mine.html";
+    protected File mHybrdDir;
+
+    @FragmentArg protected String mUrl;
 
     @Override public void onAttach(Context context) {
         super.onAttach(context);
@@ -53,6 +57,14 @@ public abstract class BaseWebFragment extends BaseFragment {
     @Override public void onDetach() {
         super.onDetach();
         mActivity = null;
+    }
+
+    @AfterInject void setDefault() {
+        mHybrdDir = FileUtil.getInternalFile(mActivity, Constants.HYBRD_UNZIP_DIR);
+        if (TextUtils.isEmpty(mUrl)) {
+            mUrl = Constants.FILE_URL_PREFIX + new File(mHybrdDir, "build/pages/world/world.html").getPath();
+            LogUtil.i(TAG, "url is null, load default");
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled") @CallSuper protected void setUpWebView() {
@@ -112,7 +124,7 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private boolean webFinish(List<String> args) {
         String type = args.get(0);
-        if (TextUtils.equals(type, "choose_world")){
+        if (TextUtils.equals(type, "choose_world")) {
             //TODO add result after choose a world
             return true;
         }
@@ -128,6 +140,10 @@ public abstract class BaseWebFragment extends BaseFragment {
             }
         }
         return false;
+    }
+
+    public File getHybrdDir() {
+        return mHybrdDir;
     }
 
     private class BaseWebClient extends WebViewClient {
