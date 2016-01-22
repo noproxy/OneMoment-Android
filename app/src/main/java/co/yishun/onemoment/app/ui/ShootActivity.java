@@ -48,23 +48,16 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     ImageSwitcher cameraSwitch;
     PageIndicatorDot pageIndicatorDot;
 
-    @Extra
-    int transitionX;
-    @Extra
-    int transitionY;
+    @Extra int transitionX;
+    @Extra int transitionY;
 
     // forwarding to MomentCreateActivity
-    @Extra
-    boolean forWorld = false;
-    @Extra
-    WorldTag worldTag;
+    @Extra boolean forWorld = false;
+    @Extra WorldTag worldTag;
 
     private ViewGroup sceneRoot;
-    private
-    @Nullable
-    CameraGLSurfaceView mCameraGLSurfaceView;
+    private @Nullable CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
-    private int currentFilter = 0;
 
     @Override
     public void setPageInfo() {
@@ -221,7 +214,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     @UiThread(delay = 200) void delayStart(File file) {
-        MomentCreateActivity_.intent(this).videoPath(file.getPath()).forWorld(forWorld).worldTag(worldTag).start();
+        VideoEditActivity_.intent(this).videoPath(file.getPath()).start();
         this.finish();
     }
 }

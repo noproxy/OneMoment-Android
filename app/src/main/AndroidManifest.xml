@@ -180,7 +180,7 @@
             android:theme="@style/AppTheme.PlayActivity">
         </activity>
         <activity
-            android:name=".ui.MomentCreateActivity_"
+            android:name=".ui.VideoEditActivity_"
             android:theme="@style/AppTheme.MomentCreateActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -191,7 +191,7 @@
             android:theme="@style/AppTheme.TagCreateActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MomentCreateActivity_"/>
+                android:value=".ui.VideoEditActivity_"/>
         </activity>
         <activity
             android:name=".ui.UserInfoActivity_"

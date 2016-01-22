@@ -4,21 +4,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/layout_toolbar"
         />
 
-
     <co.yishun.onemoment.app.ui.view.SquareVideoView
         android:id="@+id/videoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"/>
-
 
     <Button
         android:id="@+id/nextBtn"
@@ -31,19 +29,10 @@
         android:textColor="@color/textColorPrimaryInverse"
         />
 
-    <FrameLayout
-        android:id="@+id/containerFrameLayout"
+    <co.yishun.onemoment.app.ui.view.VideoTypeView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/nextBtn"
-        android:layout_below="@id/videoView"
-        android:gravity="center"
-        >
+        android:layout_below="@id/videoView"/>
 
-        <!--<include layout="@layout/merge_permission_switch"/>-->
-
-        <!--<include layout="@layout/merge_moment_count_date_view"/>-->
-
-
-    </FrameLayout>
 </RelativeLayout>

@@ -34,41 +34,20 @@ import co.yishun.onemoment.app.ui.view.PermissionSwitch;
  * Created by Carlos on 2015/10/29.
  */
 @EActivity(R.layout.activity_moment_create)
-public class MomentCreateActivity extends BaseActivity {
-    private static final String TAG = "MomentCreateActivity";
+public class VideoEditActivity extends BaseActivity {
+    private static final String TAG = "VideoEditActivity";
     @Extra String videoPath;
     @ViewById VideoView videoView;
     @ViewById Toolbar toolbar;
-    @Extra boolean forWorld = false;
-    @ViewById FrameLayout containerFrameLayout;
-    @Extra WorldTag worldTag;
+
+    boolean forWorld = false;
+    WorldTag worldTag;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
     private boolean isPrivate;//TODO use it
 
     @Override
     public void setPageInfo() {
-        mPageName = "MomentCreateActivity";
-    }
-
-    @AfterViews void addView() {
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        View child;
-        if (forWorld) {
-            child = new PermissionSwitch(this);
-            ((PermissionSwitch) child).setOnCheckedChangeListener((buttonView, isChecked) -> {
-                isPrivate = isChecked;
-                ((PermissionSwitch) child).setChecked(isChecked);
-            });
-        } else {
-            child = new MomentCountDateView(this);
-            try {
-                long count = momentDao.countOf();
-                ((MomentCountDateView) child).setMomentCount((int) count + 1);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        containerFrameLayout.addView(child, params);
+        mPageName = "VideoEditActivity";
     }
 
     @AfterViews void setupToolbar() {
