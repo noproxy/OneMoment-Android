@@ -111,8 +111,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         if (TextUtils.equals(des, "web")) {
             CommonWebActivity_.intent(mActivity).title(args.get(1)).url(args.get(2)).start();
         } else if (TextUtils.equals(des, "camera")) {
-            ShootActivity_.intent(mActivity).transitionX((int) (touchX + webView.getX()))
-                    .transitionY((int) (touchY + webView.getY())).start();
+            int[] location = new int[2];
+            webView.getLocationOnScreen(location);
+            ShootActivity_.intent(mActivity).transitionX((int) (touchX + location[0]))
+                    .transitionY((int) (touchY + location[1])).start();
         } else if (TextUtils.equals(des, "setting")) {
             SettingsActivity_.intent(mActivity).start();
         } else if (TextUtils.equals(des, "create_world")) {
