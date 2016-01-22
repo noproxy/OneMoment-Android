@@ -15,6 +15,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -66,7 +67,7 @@ import static org.android.agoo.client.BaseRegistrar.getRegistrationId;
 @EActivity
 public class MainActivity extends BaseActivity implements AccountManager.OnUserInfoChangeListener {
     private static final String TAG = "MainActivity";
-    private static WeakReference<FloatingActionMenu> floatingActionMenu;
+
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     @Extra boolean checkLOC = false;
@@ -78,6 +79,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private ImageView profileImageView;
     private TextView usernameTextView;
     private TextView locationTextView;
+    private FloatingActionButton fab;
     private BroadcastReceiver mSyncChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -157,7 +159,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
-        setActionMenu();
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(v -> startShoot(v, true));
         navigationTo(R.id.navigation_item_0);
     }
 
@@ -202,88 +205,12 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         UserInfoActivity_.intent(this).start();
     }
 
-    private void setActionMenu() {
-        FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
-        floatingActionMenu = new WeakReference<>(fam);
-        fam.findViewById(R.id.worldFABBtn).setOnClickListener(v -> {
-            MobclickAgent.onEvent(this, Constants.UmengData.FAB_WORLD_CLICK);
-            startShoot(v, true);
-            fam.close(false);
-        });
-        fam.findViewById(R.id.diaryFABBtn).setOnClickListener(v -> {
-            MobclickAgent.onEvent(this, Constants.UmengData.FAB_DIARY_CLICK);
-            startShoot(v, false);
-            fam.close(false);
-        });
-        createCustomAnimation(fam);
-    }
-
-    private void createCustomAnimation(FloatingActionMenu menu) {
-        ImageView menuIcon = menu.getMenuIconView();
-
-        AnimatorSet openSet = new AnimatorSet();
-        ObjectAnimator openBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal",
-                getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorPrimary));
-        openBackground.setEvaluator(new ArgbEvaluator());
-        openBackground.setDuration(200);
-
-        ObjectAnimator openRotate = ObjectAnimator.ofFloat(menuIcon, "rotation", 0f, -180f);
-        openRotate.setDuration(200);
-        openRotate.addListener(new AnimatorListenerAdapter() {
-            @Override public void onAnimationStart(Animator animation) {
-                menu.setMenuButtonColorNormalResId(R.color.colorPrimary);
-                menu.setMenuButtonColorPressedResId(R.color.colorPrimaryDark);
-                menuIcon.setImageResource(R.drawable.ic_action_close);
-            }
-        });
-        openSet.play(openRotate).with(openBackground);
-        openSet.setInterpolator(new OvershootInterpolator(1));
-
-        AnimatorSet closeSet = new AnimatorSet();
-        ObjectAnimator closeBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal",
-                getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent));
-        closeBackground.setEvaluator(new ArgbEvaluator());
-        closeBackground.setDuration(200);
-
-        ObjectAnimator closeRotate = ObjectAnimator.ofFloat(menuIcon, "rotation", -90, 0f);
-        closeRotate.setDuration(200);
-        closeRotate.addListener(new AnimatorListenerAdapter() {
-            @Override public void onAnimationStart(Animator animation) {
-                menu.setMenuButtonColorNormalResId(R.color.colorAccent);
-                menu.setMenuButtonColorPressedResId(R.color.colorAccentDark);
-                menuIcon.setImageResource(R.drawable.ic_fab);
-            }
-        });
-        closeSet.play(closeRotate).with(closeBackground);
-        closeSet.setInterpolator(new OvershootInterpolator(1));
-
-        menu.setIconToggleAnimatorSet(openSet);
-        menu.setOnMenuToggleListener(opened -> menu.setIconToggleAnimatorSet(opened ? closeSet : openSet));
-    }
-
     private void registerSyncListener() {
         registerReceiver(mSyncChangedReceiver, new IntentFilter(SyncManager.SYNC_BROADCAST_ACTION_LOCAL_UPDATE));
     }
 
     private void unregisterSyncListener() {
         unregisterReceiver(mSyncChangedReceiver);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        // collapse fab if click outside of fab
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            Rect outRect = new Rect();
-            FloatingActionMenu fam = floatingActionMenu.get();
-            if (fam != null) {
-                fam.getGlobalVisibleRect(outRect);
-                if (!outRect.contains(((int) event.getRawX()), ((int) event.getRawY()))) {
-                    fam.clearFocus();
-                    fam.close(false);
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event);
     }
 
     @UiThread void invalidateUserInfo(User user) {
@@ -395,7 +322,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     @NonNull
     @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        FloatingActionMenu fab = floatingActionMenu.get();
         if (fab != null) {
             return fab;
         } else
