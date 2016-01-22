@@ -77,7 +77,6 @@ public abstract class BaseWebFragment extends BaseFragment {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new BaseWebClient());
         webView.loadUrl(mUrl);
-        LogUtil.d(TAG, "test : " + toJs(AccountManager.getUserInfo(mActivity)));
     }
 
     private boolean webGetEnv(List<String> args) {
@@ -172,9 +171,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         } else {
             arg = new Gson().toJson(o);
             arg = arg.replace("\"", "\\\"");
-            LogUtil.d(TAG, arg);
         }
-        return "ctx.androidreturn('" + arg + "')";
+        String result = "ctx.androidreturn('" + arg + "')";
+        LogUtil.d(TAG, "decode : " + result);
+        return result;
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
