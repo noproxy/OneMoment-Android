@@ -29,6 +29,7 @@ import java.io.InputStream;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.remind.ReminderReceiver;
 import co.yishun.onemoment.app.api.APIV4;
@@ -37,6 +38,7 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.SplashCover;
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
+import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -56,6 +58,7 @@ public class SplashActivity extends BaseActivity {
     public static final String PREFERENCE_HYBRID_UPDATE_TIME = "hybrid_update_time";
     public static final String PREFERENCE_HYBRID_MD5 = "hybrid_md5";
     public static final String PREFERENCE_HYBRID_LENGTH = "hybrid_length";
+    public static final String PREFERENCE_HYBRID_UNZIP_TIME = "hybrd_unzip_time";
     public static final String DEFAULT_SPLASH_COVER_NAME = "splash_cover_0.png";
     private static final String TAG = "SplashActivity";
 
@@ -107,7 +110,7 @@ public class SplashActivity extends BaseActivity {
         // use static AsyncTask to ensure not keeping this activity's reference
         new CoverUpdateTask(this).execute(coverFile);
 
-        String hybrdFileName = preferences.getString(PREFERENCE_HYBRID_NAME, "");
+        String hybrdFileName = preferences.getString(PREFERENCE_HYBRID_NAME, "hybrd.zip");
         File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
         new HybridUpdateTask(this).execute(hybrdFile);
     }
@@ -200,16 +203,23 @@ public class SplashActivity extends BaseActivity {
     private final class HybridUpdateTask extends AsyncTask<File, Void, Void> {
 
         private final SharedPreferences preferences;
+        private Context context;
 
         private HybridUpdateTask(final Context context) {
             this.preferences = context.getApplicationContext().getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
+            this.context = context;
         }
 
         @Override
         protected Void doInBackground(File... params) {
             File hybridFile = params[0];
-            HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
             int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRID_UPDATE_TIME, 0);
+            int lastUnzipTime = preferences.getInt(PREFERENCE_HYBRID_UNZIP_TIME, 0);
+            if (lastUnzipTime < lastUpdateTime) {
+                FileUtil.unZip(hybridFile.getPath(), FileUtil.getInternalFile(context, Constants.HYBRD_UNZIP_DIR).getPath());
+                preferences.edit().putInt(PREFERENCE_HYBRID_UNZIP_TIME, (int) Util.unixTimeStamp()).apply();
+            }
+            HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
             if (hybrdData.updateTime > lastUpdateTime) {
                 String url = "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip";
                 OkHttpClient client = new OkHttpClient();
