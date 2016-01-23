@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.j256.ormlite.dao.Dao;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
@@ -48,8 +49,7 @@ import co.yishun.onemoment.app.ui.view.TodayMomentView;
  */
 
 @EFragment
-public class DiaryFragment extends ToolbarFragment
-        implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
+public class DiaryFragment extends ToolbarFragment implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
     private static final String TAG = "DiaryFragment";
     @ViewById MomentCalendar momentCalendar;
     @ViewById TodayMomentView todayMomentView;
@@ -69,32 +69,28 @@ public class DiaryFragment extends ToolbarFragment
         Calendar toChanged = Calendar.getInstance();
         toChanged.setTime(date);
 
-        return toChanged.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)
-                && toChanged.get(Calendar.MONTH) == calendar.get(Calendar.MONTH);
+        return toChanged.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) && toChanged.get(Calendar.MONTH) == calendar.get(Calendar.MONTH);
     }
 
     @AfterViews void setCalendar() {
         momentCalendar.setAdapter(this);
     }
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_diary, container, false);
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         return rootView;
     }
 
-    @Override
-    public void onResume() {
+    @Override public void onResume() {
         super.onResume();
         DayView.setTodayAvailableListener(this::onSelected);
         DayView.setMultiSelection(false);
         DayView.setOnMomentSelectedListener(this);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_diary, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -106,30 +102,25 @@ public class DiaryFragment extends ToolbarFragment
 
     @Click(R.id.startPlayTextView) void startFromDay() {
         try {
-            List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true)
-                    .where().eq("owner", AccountManager.getUserInfo(getContext())._id).query();
-            PlayMomentActivity_.intent(this.getActivity()).startDate(selectMoment.getTime())
-                    .endDate(momentList.get(momentList.size() - 1).getTime()).start();
+            List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true).where().eq("owner", AccountManager.getUserInfo(getContext())._id).query();
+            PlayMomentActivity_.intent(this.getActivity()).startDate(selectMoment.getTime()).endDate(momentList.get(momentList.size() - 1).getTime()).start();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.fragment_diary_action_share:
                 ShareExportActivity_.intent(this.getActivity()).start();
                 return true;
             case R.id.fragment_diary_action_all_play:
                 try {
-                    List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true)
-                            .where().eq("owner", AccountManager.getUserInfo(getContext())._id).query();
+                    List<Moment> momentList = momentDao.queryBuilder().orderBy("time", true).where().eq("owner", AccountManager.getUserInfo(getContext())._id).query();
                     if (momentList.size() == 0)
                         ((MainActivity) this.getActivity()).showSnackMsg(R.string.fragment_diary_no_moment);
                     else
-                        PlayMomentActivity_.intent(this.getActivity()).startDate(momentList.get(0).getTime())
-                                .endDate(momentList.get(momentList.size() - 1).getTime()).start();
+                        PlayMomentActivity_.intent(this.getActivity()).startDate(momentList.get(0).getTime()).endDate(momentList.get(momentList.size() - 1).getTime()).start();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -139,18 +130,15 @@ public class DiaryFragment extends ToolbarFragment
         }
     }
 
-    @Override
-    protected int getTitleDrawableRes() {
+    @Override protected int getTitleDrawableRes() {
         return R.drawable.pic_diary_title;
     }
 
-    @Override
-    public void setPageInfo() {
+    @Override public void setPageInfo() {
         mPageName = "DiaryFragment";
     }
 
-    @Override
-    public void onBindView(Calendar calendar, DayView dayView) {
+    @Override public void onBindView(Calendar calendar, DayView dayView) {
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(calendar.getTime());
         try {
             Moment moment = momentDao.queryBuilder().where().eq("time", time).and().eq("owner", AccountManager.getAccountId(getContext())).queryForFirst();
@@ -158,7 +146,15 @@ public class DiaryFragment extends ToolbarFragment
                 dayView.setEnabled(true);
                 dayView.setTag(moment);
                 //fix DayView, change to into(dayView)
-                Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(dayView);
+                Picasso.with(getContext()).load(new File(moment.getThumbPath())).into(dayView, new Callback() {
+                    @Override public void onSuccess() {
+                        dayView.overrideTextColorResource(R.color.colorPrimary);
+                    }
+
+                    @Override public void onError() {
+
+                    }
+                });
                 LogUtil.i(TAG, "moment found: " + moment.getTime());
             } else {
                 dayView.setEnabled(false);
@@ -168,8 +164,7 @@ public class DiaryFragment extends ToolbarFragment
         }
     }
 
-    @Override
-    public void onSelected(@NonNull DayView dayView) {
+    @Override public void onSelected(@NonNull DayView dayView) {
         LogUtil.i(TAG, "onSelected: " + dayView);
         Moment moment = (Moment) dayView.getTag();
         selectMoment = moment;
