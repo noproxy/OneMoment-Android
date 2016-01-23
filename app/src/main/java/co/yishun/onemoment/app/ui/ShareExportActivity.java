@@ -42,9 +42,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
-import co.yishun.library.calendarlibrary.DayView;
-import co.yishun.library.calendarlibrary.MomentCalendar;
-import co.yishun.library.calendarlibrary.MomentMonthView;
+import co.yishun.library.momentcalendar.DayView;
+import co.yishun.library.momentcalendar.MomentCalendar;
+import co.yishun.library.momentcalendar.MomentMonthView;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
@@ -66,8 +66,7 @@ import co.yishun.onemoment.app.video.VideoCommand;
 import co.yishun.onemoment.app.video.VideoConcat;
 
 @EActivity(R.layout.activity_share_export)
-public class ShareExportActivity extends BaseActivity
-        implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
+public class ShareExportActivity extends BaseActivity implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
 
     private static final String TAG = "ShareExportActivity";
     @ViewById Toolbar toolbar;
@@ -93,8 +92,7 @@ public class ShareExportActivity extends BaseActivity
         DayView.setOnMomentSelectedListener(this);
         DayView.setMultiSelection(true);
         try {
-            List<Moment> momentInDatabase = momentDao.queryBuilder().where()
-                    .eq("owner", AccountManager.getAccountId(this)).query();
+            List<Moment> momentInDatabase = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this)).query();
             allMoments = new ArrayList<>();
             for (Moment moment : momentInDatabase) {
                 if (moment.getFile().length() > 0) {
@@ -119,9 +117,7 @@ public class ShareExportActivity extends BaseActivity
 
     @UiThread void showConcatProgress() {
         hideProgress();
-        concatProgress = new MaterialDialog.Builder(this).progress(false, 100, false)
-                .theme(Theme.LIGHT).cancelable(false)
-                .content(getString(R.string.activity_share_export_progress_concatenating)).build();
+        concatProgress = new MaterialDialog.Builder(this).progress(false, 100, false).theme(Theme.LIGHT).cancelable(false).content(getString(R.string.activity_share_export_progress_concatenating)).build();
         concatProgress.show();
     }
 
@@ -179,7 +175,8 @@ public class ShareExportActivity extends BaseActivity
                 for (int dayIndex = 0; dayIndex < monthView.getChildCount(); dayIndex++) {
                     if (monthView.getChildAt(dayIndex) instanceof DayView) {
                         DayView dayView = (DayView) monthView.getChildAt(dayIndex);
-                        if (dayView.isEnabled()) dayView.setSelected(select);
+                        if (dayView.isEnabled())
+                            dayView.setSelected(select);
                     }
                 }
             }
@@ -187,11 +184,9 @@ public class ShareExportActivity extends BaseActivity
     }
 
     void updateSelectedText() {
-        String content = String.format(getResources().getString(R.string.activity_share_export_selected),
-                selectedMoments.size(), allMoments.size());
+        String content = String.format(getResources().getString(R.string.activity_share_export_selected), selectedMoments.size(), allMoments.size());
         SpannableString ss = new SpannableString(content);
-        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSecondary)), content.indexOf(" "),
-                content.indexOf("/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSecondary)), content.indexOf(" "), content.indexOf("/"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         selectedText.setText(ss);
     }
 
@@ -211,7 +206,8 @@ public class ShareExportActivity extends BaseActivity
             Picasso.with(this).load(new File(moment.getThumbPath())).into(dayView);
             if (selectedMoments.contains(moment))
                 dayView.setSelected(true);
-            else dayView.setSelected(false);
+            else
+                dayView.setSelected(false);
             LogUtil.i(TAG, "moment found: " + moment.getTime());
         } else {
             dayView.setEnabled(false);
@@ -241,9 +237,7 @@ public class ShareExportActivity extends BaseActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
-        videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id
-                + Constants.URL_HYPHEN + selectedMoments.size() + Constants.URL_HYPHEN
-                + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
+        videoCacheFile = FileUtil.getCacheFile(this, Constants.LONG_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id + Constants.URL_HYPHEN + selectedMoments.size() + Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX);
 
         List<File> filesNeedTrans = new ArrayList<>();
         try {
@@ -264,33 +258,30 @@ public class ShareExportActivity extends BaseActivity
         completeTask = 0;
         showConcatProgress();
 
-        new VideoConcat(this)
-                .setTransFile(filesNeedTrans)
-                .setConcatFile(files, videoCacheFile)
-                .setListener(new VideoCommand.VideoCommandListener() {
-                    @Override public void onSuccess(VideoCommand.VideoCommandType type) {
-                        switch (type) {
-                            case COMMAND_TRANSPOSE:
-                                LogUtil.d(TAG, "onTransSuccess: ");
-                                completeTask++;
-                                break;
-                            case COMMAND_FORMAT:
-                                LogUtil.d(TAG, "onFormatSuccess: ");
-                                completeTask++;
-                                break;
-                            case COMMAND_CONCAT:
-                                LogUtil.d(TAG, "onConcatSuccess: ");
-                                completeTask = totalTask;
-                                afterConcat();
-                                break;
-                        }
-                        updateConcatProgress();
-                    }
+        new VideoConcat(this).setTransFile(filesNeedTrans).setConcatFile(files, videoCacheFile).setListener(new VideoCommand.VideoCommandListener() {
+            @Override public void onSuccess(VideoCommand.VideoCommandType type) {
+                switch (type) {
+                    case COMMAND_TRANSPOSE:
+                        LogUtil.d(TAG, "onTransSuccess: ");
+                        completeTask++;
+                        break;
+                    case COMMAND_FORMAT:
+                        LogUtil.d(TAG, "onFormatSuccess: ");
+                        completeTask++;
+                        break;
+                    case COMMAND_CONCAT:
+                        LogUtil.d(TAG, "onConcatSuccess: ");
+                        completeTask = totalTask;
+                        afterConcat();
+                        break;
+                }
+                updateConcatProgress();
+            }
 
-                    @Override public void onFail(VideoCommand.VideoCommandType type) {
-                        LogUtil.d(TAG, "onFail: ");
-                    }
-                }).start();
+            @Override public void onFail(VideoCommand.VideoCommandType type) {
+                LogUtil.d(TAG, "onFail: ");
+            }
+        }).start();
     }
 
     @Background void afterConcat() {
@@ -328,18 +319,16 @@ public class ShareExportActivity extends BaseActivity
             return;
         }
         CountDownLatch latch = new CountDownLatch(1);
-        uploadManager.put(videoCacheFile, videoCacheFile.getName(), token.token,
-                (s, responseInfo, jsonObject) -> {
-                    LogUtil.i(TAG, responseInfo.toString());
-                    if (responseInfo.isOK()) {
-                        LogUtil.d(TAG, "loaded " + responseInfo.path);
-                        LogUtil.i(TAG, "profile upload ok");
-                    } else {
-                        LogUtil.e(TAG, "profile upload error: " + responseInfo.error);
-                    }
-                    latch.countDown();
-                }, null
-        );
+        uploadManager.put(videoCacheFile, videoCacheFile.getName(), token.token, (s, responseInfo, jsonObject) -> {
+            LogUtil.i(TAG, responseInfo.toString());
+            if (responseInfo.isOK()) {
+                LogUtil.d(TAG, "loaded " + responseInfo.path);
+                LogUtil.i(TAG, "profile upload ok");
+            } else {
+                LogUtil.e(TAG, "profile upload error: " + responseInfo.error);
+            }
+            latch.countDown();
+        }, null);
         try {
             latch.await();
         } catch (InterruptedException e) {
