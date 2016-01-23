@@ -7,7 +7,6 @@ import android.os.Build;
 import android.support.annotation.CallSuper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -86,8 +85,9 @@ public abstract class BaseWebFragment extends BaseFragment {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new BaseWebClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (0 != (mActivity.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE))
-            { WebView.setWebContentsDebuggingEnabled(true); }
+            if (0 != (mActivity.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE)) {
+                WebView.setWebContentsDebuggingEnabled(true);
+            }
         }
         webView.setOnTouchListener((v, event) -> {
             touchX = event.getX();
