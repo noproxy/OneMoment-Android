@@ -276,7 +276,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
                 navigationTo(R.id.navigation_item_0);
                 ((NavigationView) findViewById(R.id.navigationView)).setCheckedItem(R.id.navigation_item_0);
             } else
-                supportFinishAfterTransition();
+                super.onBackPressed();
         }
     }
 

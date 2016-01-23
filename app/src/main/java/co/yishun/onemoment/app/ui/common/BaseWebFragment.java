@@ -224,6 +224,14 @@ public abstract class BaseWebFragment extends BaseFragment {
         return false;
     }
 
+    public boolean canGoBack() {
+        return webView.canGoBack();
+    }
+
+    public void goBack() {
+        webView.goBack();
+    }
+
     public File getHybrdDir() {
         return mHybrdDir;
     }

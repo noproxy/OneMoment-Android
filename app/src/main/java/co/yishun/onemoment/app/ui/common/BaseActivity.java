@@ -34,6 +34,7 @@ import static java.lang.String.valueOf;
  */
 @EActivity
 public abstract class BaseActivity extends AppCompatActivity {
+    private static final String TAG = "BaseActivity";
     //set it false, if we only take this activity's fragments into count. else set it true, and give a page name.
     protected boolean mIsPage = true;
     protected String mPageName = "BaseActivity";
@@ -129,6 +130,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
+        }
+    }
+
+    @Override public void onBackPressed() {
+        BaseWebFragment webFragment = (BaseWebFragment) getSupportFragmentManager().findFragmentByTag("web");
+        if (webFragment != null && webFragment.canGoBack()) {
+            webFragment.goBack();
+        } else {
+            supportFinishAfterTransition();
         }
     }
 
