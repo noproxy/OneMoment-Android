@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui.common;
+package co.yishun.onemoment.app.ui.hybrd;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -8,10 +8,8 @@ import android.os.Build;
 import android.support.annotation.CallSuper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -25,9 +23,6 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.List;
 
 import co.yishun.onemoment.app.BuildConfig;
@@ -35,10 +30,9 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.ui.CreateWorldActivity_;
-import co.yishun.onemoment.app.ui.SettingsActivity_;
-import co.yishun.onemoment.app.ui.ShootActivity_;
-import co.yishun.onemoment.app.ui.UserInfoActivity_;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.common.BaseFragment;
+
 
 /**
  * Created by Jinge on 2016/1/21.
@@ -46,15 +40,6 @@ import co.yishun.onemoment.app.ui.UserInfoActivity_;
 @EFragment
 public abstract class BaseWebFragment extends BaseFragment {
     public static final String URL_PREFIX = Constants.APP_URL_PREFIX;
-    public static final String FUNC_GET_ACCOUNT_ID = "getAccountId";
-    public static final String FUNC_GET_ACCOUNT = "getAccount";
-    public static final String FUNC_JUMP = "jump";
-    public static final String FUNC_LOG = "log";
-    public static final String FUNC_ALERT = "alert";
-    public static final String FUNC_CANCEL_AlERT = "cancelAlert";
-    public static final String FUNC_FINISH = "finish";
-    public static final String FUNC_GET_ENV = "getEnv";
-
 
     private static final String TAG = "BaseWebFragment";
 
@@ -63,6 +48,8 @@ public abstract class BaseWebFragment extends BaseFragment {
     protected BaseActivity mActivity;
     protected MaterialDialog dialog;
     protected File mHybrdDir;
+    protected int posX;
+    protected int posY;
     protected float touchX;
     protected float touchY;
 
@@ -99,17 +86,18 @@ public abstract class BaseWebFragment extends BaseFragment {
             touchY = event.getY();
             return false;
         });
+        webView.post(() -> {
+            int location[] = new int[2];
+            webView.getLocationOnScreen(location);
+            posX = location[0];
+            posY = location[1];
+        });
         webView.loadUrl(mUrl);
     }
 
     private boolean webGetEnv(List<String> args) {
         String env = BuildConfig.DEBUG ? "development" : "production";
         webView.loadUrl(toJs(env));
-//        webView.evaluateJavascript("javascript:" + toJs(env), new ValueCallback<String>() {
-//            @Override public void onReceiveValue(String value) {
-//                LogUtil.d(TAG, value);
-//            }
-//        });
         return true;
     }
 
@@ -120,30 +108,6 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private boolean webGetAccountId(List<String> args) {
         webView.loadUrl(toJs(AccountManager.getUserInfo(mActivity)._id));
-        return true;
-    }
-
-    private boolean webJump(List<String> args) {
-        String des = args.get(0);
-        if (TextUtils.equals(des, "web")) {
-            CommonWebActivity_.intent(mActivity).title(args.get(1)).url(args.get(2)).start();
-        } else if (TextUtils.equals(des, "camera")) {
-            int[] location = new int[2];
-            webView.getLocationOnScreen(location);
-            ShootActivity_.intent(mActivity).transitionX((int) (touchX + location[0]))
-                    .transitionY((int) (touchY + location[1])).start();
-        } else if (TextUtils.equals(des, "setting")) {
-            SettingsActivity_.intent(mActivity).start();
-        } else if (TextUtils.equals(des, "create_world")) {
-            CreateWorldActivity_.intent(mActivity).start();
-        } else if (TextUtils.equals(des, "edit")) {
-            UserInfoActivity_.intent(mActivity).start();
-        } else if (TextUtils.equals(des, "world_square")) {
-            //TODO jump to world detail activity
-//            TagActivity_.intent(mActivity).start();
-        } else {
-            LogUtil.e(TAG, "unhandled jump type");
-        }
         return true;
     }
 
@@ -186,28 +150,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         return true;
     }
 
-    public String decode(String raw) {
-        String result;
-        try {
-            result = URLDecoder.decode(raw, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            result = "decoder error";
-            LogUtil.e(TAG, "decoder error : " + raw);
-        }
-        return result;
-    }
-
-    public List<String> decode(List<String> rawStrings) {
-        List<String> results = new ArrayList<>();
-        for (String s : rawStrings) results.add(decode(s));
-        return results;
-    }
-
     public String toJs(Object o) {
         String arg;
-            arg = new Gson().toJson(o);
-            arg = arg.replace("\"", "\\\"");
+        arg = new Gson().toJson(o);
+        arg = arg.replace("\"", "\\\"");
 
         String result = "javascript:ctx.androidreturn('[" + arg + "]')";
         LogUtil.d(TAG, "encode : " + result);
@@ -237,21 +183,15 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private class BaseWebClient extends WebViewClient {
-        @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            LogUtil.d(TAG, url);
-            if (url.startsWith(URL_PREFIX)) {
-                String json = url.substring(URL_PREFIX.length());
-                UrlModel urlModel = new Gson().fromJson(json, UrlModel.class);
-                urlModel.args = decode(urlModel.args);
 
+        private HybrdUrlHandler urlHandler = new HybrdUrlHandler() {
+            @Override protected boolean handleInnerUrl(UrlModel urlModel) {
                 if (TextUtils.equals(urlModel.call, FUNC_GET_ENV)) {
                     return webGetEnv(urlModel.args);
                 } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT)) {
                     return webGetAccount(urlModel.args);
                 } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT_ID)) {
                     return webGetAccountId(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, FUNC_JUMP)) {
-                    return webJump(urlModel.args);
                 } else if (TextUtils.equals(urlModel.call, FUNC_LOG)) {
                     return webLog(urlModel.args);
                 } else if (TextUtils.equals(urlModel.call, FUNC_ALERT)) {
@@ -265,7 +205,12 @@ public abstract class BaseWebFragment extends BaseFragment {
                 }
                 return true;
             }
-            return super.shouldOverrideUrlLoading(view, url);
+        };
+
+        @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            LogUtil.d(TAG, url);
+            return urlHandler.handleUrl(mActivity, url, (int) (touchX + posX), (int) (touchY + posY))
+                    || super.shouldOverrideUrlLoading(view, url);
         }
 
         @SuppressWarnings("deprecation") @Override
@@ -292,10 +237,5 @@ public abstract class BaseWebFragment extends BaseFragment {
             }
             return super.shouldOverrideKeyEvent(view, event);
         }
-    }
-
-    class UrlModel {
-        String call;
-        List<String> args;
     }
 }

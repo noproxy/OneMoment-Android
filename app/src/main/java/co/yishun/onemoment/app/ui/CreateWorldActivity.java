@@ -9,7 +9,7 @@ import java.io.File;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.ui.common.BaseWebActivity;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
 
 /**
  * Created by Jinge on 2016/1/22.

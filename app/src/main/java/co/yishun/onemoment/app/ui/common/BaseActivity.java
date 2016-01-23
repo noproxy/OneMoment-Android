@@ -25,6 +25,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.AccountActivity;
 import co.yishun.onemoment.app.ui.SplashActivity;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 import co.yishun.onemoment.app.wxapi.EntryActivity;
 
 import static java.lang.String.valueOf;
