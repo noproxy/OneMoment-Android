@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import org.androidannotations.annotations.ViewById;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.ui.view.PageIndicatorDot;
-import co.yishun.onemoment.app.wxapi.EntryActivity;
 import co.yishun.onemoment.app.wxapi.EntryActivity_;
 
 @EActivity(R.layout.activity_guide)
@@ -33,7 +31,7 @@ public class GuideActivity extends AppCompatActivity {
             R.drawable.pic_guide_003txt,
             R.drawable.pic_guide_004txt};
 
-    @Extra boolean isFirstLuanch;
+    @Extra boolean isFirstLaunch;
 
     @ViewById ViewPager viewPager;
     @ViewById PageIndicatorDot pageIndicator;
@@ -61,7 +59,7 @@ public class GuideActivity extends AppCompatActivity {
     }
 
     void enterClick(View view) {
-        if (isFirstLuanch) {
+        if (isFirstLaunch) {
             if (AccountManager.isLogin(this))
                 MainActivity_.intent(this).start();
             else
