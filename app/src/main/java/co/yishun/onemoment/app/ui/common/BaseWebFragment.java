@@ -1,12 +1,17 @@
 package co.yishun.onemoment.app.ui.common;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.support.annotation.CallSuper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.webkit.ValueCallback;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -100,6 +105,11 @@ public abstract class BaseWebFragment extends BaseFragment {
     private boolean webGetEnv(List<String> args) {
         String env = BuildConfig.DEBUG ? "development" : "production";
         webView.loadUrl(toJs(env));
+//        webView.evaluateJavascript("javascript:" + toJs(env), new ValueCallback<String>() {
+//            @Override public void onReceiveValue(String value) {
+//                LogUtil.d(TAG, value);
+//            }
+//        });
         return true;
     }
 
@@ -196,14 +206,11 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     public String toJs(Object o) {
         String arg;
-        if (o instanceof String) {
-            arg = (String) o;
-        } else {
             arg = new Gson().toJson(o);
             arg = arg.replace("\"", "\\\"");
-        }
-        String result = "ctx.androidreturn('" + arg + "')";
-        LogUtil.d(TAG, "decode : " + result);
+
+        String result = "javascript:ctx.androidreturn('[" + arg + "]')";
+        LogUtil.d(TAG, "encode : " + result);
         return result;
     }
 
@@ -251,6 +258,19 @@ public abstract class BaseWebFragment extends BaseFragment {
                 return true;
             }
             return super.shouldOverrideUrlLoading(view, url);
+        }
+
+        @SuppressWarnings("deprecation") @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            LogUtil.d(TAG, description + "  " + failingUrl);
+            super.onReceivedError(view, errorCode, description, failingUrl);
+        }
+
+        @TargetApi(23)
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            LogUtil.d(TAG, "error : " + request.getUrl() + error.toString());
+            super.onReceivedError(view, request, error);
         }
 
         @Override public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
