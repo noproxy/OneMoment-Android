@@ -13,6 +13,7 @@ public class CommonWebActivity extends BaseWebActivity {
 
     @AfterViews void setupViews() {
         setupToolbar();
+        setupFragment();
     }
 
     @Override public void setPageInfo() {

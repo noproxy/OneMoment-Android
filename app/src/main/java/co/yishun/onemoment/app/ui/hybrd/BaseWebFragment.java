@@ -30,6 +30,7 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.ui.SplashActivity;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
 
@@ -71,10 +72,18 @@ public abstract class BaseWebFragment extends BaseFragment {
             mUrl = Constants.FILE_URL_PREFIX + new File(mHybrdDir, "build/pages/world/world.html").getPath();
             LogUtil.i(TAG, "url is null, load default");
         }
+
+        int lastUpdateTime = mActivity.getSharedPreferences(SplashActivity.RUNTIME_PREFERENCE, Context.MODE_PRIVATE)
+                .getInt(SplashActivity.PREFERENCE_HYBRD_UPDATE_TIME, 0);
+        if (mUrl.startsWith(Constants.FILE_URL_PREFIX)) mUrl += "?time=" + lastUpdateTime;
     }
 
     @SuppressLint("SetJavaScriptEnabled") @CallSuper protected void setUpWebView() {
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setAllowContentAccess(true);
+        webView.getSettings().setAllowFileAccessFromFileURLs(true);
+        webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
         webView.setWebViewClient(new BaseWebClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (mActivity.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE)) {
@@ -124,8 +133,7 @@ public abstract class BaseWebFragment extends BaseFragment {
                     .content(args.get(1)).progress(true, 0).build();
             dialog.show();
         } else if (TextUtils.equals(type, "message")) {
-            dialog = new MaterialDialog.Builder(mActivity).theme(Theme.LIGHT).content(args.get(1)).build();
-            dialog.show();
+            mActivity.showSnackMsg(args.get(1));
         } else {
             LogUtil.e(TAG, "unhandled alert type");
         }
@@ -133,7 +141,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private boolean webCancelAlert(List<String> args) {
-        if (dialog.isShowing()) {
+        if (dialog != null && dialog.isShowing()) {
             dialog.hide();
         }
         return true;
@@ -150,13 +158,19 @@ public abstract class BaseWebFragment extends BaseFragment {
         return true;
     }
 
+    public void sendFinish() {
+        String result = "javascript:ctx.finish()";
+        LogUtil.d(TAG, "load js : " + result);
+        webView.loadUrl(result);
+    }
+
     public String toJs(Object o) {
         String arg;
         arg = new Gson().toJson(o);
         arg = arg.replace("\"", "\\\"");
 
         String result = "javascript:ctx.androidreturn('[" + arg + "]')";
-        LogUtil.d(TAG, "encode : " + result);
+        LogUtil.d(TAG, "load js : " + result);
         return result;
     }
 
@@ -208,6 +222,7 @@ public abstract class BaseWebFragment extends BaseFragment {
         };
 
         @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            url = HybrdUrlHandler.urlDecode(url);
             LogUtil.d(TAG, url);
             return urlHandler.handleUrl(mActivity, url, (int) (touchX + posX), (int) (touchY + posY))
                     || super.shouldOverrideUrlLoading(view, url);

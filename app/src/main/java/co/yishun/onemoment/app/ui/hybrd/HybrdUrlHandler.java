@@ -3,7 +3,10 @@ package co.yishun.onemoment.app.ui.hybrd;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -34,6 +37,24 @@ public abstract class HybrdUrlHandler {
 
     private static final String TAG = "HybrdUrlHandler";
 
+    public static String urlDecode(String raw) {
+        String result;
+        try {
+            result = URLDecoder.decode(raw, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            result = "decoder error";
+            LogUtil.e(TAG, "decoder error : " + raw);
+        }
+        return result;
+    }
+
+    public static List<String> urlDecode(List<String> rawStrings) {
+        List<String> results = new ArrayList<>();
+        for (String s : rawStrings) results.add(urlDecode(s));
+        return results;
+    }
+
     protected abstract boolean handleInnerUrl(UrlModel urlModel);
 
     public boolean handleUrl(Context activity, String url) {
@@ -53,8 +74,19 @@ public abstract class HybrdUrlHandler {
     public boolean handleUrl(Context context, String url, int posX, int posY) {
         if (url.startsWith(URL_PREFIX)) {
             String json = url.substring(URL_PREFIX.length());
-            UrlModel urlModel = new Gson().fromJson(json, UrlModel.class);
-            urlModel.args = decode(urlModel.args);
+            UrlModel urlModel = new UrlModel();
+            JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+            urlModel.call = jsonObject.get("call").getAsString();
+            JsonArray jsonArray = jsonObject.getAsJsonArray("args");
+            urlModel.args = new ArrayList<>();
+            for (JsonElement element : jsonArray) {
+                String elementStr;
+                elementStr = element.toString();
+                if (elementStr.startsWith("\"") && elementStr.endsWith("\""))
+                    elementStr = elementStr.substring(1, elementStr.length() - 1);
+                urlModel.args.add(elementStr);
+            }
+
             if (TextUtils.equals(urlModel.call, FUNC_JUMP)) {
                 return webJumpWithPosition(context, urlModel.args, posX, posY);
             }
@@ -79,27 +111,9 @@ public abstract class HybrdUrlHandler {
             //TODO jump to world detail activity
 //            TagActivity_.intent(activity).start();
         } else {
-            LogUtil.e(TAG, "unhandled jump type");
+            LogUtil.e(TAG, "unhandled jump type : " + des);
         }
         return true;
-    }
-
-    public String decode(String raw) {
-        String result;
-        try {
-            result = URLDecoder.decode(raw, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            result = "decoder error";
-            LogUtil.e(TAG, "decoder error : " + raw);
-        }
-        return result;
-    }
-
-    public List<String> decode(List<String> rawStrings) {
-        List<String> results = new ArrayList<>();
-        for (String s : rawStrings) results.add(decode(s));
-        return results;
     }
 
     public static class JumpUrlHandler extends HybrdUrlHandler {
