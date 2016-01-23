@@ -18,7 +18,7 @@ import co.yishun.onemoment.app.ui.common.BaseWebActivity;
 public class CreateWorldActivity extends BaseWebActivity {
 
     @AfterInject void setDefault() {
-        title = getString(R.string.app_name);
+        title = getString(R.string.activity_create_world_title);
         File hybrdDir = FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR);
         url = Constants.FILE_URL_PREFIX + new File(hybrdDir, "build/pages/add_to_world/add_to_world.html").getPath();
     }
