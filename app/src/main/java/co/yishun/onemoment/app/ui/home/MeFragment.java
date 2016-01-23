@@ -11,6 +11,7 @@ import java.io.File;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment;
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
 import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment_;
@@ -27,7 +28,8 @@ public class MeFragment extends ToolbarFragment {
         File hybrdDir = FileUtil.getInternalFile(getActivity(), Constants.HYBRD_UNZIP_DIR);
         String url = Constants.FILE_URL_PREFIX + new File(hybrdDir, "build/pages/mine/mine.html").getPath();
         meWebFragment = CommonWebFragment_.builder().mUrl(url).build();
-        getFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, meWebFragment).commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.containerFrameLayout, meWebFragment, BaseWebFragment.TAG_WEB).commit();
     }
 
 

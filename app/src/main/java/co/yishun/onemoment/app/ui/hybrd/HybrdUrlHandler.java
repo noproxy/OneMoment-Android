@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.hybrd;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -15,7 +16,6 @@ import co.yishun.onemoment.app.ui.CreateWorldActivity_;
 import co.yishun.onemoment.app.ui.SettingsActivity_;
 import co.yishun.onemoment.app.ui.ShootActivity_;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
-import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
  * Created by Jinge on 2016/1/23.
@@ -36,35 +36,45 @@ public abstract class HybrdUrlHandler {
 
     protected abstract boolean handleInnerUrl(UrlModel urlModel);
 
-    public boolean handleUrl(BaseActivity activity, String url) {
+    public boolean handleUrl(Context activity, String url) {
         return handleUrl(activity, url, 0, 0);
     }
 
-    public boolean handleUrl(BaseActivity activity, String url, int posX, int posY) {
+    /**
+     * This can be used in hybrd Activities and fragment, and also can be used with other kind of url,
+     * such as when click a banner, jump to a certain world.
+     *
+     * @param url  : use the same format as hybrd.
+     * @param posX : the X position for transition. For example, when you want start {@link ShootActivity_},
+     *             you need to specify {@param posX} and {@param posY}, or the {@link ShootActivity_} with start
+     *             from the center of the screen.
+     * @return True, if we handle the url.
+     */
+    public boolean handleUrl(Context context, String url, int posX, int posY) {
         if (url.startsWith(URL_PREFIX)) {
             String json = url.substring(URL_PREFIX.length());
             UrlModel urlModel = new Gson().fromJson(json, UrlModel.class);
             urlModel.args = decode(urlModel.args);
             if (TextUtils.equals(urlModel.call, FUNC_JUMP)) {
-                return webJumpWithPosition(activity, urlModel.args, posX, posY);
+                return webJumpWithPosition(context, urlModel.args, posX, posY);
             }
             return handleInnerUrl(urlModel);
         }
         return false;
     }
 
-    private boolean webJumpWithPosition(BaseActivity activity, List<String> args, int posX, int posY) {
+    private boolean webJumpWithPosition(Context context, List<String> args, int posX, int posY) {
         String des = args.get(0);
         if (TextUtils.equals(des, "web")) {
-            CommonWebActivity_.intent(activity).title(args.get(1)).url(args.get(2)).start();
+            CommonWebActivity_.intent(context).title(args.get(1)).url(args.get(2)).start();
         } else if (TextUtils.equals(des, "camera")) {
-            ShootActivity_.intent(activity).transitionX(posX).transitionY(posY).start();
+            ShootActivity_.intent(context).transitionX(posX).transitionY(posY).start();
         } else if (TextUtils.equals(des, "setting")) {
-            SettingsActivity_.intent(activity).start();
+            SettingsActivity_.intent(context).start();
         } else if (TextUtils.equals(des, "create_world")) {
-            CreateWorldActivity_.intent(activity).start();
+            CreateWorldActivity_.intent(context).start();
         } else if (TextUtils.equals(des, "edit")) {
-            UserInfoActivity_.intent(activity).start();
+            UserInfoActivity_.intent(context).start();
         } else if (TextUtils.equals(des, "world_square")) {
             //TODO jump to world detail activity
 //            TagActivity_.intent(activity).start();

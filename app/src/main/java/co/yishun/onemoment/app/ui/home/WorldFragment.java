@@ -11,9 +11,9 @@ import java.io.File;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment;
-
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
+import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment;
 import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment_;
 
 /**
@@ -28,7 +28,8 @@ public class WorldFragment extends ToolbarFragment {
         File hybrdFile = FileUtil.getInternalFile(getActivity(), Constants.HYBRD_UNZIP_DIR);
         String url = Constants.FILE_URL_PREFIX + new File(hybrdFile, "build/pages/pages_list/pages_list.html").getPath();
         worldWebFragment = CommonWebFragment_.builder().mUrl(url).build();
-        getFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, worldWebFragment, "web").commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.containerFrameLayout, worldWebFragment, BaseWebFragment.TAG_WEB).commit();
     }
 
     @Override protected int getTitleDrawableRes() {

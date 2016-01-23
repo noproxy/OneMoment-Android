@@ -35,6 +35,6 @@ public abstract class BaseWebActivity extends BaseActivity {
     protected void setupFragment() {
         mWebFragment = CommonWebFragment_.builder().mUrl(url).build();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerFrameLayout, mWebFragment).commit();
+                .replace(R.id.containerFrameLayout, mWebFragment, BaseWebFragment.TAG_WEB).commit();
     }
 }
