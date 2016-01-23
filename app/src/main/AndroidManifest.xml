@@ -222,6 +222,9 @@
         <activity android:name=".ui.CreateWorldActivity_">
 
         </activity>
+        <activity android:name=".ui.BadgeActivity_">
+
+        </activity>
 
         <service android:name=".account.remind.ReminderService">
         </service>

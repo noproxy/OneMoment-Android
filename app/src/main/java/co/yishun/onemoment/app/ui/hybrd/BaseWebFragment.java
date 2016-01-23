@@ -55,6 +55,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     protected float touchY;
 
     @FragmentArg protected String mUrl;
+    @FragmentArg protected String mArg;
 
     @Override public void onAttach(Context context) {
         super.onAttach(context);
@@ -64,6 +65,11 @@ public abstract class BaseWebFragment extends BaseFragment {
     @Override public void onDetach() {
         super.onDetach();
         mActivity = null;
+    }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        webView.clearCache(false);
     }
 
     @AfterInject void setDefault() {
@@ -158,6 +164,11 @@ public abstract class BaseWebFragment extends BaseFragment {
         return true;
     }
 
+    private boolean webLoad(List<String> args) {
+        webView.loadUrl(toJs(mArg, false));
+        return true;
+    }
+
     public void sendFinish() {
         String result = "javascript:ctx.finish()";
         LogUtil.d(TAG, "load js : " + result);
@@ -165,9 +176,13 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     public String toJs(Object o) {
+        return toJs(o, true);
+    }
+
+    public String toJs(Object o, boolean encode) {
         String arg;
         arg = new Gson().toJson(o);
-        arg = arg.replace("\"", "\\\"");
+        if (encode) arg = arg.replace("\"", "\\\"");
 
         String result = "javascript:ctx.androidreturn('[" + arg + "]')";
         LogUtil.d(TAG, "load js : " + result);
@@ -214,6 +229,8 @@ public abstract class BaseWebFragment extends BaseFragment {
                     return webCancelAlert(urlModel.args);
                 } else if (TextUtils.equals(urlModel.call, FUNC_FINISH)) {
                     return webFinish(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, FUNC_LOAD)) {
+                    return webLoad(urlModel.args);
                 } else {
                     LogUtil.i(TAG, "unknown call type");
                 }

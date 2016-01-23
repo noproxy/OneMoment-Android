@@ -15,6 +15,8 @@ import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.ui.BadgeActivity;
+import co.yishun.onemoment.app.ui.BadgeActivity_;
 import co.yishun.onemoment.app.ui.CreateWorldActivity_;
 import co.yishun.onemoment.app.ui.SettingsActivity_;
 import co.yishun.onemoment.app.ui.ShootActivity_;
@@ -34,6 +36,7 @@ public abstract class HybrdUrlHandler {
     public static final String FUNC_CANCEL_AlERT = "cancelAlert";
     public static final String FUNC_FINISH = "finish";
     public static final String FUNC_GET_ENV = "getEnv";
+    public static final String FUNC_LOAD = "load";
 
     private static final String TAG = "HybrdUrlHandler";
 
@@ -110,6 +113,8 @@ public abstract class HybrdUrlHandler {
         } else if (TextUtils.equals(des, "world_square")) {
             //TODO jump to world detail activity
 //            TagActivity_.intent(activity).start();
+        } else if (TextUtils.equals(des, "badge")) {
+            BadgeActivity_.intent(context).badgeDetail(args.get(1)).start();
         } else {
             LogUtil.e(TAG, "unhandled jump type : " + des);
         }
