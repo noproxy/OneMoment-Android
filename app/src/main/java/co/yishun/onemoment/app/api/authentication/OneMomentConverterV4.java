@@ -16,11 +16,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.modelv4.ApiModel;
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
+import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
+import co.yishun.onemoment.app.api.modelv4.World;
+import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
@@ -55,7 +59,7 @@ public class OneMomentConverterV4 implements Converter {
         msg = jsonObject.get("msg").getAsString();
 
         ApiModel model = null;
-        ListWithError<? extends ApiModel> models = null;
+        ListWithErrorV4<? extends ApiModel> models = null;
 
         Type rawType;
         try {
@@ -66,21 +70,33 @@ public class OneMomentConverterV4 implements Converter {
         }
 
         if (TextUtils.equals(error, "Ok")) {
+            JsonObject data = jsonObject.getAsJsonObject("data");
             if (rawType == HybrdData.class) {
-                JsonObject data = jsonObject.get("data").getAsJsonObject();
-
                 model = mGson.fromJson(data, HybrdData.class);
-                LogUtil.d(TAG, model.msg);
+            } else if (rawType == World.class) {
+                model = mGson.fromJson(data.get("world"), World.class);
+            }else if (rawType == WorldVideo.class){
+                model  = mGson.fromJson(data.get("world_video"), WorldVideo.class);
+            } else if (rawType == List.class || rawType == ListWithError.class) {
+                Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                if (genericType == WorldVideo.class) {
+                    models = new ListWithErrorV4<>(mGson.fromJson(data.get("videos"), type));
+                }
             }
         }
 
-        if (model != null) {
-            model.error = error;
-            model.msg = msg;
-            return model;
+        if (models != null) {
+            models.msg = msg;
+            models.error = error;
+            return models;
         }
 
-        return null;
+        if (model == null) {
+            model = new ApiModel();
+        }
+        model.error = error;
+        model.msg = msg;
+        return model;
     }
 
     @Override public TypedOutput toBody(Object object) {
