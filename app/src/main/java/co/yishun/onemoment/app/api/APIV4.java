@@ -17,7 +17,7 @@ public interface APIV4 {
     @GET("/hybrd/update") HybrdData getHybrdData(@Query("name") String name);
 
     @POST("/world") @FormUrlEncoded
-    World createWorld(@Field("name") String worldName, @Field("account_id") String userId);
+    co.yishun.onemoment.app.api.modelv4.World createWorld(@Field("name") String worldName, @Field("account_id") String userId);
 
     @POST("/world/video") @FormUrlEncoded
     WorldVideo createVideo(@Field("world_id") String worldId, @Field("filename") String filename, @Field("account_id") String userId, @Field("tags") String tags);
