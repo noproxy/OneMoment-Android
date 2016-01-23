@@ -1,11 +1,10 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.VideoView;
 
 import com.j256.ormlite.dao.Dao;
@@ -14,12 +13,11 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-
-import java.sql.SQLException;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -27,8 +25,7 @@ import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
-import co.yishun.onemoment.app.ui.view.MomentCountDateView;
-import co.yishun.onemoment.app.ui.view.PermissionSwitch;
+import co.yishun.onemoment.app.ui.view.VideoTypeView;
 
 /**
  * Created by Carlos on 2015/10/29.
@@ -36,14 +33,22 @@ import co.yishun.onemoment.app.ui.view.PermissionSwitch;
 @EActivity(R.layout.activity_moment_create)
 public class VideoEditActivity extends BaseActivity {
     private static final String TAG = "VideoEditActivity";
+    private static final int REQUEST_SELECT_WORLD = 1;
     @Extra String videoPath;
     @ViewById VideoView videoView;
     @ViewById Toolbar toolbar;
+    @ViewById VideoTypeView videoTypeView;
 
     boolean forWorld = false;
     WorldTag worldTag;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
-    private boolean isPrivate;//TODO use it
+    private boolean isPrivate;
+
+    private boolean lifeCheck;
+    private boolean diaryCheck;
+    private boolean worldCheck;
+    private String worldId;
+    private String worldName;
 
     @Override
     public void setPageInfo() {
@@ -79,9 +84,37 @@ public class VideoEditActivity extends BaseActivity {
         }
     }
 
+    @Click(R.id.worldTextView) void selectWorld() {
+        if (!worldCheck) {
+            PersonalWorldActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
+        } else {
+            worldCheck = false;
+            worldName = null;
+            videoTypeView.setWorldCheck(false, null);
+        }
+    }
+
+    @Click(R.id.lifeTextView) void lifeTextViewClick() {
+        lifeCheck = !lifeCheck;
+        videoTypeView.setLifeCheck(lifeCheck);
+    }
+
+    @Click(R.id.diaryTextView) void diaryTextViewClick() {
+        diaryCheck = !diaryCheck;
+        videoTypeView.setDiaryCheck(diaryCheck);
+    }
+
     @Click void nextBtnClicked(View view) {
         TagCreateActivity_.intent(this).worldTag(worldTag).forWorld(forWorld).isPrivate(isPrivate).videoPath(videoPath).start();
         this.finish();
+    }
+
+    @OnActivityResult(REQUEST_SELECT_WORLD) void onSelectWorld(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            worldId = data.getStringExtra(PersonalWorldActivity.KEY_ID);
+            worldName = data.getStringExtra(PersonalWorldActivity.KEY_NAME);
+            videoTypeView.setWorldCheck(true, worldName);
+        }
     }
 
 }
