@@ -210,10 +210,10 @@
             android:name=".ui.UrlDetailActivity_"
             android:parentActivityName=".ui.MainActivity_"
             android:theme="@style/AppTheme"/>
-        <activity android:name=".ui.common.CommonWebActivity_">
-
+        <activity android:name=".ui.hybrd.CommonWebActivity_">
+            
         </activity>
-        <activity android:name=".ui.common.EmptyWebActivity_">
+        <activity android:name=".ui.hybrd.EmptyWebActivity_">
 
         </activity>
         <activity android:name=".ui.PersonalWorldActivity_">

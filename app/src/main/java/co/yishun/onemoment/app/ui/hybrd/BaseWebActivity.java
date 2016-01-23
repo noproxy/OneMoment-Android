@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui.common;
+package co.yishun.onemoment.app.ui.hybrd;
 
 import android.support.annotation.CallSuper;
 import android.support.v7.app.ActionBar;
@@ -9,6 +9,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 /**
  * Created by Jinge on 2016/1/21.

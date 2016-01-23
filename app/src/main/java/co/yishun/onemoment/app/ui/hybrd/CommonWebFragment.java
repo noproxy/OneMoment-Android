@@ -1,4 +1,4 @@
-package co.yishun.onemoment.app.ui.common;
+package co.yishun.onemoment.app.ui.hybrd;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
