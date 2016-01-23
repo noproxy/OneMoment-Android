@@ -17,6 +17,9 @@ import co.yishun.onemoment.app.ui.common.BaseWebActivity;
 @EActivity(R.layout.activity_web_view)
 public class PersonalWorldActivity extends BaseWebActivity {
 
+    public static final String KEY_ID = "world_id";
+    public static final String KEY_NAME = "world_name";
+
     @AfterInject void setDefault() {
         title = getString(R.string.app_name);
         File hybrdDir = FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR);

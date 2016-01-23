@@ -22,11 +22,11 @@ import co.yishun.onemoment.app.R;
  */
 public class VideoTypeView extends RelativeLayout {
     private TextView mWorldTextView;
-    private TextView mDayTextView;
+    private TextView mLifeTextView;
     private TextView mDiaryTextView;
 
     private TextBgDrawable mWorldDrawable;
-    private TextBgDrawable mDayDrawable;
+    private TextBgDrawable mLifeDrawable;
     private TextBgDrawable mDiaryDrawable;
 
     private int colorOrange;
@@ -59,23 +59,55 @@ public class VideoTypeView extends RelativeLayout {
         oneDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
 
         mWorldTextView = (TextView) findViewById(R.id.worldTextView);
-        mDayTextView = (TextView) findViewById(R.id.dayTextView);
+        mLifeTextView = (TextView) findViewById(R.id.lifeTextView);
         mDiaryTextView = (TextView) findViewById(R.id.diaryTextView);
 
         colorOrange = getResources().getColor(R.color.colorAccent);
         colorGray = getResources().getColor(R.color.colorGray);
 
-        mWorldDrawable = new TextBgDrawable(colorOrange);
-        mDayDrawable = new TextBgDrawable(colorOrange);
-        mDiaryDrawable = new TextBgDrawable(colorOrange);
+        mWorldDrawable = new TextBgDrawable(colorGray);
+        mLifeDrawable = new TextBgDrawable(colorGray);
+        mDiaryDrawable = new TextBgDrawable(colorGray);
 
         mWorldTextView.setBackground(mWorldDrawable);
-        mDayTextView.setBackground(mDayDrawable);
+        mLifeTextView.setBackground(mLifeDrawable);
         mDiaryTextView.setBackground(mDiaryDrawable);
+
+        setWorldCheck(false, null);
+        setLifeCheck(false);
+        setDiaryCheck(false);
     }
 
-    public void setWorldCheck() {
-        
+    public void setWorldCheck(boolean check, String worldName) {
+        if (check) {
+            mWorldTextView.setText(worldName);
+            mWorldTextView.setTextColor(colorOrange);
+            mWorldDrawable.setColor(colorOrange);
+        } else {
+            mWorldTextView.setText(getResources().getString(R.string.video_type_add_to_world));
+            mWorldTextView.setTextColor(colorGray);
+            mWorldDrawable.setColor(colorGray);
+        }
+    }
+
+    public void setLifeCheck(boolean check) {
+        if (check) {
+            mLifeTextView.setTextColor(colorOrange);
+            mLifeDrawable.setColor(colorOrange);
+        } else {
+            mLifeTextView.setTextColor(colorGray);
+            mLifeDrawable.setColor(colorGray);
+        }
+    }
+
+    public void setDiaryCheck(boolean check) {
+        if (check) {
+            mDiaryTextView.setTextColor(colorOrange);
+            mDiaryDrawable.setColor(colorOrange);
+        } else {
+            mDiaryTextView.setTextColor(colorGray);
+            mDiaryDrawable.setColor(colorGray);
+        }
     }
 
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -94,12 +126,12 @@ public class VideoTypeView extends RelativeLayout {
         }
 
         mWorldTextView.setHeight(textHeight);
-        mDayTextView.setHeight(textHeight);
+        mLifeTextView.setHeight(textHeight);
         mDiaryTextView.setHeight(textHeight);
         ((LayoutParams) mWorldTextView.getLayoutParams()).bottomMargin = margin;
 
         mWorldDrawable.setSize(mWorldTextView.getWidth(), mWorldTextView.getHeight());
-        mDayDrawable.setSize(mDayTextView.getWidth(), mDayTextView.getHeight());
+        mLifeDrawable.setSize(mLifeTextView.getWidth(), mLifeTextView.getHeight());
         mDiaryDrawable.setSize(mDiaryTextView.getWidth(), mDiaryTextView.getHeight());
     }
 
@@ -115,8 +147,8 @@ public class VideoTypeView extends RelativeLayout {
             mPaint.setAntiAlias(true);
             mPaint.setColor(color);
             mPaint.setStrokeWidth(oneDp);
-            mRect = new RectF(0, 0, getWidth() , getHeight());
-            mRect.inset(oneDp / 2, oneDp/2);
+            mRect = new RectF(0, 0, getWidth(), getHeight());
+            mRect.inset(oneDp / 2, oneDp / 2);
             LogUtil.d("size ", getWidth() + "  " + getHeight());
         }
 
@@ -126,7 +158,7 @@ public class VideoTypeView extends RelativeLayout {
 
         public void setSize(int width, int height) {
             mRect.set(0, 0, width, height);
-            mRect.inset(oneDp / 2, oneDp/2);
+            mRect.inset(oneDp / 2, oneDp / 2);
             mRadius = height / 2;
         }
 
