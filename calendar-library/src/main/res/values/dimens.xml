@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="MMV_weekTitleSize">12sp</dimen>
-    <dimen name="MMV_monthTitleSize">18sp</dimen>
-    <dimen name="MMV_weekTitlePadding">8dp</dimen>
-    <dimen name="MMV_monthTitlePadding">8dp</dimen>
-    <dimen name="MMV_dayNumTextSize">16sp</dimen>
-</resources>
