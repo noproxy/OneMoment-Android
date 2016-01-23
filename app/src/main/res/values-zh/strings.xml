@@ -100,4 +100,6 @@
     <string name="video_type_add_to_diary">添加到日记</string>
     <string name="video_type_add_to_world">添加到世界</string>
     <string name="video_type_life_in_a_day">浮生一日</string>
+    <string name="activity_personal_world_title">我的世界</string>
+    <string name="activity_create_world_title">创建世界</string>
 </resources>
