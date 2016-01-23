@@ -135,7 +135,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override public void onBackPressed() {
-        BaseWebFragment webFragment = (BaseWebFragment) getSupportFragmentManager().findFragmentByTag("web");
+        BaseWebFragment webFragment = (BaseWebFragment) getSupportFragmentManager()
+                .findFragmentByTag(BaseWebFragment.TAG_WEB);
         if (webFragment != null && webFragment.canGoBack()) {
             webFragment.goBack();
         } else {

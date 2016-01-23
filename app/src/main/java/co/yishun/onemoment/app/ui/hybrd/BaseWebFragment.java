@@ -39,7 +39,7 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  */
 @EFragment
 public abstract class BaseWebFragment extends BaseFragment {
-    public static final String URL_PREFIX = Constants.APP_URL_PREFIX;
+    public static final String TAG_WEB = "web";
 
     private static final String TAG = "BaseWebFragment";
 
