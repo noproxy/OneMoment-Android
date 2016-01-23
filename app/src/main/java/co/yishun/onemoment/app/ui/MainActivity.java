@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -10,14 +11,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -44,6 +48,8 @@ import org.androidannotations.annotations.UiThread;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -60,11 +66,15 @@ import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
 import static org.android.agoo.client.BaseRegistrar.getRegistrationId;
 
 @EActivity
 public class MainActivity extends BaseActivity implements AccountManager.OnUserInfoChangeListener {
+    public static final int PERMISSIONS_REQUEST_RECORD_VIDEO = 4;
+    public static final String PERMISSION[] = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
     private static final String TAG = "MainActivity";
     private static WeakReference<FloatingActionMenu> floatingActionMenu;
     private static boolean pendingUserInfoUpdate = false;
@@ -79,26 +89,25 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private TextView usernameTextView;
     private TextView locationTextView;
     private BroadcastReceiver mSyncChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
+        @Override public void onReceive(Context context, Intent intent) {
             if (currentItemId == R.id.navigation_item_1) {
                 Bundle extra = intent.getExtras();
                 long unixTimeStamp = extra.getLong(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP);
 
                 boolean needUpdate = ((DiaryFragment) fragmentManager.findFragmentById(R.id.fragment_container)).isCurrentMonth(new Date(unixTimeStamp * 1000));
-                if (needUpdate) updateDiary();
+                if (needUpdate)
+                    updateDiary();
             }
 
         }
     };
-
     /**
      * Flag means just going to shoot diary ui.
      */
     private boolean goToShootDiary = false;
+    private Pair<View, Boolean> pendingShootRequestByPermission = null;
 
-    @Override
-    protected void onResume() {
+    @Override protected void onResume() {
         super.onResume();
         // refresh diary in case moment update
         if (currentItemId == R.id.navigation_item_1 && goToShootDiary) {
@@ -108,24 +117,19 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         registerSyncListener();
     }
 
-    @Override
-    protected void onPause() {
+    @Override protected void onPause() {
         super.onPause();
         unregisterReceiver(mSyncChangedReceiver);
     }
 
     @AfterInject void showMoveLOCDialog() {
         if (checkLOC)
-            new MaterialDialog.Builder(this).theme(Theme.LIGHT)
-                    .content(R.string.activity_main_move_LOC_moments)
-                    .positiveText(R.string.activity_main_move_LOC_moments_positive)
-                    .negativeText(R.string.activity_main_move_LOC_moments_negative)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override public void onPositive(MaterialDialog dialog) {
-                            super.onPositive(dialog);
-                            DataMigration.moveLOCMomentsToUser(MainActivity.this);
-                        }
-                    }).build().show();
+            new MaterialDialog.Builder(this).theme(Theme.LIGHT).content(R.string.activity_main_move_LOC_moments).positiveText(R.string.activity_main_move_LOC_moments_positive).negativeText(R.string.activity_main_move_LOC_moments_negative).callback(new MaterialDialog.ButtonCallback() {
+                @Override public void onPositive(MaterialDialog dialog) {
+                    super.onPositive(dialog);
+                    DataMigration.moveLOCMomentsToUser(MainActivity.this);
+                }
+            }).build().show();
     }
 
     private void updateDiary() {
@@ -133,10 +137,44 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     private void startShoot(View view, boolean forWorld) {
+        // boolean sign that need request
+        Map<String, Boolean> permissionMap = new HashMap<>();
+        for (String aPERMISSION : PERMISSION) {
+            int value = ActivityCompat.checkSelfPermission(this, aPERMISSION);
+            permissionMap.put(aPERMISSION, value != PackageManager.PERMISSION_GRANTED);
+        }
+
+        if (permissionMap.containsValue(true)) {
+            shootWithPermission(view, forWorld);
+        } else {
+            // Should we show an explanation?
+            pendingShootRequestByPermission = new Pair<>(view, forWorld);
+
+            String[] request = (String[]) StreamSupport.stream(permissionMap.entrySet()).filter(Map.Entry::getValue).map(Map.Entry::getKey).collect(Collectors.toList()).toArray();
+
+            ActivityCompat.requestPermissions(this, request, PERMISSIONS_REQUEST_RECORD_VIDEO);
+            //            if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_CONTACTS)) {
+            //                // Show an expanation to the user *asynchronously* -- don't block
+            //                // this thread waiting for the user's response! After the user
+            //                // sees the explanation, try again to request the permission.
+            //
+            //            } else {
+            //
+            //                // No explanation needed, we can request the permission.
+            //                ActivityCompat.requestPermissions(this, PERMISSION, PERMISSIONS_REQUEST_RECORD_VIDEO);
+            //
+            //
+            //                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+            //                // app-defined int constant. The callback method gets the
+            //                // result of the request.
+            //            }
+        }
+    }
+
+    private void shootWithPermission(View view, boolean forWorld) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
 
         if (!forWorld) {
             goToShootDiary = true;
@@ -146,7 +184,32 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_RECORD_VIDEO: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (pendingShootRequestByPermission != null) {
+                        shootWithPermission(pendingShootRequestByPermission.first, pendingShootRequestByPermission.second);
+                        pendingShootRequestByPermission = null;
+                    }
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    pendingShootRequestByPermission = null;
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -222,8 +285,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         ImageView menuIcon = menu.getMenuIconView();
 
         AnimatorSet openSet = new AnimatorSet();
-        ObjectAnimator openBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal",
-                getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorPrimary));
+        ObjectAnimator openBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal", getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorPrimary));
         openBackground.setEvaluator(new ArgbEvaluator());
         openBackground.setDuration(200);
 
@@ -240,8 +302,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         openSet.setInterpolator(new OvershootInterpolator(1));
 
         AnimatorSet closeSet = new AnimatorSet();
-        ObjectAnimator closeBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal",
-                getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent));
+        ObjectAnimator closeBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal", getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent));
         closeBackground.setEvaluator(new ArgbEvaluator());
         closeBackground.setDuration(200);
 
@@ -269,8 +330,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         unregisterReceiver(mSyncChangedReceiver);
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
+    @Override public boolean dispatchTouchEvent(MotionEvent event) {
         // collapse fab if click outside of fab
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect outRect = new Rect();
@@ -308,10 +368,10 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
      * @return whether the fragment is checked.
      */
     private boolean navigationTo(int itemId) {
-        if (itemId == currentItemId) return true;
+        if (itemId == currentItemId)
+            return true;
         //TODO add delay to let drawer close
-        @SuppressLint("CommitTransaction")
-        Fragment targetFragment;
+        @SuppressLint("CommitTransaction") Fragment targetFragment;
         switch (itemId) {
             case R.id.navigation_item_0:
                 if (worldFragment == null) {
@@ -340,8 +400,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commitAllowingStateLoss();
     }
 
-    @Override
-    public void onBackPressed() {
+    @Override public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
@@ -353,20 +412,17 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         }
     }
 
-    @Override
-    protected void onDestroy() {
+    @Override protected void onDestroy() {
         super.onDestroy();
         AccountManager.removeOnUserInfoChangedListener(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
         // no global option menu, but fragment would add menu
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         // no global option menu to handle, fragment handles itself.
         // Just forwarding to DrawerToggle to handle item in NavigationDrawer
         return mDrawerToggle.onOptionsItemSelected(item);
@@ -380,21 +436,17 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         startActivity(new Intent(this, UIAutomatorTestActivity.class));
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    @Override protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         syncToggle();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    @Override public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         syncToggle();
     }
 
-    @NonNull
-    @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
+    @NonNull @Override public View getSnackbarAnchorWithView(@Nullable View view) {
         FloatingActionMenu fab = floatingActionMenu.get();
         if (fab != null) {
             return fab;
@@ -402,14 +454,12 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             return super.getSnackbarAnchorWithView(view);
     }
 
-    @Override
-    public void setPageInfo() {
+    @Override public void setPageInfo() {
         mIsPage = false;
         mPageName = "MainActivity";
     }
 
-    @Override
-    public void onUserInfoChange(User info) {
+    @Override public void onUserInfoChange(User info) {
         invalidateUserInfo(info);
     }
 }
