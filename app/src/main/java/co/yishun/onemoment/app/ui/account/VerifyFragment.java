@@ -35,9 +35,9 @@ public class VerifyFragment extends AccountFragment {
     boolean isSending = false;
     private String mVerificationCode;
 
-    @Override
-    public void onFABClick(View view) {
-        if (checkVerifyCode()) verify();
+    @Override public void onFABClick(View view) {
+        if (checkVerifyCode())
+            verify();
     }
 
     @AfterTextChange(R.id.verificationCodeEditText)
@@ -45,8 +45,7 @@ public class VerifyFragment extends AccountFragment {
         mVerificationCode = text.toString();
     }
 
-    @Override
-    public void onAttach(Activity activity) {
+    @Override public void onAttach(Activity activity) {
         super.onAttach(activity);
     }
 
@@ -67,14 +66,18 @@ public class VerifyFragment extends AccountFragment {
         if (model.code > 0) {
             mActivity.runOnUiThread(countDownResentView::countDown);
             mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_success);
-        } else switch (model.errorCode) {
-            case Constants.ErrorCode.ACCOUNT_EXISTS:
-                mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_fail_account_exist);
-                break;
-            default:
-                mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_fail);
-                break;
-        }
+        } else
+            switch (model.errorCode) {
+                case Constants.ErrorCode.ACCOUNT_EXISTS:
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_fail_account_exist);
+                    break;
+                case Constants.ErrorCode.ACCOUNT_DOESNT_EXIST:
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_not_exit);
+                    break;
+                default:
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_fail);
+                    break;
+            }
         isSending = false;
     }
 
@@ -100,25 +103,30 @@ public class VerifyFragment extends AccountFragment {
                 if (resetResult.code > 0) {
                     mActivity.showSnackMsg(R.string.fragment_phone_verify_reset_password_success);
                     next();
-                } else mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_network);
+                } else
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_network);
             } else {
                 mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_success);
                 next();
             }
-        } else switch (result.errorCode) {
-            case Constants.ErrorCode.PHONE_VERIFY_CODE_WRONG:
-                mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_verify_fail);
-                break;
-            case Constants.ErrorCode.ACCOUNT_EXISTS:
-                mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_exit);
-                break;
-            case Constants.ErrorCode.PHONE_VERIFY_CODE_EXPIRES:
-                mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_expire);
-                break;
-            default:
-                mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_network);
-                break;
-        }
+        } else
+            switch (result.errorCode) {
+                case Constants.ErrorCode.PHONE_VERIFY_CODE_WRONG:
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_verify_fail);
+                    break;
+                case Constants.ErrorCode.ACCOUNT_EXISTS:
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_exit);
+                    break;
+                case Constants.ErrorCode.PHONE_VERIFY_CODE_EXPIRES:
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_expire);
+                    break;
+                case Constants.ErrorCode.ACCOUNT_DOESNT_EXIST:
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_not_exit);
+                    break;
+                default:
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_network);
+                    break;
+            }
         mActivity.hideProgress();
     }
 
@@ -130,8 +138,7 @@ public class VerifyFragment extends AccountFragment {
         }
     }
 
-    @Override
-    public void setPageInfo() {
+    @Override public void setPageInfo() {
         mPageName = "VerifyFragment";
     }
 }

@@ -59,6 +59,7 @@
     <string name="unknown_error">Unknown Error</string>
 
     <string name="fragment_phone_verify_sign_up_error_account_exit">Account exists, please login.</string>
+    <string name="fragment_phone_verify_sign_up_error_account_not_exit">Account not exists!</string>
     <string name="fragment_phone_verify_sign_up_error_password_invalid">Password is invalid.</string>
 
     <string name="activity_guide_enter">Enter</string>
@@ -71,4 +72,5 @@
     <string name="activity_main_move_LOC_moments">Move moments shot when you logout to current account?</string>
     <string name="activity_main_move_LOC_moments_positive">OK</string>
     <string name="activity_main_move_LOC_moments_negative">Not Now</string>
+    <string name="tb_munion_tip_download_prefix">Downloading：</string>
 </resources>

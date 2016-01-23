@@ -93,4 +93,7 @@
     <string name="activity_share_export_export_success">导出成功</string>
     <string name="activity_share_export_no_moment_select">请至少选择一个视频</string>
     <string name="fragment_diary_no_moment">没有可供播放的一瞬</string>
+    <string name="umeng_common_icon">图标</string>
+    <string name="tb_munion_tip_download_prefix">正在下载:</string>
+    <string name="fragment_get_password_new_password">请输入新密码</string>
 </resources>

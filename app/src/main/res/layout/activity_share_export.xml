@@ -17,7 +17,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <co.yishun.library.calendarlibrary.MomentCalendar
+    <co.yishun.library.momentcalendar.MomentCalendar
         android:id="@+id/momentCalendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -91,8 +91,8 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="12dp"
             android:layout_marginRight="12dp"
-            android:gravity="center"
             android:background="@drawable/bg_btn_transparent"
+            android:gravity="center"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:text="@string/activity_share_export_clear"

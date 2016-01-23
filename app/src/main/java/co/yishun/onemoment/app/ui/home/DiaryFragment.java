@@ -28,9 +28,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import co.yishun.library.calendarlibrary.DayView;
-import co.yishun.library.calendarlibrary.MomentCalendar;
-import co.yishun.library.calendarlibrary.MomentMonthView;
+import co.yishun.library.momentcalendar.DayView;
+import co.yishun.library.momentcalendar.MomentCalendar;
+import co.yishun.library.momentcalendar.MomentMonthView;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;

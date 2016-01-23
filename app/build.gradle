@@ -153,6 +153,14 @@ dependencies {
 
 repositories {
     maven {
+        url "http://dl.bintray.com/a642500/maven"
+    }
+}
+
+dependencies { compile 'co.yishun.library:momentcalendar:0.1.0' }
+
+repositories {
+    maven {
         url "https://jitpack.io"
     }
 }
@@ -173,7 +181,6 @@ dependencies {
 
 dependencies {
     compile project(':play-library')
-    compile project(':calendar-library')
     compile project(':transition-library')
 }
 
