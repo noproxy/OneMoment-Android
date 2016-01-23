@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui.hybrd;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.support.annotation.CallSuper;
@@ -30,6 +31,7 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.ui.PersonalWorldActivity;
 import co.yishun.onemoment.app.ui.SplashActivity;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
@@ -155,8 +157,11 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private boolean webFinish(List<String> args) {
         String type = args.get(0);
-        if (TextUtils.equals(type, "choose_world")) {
-            //TODO add result after choose a world
+        if (TextUtils.equals(type, "preview")) {
+            Intent intent = new Intent();
+            intent.putExtra(PersonalWorldActivity.KEY_NAME, args.get(1));
+            intent.putExtra(PersonalWorldActivity.KEY_ID, args.get(2));
+            mActivity.setResult(PersonalWorldActivity.RESULT_OK, intent);
         } else {
             LogUtil.e(TAG, "unhandled finish type");
         }
