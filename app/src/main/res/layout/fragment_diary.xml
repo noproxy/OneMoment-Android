@@ -16,7 +16,7 @@
         <include layout="@layout/layout_toolbar"/>
 
         <!-- placeholder-->
-        <co.yishun.library.calendarlibrary.MomentCalendar
+        <co.yishun.library.momentcalendar.MomentCalendar
             android:id="@+id/momentCalendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
