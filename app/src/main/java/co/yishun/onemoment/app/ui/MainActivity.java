@@ -47,9 +47,9 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -66,8 +66,6 @@ import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
 import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
-import java8.util.stream.Collectors;
-import java8.util.stream.StreamSupport;
 
 import static org.android.agoo.client.BaseRegistrar.getRegistrationId;
 
@@ -137,20 +135,21 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     private void startShoot(View view, boolean forWorld) {
-        // boolean sign that need request
-        Map<String, Boolean> permissionMap = new HashMap<>();
-        for (String aPERMISSION : PERMISSION) {
-            int value = ActivityCompat.checkSelfPermission(this, aPERMISSION);
-            permissionMap.put(aPERMISSION, value != PackageManager.PERMISSION_GRANTED);
+
+        List<String> request = new ArrayList<>(PERMISSION.length);
+        for (String permission : PERMISSION) {
+            int status = ActivityCompat.checkSelfPermission(this, permission);
+            if (status != PackageManager.PERMISSION_GRANTED) {
+                request.add(permission);
+            }
         }
 
-        if (permissionMap.containsValue(true)) {
-            shootWithPermission(view, forWorld);
-        } else {
-            // we don't need show an explanation
+        if (request.size() > 0) {
             pendingShootRequestByPermission = new Pair<>(view, forWorld);
-            String[] request = (String[]) StreamSupport.stream(permissionMap.entrySet()).filter(Map.Entry::getValue).map(Map.Entry::getKey).collect(Collectors.toList()).toArray();
-            ActivityCompat.requestPermissions(this, request, PERMISSIONS_REQUEST_RECORD_VIDEO);
+            // we don't need show an explanation
+            ActivityCompat.requestPermissions(this, request.toArray(new String[request.size()]), PERMISSIONS_REQUEST_RECORD_VIDEO);
+        } else {
+            shootWithPermission(view, forWorld);
         }
     }
 
@@ -167,7 +166,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_RECORD_VIDEO: {
                 // If request is cancelled, the result arrays are empty.
