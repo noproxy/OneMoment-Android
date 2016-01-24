@@ -22,4 +22,10 @@ public interface IShootView {
     boolean isBackCamera();
 
     void record(Callback recordStartCallback, Consumer<File> recordEndConsumer);
+
+    void setSecurityExceptionHandler(SecurityExceptionHandler exceptionHandler);
+
+    interface SecurityExceptionHandler {
+        void onHandler(SecurityException e);
+    }
 }

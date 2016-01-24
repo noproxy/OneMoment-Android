@@ -56,8 +56,10 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
     private OnFilterChangeListener mFilterListener;
 
     private Camera.AutoFocusCallback myAutoFocusCallback = (success, camera1) -> {
-        if (success) camera1.cancelAutoFocus();
+        if (success)
+            camera1.cancelAutoFocus();
     };
+    private SecurityExceptionHandler mExceptionHandler;
 
     public CameraGLSurfaceView(Context context) {
         super(context);
@@ -75,8 +77,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         setEGLContextClientVersion(2);
 
         file = FileUtil.getVideoCacheFile(getContext());
-        mCameraRenderer = new CameraRecordRender(getContext(), mBackgroundHandler,
-                new EncoderConfig(file.getPath(), 480, 480, 1024 * 1024));
+        mCameraRenderer = new CameraRecordRender(getContext(), mBackgroundHandler, new EncoderConfig(file.getPath(), 480, 480, 1024 * 1024));
         setRenderer(mCameraRenderer);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
 
@@ -106,8 +107,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    @Override public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mPressedX = event.getX();
@@ -122,16 +122,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
                 if (!mMoved) {
                     float x = event.getX();
                     float y = event.getY();
-                    Rect touchRect = new Rect(
-                            (int) (x - 100),
-                            (int) (y - 100),
-                            (int) (x + 100),
-                            (int) (y + 100));
-                    final Rect targetFocusRect = new Rect(
-                            touchRect.left * 2000 / this.getWidth() - 1000,
-                            touchRect.top * 2000 / this.getHeight() - 1000,
-                            touchRect.right * 2000 / this.getWidth() - 1000,
-                            touchRect.bottom * 2000 / this.getHeight() - 1000);
+                    Rect touchRect = new Rect((int) (x - 100), (int) (y - 100), (int) (x + 100), (int) (y + 100));
+                    final Rect targetFocusRect = new Rect(touchRect.left * 2000 / this.getWidth() - 1000, touchRect.top * 2000 / this.getHeight() - 1000, touchRect.right * 2000 / this.getWidth() - 1000, touchRect.bottom * 2000 / this.getHeight() - 1000);
                     doTouchFocus(targetFocusRect);
                 } else {
                     if (event.getX() - mPressedX > mSlideLimit) {
@@ -140,7 +132,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
                         mCameraRenderer.nextFilter();
                     }
 
-                    if(mFilterListener != null) {
+                    if (mFilterListener != null) {
                         mFilterListener.onFilterIndexChange(mCameraRenderer.getCurrentFilterIndex());
                     }
                 }
@@ -148,7 +140,6 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
         return false;
     }
-
 
     public void onDestroy() {
         mBackgroundHandler.removeCallbacksAndMessages(null);
@@ -178,8 +169,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         e(TAG, "front camera enable: " + mHasFrontCamera);
     }
 
-    @Override
-    public void onPause() {
+    @Override public void onPause() {
         mBackgroundHandler.removeCallbacksAndMessages(null);
         releaseCamera();
         queueEvent(() -> {
@@ -207,19 +197,16 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
     }
 
-    @Override
-    public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+    @Override public void onFrameAvailable(SurfaceTexture surfaceTexture) {
         requestRender();
     }
 
-    @Override
-    public void releaseCamera() {
+    @Override public void releaseCamera() {
         i(TAG, "send msg: STOP");
         this.mBackgroundHandler.sendEmptyMessage(CameraHandler.STOP);
     }
 
-    @Override
-    public void setFlashlightOn(boolean isOn) {
+    @Override public void setFlashlightOn(boolean isOn) {
         if (isFlashlightAvailable()) {
             try {
                 Camera.Parameters p = camera.getParameters();
@@ -231,8 +218,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
     }
 
-    @Override
-    public void switchCamera(boolean isBack) {
+    @Override public void switchCamera(boolean isBack) {
         mIsBackCamera = isBack;
         mBackgroundHandler.sendEmptyMessage(CameraHandler.RESUME);
     }
@@ -262,28 +248,24 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
     }
 
-    @Override
-    public boolean isFlashlightAvailable() {
+    @Override public boolean isFlashlightAvailable() {
         i(TAG, "mIsBackCamera: " + mIsBackCamera + ", mHasFlash " + mHasFlash);
         return mIsBackCamera && mHasFlash;
     }
 
-    @Override
-    public boolean isFrontCameraAvailable() {
+    @Override public boolean isFrontCameraAvailable() {
         return mHasFrontCamera;
     }
 
-    @Override
-    public boolean isBackCamera() {
+    @Override public boolean isBackCamera() {
         return mIsBackCamera;
     }
 
-    @Override
-    public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
+    @Override public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
         Handler uiHandler = new Handler(Looper.getMainLooper());
-//        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
+        //        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
         i(TAG, file.toString());
-//        queueEvent(() -> mCameraRenderer.setEncoderConfig(new EncoderConfig(file, 480, 480, 1024 * 1024)));
+        //        queueEvent(() -> mCameraRenderer.setEncoderConfig(new EncoderConfig(file, 480, 480, 1024 * 1024)));
         queueEvent(() -> {
             mCameraRenderer.setRecordingEnabled(true);
             uiHandler.post(recordStartCallback::call);
@@ -292,6 +274,18 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
                 onEndListener = recordEndConsumer;
             }, 1200);
         });
+    }
+
+    @Override public void setSecurityExceptionHandler(SecurityExceptionHandler exceptionHandler) {
+        mExceptionHandler = exceptionHandler;
+    }
+
+    private void onHandler(SecurityException e) {
+        if (mExceptionHandler != null) {
+            mExceptionHandler.onHandler(e);
+        } else {
+            throw new SecurityException(e);
+        }
     }
 
     private void onEnd() {
@@ -304,6 +298,10 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         mCameraRenderer.changeFilter(filterType);
     }
 
+    public interface OnFilterChangeListener {
+        void onFilterIndexChange(int index);
+    }
+
     public class CameraHandler extends Handler {
         public static final int START = 1001;
         public static final int END = 1004;
@@ -314,35 +312,34 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
             super(looper);
         }
 
-        @Override
-        public void handleMessage(final Message msg) {
-            switch (msg.what) {
-                case CameraHandler.START:
-                    mSurfaceTexture = (SurfaceTexture) msg.obj;
-                    if (mSurfaceTexture != null) {
+        @Override public void handleMessage(final Message msg) {
+            try {
+                switch (msg.what) {
+                    case CameraHandler.START:
+                        mSurfaceTexture = (SurfaceTexture) msg.obj;
+                        if (mSurfaceTexture != null) {
+                            mSurfaceTexture.setOnFrameAvailableListener(CameraGLSurfaceView.this);
+                            setupCamera(mSurfaceTexture);
+                        } else {
+                            e(TAG, "surfaceTexture Null!!");
+                        }
+                        break;
+                    case CameraHandler.RESUME:
                         mSurfaceTexture.setOnFrameAvailableListener(CameraGLSurfaceView.this);
                         setupCamera(mSurfaceTexture);
-                    } else {
-                        e(TAG, "surfaceTexture Null!!");
-                    }
-                    break;
-                case CameraHandler.RESUME:
-                    mSurfaceTexture.setOnFrameAvailableListener(CameraGLSurfaceView.this);
-                    setupCamera(mSurfaceTexture);
-                    break;
-                case CameraHandler.STOP:
-                    innerReleaseCamera();
-                    break;
-                case END:
-                    onEnd();
-                    break;
-                default:
-                    break;
+                        break;
+                    case CameraHandler.STOP:
+                        innerReleaseCamera();
+                        break;
+                    case END:
+                        onEnd();
+                        break;
+                    default:
+                        break;
+                }
+            } catch (SecurityException e) {
+                onHandler(e);
             }
         }
-    }
-
-    public interface OnFilterChangeListener{
-        void onFilterIndexChange(int index);
     }
 }
