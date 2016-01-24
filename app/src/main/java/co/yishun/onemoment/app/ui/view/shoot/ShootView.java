@@ -171,23 +171,27 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
 
     private void innerSwitchCamera(boolean isBack) {
         releaseCamera();
-        camera = Camera.open(isBack ? mCameraId.back : mCameraId.front);
-        mIsBackCamera = isBack;
-        final Camera.Parameters parameters = camera.getParameters();
-        mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
-        int[] fps = CameraUtil.getOptimalPreviewFpsRange(parameters.getSupportedPreviewFpsRange(), Constants.VIDEO_FPS);
-
-        parameters.setPreviewSize(mSize.width, mSize.height);
-        parameters.setPreviewFpsRange(fps[0], fps[1]);
-        camera.setParameters(parameters);
-        camera.setDisplayOrientation(90);
-        i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
-
         try {
-            startPreview();
-            //            prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
+            camera = Camera.open(isBack ? mCameraId.back : mCameraId.front);
+            mIsBackCamera = isBack;
+            final Camera.Parameters parameters = camera.getParameters();
+            mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
+            int[] fps = CameraUtil.getOptimalPreviewFpsRange(parameters.getSupportedPreviewFpsRange(), Constants.VIDEO_FPS);
+
+            parameters.setPreviewSize(mSize.width, mSize.height);
+            parameters.setPreviewFpsRange(fps[0], fps[1]);
+            camera.setParameters(parameters);
+            camera.setDisplayOrientation(90);
+            i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
+
+            try {
+                startPreview();
+                //            prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (RuntimeException e) {
+            throw new SecurityException("catch RuntimeException to exception handler", e);
         }
     }
 

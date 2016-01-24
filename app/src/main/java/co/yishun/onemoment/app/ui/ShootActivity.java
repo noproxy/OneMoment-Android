@@ -49,39 +49,31 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     ImageSwitcher cameraSwitch;
     PageIndicatorDot pageIndicatorDot;
 
-    @Extra
-    int transitionX;
-    @Extra
-    int transitionY;
+    @Extra int transitionX;
+    @Extra int transitionY;
 
     // forwarding to MomentCreateActivity
-    @Extra
-    boolean forWorld = false;
-    @Extra
-    WorldTag worldTag;
+    @Extra boolean forWorld = false;
+    @Extra WorldTag worldTag;
 
     private ViewGroup sceneRoot;
     private
-    @Nullable
-    CameraGLSurfaceView mCameraGLSurfaceView;
+    @Nullable CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
     private int currentFilter = 0;
 
-    @Override
-    public void setPageInfo() {
+    @Override public void setPageInfo() {
         mPageName = "ShootActivity";
     }
 
-    @Override
-    protected void onResume() {
+    @Override protected void onResume() {
         if (mCameraGLSurfaceView != null) {
             mCameraGLSurfaceView.onResume();
         }
         super.onResume();
     }
 
-    @UiThread()
-    @AfterViews void preTransition() {
+    @UiThread() @AfterViews void preTransition() {
         sceneRoot = (ViewGroup) findViewById(R.id.linearLayout);
         sceneRoot.setVisibility(View.INVISIBLE);
         sceneRoot.post(() -> {
@@ -103,8 +95,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     }
 
-    @UiThread(delay = 250)
-    @AfterViews void sceneTransition() {
+    @UiThread(delay = 250) @AfterViews void sceneTransition() {
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_shoot, this);
         TransitionSet set = new TransitionSet();
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
@@ -153,8 +144,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     //        shootView.record(this, this);
     //    }
 
-    @Override
-    protected void onPause() {
+    @Override protected void onPause() {
         if (mCameraGLSurfaceView != null) {
             mCameraGLSurfaceView.onPause();
         }
@@ -162,8 +152,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         this.finish();
     }
 
-    @Override
-    protected void onDestroy() {
+    @Override protected void onDestroy() {
         if (mCameraGLSurfaceView != null) {
             mCameraGLSurfaceView.onDestroy();
         }
@@ -190,13 +179,11 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         recordFlashSwitch.setDisplayedChild(flashOn ? 1 : 0);
     }
 
-    @Override
-    public void call() {
+    @Override public void call() {
         LogUtil.i(TAG, "start record callback");
     }
 
-    @Override
-    public void accept(File file) {
+    @Override public void accept(File file) {
         LogUtil.i(TAG, "accept: " + file);
         if (shootView instanceof CameraGLSurfaceView)
             delayStart(file);
@@ -208,18 +195,17 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     @UiThread(delay = 800) void delayAccept(File file) {
         File newFile = FileUtil.getVideoCacheFile(this);
-        new VideoConvert(this).setFiles(file, newFile)
-                .setListener(new VideoCommand.VideoCommandListener() {
-                    @Override public void onSuccess(VideoCommand.VideoCommandType type) {
-                        file.delete();
-                        delayStart(newFile);
-                        hideProgress();
-                    }
+        new VideoConvert(this).setFiles(file, newFile).setListener(new VideoCommand.VideoCommandListener() {
+            @Override public void onSuccess(VideoCommand.VideoCommandType type) {
+                file.delete();
+                delayStart(newFile);
+                hideProgress();
+            }
 
-                    @Override public void onFail(VideoCommand.VideoCommandType type) {
-                        hideProgress();
-                    }
-                }).start();
+            @Override public void onFail(VideoCommand.VideoCommandType type) {
+                hideProgress();
+            }
+        }).start();
     }
 
     @UiThread(delay = 200) void delayStart(File file) {
@@ -228,6 +214,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     @Override public void onHandler(SecurityException e) {
+        LogUtil.e(TAG, "", e);
         new MaterialDialog.Builder(this).positiveText(R.string.activity_shoot_permission_error_ok).content(R.string.activity_shoot_permission_error_msg).title(R.string.activity_shoot_permission_error_title).cancelable(false).callback(new MaterialDialog.ButtonCallback() {
             @Override public void onPositive(MaterialDialog dialog) {
                 ShootActivity.this.finish();

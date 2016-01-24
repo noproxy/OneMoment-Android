@@ -225,25 +225,29 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
     protected void setupCamera(SurfaceTexture surfaceTexture) {
         synchronized (mLock) {
-            i(TAG, "locked to setup camera");
-            innerReleaseCamera();
-            camera = Camera.open(mIsBackCamera ? mCameraId.back : mCameraId.front);
-            final Camera.Parameters parameters = camera.getParameters();
-            mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
-
-            parameters.setPreviewSize(mSize.width, mSize.height);
-            camera.setParameters(parameters);
-            camera.setDisplayOrientation(90);
-            i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
-
-
             try {
-                camera.setPreviewTexture(surfaceTexture);
-                mCameraRenderer.setCameraPreviewSize(mSize.width, mSize.height);
+                i(TAG, "locked to setup camera");
+                innerReleaseCamera();
+                camera = Camera.open(mIsBackCamera ? mCameraId.back : mCameraId.front);
+                final Camera.Parameters parameters = camera.getParameters();
+                mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
 
-                camera.startPreview();
-            } catch (Exception e) {
-                e.printStackTrace();
+                parameters.setPreviewSize(mSize.width, mSize.height);
+                camera.setParameters(parameters);
+                camera.setDisplayOrientation(90);
+                i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
+
+
+                try {
+                    camera.setPreviewTexture(surfaceTexture);
+                    mCameraRenderer.setCameraPreviewSize(mSize.width, mSize.height);
+
+                    camera.startPreview();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (RuntimeException e) {
+                throw new SecurityException("catch RuntimeException to exception handler", e);
             }
         }
     }
