@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -20,6 +22,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
@@ -38,7 +41,9 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OrmLiteDao;
+import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.solovyev.android.views.llm.LinearLayoutManager;
@@ -55,7 +60,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
-import co.yishun.library.EditTagContainer;
+import co.yishun.library.TagContainer;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
@@ -78,6 +83,7 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagSearchController_;
+import co.yishun.onemoment.app.ui.view.VideoTypeView;
 
 import static co.yishun.onemoment.app.LogUtil.d;
 import static co.yishun.onemoment.app.LogUtil.e;
@@ -92,6 +98,11 @@ public class TagCreateActivity extends BaseActivity
         TextView.OnEditorActionListener, TextWatcher {
     public static final int REQUEST_CODE_SEARCH = 1;
     private static final String TAG = "TagCreateActivity";
+
+    private static final int REQUEST_SELECT_WORLD = 1;
+    @ViewById VideoView videoView;
+    @ViewById VideoTypeView videoTypeView;
+
     @ViewById Toolbar toolbar;
     @ViewById EditText queryText;
     @ViewById ImageView addView;
@@ -102,7 +113,7 @@ public class TagCreateActivity extends BaseActivity
      */
     @Extra String videoPath;
     @Extra boolean isPrivate;
-    @ViewById EditTagContainer editTagContainer;
+    @ViewById TagContainer tagContainer;
     @ViewById ImageView momentPreviewImageView;
     @ViewById FrameLayout searchFrame;
     @ViewById RecyclerView recyclerView;
@@ -116,9 +127,15 @@ public class TagCreateActivity extends BaseActivity
     private float tagY;
     private Moment momentToSave;
 
+    private boolean lifeCheck;
+    private boolean diaryCheck;
+    private boolean worldCheck;
+    private String worldId;
+    private String worldName;
+
     @NonNull @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
-        return super.getSnackbarAnchorWithView(editTagContainer);
+        return super.getSnackbarAnchorWithView(tagContainer);
     }
 
     @Override
@@ -127,10 +144,11 @@ public class TagCreateActivity extends BaseActivity
     }
 
     @AfterViews void setupViews() {
+        setupToolbar();
         queryText.setVisibility(View.GONE);
         queryText.setOnEditorActionListener(this);
         queryText.addTextChangedListener(this);
-        addView.setVisibility(View.GONE);
+//        addView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         searchFrame.setVisibility(View.GONE);
 
@@ -140,15 +158,9 @@ public class TagCreateActivity extends BaseActivity
 
         adapter = new TagSearchAdapter(this, this);
         recyclerView.setAdapter(adapter);
-        setPreviewImage();
+//        setPreviewImage();
 
-        editTagContainer.setOnAddTagListener((x, y) -> {
-            tagX = x;
-            tagY = y;
-            setupSearch();
-        });
-
-        editTagContainer.post(() -> {
+        tagContainer.post(() -> {
             if (forWorld && worldTag != null && !"".equals(worldTag.name)) {
                 tagX = 50;
                 tagY = 50;
@@ -171,13 +183,55 @@ public class TagCreateActivity extends BaseActivity
         }
     }
 
-    @AfterViews void setupToolbar() {
+    void setupToolbar() {
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.activity_moment_create_title_text);
+//        ab.setDisplayShowTitleEnabled(false);
         i("setupToolbar", "set home as up true");
+    }
+
+    @AfterViews void setVideo() {
+        if (videoPath == null) return;
+        videoView.setVideoPath(videoPath);
+        videoView.seekTo(300);
+        playVideo();
+    }
+
+    @UiThread(delay = 500) void playVideo() {
+        videoView.seekTo(0);
+        videoView.start();
+    }
+
+    @Touch(R.id.videoView) void videoClick(View view, MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            videoView.seekTo(0);
+            videoView.start();
+        }
+    }
+
+    @Click(R.id.worldTextView) void selectWorld() {
+        PersonalWorldActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
+    }
+
+    @Click(R.id.lifeTextView) void lifeTextViewClick() {
+        lifeCheck = !lifeCheck;
+        videoTypeView.setLifeCheck(lifeCheck);
+    }
+
+    @Click(R.id.diaryTextView) void diaryTextViewClick() {
+        diaryCheck = !diaryCheck;
+        videoTypeView.setDiaryCheck(diaryCheck);
+    }
+
+    @Click(R.id.worldClearView) void clearWorld() {
+        if (worldCheck) {
+            worldCheck = false;
+            worldName = null;
+            videoTypeView.setWorldCheck(false, null);
+        }
     }
 
     void setupSearch() {
@@ -185,7 +239,7 @@ public class TagCreateActivity extends BaseActivity
         queryText.setVisibility(View.VISIBLE);
         queryText.requestFocus();
         queryText.setText("");
-        addView.setVisibility(View.VISIBLE);
+//        addView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         nextBtn.setVisibility(View.GONE);
         searchFrame.setVisibility(View.VISIBLE);
@@ -194,7 +248,7 @@ public class TagCreateActivity extends BaseActivity
         Animation recyclerAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_content_in);
         recyclerView.startAnimation(recyclerAnim);
         Animation addAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_add_in);
-        addView.startAnimation(addAnim);
+//        addView.startAnimation(addAnim);
         showKeyboard();
 
         List<String> defaultTag = new ArrayList<>();
@@ -221,7 +275,7 @@ public class TagCreateActivity extends BaseActivity
         Animation frameAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_frame_out);
         searchFrame.startAnimation(frameAnim);
         Animation addAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_add_out);
-        addView.startAnimation(addAnim);
+//        addView.startAnimation(addAnim);
         Animation nextAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_next_in);
         nextBtn.startAnimation(nextAnim);
         viewChange();
@@ -232,16 +286,25 @@ public class TagCreateActivity extends BaseActivity
     @UiThread(delay = 200) void viewChange() {
         searchFrame.setVisibility(View.GONE);
         queryText.setVisibility(View.GONE);
-        addView.setVisibility(View.GONE);
+//        addView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         nextBtn.setVisibility(View.VISIBLE);
+    }
+
+    @OnActivityResult(REQUEST_SELECT_WORLD) void onSelectWorld(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            worldCheck = true;
+            worldId = data.getStringExtra(PersonalWorldActivity.KEY_ID);
+            worldName = data.getStringExtra(PersonalWorldActivity.KEY_NAME);
+            videoTypeView.setWorldCheck(true, worldName);
+        }
     }
 
     boolean addTag(String tag) {
         if (TextUtils.isEmpty(tag)) {
             showSnackMsg(R.string.activity_tag_create_tag_empty_error);
             return true;
-        } else if (editTagContainer.getVideoTags().size() == 3) {
+        } else if (tagContainer.getVideoTags().size() == 3) {
             showSnackMsg(R.string.activity_tag_create_tag_number_error);
             return false;
         }
@@ -250,13 +313,13 @@ public class TagCreateActivity extends BaseActivity
         videoTag.setX(tagX);
         videoTag.setY(tagY);
         videoTag.type = "words";
-        editTagContainer.addTag(videoTag);
+        tagContainer.addTag(videoTag);
         return true;
     }
 
     @Click void nextBtnClicked(View view) {
         if (forWorld) {
-            if (editTagContainer.getVideoTags().size() == 0) {
+            if (tagContainer.getVideoTags().size() == 0) {
                 showSnackMsg(R.string.activity_tag_create_no_tag_error);
             } else {
                 upload();
@@ -282,7 +345,7 @@ public class TagCreateActivity extends BaseActivity
                     i(TAG, "new moment: " + moment);
 
                     RealmHelper.removeTags(moment.getTime());
-                    for (co.yishun.library.tag.VideoTag tag : editTagContainer.getVideoTags()) {
+                    for (co.yishun.library.tag.VideoTag tag : tagContainer.getVideoTags()) {
                         RealmHelper.addTodayTag(tag.getText(), tag.getX() / 100f, tag.getY() / 100f);
                     }
 
@@ -352,7 +415,7 @@ public class TagCreateActivity extends BaseActivity
         }
 
         Gson gson = new Gson();
-        JsonArray tagArray = gson.toJsonTree(editTagContainer.getVideoTags()).getAsJsonArray();
+        JsonArray tagArray = gson.toJsonTree(tagContainer.getVideoTags()).getAsJsonArray();
         for (JsonElement element : tagArray) {
             element.getAsJsonObject().remove("code");
             element.getAsJsonObject().remove("errorCode");
@@ -381,9 +444,10 @@ public class TagCreateActivity extends BaseActivity
     }
 
     @Click void addViewClicked(View view) {
-        if (addTag(queryText.getText().toString())) {
-            recoverSearch();
-        }
+        setupSearch();
+//        if (addTag(queryText.getText().toString())) {
+//            recoverSearch();
+//        }
     }
 
     @Override

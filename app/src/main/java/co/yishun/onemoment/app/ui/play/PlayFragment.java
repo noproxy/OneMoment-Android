@@ -9,7 +9,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import co.yishun.library.OnemomentPlayerView;
+import co.yishun.library.VideoPlayerView;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
@@ -22,11 +22,13 @@ public abstract class PlayFragment extends BaseFragment {
 
     protected Context mContext;
     protected BaseActivity mActivity;
-    @ViewById OnemomentPlayerView videoPlayView;
+    @ViewById
+    VideoPlayerView videoPlayView;
 
     private boolean isLoading;
 
-    @AfterViews void setupVideoPlayView() {
+    @AfterViews
+    void setupVideoPlayView() {
         videoPlayView.showLoading();
         isLoading = true;
     }
@@ -38,7 +40,8 @@ public abstract class PlayFragment extends BaseFragment {
         mActivity = (BaseActivity) getActivity();
     }
 
-    @Override public void onDetach() {
+    @Override
+    public void onDetach() {
         super.onDetach();
         mActivity = null;
     }
@@ -56,13 +59,15 @@ public abstract class PlayFragment extends BaseFragment {
         }
     }
 
-    @UiThread(delay = 500) void delayStart() {
+    @UiThread(delay = 500)
+    void delayStart() {
         videoPlayView.start();
         if (mActivity != null)
             mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    @Click(R.id.videoPlayView) void videoClick() {
+    @Click(R.id.videoPlayView)
+    void videoClick() {
         if (videoPlayView.isPlaying()) {
             videoPlayView.pause();
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -72,14 +77,16 @@ public abstract class PlayFragment extends BaseFragment {
         }
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         if (videoPlayView != null) {
             videoPlayView.reset();
         }
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         if (videoPlayView != null) {
             videoPlayView.stop();

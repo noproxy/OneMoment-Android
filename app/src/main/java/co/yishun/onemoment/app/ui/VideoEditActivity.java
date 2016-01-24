@@ -3,6 +3,8 @@ package co.yishun.onemoment.app.ui;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.VideoView;
@@ -26,6 +28,7 @@ import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.view.VideoTypeView;
+import retrofit.http.POST;
 
 /**
  * Created by Carlos on 2015/10/29.
@@ -120,4 +123,15 @@ public class VideoEditActivity extends BaseActivity {
         }
     }
 
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.activity_video_edit_add_tag) {
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_video_edit, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 }

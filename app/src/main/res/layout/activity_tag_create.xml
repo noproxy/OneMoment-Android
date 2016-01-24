@@ -5,13 +5,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/layout_toolbar_search"
         />
 
+    <co.yishun.onemoment.app.ui.view.SquareVideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"/>
+
+    <co.yishun.library.TagContainer
+        android:id="@+id/tagContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tc_square="true"
+        app:tc_editable="true"/>
 
     <Button
         android:id="@+id/nextBtn"
@@ -24,45 +37,12 @@
         android:textColor="@color/textColorPrimaryInverse"
         />
 
-    <co.yishun.library.EditTagContainer
-        android:id="@+id/editTagContainer"
+    <co.yishun.onemoment.app.ui.view.VideoTypeView
+        android:id="@+id/videoTypeView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/nextBtn"
-        android:layout_below="@id/toolbar"
-        >
-
-        <co.yishun.onemoment.app.ui.view.RadioCornerImageView
-            android:id="@+id/momentPreviewImageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pic_world_empty"
-            />
-
-        <LinearLayout
-            android:id="@+id/hintTextContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/momentPreviewImageView"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:text="@string/activity_tag_create_tag_hint"
-                android:background="@drawable/bg_hint_tag_create"
-                android:paddingBottom="12dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:paddingTop="12dp"/>
-
-        </LinearLayout>
-
-    </co.yishun.library.EditTagContainer>
+        android:layout_above="@id/nextBtn"
+        android:layout_below="@id/videoView"/>
 
     <FrameLayout
         android:id="@+id/searchFrame"

@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <co.yishun.library.OnemomentPlayerView
+    <co.yishun.library.VideoPlayerView
         android:id="@+id/videoPlayView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </co.yishun.library.OnemomentPlayerView>
+    </co.yishun.library.VideoPlayerView>
 
     <TextView
         android:id="@+id/usernameTextView"

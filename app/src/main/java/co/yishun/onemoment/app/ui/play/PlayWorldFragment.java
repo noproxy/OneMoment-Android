@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import co.yishun.library.OnemomentPlayerView;
+import co.yishun.library.VideoPlayerView;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
@@ -35,7 +35,7 @@ import co.yishun.onemoment.app.data.FileUtil;
  * Created on 2015/10/28.
  */
 @EFragment(R.layout.fragment_play_world)
-public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerView.OnVideoChangeListener,
+public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.OnVideoChangeListener,
         VideoTask.OnVideoListener {
     private static final String TAG = "platworld";
     @FragmentArg WorldTag worldTag;

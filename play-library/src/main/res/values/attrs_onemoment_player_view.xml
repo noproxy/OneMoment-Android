@@ -1,5 +1,5 @@
 <resources>
-    <declare-styleable name="OnemomentPlayerView">
+    <declare-styleable name="VideoPlayerView">
         <attr name="opv_autoplay" format="boolean"/>
         <attr name="opv_showPlayButton" format="boolean"/>
         <attr name="opv_showTags" format="boolean"/>
