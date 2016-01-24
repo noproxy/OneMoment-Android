@@ -7,10 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.baidu.location.BDLocation;
@@ -36,10 +32,12 @@ import com.qiniu.android.storage.UploadManager;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OrmLiteDao;
@@ -75,10 +73,10 @@ import co.yishun.onemoment.app.api.model.VideoTag;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.data.VideoUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
+import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -94,8 +92,7 @@ import static co.yishun.onemoment.app.LogUtil.i;
  */
 @EActivity(R.layout.activity_tag_create)
 public class TagCreateActivity extends BaseActivity
-        implements AbstractRecyclerViewAdapter.OnItemClickListener<String>,
-        TextView.OnEditorActionListener, TextWatcher {
+        implements AbstractRecyclerViewAdapter.OnItemClickListener<String> {
     public static final int REQUEST_CODE_SEARCH = 1;
     private static final String TAG = "TagCreateActivity";
 
@@ -145,12 +142,7 @@ public class TagCreateActivity extends BaseActivity
 
     @AfterViews void setupViews() {
         setupToolbar();
-        queryText.setVisibility(View.GONE);
-        queryText.setOnEditorActionListener(this);
-        queryText.addTextChangedListener(this);
-//        addView.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.GONE);
-        searchFrame.setVisibility(View.GONE);
+
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -189,7 +181,6 @@ public class TagCreateActivity extends BaseActivity
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.activity_moment_create_title_text);
-//        ab.setDisplayShowTitleEnabled(false);
         i("setupToolbar", "set home as up true");
     }
 
@@ -239,7 +230,7 @@ public class TagCreateActivity extends BaseActivity
         queryText.setVisibility(View.VISIBLE);
         queryText.requestFocus();
         queryText.setText("");
-//        addView.setVisibility(View.VISIBLE);
+        addView.setImageResource(R.drawable.ic_action_add);
         recyclerView.setVisibility(View.VISIBLE);
         nextBtn.setVisibility(View.GONE);
         searchFrame.setVisibility(View.VISIBLE);
@@ -247,8 +238,6 @@ public class TagCreateActivity extends BaseActivity
         queryText.startAnimation(queryTextAnim);
         Animation recyclerAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_content_in);
         recyclerView.startAnimation(recyclerAnim);
-        Animation addAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_add_in);
-//        addView.startAnimation(addAnim);
         showKeyboard();
 
         List<String> defaultTag = new ArrayList<>();
@@ -274,8 +263,6 @@ public class TagCreateActivity extends BaseActivity
         recyclerView.startAnimation(recyclerAnim);
         Animation frameAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_frame_out);
         searchFrame.startAnimation(frameAnim);
-        Animation addAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_add_out);
-//        addView.startAnimation(addAnim);
         Animation nextAnim = AnimationUtils.loadAnimation(this, R.anim.tag_create_next_in);
         nextBtn.startAnimation(nextAnim);
         viewChange();
@@ -286,7 +273,7 @@ public class TagCreateActivity extends BaseActivity
     @UiThread(delay = 200) void viewChange() {
         searchFrame.setVisibility(View.GONE);
         queryText.setVisibility(View.GONE);
-//        addView.setVisibility(View.GONE);
+        addView.setImageResource(R.drawable.ic_action_add_tag);
         recyclerView.setVisibility(View.GONE);
         nextBtn.setVisibility(View.VISIBLE);
     }
@@ -444,10 +431,11 @@ public class TagCreateActivity extends BaseActivity
     }
 
     @Click void addViewClicked(View view) {
-        setupSearch();
-//        if (addTag(queryText.getText().toString())) {
-//            recoverSearch();
-//        }
+        if (searching) {
+            addTag(queryText.getText().toString());
+            recoverSearch();
+        } else
+            setupSearch();
     }
 
     @Override
@@ -467,7 +455,9 @@ public class TagCreateActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    void search() {
+
+    @AfterTextChange(R.id.queryText)
+    @EditorAction(R.id.queryText) void search() {
         if ("".equals(queryText.getText().toString())) {
             return;
         }
@@ -527,27 +517,6 @@ public class TagCreateActivity extends BaseActivity
     void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(queryText.getWindowToken(), 0);
-    }
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        search();
-        return true;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        search();
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
     }
 
 }
