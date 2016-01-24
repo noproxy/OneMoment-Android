@@ -85,13 +85,7 @@ public class VideoEditActivity extends BaseActivity {
     }
 
     @Click(R.id.worldTextView) void selectWorld() {
-        if (!worldCheck) {
-            PersonalWorldActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
-        } else {
-            worldCheck = false;
-            worldName = null;
-            videoTypeView.setWorldCheck(false, null);
-        }
+        PersonalWorldActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
     }
 
     @Click(R.id.lifeTextView) void lifeTextViewClick() {
@@ -104,6 +98,14 @@ public class VideoEditActivity extends BaseActivity {
         videoTypeView.setDiaryCheck(diaryCheck);
     }
 
+    @Click(R.id.worldClearView) void clearWorld() {
+        if (worldCheck) {
+            worldCheck = false;
+            worldName = null;
+            videoTypeView.setWorldCheck(false, null);
+        }
+    }
+
     @Click void nextBtnClicked(View view) {
         TagCreateActivity_.intent(this).worldTag(worldTag).forWorld(forWorld).isPrivate(isPrivate).videoPath(videoPath).start();
         this.finish();
@@ -111,6 +113,7 @@ public class VideoEditActivity extends BaseActivity {
 
     @OnActivityResult(REQUEST_SELECT_WORLD) void onSelectWorld(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+            worldCheck = true;
             worldId = data.getStringExtra(PersonalWorldActivity.KEY_ID);
             worldName = data.getStringExtra(PersonalWorldActivity.KEY_NAME);
             videoTypeView.setWorldCheck(true, worldName);
