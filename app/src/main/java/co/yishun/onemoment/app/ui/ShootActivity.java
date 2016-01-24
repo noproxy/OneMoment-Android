@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
@@ -39,7 +40,7 @@ import me.toxz.circularprogressview.library.CircularProgressView;
  * Created by Carlos on 2015/10/4.
  */
 @EActivity(R.layout.activity_shoot)
-public class ShootActivity extends BaseActivity implements Callback, Consumer<File> {
+public class ShootActivity extends BaseActivity implements Callback, Consumer<File>, IShootView.SecurityExceptionHandler {
     private static final String TAG = "ShootActivity";
     IShootView shootView;
     //    @ViewById unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
@@ -114,6 +115,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     void afterTransition() {
         shootView = (IShootView) findViewById(R.id.shootView);
+        shootView.setSecurityExceptionHandler(this);
         if (shootView instanceof CameraGLSurfaceView) {
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
             pageIndicatorDot = ((PageIndicatorDot) findViewById(R.id.pageIndicator));
@@ -223,5 +225,14 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @UiThread(delay = 200) void delayStart(File file) {
         MomentCreateActivity_.intent(this).videoPath(file.getPath()).forWorld(forWorld).worldTag(worldTag).start();
         this.finish();
+    }
+
+    @Override public void onHandler(SecurityException e) {
+        new MaterialDialog.Builder(this).positiveText(R.string.activity_shoot_permission_error_ok).content(R.string.activity_shoot_permission_error_msg).title(R.string.activity_shoot_permission_error_title).cancelable(false).callback(new MaterialDialog.ButtonCallback() {
+            @Override public void onPositive(MaterialDialog dialog) {
+                ShootActivity.this.finish();
+            }
+        }).show();
+        //TODO add help btn to guide user to how enable permission for three-party rom
     }
 }
