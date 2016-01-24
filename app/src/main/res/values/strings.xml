@@ -64,7 +64,7 @@
 
     <string name="activity_splash_data_migration">Updating…</string>
     <string name="activity_shoot_permission_error_ok">OK</string>
-    <string name="activity_shoot_permission_error_title">Camera inaccessible</string>
+    <string name="activity_shoot_permission_error_title">Camera Inaccessible</string>
     <string name="activity_shoot_permission_error_msg">We need permission to record video,radio and store them. Please ensure you grant us necessary permission.</string>
     <string name="activity_main_move_LOC_moments">Move moments shot when you logout to current account?</string>
     <string name="activity_main_move_LOC_moments_positive">OK</string>
