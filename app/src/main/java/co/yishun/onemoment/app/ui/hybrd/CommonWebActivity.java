@@ -8,7 +8,7 @@ import co.yishun.onemoment.app.R;
 /**
  * Created by Jinge on 2016/1/21.
  */
-@EActivity(R.layout.activity_web_view)
+@EActivity(R.layout.activity_tool_fragment)
 public class CommonWebActivity extends BaseWebActivity {
 
     @AfterViews void setupViews() {

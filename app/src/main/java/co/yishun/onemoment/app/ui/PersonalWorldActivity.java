@@ -17,7 +17,7 @@ import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
 /**
  * Created by Jinge on 2016/1/22.
  */
-@EActivity(R.layout.activity_web_view)
+@EActivity(R.layout.activity_tool_fragment)
 public class PersonalWorldActivity extends BaseWebActivity {
 
     public static final String KEY_ID = "world_id";
