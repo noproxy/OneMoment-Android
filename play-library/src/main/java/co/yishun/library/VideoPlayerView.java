@@ -24,7 +24,7 @@ import co.yishun.library.resource.NetworkVideo;
  *
  * @author ZhihaoJun
  */
-public class OnemomentPlayerView extends RelativeLayout
+public class VideoPlayerView extends RelativeLayout
         implements OnemomentPlaySurfaceView.PlayListener {
     public final static String TAG = "OnemomentPlayerView";
 
@@ -33,7 +33,7 @@ public class OnemomentPlayerView extends RelativeLayout
     private ImageView mVideoPreview;
     private ImageView mPlayBtn;
     private ProgressBar mProgress;
-    private PlayTagContainer mTagContainer;
+    private TagContainer mTagContainer;
     private List<NetworkVideo> mVideoResources = new LinkedList<>();
     private OnVideoChangeListener mVideoChangeListener;
     private int mPreparedIndex = 0;
@@ -44,29 +44,29 @@ public class OnemomentPlayerView extends RelativeLayout
     private boolean mWithAvatar = false;
     private boolean mLoading = false;
 
-    public OnemomentPlayerView(Context context) {
+    public VideoPlayerView(Context context) {
         super(context);
         init(context, null, 0);
     }
 
-    public OnemomentPlayerView(Context context, AttributeSet attrs) {
+    public VideoPlayerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0);
     }
 
-    public OnemomentPlayerView(Context context, AttributeSet attrs, int defStyle) {
+    public VideoPlayerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs, defStyle);
     }
 
     public void init(Context context, AttributeSet attrs, int defStyle) {
         if (attrs != null) {
-            TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.OnemomentPlayerView, 0, 0);
+            TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.VideoPlayerView, 0, 0);
 
             try {
-                mShowPlayBtn = ta.getBoolean(R.styleable.OnemomentPlayerView_opv_showPlayButton, true);
-                mAutoplay = ta.getBoolean(R.styleable.OnemomentPlayerView_opv_autoplay, false);
-                mShowTags = ta.getBoolean(R.styleable.OnemomentPlayerView_opv_showTags, true);
+                mShowPlayBtn = ta.getBoolean(R.styleable.VideoPlayerView_opv_showPlayButton, true);
+                mAutoplay = ta.getBoolean(R.styleable.VideoPlayerView_opv_autoplay, false);
+                mShowTags = ta.getBoolean(R.styleable.VideoPlayerView_opv_showTags, true);
             } finally {
                 ta.recycle();
             }
@@ -80,7 +80,7 @@ public class OnemomentPlayerView extends RelativeLayout
         mPlaySurface = (OnemomentPlaySurfaceView) findViewById(R.id.om_video_surface);
         mPlayBtn = (ImageView) findViewById(R.id.om_play_btn);
         mVideoPreview = (ImageView) findViewById(R.id.om_video_preview);
-        mTagContainer = (PlayTagContainer) findViewById(R.id.om_tags_container);
+        mTagContainer = (TagContainer) findViewById(R.id.om_tags_container);
         mAvatarView = (AvatarRecyclerView) findViewById(R.id.om_avatar_recycler_view);
         mProgress = (ProgressBar) findViewById(R.id.om_progress);
 
@@ -219,14 +219,6 @@ public class OnemomentPlayerView extends RelativeLayout
 
     public void setAutoplay(boolean mAutoplay) {
         this.mAutoplay = mAutoplay;
-    }
-
-    public boolean isShowTags() {
-        return mTagContainer.isShowTags();
-    }
-
-    public void setShowTags(boolean showTags) {
-        mTagContainer.setShowTags(showTags);
     }
 
     public int getCurrentIndex() {

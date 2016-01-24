@@ -9,7 +9,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import co.yishun.library.OnemomentPlayerView;
+import co.yishun.library.VideoPlayerView;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
@@ -22,7 +22,7 @@ public abstract class PlayFragment extends BaseFragment {
 
     protected Context mContext;
     protected BaseActivity mActivity;
-    @ViewById OnemomentPlayerView videoPlayView;
+    @ViewById VideoPlayerView videoPlayView;
 
     private boolean isLoading;
 

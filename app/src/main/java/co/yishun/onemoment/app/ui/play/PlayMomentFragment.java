@@ -8,13 +8,12 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.OrmLiteDao;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import co.yishun.library.OnemomentPlayerView;
+import co.yishun.library.VideoPlayerView;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
@@ -31,7 +30,7 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  */
 @EFragment(R.layout.fragment_play_moment)
 public class PlayMomentFragment extends PlayFragment
-        implements OnemomentPlayerView.OnVideoChangeListener {
+        implements VideoPlayerView.OnVideoChangeListener {
 
     @FragmentArg String startDate;
     @FragmentArg String endDate;

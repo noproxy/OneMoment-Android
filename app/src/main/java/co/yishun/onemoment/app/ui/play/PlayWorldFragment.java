@@ -12,16 +12,14 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import co.yishun.library.OnemomentPlayerView;
+import co.yishun.library.VideoPlayerView;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
-import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.World;
@@ -32,13 +30,12 @@ import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.VideoUtil;
 
 /**
  * Created on 2015/10/28.
  */
 @EFragment(R.layout.fragment_play_world)
-public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerView.OnVideoChangeListener,
+public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.OnVideoChangeListener,
         VideoTask.OnVideoListener {
     private static final String TAG = "platworld";
     @FragmentArg WorldTag worldTag;

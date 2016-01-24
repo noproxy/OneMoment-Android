@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/activity_video_edit_add_tag"
+        android:icon="@drawable/ic_action_add_tag"
+        android:orderInCategory="100"
+        android:title="@string/activity_video_edit_action_add_tag"
+        app:showAsAction="ifRoom"/>
+
+</menu>
