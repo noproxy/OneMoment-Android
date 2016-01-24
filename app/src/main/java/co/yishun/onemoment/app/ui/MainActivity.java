@@ -147,27 +147,10 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         if (permissionMap.containsValue(true)) {
             shootWithPermission(view, forWorld);
         } else {
-            // Should we show an explanation?
+            // we don't need show an explanation
             pendingShootRequestByPermission = new Pair<>(view, forWorld);
-
             String[] request = (String[]) StreamSupport.stream(permissionMap.entrySet()).filter(Map.Entry::getValue).map(Map.Entry::getKey).collect(Collectors.toList()).toArray();
-
             ActivityCompat.requestPermissions(this, request, PERMISSIONS_REQUEST_RECORD_VIDEO);
-            //            if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_CONTACTS)) {
-            //                // Show an expanation to the user *asynchronously* -- don't block
-            //                // this thread waiting for the user's response! After the user
-            //                // sees the explanation, try again to request the permission.
-            //
-            //            } else {
-            //
-            //                // No explanation needed, we can request the permission.
-            //                ActivityCompat.requestPermissions(this, PERMISSION, PERMISSIONS_REQUEST_RECORD_VIDEO);
-            //
-            //
-            //                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-            //                // app-defined int constant. The callback method gets the
-            //                // result of the request.
-            //            }
         }
     }
 
