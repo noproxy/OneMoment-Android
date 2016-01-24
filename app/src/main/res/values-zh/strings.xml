@@ -91,4 +91,5 @@
     <string name="umeng_common_icon">图标</string>
     <string name="tb_munion_tip_download_prefix">正在下载:</string>
     <string name="fragment_get_password_new_password">请输入新密码</string>
+    <string name="fragment_phone_verify_sign_up_error_account_not_exist">账号不存在！</string>
 </resources>

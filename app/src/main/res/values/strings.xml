@@ -53,8 +53,8 @@
     <string name="progress_loading_msg">Loading…</string>
     <string name="unknown_error">Unknown Error</string>
 
-    <string name="fragment_phone_verify_sign_up_error_account_exit">Account exists, please login.</string>
-    <string name="fragment_phone_verify_sign_up_error_account_not_exit">Account not exists!</string>
+    <string name="fragment_phone_verify_sign_up_error_account_exist">Account exists, please login.</string>
+    <string name="fragment_phone_verify_sign_up_error_account_not_exist">Account not exists!</string>
     <string name="fragment_phone_verify_sign_up_error_password_invalid">Password is invalid.</string>
 
     <string name="activity_guide_enter">Enter</string>
