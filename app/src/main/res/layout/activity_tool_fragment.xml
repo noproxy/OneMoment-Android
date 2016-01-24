@@ -6,16 +6,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/app_bar_elevation"
-        >
-
-        <include layout="@layout/layout_toolbar"/>
-
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/layout_toolbar"/>
 
     <FrameLayout
         android:id="@+id/containerFrameLayout"

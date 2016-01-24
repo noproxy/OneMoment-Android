@@ -249,6 +249,9 @@
         <activity android:name=".ui.BadgeActivity_">
 
         </activity>
+        <activity android:name=".ui.HomeContainerActivity_">
+
+        </activity>
 
         <service android:name=".account.remind.ReminderService">
         </service>

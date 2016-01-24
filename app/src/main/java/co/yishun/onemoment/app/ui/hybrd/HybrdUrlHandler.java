@@ -15,9 +15,9 @@ import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.ui.BadgeActivity;
 import co.yishun.onemoment.app.ui.BadgeActivity_;
 import co.yishun.onemoment.app.ui.CreateWorldActivity_;
+import co.yishun.onemoment.app.ui.HomeContainerActivity_;
 import co.yishun.onemoment.app.ui.SettingsActivity_;
 import co.yishun.onemoment.app.ui.ShootActivity_;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
@@ -115,6 +115,11 @@ public abstract class HybrdUrlHandler {
 //            TagActivity_.intent(activity).start();
         } else if (TextUtils.equals(des, "badge")) {
             BadgeActivity_.intent(context).badgeDetail(args.get(1)).start();
+        } else if (TextUtils.equals(des, "world")
+                || TextUtils.equals(des, "diary")
+                || TextUtils.equals(des, "explore")
+                || TextUtils.equals(des, "mine")) {
+            HomeContainerActivity_.intent(context).type(des).start();
         } else {
             LogUtil.e(TAG, "unhandled jump type : " + des);
         }
