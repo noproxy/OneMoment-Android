@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -77,15 +78,21 @@ public class TodayMomentView extends RelativeLayout {
             mTagTextView.setText(todayMoment.tag == null ? NO_TAG : todayMoment.tag);
 
             mMomentNumTextView.setVisibility(VISIBLE);
-            String num = String.valueOf(todayMoment.momentIndex);
+
+            Locale locale = getResources().getConfiguration().locale;
+            String num;
+            if (locale.getLanguage().equals(Locale.CHINA.getLanguage())) {
+                num = String.valueOf(todayMoment.momentIndex);
+            } else {
+                num = Util.ordinal((int) todayMoment.momentIndex);
+            }
+
             String prefix = getResources().getString(R.string.activity_moment_create_count_text_prefix);
             String suffix = getResources().getString(R.string.activity_moment_create_count_text_suffix);
             int colorAccent = getResources().getColor(R.color.colorAccent);
             SpannableString spannableString = new SpannableString(prefix + num + suffix);
-            spannableString.setSpan(new ForegroundColorSpan(colorAccent), 0,
-                    prefix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannableString.setSpan(new ForegroundColorSpan(colorAccent), prefix.length() + num.length(),
-                    prefix.length() + num.length() + suffix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new ForegroundColorSpan(colorAccent), 0, prefix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new ForegroundColorSpan(colorAccent), prefix.length() + num.length(), prefix.length() + num.length() + suffix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             mMomentNumTextView.setText(spannableString);
 
             mStartPlayTextView.setVisibility(VISIBLE);
