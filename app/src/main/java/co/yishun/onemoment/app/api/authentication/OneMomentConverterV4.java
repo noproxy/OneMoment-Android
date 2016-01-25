@@ -81,6 +81,8 @@ public class OneMomentConverterV4 implements Converter {
                 Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 if (genericType == WorldVideo.class) {
                     models = new ListWithErrorV4<>(mGson.fromJson(data.get("videos"), type));
+                } else if (genericType == World.class) {
+                    models = new ListWithErrorV4<>(mGson.fromJson(data.get("worlds"), type));
                 }
             }
         }
