@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -36,6 +37,7 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -195,20 +197,26 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
                     if (deniedForever) {
                         // user denied flagging NEVER ASK AGAIN
                         // show information to tell when need these permission
-                        new MaterialDialog.Builder(this).positiveText(R.string.activity_shoot_permission_error_ok).negativeText(R.string.activity_shoot_permission_error_settings).callback(new MaterialDialog.ButtonCallback() {
-                            @Override public void onNegative(MaterialDialog dialog) {
-                                try {
-                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
-                                        intent.addCategory(Intent.CATEGORY_DEFAULT);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
+                        MaterialDialog.Builder builder = new MaterialDialog.Builder(this).positiveText(R.string.activity_shoot_permission_error_ok).content(R.string.activity_shoot_permission_error_msg).title(R.string.activity_shoot_permission_error_title).cancelable(false);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            builder.negativeText(R.string.activity_shoot_permission_error_settings);
+                            builder.callback(new MaterialDialog.ButtonCallback() {
+                                @Override public void onNegative(MaterialDialog dialog) {
+                                    try {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+                                            intent.addCategory(Intent.CATEGORY_DEFAULT);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                        }
+                                    } catch (Exception ignore) {
+                                        ignore.printStackTrace();
+                                        Toast.makeText(MainActivity.this, "Unable to find permission settings", Toast.LENGTH_SHORT).show();
                                     }
-                                } catch (Exception ignore) {
-                                    ignore.printStackTrace();
                                 }
-                            }
-                        }).content(R.string.activity_shoot_permission_error_msg).title(R.string.activity_shoot_permission_error_title).cancelable(false).show();
+                            });
+                        }
+                        builder.show();
                     } else {
                         // show msg that we cannot do that
                         Snackbar.make(getSnackbarAnchorWithView(pendingShootRequestByPermission != null ? pendingShootRequestByPermission.first : null), R.string.activity_main_msg_shoot_forbid, Snackbar.LENGTH_LONG).show();
