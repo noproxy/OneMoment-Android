@@ -96,4 +96,5 @@
     <string name="activity_shoot_permission_error_msg">糟糕，没有足够的权限录制一瞬。我们需要使用照相机，录音和读写储存的权限才能正常工作。</string>
     <string name="activity_shoot_permission_error_title">无法打开相机</string>
     <string name="activity_main_msg_shoot_forbid">没有权限拍摄，请确认权限设置。</string>
+    <string name="activity_shoot_permission_error_settings">设置</string>
 </resources>

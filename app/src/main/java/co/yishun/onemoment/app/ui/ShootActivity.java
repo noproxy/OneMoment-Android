@@ -1,7 +1,10 @@
 package co.yishun.onemoment.app.ui;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,6 +221,19 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         new MaterialDialog.Builder(this).positiveText(R.string.activity_shoot_permission_error_ok).content(R.string.activity_shoot_permission_error_msg).title(R.string.activity_shoot_permission_error_title).cancelable(false).callback(new MaterialDialog.ButtonCallback() {
             @Override public void onPositive(MaterialDialog dialog) {
                 ShootActivity.this.finish();
+            }
+
+            @Override public void onNegative(MaterialDialog dialog) {
+                try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+                        intent.addCategory(Intent.CATEGORY_DEFAULT);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                } catch (Exception ignore) {
+                    ignore.printStackTrace();
+                }
             }
         }).show();
         //TODO add help btn to guide user to how enable permission for three-party rom
