@@ -178,7 +178,6 @@
         </activity>
         <activity
             android:name=".ui.TagCreateActivity_"
-            android:parentActivityName=".ui.MomentCreateActivity_"
             android:theme="@style/AppTheme.TagCreateActivity"/>
         <activity
             android:name=".ui.UserInfoActivity_"

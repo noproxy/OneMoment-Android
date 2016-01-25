@@ -187,7 +187,14 @@ public abstract class BaseWebFragment extends BaseFragment {
     public String toJs(Object o, boolean encode) {
         String arg;
         arg = new Gson().toJson(o);
-        if (encode) arg = arg.replace("\"", "\\\"");
+        if (encode) {
+            arg = arg.replace("\"", "\\\"");
+        } else {
+            if (arg.startsWith("\""))
+                arg = arg.substring(1);
+            if (arg.endsWith("\""))
+                arg = arg.substring(0, arg.length() - 1);
+        }
 
         String result = "javascript:ctx.androidreturn('[" + arg + "]')";
         LogUtil.d(TAG, "load js : " + result);
