@@ -52,6 +52,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tc_editable="true"
+        android:layout_alignTop="@id/videoView"
+        android:layout_alignBottom="@id/videoView"
         app:tc_square="true"/>
 
     <co.yishun.onemoment.app.ui.view.VideoTypeView

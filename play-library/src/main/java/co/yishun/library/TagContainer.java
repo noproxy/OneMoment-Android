@@ -2,12 +2,11 @@ package co.yishun.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
+import android.graphics.RectF;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.yishun.library.R;
 import co.yishun.library.tag.VideoTag;
 
 /**
@@ -27,11 +25,13 @@ import co.yishun.library.tag.VideoTag;
  */
 public class TagContainer extends FrameLayout {
     public final static String VIDEO_TAG_VIEW_TAG = "video_tag";
+    private static final String TAG = "TagContainer";
     protected ViewDragHelper mDragHelper;
     protected ViewDragHelper.Callback mCallback;
     protected int mSize;
     protected List<VideoTag> videoTags;
-    protected List<View> tagViews;
+
+    protected List<RectF> tagViewRects;
     protected boolean mEditable;
     protected boolean mSquare;
 
@@ -64,21 +64,24 @@ public class TagContainer extends FrameLayout {
         mDragHelper = ViewDragHelper.create(this, mCallback);
 
         videoTags = new ArrayList<>(3);
-        tagViews = new ArrayList<>(3);
+//        tagViews = new ArrayList<>(3);
+        tagViewRects = new ArrayList<>(3);
     }
 
-    protected View setTextView(VideoTag tag) {
-        LinearLayout tagLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.layout_tag, null);
-        TextView textView = (TextView) tagLayout.findViewById(R.id.tagTextView);
-        tagLayout.setTag(VIDEO_TAG_VIEW_TAG);
-        textView.setText(tag.getText());
-        int left = (int) (tag.getX() * getSize() / 100);
-        int top = (int) (tag.getY() * getSize() / 100);
-        textView.setSingleLine(true);
-        tagLayout.setX(left);
-        tagLayout.setY(top);
+    protected View createTagView(VideoTag tag) {
+        LinearLayout tagView = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.layout_tag, this, false);
+        tagView.setTag(VIDEO_TAG_VIEW_TAG);
 
-        return tagLayout;
+
+        TextView tagText = (TextView) tagView.findViewById(R.id.tagTextView);
+        tagText.setText(tag.getText());
+        tagText.setSingleLine(true);
+
+        tagView.findViewById(R.id.tagClearImage).setOnClickListener(v -> {
+//            removeView(tagView);
+            tagView.setVisibility(INVISIBLE);
+        });
+        return tagView;
     }
 
     public void setEditable(boolean editable) {
@@ -87,32 +90,38 @@ public class TagContainer extends FrameLayout {
 
     public void addTag(VideoTag tag) {
         videoTags.add(tag);
-        View textView = setTextView(tag);
+        View tagView = createTagView(tag);
 
-        addView(textView);
-        tagViews.add(textView);
-        textView.measure(0, 0);       //must call measure!
-        Log.d("[ETC]", textView.getMeasuredHeight() + " " + textView.getMeasuredWidth());
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int left = (int) (tag.getX() * getSize() / 100);
+        int top = (int) (tag.getY() * getSize() / 100);
+        params.leftMargin = left;
+        params.topMargin = top;
 
-//        if (textView.getX() + textView.getMeasuredWidth() > mSize)
-//            textView.setX(mSize - textView.getMeasuredWidth());
-//        else if (textView.getX() < 0)
-//            textView.setX(0);
-//
-//        if (textView.getY() < 0)
-//            textView.setY(0);
-//        else if (textView.getY() < mSize && textView.getY() > mSize - textView.getMeasuredHeight())
-//            textView.setY(mSize - textView.getMeasuredHeight());
+        tagView.measure(0, 0);       //must call measure!
+        Log.d(TAG, tagView.getMeasuredHeight() + " " + tagView.getMeasuredWidth());
+
+        if (params.leftMargin + tagView.getMeasuredWidth() > mSize)
+            params.leftMargin = mSize - tagView.getMeasuredWidth();
+        else if (params.leftMargin < 0)
+            params.leftMargin = 0;
+
+        if (params.topMargin < 0)
+            params.topMargin = 0;
+        else if (params.topMargin > mSize - tagView.getMeasuredHeight())
+            params.topMargin = mSize - tagView.getMeasuredHeight();
+
+        tagView.setLayoutParams(params);
+
+        addView(tagView);
+        tagViewRects.add(new RectF(params.leftMargin, params.topMargin,
+                params.leftMargin + tagView.getMeasuredWidth(), params.topMargin + tagView.getMeasuredHeight()));
+
     }
 
 
     public int getSize() {
         return mSize;
-    }
-
-    public void setVideoTags(List<VideoTag> videoTags) {
-        this.videoTags = videoTags;
-        showTags();
     }
 
     public void showTags() {
@@ -121,8 +130,7 @@ public class TagContainer extends FrameLayout {
 
         for (int i = 0; i < videoTags.size(); i++) {
             VideoTag videoTag = videoTags.get(i);
-            View tagView = setTextView(videoTag);
-            tagViews.add(tagView);
+            addTag(videoTag);
         }
     }
 
@@ -142,6 +150,11 @@ public class TagContainer extends FrameLayout {
         return videoTags;
     }
 
+    public void setVideoTags(List<VideoTag> videoTags) {
+        this.videoTags = videoTags;
+        showTags();
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
@@ -157,7 +170,7 @@ public class TagContainer extends FrameLayout {
         if (mEditable) {
             mDragHelper.processTouchEvent(ev);
             return true;
-        }else return super.onTouchEvent(ev);
+        } else return super.onTouchEvent(ev);
     }
 
     @Override
@@ -180,9 +193,10 @@ public class TagContainer extends FrameLayout {
         }
 
         @Override public int clampViewPositionHorizontal(View child, int left, int dx) {
-            final int leftBound = getPaddingLeft();
-            final int rightBound = getWidth() - child.getWidth();
-            return Math.min(Math.max(left, leftBound), rightBound);
+            int leftBound = getPaddingLeft();
+            int rightBound = getWidth() - child.getWidth();
+            int newLeft = Math.min(Math.max(left, leftBound), rightBound);
+            return newLeft;
         }
 
         @Override public int clampViewPositionVertical(View child, int top, int dy) {
