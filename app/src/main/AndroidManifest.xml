@@ -175,11 +175,8 @@
             android:theme="@style/AppTheme.TagCreateActivity"/>
         <activity
             android:name=".ui.TagCreateActivity_"
-            android:theme="@style/AppTheme.TagCreateActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.VideoEditActivity_"/>
-        </activity>
+            android:theme="@style/AppTheme.TagCreateActivity"
+            android:parentActivityName=".ui.VideoEditActivity_"/>
         <activity
             android:name=".ui.UserInfoActivity_"
             android:parentActivityName=".ui.MainActivity_"
@@ -211,7 +208,7 @@
             android:parentActivityName=".ui.MainActivity_"
             android:theme="@style/AppTheme"/>
         <activity android:name=".ui.hybrd.CommonWebActivity_">
-            
+
         </activity>
         <activity android:name=".ui.hybrd.EmptyWebActivity_">
 

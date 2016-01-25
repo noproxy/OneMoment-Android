@@ -8,6 +8,7 @@
 
     <string name="activity_share_share_moment">分享一瞬</string>
     <string name="activity_share_share_world">分享世界</string>
+    <string name="activity_share_share_badge">分享徽章</string>
 
     <string name="activity_share_share_success">分享成功</string>
     <string name="activity_share_share_fail">分享失败</string>
