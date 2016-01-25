@@ -6,7 +6,10 @@ import android.util.Log;
 
 import com.umeng.analytics.MobclickAgent;
 
-import org.apache.commons.collections4.queue.CircularFifoQueue;
+import java.util.Queue;
+
+import co.yishun.onemoment.app.util.CircularFifoQueue;
+
 
 /**
  * Created by Carlos on 2015/12/24.
@@ -14,7 +17,7 @@ import org.apache.commons.collections4.queue.CircularFifoQueue;
 public class LogUtil {
     public static final int MAX_LOG = 100;
     private static Context mContext;
-    private static CircularFifoQueue<String> logQueue = new CircularFifoQueue<>(MAX_LOG);
+    private static Queue<String> logQueue = new CircularFifoQueue<>(MAX_LOG);
 
     static void setUp(Context context) {
         mContext = context.getApplicationContext();
@@ -63,27 +66,27 @@ public class LogUtil {
     private static int log(int priority, String tag, String msg, Throwable tr) {
         if (BuildConfig.DEBUG) {
             return systemLog(priority, tag, msg, tr);
-        } else switch (priority) {
-            case Log.VERBOSE:
-            case Log.DEBUG:
-                return 0;
-            case Log.ERROR:
-                StringBuilder builder = new StringBuilder();
-                String line;
-                while ((line = logQueue.poll()) != null) {
-                    builder.append(line);
-                    builder.append('\n');
-                }
-                String result = builder.toString();
-                if (!TextUtils.isEmpty(result))
-                    MobclickAgent.reportError(mContext, result);
-                return 0;
-            default:
-                String report = (priority == Log.WARN ? "WARN" : "INFO")
-                        + "/TAG: " + tag + ", MSG: " + msg;
-                logQueue.add(report);
-                return 0;
-        }
+        } else
+            switch (priority) {
+                case Log.VERBOSE:
+                case Log.DEBUG:
+                    return 0;
+                case Log.ERROR:
+                    StringBuilder builder = new StringBuilder();
+                    String line;
+                    while ((line = logQueue.poll()) != null) {
+                        builder.append(line);
+                        builder.append('\n');
+                    }
+                    String result = builder.toString();
+                    if (!TextUtils.isEmpty(result))
+                        MobclickAgent.reportError(mContext, result);
+                    return 0;
+                default:
+                    String report = (priority == Log.WARN ? "WARN" : "INFO") + "/TAG: " + tag + ", MSG: " + msg;
+                    logQueue.add(report);
+                    return 0;
+            }
     }
 
     private static int systemLog(int priority, String tag, String msg, Throwable tr) {
