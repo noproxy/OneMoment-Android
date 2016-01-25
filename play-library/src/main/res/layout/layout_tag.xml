@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/tagTextView"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="24dp"
         android:layout_marginLeft="8dp"
         android:gravity="center"
         android:textColor="@android:color/white"
