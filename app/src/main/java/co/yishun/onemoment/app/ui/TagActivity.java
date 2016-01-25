@@ -1,12 +1,11 @@
 package co.yishun.onemoment.app.ui;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.support.annotation.CallSuper;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -57,8 +56,7 @@ import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
  */
 
 @EActivity(R.layout.activity_tag)
-public class TagActivity extends BaseActivity
-        implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
+public class TagActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
     public static final int FROM_WORLD_FRAGMENT = 0;
     public static final int FROM_SEARCH_ACTIVITY = 1;
     private static final String TAG = "TagActivity";
@@ -81,8 +79,7 @@ public class TagActivity extends BaseActivity
     private int expendedTitleColor;
     private int expendedSubTitleColor;
 
-    @Override
-    public void setPageInfo() {
+    @Override public void setPageInfo() {
         mPageName = "TagActivity";
     }
 
@@ -95,11 +92,9 @@ public class TagActivity extends BaseActivity
 
     @AfterViews void preTransition() {
         if (from == FROM_WORLD_FRAGMENT) {
-            coordinatorLayout.addView(LayoutInflater.from(this).inflate(
-                    R.layout.scene_activity_tag_world_smooth, coordinatorLayout, false));
+            coordinatorLayout.addView(LayoutInflater.from(this).inflate(R.layout.scene_activity_tag_world_smooth, coordinatorLayout, false));
         } else if (from == FROM_SEARCH_ACTIVITY) {
-            coordinatorLayout.addView(LayoutInflater.from(this).inflate(
-                    R.layout.scene_activity_tag_search_smooth, coordinatorLayout, false));
+            coordinatorLayout.addView(LayoutInflater.from(this).inflate(R.layout.scene_activity_tag_search_smooth, coordinatorLayout, false));
         }
         setLayout();
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) videoImageView.getLayoutParams();
@@ -117,8 +112,7 @@ public class TagActivity extends BaseActivity
         Picasso.with(this).load(tag.domain + tag.thumbnail).into(videoImageView);
     }
 
-    @UiThread(delay = 100)
-    @AfterViews void sceneTransition() {
+    @UiThread(delay = 100) @AfterViews void sceneTransition() {
         ViewGroup sceneRoot = coordinatorLayout;
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
 
@@ -163,25 +157,21 @@ public class TagActivity extends BaseActivity
         appbar.addOnOffsetChangedListener(new OffsetChangeListener());
     }
 
-    @Override
-    protected void onResume() {
+    @Override protected void onResume() {
         super.onResume();
         if (transitionOver) {
             TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag, isPrivate);
         }
     }
 
-    @Override
-    protected void onPause() {
+    @Override protected void onPause() {
         super.onPause();
         VideoTaskManager.getInstance().quit();
     }
 
-    @CallSuper
-    protected ActionBar setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
+    @CallSuper protected ActionBar setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
         if (toolbar == null)
-            throw new UnsupportedOperationException("You need bind Toolbar instance to" +
-                    " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
+            throw new UnsupportedOperationException("You need bind Toolbar instance to" + " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
         activity.setSupportActionBar(toolbar);
 
         final ActionBar ab = activity.getSupportActionBar();
@@ -235,10 +225,9 @@ public class TagActivity extends BaseActivity
                 ((startB + (int) (fraction * (endB - startB)))));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            NavUtils.navigateUpFromSameTask(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -247,8 +236,7 @@ public class TagActivity extends BaseActivity
     void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
     }
 
     @Background void shareWorld(View view) {
@@ -261,19 +249,16 @@ public class TagActivity extends BaseActivity
         PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
     }
 
-    @Override
-    public void onClick(View view, TagVideo item) {
+    @Override public void onClick(View view, TagVideo item) {
         PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
     }
 
     private class OffsetChangeListener implements AppBarLayout.OnOffsetChangedListener {
 
-        @Override
-        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        @Override public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             int insetTop = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ? 0 : statusBarHeight;
-            float fraction = Math.abs(verticalOffset) /
-                    (float) (appBarLayout.getHeight() -
-                            ViewCompat.getMinimumHeight(collapsingToolbarLayout) - insetTop);
+            float fraction = Math.abs(verticalOffset) / (float) (appBarLayout.getHeight() -
+                    ViewCompat.getMinimumHeight(collapsingToolbarLayout) - insetTop);
             changeTitleColor(fraction);
         }
     }
