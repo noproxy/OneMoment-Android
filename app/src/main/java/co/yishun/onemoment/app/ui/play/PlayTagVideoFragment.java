@@ -23,7 +23,7 @@ import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -41,7 +41,7 @@ public class PlayTagVideoFragment extends PlayFragment {
     @ViewById TextView usernameTextView;
     @ViewById TextView voteCountTextView;
 
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
+    private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
 
     @AfterViews void setup() {
         LogUtil.d("oneVideo", oneVideo.toString());
@@ -75,9 +75,9 @@ public class PlayTagVideoFragment extends PlayFragment {
         oneVideo.likeNum += oneVideo.liked ? 1 : -1;
         refreshUserInfo();
         if (oneVideo.liked) {
-            mWorld.likeVideo(oneVideo._id, AccountManager.getUserInfo(mContext)._id);
+            mWorldAPI.likeVideo(oneVideo._id, AccountManager.getUserInfo(mContext)._id);
         } else {
-            mWorld.unlikeVideo(oneVideo._id, AccountManager.getUserInfo(mContext)._id);
+            mWorldAPI.unlikeVideo(oneVideo._id, AccountManager.getUserInfo(mContext)._id);
         }
     }
 

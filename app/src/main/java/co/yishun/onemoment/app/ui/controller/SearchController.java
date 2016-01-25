@@ -6,7 +6,7 @@ import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.androidannotations.annotations.EBean;
 
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.WorldTag;
@@ -18,7 +18,7 @@ import co.yishun.onemoment.app.ui.adapter.SearchAdapter;
  */
 @EBean
 public class SearchController extends RecyclerController<Integer, SuperRecyclerView, WorldTag, SearchAdapter.SimpleViewHolder> {
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
+    private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
     private String mWords;
 
     protected SearchController(Context context) {
@@ -33,6 +33,6 @@ public class SearchController extends RecyclerController<Integer, SuperRecyclerV
 
     @Override
     protected ListWithError<WorldTag> onLoad() {
-        return mWorld.getSuggestedTagName(mWords);
+        return mWorldAPI.getSuggestedTagName(mWords);
     }
 }

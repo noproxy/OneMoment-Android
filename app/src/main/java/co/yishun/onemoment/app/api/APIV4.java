@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.api;
 
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
+import co.yishun.onemoment.app.api.modelv4.TodayWorld;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -30,15 +31,15 @@ public interface APIV4 {
             @Query("order") int order,
             @Query("limit") int limit);
 
-    @POST("/world/today") @FormUrlEncoded WorldVideo createLifeVideo(
+    @POST("/world/today") @FormUrlEncoded WorldVideo createTodayVideo(
             @Field("filename") String filename,
             @Field("account_id") String userId);
 
-    @GET("/world/todays") ListWithErrorV4<WorldVideo> getLifeVideos(
+    @GET("/world/todays") ListWithErrorV4<TodayWorld> getTodayWorlds(
             @Query("ranking") int ranking,
             @Query("limit") int limit);
 
-    @GET("world/today") WorldVideo getLifeVideo(
+    @GET("world/today") WorldVideo getTodayVideo(
             @Query("name") String name,
             @Query("offset") int offset,
             @Query("limit") int limit);

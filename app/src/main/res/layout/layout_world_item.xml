@@ -63,22 +63,5 @@
             android:textColor="@color/textColorPrimaryInverse"
             />
 
-
-        <TextView
-            android:id="@+id/likeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:drawableLeft="@drawable/ic_world_like"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_world_like"
-            android:gravity="center"
-            android:text="23"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
-            android:textColor="@color/textColorPrimaryInverse"
-            />
-
     </RelativeLayout>
 </FrameLayout>

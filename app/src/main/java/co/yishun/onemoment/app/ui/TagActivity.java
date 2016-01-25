@@ -39,7 +39,7 @@ import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ShareInfo;
@@ -240,8 +240,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     }
 
     @Background void shareWorld(View view) {
-        World world = OneMomentV3.createAdapter().create(World.class);
-        ShareInfo shareInfo = world.shareWorld(tag.name);
+        WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
+        ShareInfo shareInfo = worldAPI.shareWorld(tag.name);
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 

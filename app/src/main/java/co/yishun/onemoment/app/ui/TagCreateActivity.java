@@ -65,7 +65,7 @@ import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.api.Misc;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.Video;
@@ -412,8 +412,8 @@ public class TagCreateActivity extends BaseActivity
         String tags = gson.toJson(tagArray);
         d(TAG, tags);
 
-        World world = OneMomentV3.createAdapter().create(World.class);
-        Video uploadVideo = world.addVideoToWorld(AccountManager.getUserInfo(this)._id,
+        WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
+        Video uploadVideo = worldAPI.addVideoToWorld(AccountManager.getUserInfo(this)._id,
                 isPrivate ? "private" : "public", videoFile.getName(), tags);
         if (uploadVideo.code == Constants.CODE_SUCCESS) {
             hideProgress();

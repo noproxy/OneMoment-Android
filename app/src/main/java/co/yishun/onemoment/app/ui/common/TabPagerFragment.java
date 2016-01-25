@@ -94,15 +94,15 @@ public abstract class TabPagerFragment extends ToolbarFragment {
         View rootView = inflater.inflate(getContentViewId(savedInstanceState), container, false);
         assert rootView != null;
 
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
-        mViewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
-        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-
-        if (toolbar == null || mViewPager == null || tabLayout == null)
-            throw new AssertionError("You must ensure your layout contain TabLayout, ViewPager and Toolbar with R.id.tabLayout, R.id.viewPager, R.id.toolbar");
-        PagerAdapter viewPagerAdapter = getViewPager(inflater);
-        mViewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(mViewPager);
+//        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
+//        mViewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
+//        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+//
+//        if (toolbar == null || mViewPager == null || tabLayout == null)
+//            throw new AssertionError("You must ensure your layout contain TabLayout, ViewPager and Toolbar with R.id.tabLayout, R.id.viewPager, R.id.toolbar");
+//        PagerAdapter viewPagerAdapter = getViewPager(inflater);
+//        mViewPager.setAdapter(viewPagerAdapter);
+//        tabLayout.setupWithViewPager(mViewPager);
 
         return rootView;
     }

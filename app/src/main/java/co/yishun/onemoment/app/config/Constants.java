@@ -50,6 +50,10 @@ public class Constants {
     public static final String WE_CHAT_APP_ID = "wx669ce174488102f4";
     public static final String WEIBO_APP_ID = "4070980764";
 
+    public static class ErrorStr {
+        public static final String SUCCESS = "Ok";
+    }
+
     public static class ErrorCode {
         public static final int INPUT_MISSING = -1;
         public static final int INPUT_ERROR = -2;

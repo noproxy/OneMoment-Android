@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.ui.controller;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -19,55 +18,57 @@ import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.Util;
+import co.yishun.onemoment.app.api.APIV4;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.ListWithError;
-import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
+import co.yishun.onemoment.app.api.modelv4.TodayWorld;
 import co.yishun.onemoment.app.ui.adapter.BannerHeaderProvider;
+import co.yishun.onemoment.app.ui.adapter.DiscoveryAdapter;
 import co.yishun.onemoment.app.ui.adapter.HeaderRecyclerAdapter;
-import co.yishun.onemoment.app.ui.adapter.PersonalWorldAdapter;
-import co.yishun.onemoment.app.ui.adapter.WorldBannerHeaderProvider;
 
 /**
  * Created by Jinge on 2016/1/20.
  */
 @EBean
-public class PersonalWorldController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
-    private static final String TAG = "PersonalWorldController";
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
-    private PersonalWorldAdapter mAdapter;
+public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
+    private static final String TAG = "DiscoveryController";
+    private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
+    private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
+    private DiscoveryAdapter mAdapter;
+    private int mRanking;
     private HeaderCompatibleSuperRecyclerView mRecyclerView;
     private BannerHeaderProvider mBannerHeaderProvider;
 
-    public PersonalWorldController() {
+    public DiscoveryController() {
 
     }
 
-    public void setUp(Context context, HeaderCompatibleSuperRecyclerView recyclerView, PersonalWorldAdapter.OnItemClickListener<WorldTag> listener) {
+    public void setUp(Context context, HeaderCompatibleSuperRecyclerView recyclerView, DiscoveryAdapter.OnItemClickListener<TodayWorld> listener) {
         mRecyclerView = recyclerView;
-        mAdapter = new PersonalWorldAdapter(context, listener);
+        mRanking = (int) Util.unixTimeStamp();
+        mAdapter = new DiscoveryAdapter(context, listener);
         RecyclerView.Adapter trueAdapter = mAdapter;
 
-        GridLayoutManager manager = new GridLayoutManager(context, 2);
+        LinearLayoutManager manager = new LinearLayoutManager(context);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setRefreshListener(this);
         mRecyclerView.setOnMoreListener(this);
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override public int getSpanSize(int position) {
-                return position == 0 ? manager.getSpanCount() : 1;
-            }
-        });
 
-        mBannerHeaderProvider = new WorldBannerHeaderProvider(context);
+        mBannerHeaderProvider = new BannerHeaderProvider(context);
         trueAdapter = new HeaderRecyclerAdapter(trueAdapter, mBannerHeaderProvider);
-        loadBanners();
         mRecyclerView.setAdapter(trueAdapter);
+
+        loadBanners();
         loadTags();
     }
 
-    public PersonalWorldAdapter getAdapter() {
+    public DiscoveryAdapter getAdapter() {
         return mAdapter;
     }
 
@@ -76,7 +77,7 @@ public class PersonalWorldController implements SwipeRefreshLayout.OnRefreshList
     }
 
     @Background void loadBanners() {
-        ListWithError<Banner> banners = mWorld.getBanners(null);
+        ListWithError<Banner> banners = mWorldAPI.getBanners(null);
         if (banners.isSuccess()) {
             onLoadBanners(banners);
         } else {
@@ -93,9 +94,14 @@ public class PersonalWorldController implements SwipeRefreshLayout.OnRefreshList
     }
 
     synchronized void synchronizedLoadTags() {
-        ListWithError<WorldTag> list = mWorld.getWorldTagList(5, "", "recommend");
+        ListWithErrorV4<TodayWorld> list = mApiV4.getTodayWorlds(mRanking, 6);
         if (list.isSuccess()) {
-            onLoadTags(list);
+            if (list.size() > 0) {
+                mRanking = list.get(list.size() - 1).ranking;
+                onLoadTags(list);
+            } else {
+                onLoadEnd();
+            }
         } else {
             onLoadError();
         }
@@ -107,12 +113,15 @@ public class PersonalWorldController implements SwipeRefreshLayout.OnRefreshList
         mRecyclerView.getSwipeToRefresh().setRefreshing(false);
     }
 
-
-    @UiThread void onLoadTags(List<WorldTag> list) {
+    @UiThread void onLoadTags(List<TodayWorld> list) {
         mAdapter.addAll(list);
         mRecyclerView.loadEnd();
         mRecyclerView.getSwipeToRefresh().setRefreshing(false);
         mRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    @UiThread void onLoadEnd() {
+        mRecyclerView.loadEnd();
     }
 
     @Override
