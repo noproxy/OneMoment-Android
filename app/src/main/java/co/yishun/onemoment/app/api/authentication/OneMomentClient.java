@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.api.authentication;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.common.base.Charsets;
 import com.squareup.okhttp.Cache;
@@ -30,7 +29,6 @@ import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 
-import static co.yishun.onemoment.app.LogUtil.e;
 import static co.yishun.onemoment.app.LogUtil.i;
 
 
@@ -59,8 +57,7 @@ public class OneMomentClient extends OkClient {
         mOkHttpClient.setCache(cache);
     }
 
-    @Override
-    public Response execute(Request request) throws IOException {
+    @Override public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
 
@@ -79,6 +76,10 @@ public class OneMomentClient extends OkClient {
         headers.add(new Header("Om-et", String.valueOf(expiredTime)));
         headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
 
+        // one week cached
+        headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 7 + ",max-stale"));
+
+
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
 
         HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
@@ -90,7 +91,7 @@ public class OneMomentClient extends OkClient {
             // fake 200 response to log error and store in ApiModel
             if (statusCode < 200 || statusCode >= 300) {// error
                 response = new Response(response.getUrl(), 200, "OK", response.getHeaders(), new FakeTypeInput());
-                e(TAG, "http error! " + statusCode + " " + response.getReason());
+                i(TAG, "http error! " + statusCode + " " + response.getReason());
             }
             return response;
         } catch (Exception e) {
@@ -105,7 +106,8 @@ public class OneMomentClient extends OkClient {
 
     private Token generateOmToken2(Token token1, String url, @Nullable TypedOutput data, long expireTime) throws IOException {
         int urlEndIndex = url.indexOf('?');
-        if (urlEndIndex == -1) urlEndIndex = url.length();
+        if (urlEndIndex == -1)
+            urlEndIndex = url.length();
         return new OmToken2(token1, url.substring(0, urlEndIndex), data, expireTime);
     }
 
@@ -128,24 +130,21 @@ public class OneMomentClient extends OkClient {
 
         }
 
-        @Override
-        public String fileName() {
+        @Override public String fileName() {
             return mTypedOutput.fileName();
         }
 
-        @Override
-        public String mimeType() {
+        @Override public String mimeType() {
             return "text/plain; charset=UTF-8";
         }
 
-        @Override
-        public long length() {
+        @Override public long length() {
             return mData.length;
         }
 
-        @Override
-        public void writeTo(OutputStream out) throws IOException {
-            if (mData == null) throw new IOException(mException);
+        @Override public void writeTo(OutputStream out) throws IOException {
+            if (mData == null)
+                throw new IOException(mException);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             stream.write(mData);
             stream.writeTo(out);
@@ -155,18 +154,15 @@ public class OneMomentClient extends OkClient {
     private static class FakeTypeInput implements TypedInput {
         private byte[] mFakeBody = OneMomentV3.FAKE_RESPONSE.getBytes(Charsets.UTF_8);
 
-        @Override
-        public String mimeType() {
+        @Override public String mimeType() {
             return "text/plain charset=UTF-8";
         }
 
-        @Override
-        public long length() {
+        @Override public long length() {
             return mFakeBody.length;
         }
 
-        @Override
-        public InputStream in() throws IOException {
+        @Override public InputStream in() throws IOException {
             // we should encrypt the fake body
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             outputStream.write(mFakeBody);
