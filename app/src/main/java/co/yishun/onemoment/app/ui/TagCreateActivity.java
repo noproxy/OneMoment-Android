@@ -295,6 +295,8 @@ public class TagCreateActivity extends BaseActivity
             showSnackMsg(R.string.activity_tag_create_tag_number_error);
             return false;
         }
+        tagX = 50f;
+        tagY = 50f;
         VideoTag videoTag = new VideoTag();
         videoTag.name = tag;
         videoTag.setX(tagX);
