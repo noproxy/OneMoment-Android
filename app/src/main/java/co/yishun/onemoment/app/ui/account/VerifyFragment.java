@@ -72,7 +72,7 @@ public class VerifyFragment extends AccountFragment {
                     mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_fail_account_exist);
                     break;
                 case Constants.ErrorCode.ACCOUNT_DOESNT_EXIST:
-                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_not_exit);
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_not_exist);
                     break;
                 default:
                     mActivity.showSnackMsg(R.string.fragment_phone_verify_sms_fail);
@@ -115,13 +115,13 @@ public class VerifyFragment extends AccountFragment {
                     mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_verify_fail);
                     break;
                 case Constants.ErrorCode.ACCOUNT_EXISTS:
-                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_exit);
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_exist);
                     break;
                 case Constants.ErrorCode.PHONE_VERIFY_CODE_EXPIRES:
                     mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_expire);
                     break;
                 case Constants.ErrorCode.ACCOUNT_DOESNT_EXIST:
-                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_not_exit);
+                    mActivity.showSnackMsg(R.string.fragment_phone_verify_sign_up_error_account_not_exist);
                     break;
                 default:
                     mActivity.showSnackMsg(R.string.fragment_phone_verify_verify_error_network);

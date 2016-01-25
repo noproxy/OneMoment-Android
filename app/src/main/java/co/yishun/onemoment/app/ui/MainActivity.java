@@ -1,18 +1,26 @@
 package co.yishun.onemoment.app.ui;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -33,7 +42,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -54,6 +65,8 @@ import static org.android.agoo.client.BaseRegistrar.getRegistrationId;
 
 @EActivity
 public class MainActivity extends BaseActivity implements AccountManager.OnUserInfoChangeListener {
+    public static final int PERMISSIONS_REQUEST_RECORD_MOMENT = 4;
+    public static final String PERMISSION[] = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
     private static final String TAG = "MainActivity";
 
     private static boolean pendingUserInfoUpdate = false;
@@ -69,26 +82,25 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private TextView locationTextView;
     private FloatingActionButton fab;
     private BroadcastReceiver mSyncChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
+        @Override public void onReceive(Context context, Intent intent) {
             if (currentItemId == R.id.navigation_item_1) {
                 Bundle extra = intent.getExtras();
                 long unixTimeStamp = extra.getLong(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP);
 
                 boolean needUpdate = ((DiaryFragment) fragmentManager.findFragmentById(R.id.fragment_container)).isCurrentMonth(new Date(unixTimeStamp * 1000));
-                if (needUpdate) updateDiary();
+                if (needUpdate)
+                    updateDiary();
             }
 
         }
     };
-
     /**
      * Flag means just going to shoot diary ui.
      */
     private boolean goToShootDiary = false;
+    private Pair<View, Boolean> pendingShootRequestByPermission = null;
 
-    @Override
-    protected void onResume() {
+    @Override protected void onResume() {
         super.onResume();
         // refresh diary in case moment update
         if (currentItemId == R.id.navigation_item_1 && goToShootDiary) {
@@ -98,24 +110,19 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         registerSyncListener();
     }
 
-    @Override
-    protected void onPause() {
+    @Override protected void onPause() {
         super.onPause();
         unregisterReceiver(mSyncChangedReceiver);
     }
 
     @AfterInject void showMoveLOCDialog() {
         if (checkLOC)
-            new MaterialDialog.Builder(this).theme(Theme.LIGHT)
-                    .content(R.string.activity_main_move_LOC_moments)
-                    .positiveText(R.string.activity_main_move_LOC_moments_positive)
-                    .negativeText(R.string.activity_main_move_LOC_moments_negative)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override public void onPositive(MaterialDialog dialog) {
-                            super.onPositive(dialog);
-                            DataMigration.moveLOCMomentsToUser(MainActivity.this);
-                        }
-                    }).build().show();
+            new MaterialDialog.Builder(this).theme(Theme.LIGHT).content(R.string.activity_main_move_LOC_moments).positiveText(R.string.activity_main_move_LOC_moments_positive).negativeText(R.string.activity_main_move_LOC_moments_negative).callback(new MaterialDialog.ButtonCallback() {
+                @Override public void onPositive(MaterialDialog dialog) {
+                    super.onPositive(dialog);
+                    DataMigration.moveLOCMomentsToUser(MainActivity.this);
+                }
+            }).build().show();
     }
 
     private void updateDiary() {
@@ -123,10 +130,28 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     private void startShoot(View view, boolean forWorld) {
+
+        List<String> request = new ArrayList<>(PERMISSION.length);
+        for (String permission : PERMISSION) {
+            int status = ActivityCompat.checkSelfPermission(this, permission);
+            if (status != PackageManager.PERMISSION_GRANTED) {
+                request.add(permission);
+            }
+        }
+
+        if (request.size() > 0) {
+            pendingShootRequestByPermission = new Pair<>(view, forWorld);
+            // we don't need show an explanation
+            ActivityCompat.requestPermissions(this, request.toArray(new String[request.size()]), PERMISSIONS_REQUEST_RECORD_MOMENT);
+        } else {
+            shootWithPermission(view, forWorld);
+        }
+    }
+
+    private void shootWithPermission(View view, boolean forWorld) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
 
         if (!forWorld) {
             goToShootDiary = true;
@@ -136,7 +161,80 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_RECORD_MOMENT: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && isAllGranted(grantResults)) {
+                    if (pendingShootRequestByPermission != null) {
+                        shootWithPermission(pendingShootRequestByPermission.first, pendingShootRequestByPermission.second);
+                        pendingShootRequestByPermission = null;
+                    }
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+
+                    boolean deniedForever = false;
+
+                    for (int i = 0, permissionsLength = permissions.length; i < permissionsLength; i++) {
+                        if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
+                                deniedForever = true;
+                            }
+                        }
+                    }
+
+                    if (deniedForever) {
+                        // user denied flagging NEVER ASK AGAIN
+                        // show information to tell when need these permission
+                        MaterialDialog.Builder builder = new MaterialDialog.Builder(this).positiveText(R.string.activity_shoot_permission_error_ok).content(R.string.activity_shoot_permission_error_msg).title(R.string.activity_shoot_permission_error_title).cancelable(false);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            builder.negativeText(R.string.activity_shoot_permission_error_settings);
+                            builder.callback(new MaterialDialog.ButtonCallback() {
+                                @Override public void onNegative(MaterialDialog dialog) {
+                                    try {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+                                            intent.addCategory(Intent.CATEGORY_DEFAULT);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                        }
+                                    } catch (Exception ignore) {
+                                        ignore.printStackTrace();
+                                        Toast.makeText(MainActivity.this, "Unable to find permission settings", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                        builder.show();
+                    } else {
+                        // show msg that we cannot do that
+                        Snackbar.make(getSnackbarAnchorWithView(pendingShootRequestByPermission != null ? pendingShootRequestByPermission.first : null), R.string.activity_main_msg_shoot_forbid, Snackbar.LENGTH_LONG).show();
+                    }
+
+                    pendingShootRequestByPermission = null;
+                }
+                return;
+            }
+            default:
+                break;
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    private boolean isAllGranted(@NonNull int[] grantResults) {
+        for (int grantResult : grantResults) {
+            if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -223,10 +321,10 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
      * @return whether the fragment is checked.
      */
     private boolean navigationTo(int itemId) {
-        if (itemId == currentItemId) return true;
+        if (itemId == currentItemId)
+            return true;
         //TODO add delay to let drawer close
-        @SuppressLint("CommitTransaction")
-        Fragment targetFragment;
+        @SuppressLint("CommitTransaction") Fragment targetFragment;
         switch (itemId) {
             case R.id.navigation_item_0:
                 if (worldFragment == null) {
@@ -255,8 +353,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commitAllowingStateLoss();
     }
 
-    @Override
-    public void onBackPressed() {
+    @Override public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
@@ -268,20 +365,17 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         }
     }
 
-    @Override
-    protected void onDestroy() {
+    @Override protected void onDestroy() {
         super.onDestroy();
         AccountManager.removeOnUserInfoChangedListener(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
         // no global option menu, but fragment would add menu
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         // no global option menu to handle, fragment handles itself.
         // Just forwarding to DrawerToggle to handle item in NavigationDrawer
         return mDrawerToggle.onOptionsItemSelected(item);
@@ -295,14 +389,12 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         startActivity(new Intent(this, UIAutomatorTestActivity.class));
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    @Override protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         syncToggle();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    @Override public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         syncToggle();
     }
@@ -316,14 +408,12 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             return super.getSnackbarAnchorWithView(view);
     }
 
-    @Override
-    public void setPageInfo() {
+    @Override public void setPageInfo() {
         mIsPage = false;
         mPageName = "MainActivity";
     }
 
-    @Override
-    public void onUserInfoChange(User info) {
+    @Override public void onUserInfoChange(User info) {
         invalidateUserInfo(info);
     }
 }

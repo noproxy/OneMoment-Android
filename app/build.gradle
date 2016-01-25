@@ -32,7 +32,7 @@ android {
     defaultConfig {
         applicationId "co.yishun.onemoment.app"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 15
         versionName "2.3-dev"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -61,6 +61,11 @@ android {
     }
 
     productFlavors {
+        dev {
+            // http://developer.android.com/intl/es/tools/building/multidex.html#dev-build
+            minSdkVersion 21
+            targetSdkVersion 23
+        }
         uiAutomator { // for UIAutomation test, api > 18
             minSdkVersion 18
             targetSdkVersion 23
@@ -81,7 +86,9 @@ android {
         marketUniversal {}// for other market
     }
 
+    // https://code.google.com/p/android/issues/detail?id=197231
     dexOptions {
+        incremental true
         javaMaxHeapSize "4g"
     }
 
@@ -95,8 +102,11 @@ def SUPPORT_VERSION = '23.1.1'
 dependencies {
     // avoid method number limit
     compile 'com.android.support:multidex:1.0.1'
-
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
+//    compile fileTree(includes: ['*.jar'],dir: 'libs'){
+//        transitive false
+//    }
     compile 'net.sourceforge.streamsupport:streamsupport:1.2.2'
     compile "com.android.support:support-annotations:$SUPPORT_VERSION"
     compile "com.android.support:support-v4:$SUPPORT_VERSION"

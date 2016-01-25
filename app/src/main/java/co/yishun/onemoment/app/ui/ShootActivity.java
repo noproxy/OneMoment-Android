@@ -1,12 +1,16 @@
 package co.yishun.onemoment.app.ui;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
@@ -39,7 +43,7 @@ import me.toxz.circularprogressview.library.CircularProgressView;
  * Created by Carlos on 2015/10/4.
  */
 @EActivity(R.layout.activity_shoot)
-public class ShootActivity extends BaseActivity implements Callback, Consumer<File> {
+public class ShootActivity extends BaseActivity implements Callback, Consumer<File>, IShootView.SecurityExceptionHandler {
     private static final String TAG = "ShootActivity";
     IShootView shootView;
     //    @ViewById unable by AndroidAnnotation because the smooth fake layout causes that it cannot find the really View, we must findViewById after transition animation
@@ -56,24 +60,21 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @Extra WorldTag worldTag;
 
     private ViewGroup sceneRoot;
-    private @Nullable CameraGLSurfaceView mCameraGLSurfaceView;
+    @Nullable private CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
 
-    @Override
-    public void setPageInfo() {
+    @Override public void setPageInfo() {
         mPageName = "ShootActivity";
     }
 
-    @Override
-    protected void onResume() {
+    @Override protected void onResume() {
         if (mCameraGLSurfaceView != null) {
             mCameraGLSurfaceView.onResume();
         }
         super.onResume();
     }
 
-    @UiThread()
-    @AfterViews void preTransition() {
+    @UiThread() @AfterViews void preTransition() {
         sceneRoot = (ViewGroup) findViewById(R.id.linearLayout);
         sceneRoot.setVisibility(View.INVISIBLE);
         sceneRoot.post(() -> {
@@ -95,8 +96,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     }
 
-    @UiThread(delay = 250)
-    @AfterViews void sceneTransition() {
+    @UiThread(delay = 250) @AfterViews void sceneTransition() {
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_shoot, this);
         TransitionSet set = new TransitionSet();
         set.setOrdering(TransitionSet.ORDERING_TOGETHER);
@@ -107,6 +107,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     void afterTransition() {
         shootView = (IShootView) findViewById(R.id.shootView);
+        shootView.setSecurityExceptionHandler(this);
         if (shootView instanceof CameraGLSurfaceView) {
             mCameraGLSurfaceView = ((CameraGLSurfaceView) shootView);
             pageIndicatorDot = ((PageIndicatorDot) findViewById(R.id.pageIndicator));
@@ -144,8 +145,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     //        shootView.record(this, this);
     //    }
 
-    @Override
-    protected void onPause() {
+    @Override protected void onPause() {
         if (mCameraGLSurfaceView != null) {
             mCameraGLSurfaceView.onPause();
         }
@@ -153,8 +153,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         this.finish();
     }
 
-    @Override
-    protected void onDestroy() {
+    @Override protected void onDestroy() {
         if (mCameraGLSurfaceView != null) {
             mCameraGLSurfaceView.onDestroy();
         }
@@ -181,13 +180,11 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         recordFlashSwitch.setDisplayedChild(flashOn ? 1 : 0);
     }
 
-    @Override
-    public void call() {
+    @Override public void call() {
         LogUtil.i(TAG, "start record callback");
     }
 
-    @Override
-    public void accept(File file) {
+    @Override public void accept(File file) {
         LogUtil.i(TAG, "accept: " + file);
         if (shootView instanceof CameraGLSurfaceView)
             delayStart(file);
@@ -199,22 +196,55 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     @UiThread(delay = 800) void delayAccept(File file) {
         File newFile = FileUtil.getVideoCacheFile(this);
-        new VideoConvert(this).setFiles(file, newFile)
-                .setListener(new VideoCommand.VideoCommandListener() {
-                    @Override public void onSuccess(VideoCommand.VideoCommandType type) {
-                        file.delete();
-                        delayStart(newFile);
-                        hideProgress();
-                    }
+        new VideoConvert(this).setFiles(file, newFile).setListener(new VideoCommand.VideoCommandListener() {
+            @Override public void onSuccess(VideoCommand.VideoCommandType type) {
+                file.delete();
+                delayStart(newFile);
+                hideProgress();
+            }
 
-                    @Override public void onFail(VideoCommand.VideoCommandType type) {
-                        hideProgress();
-                    }
-                }).start();
+            @Override public void onFail(VideoCommand.VideoCommandType type) {
+                hideProgress();
+            }
+        }).start();
     }
 
     @UiThread(delay = 200) void delayStart(File file) {
         TagCreateActivity_.intent(this).videoPath(file.getPath()).start();
         this.finish();
+    }
+
+    @Override public void onHandler(SecurityException e) {
+        LogUtil.e(TAG, "", e);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this).positiveText(R.string.activity_shoot_permission_error_ok).content(R.string.activity_shoot_permission_error_msg).title(R.string.activity_shoot_permission_error_title).cancelable(false);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            builder.negativeText(R.string.activity_shoot_permission_error_settings);
+            builder.callback(new MaterialDialog.ButtonCallback() {
+                @Override public void onPositive(MaterialDialog dialog) {
+                    ShootActivity.this.finish();
+                }
+
+                @Override public void onNegative(MaterialDialog dialog) {
+                    try {
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+                            intent.addCategory(Intent.CATEGORY_DEFAULT);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    } catch (Exception ignore) {
+                        ignore.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            builder.callback(new MaterialDialog.ButtonCallback() {
+                @Override public void onPositive(MaterialDialog dialog) {
+                    ShootActivity.this.finish();
+                }
+            });
+        }
+        builder.show();
+        //TODO add help btn to guide user to how enable permission for three-party rom
     }
 }

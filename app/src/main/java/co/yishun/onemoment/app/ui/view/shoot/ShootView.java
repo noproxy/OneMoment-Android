@@ -54,8 +54,10 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     private RecordHandler mBackgroundHandler;
 
     private Camera.AutoFocusCallback myAutoFocusCallback = (success, camera1) -> {
-        if (success) camera1.cancelAutoFocus();
+        if (success)
+            camera1.cancelAutoFocus();
     };
+    private SecurityExceptionHandler mExceptionHandler;
 
     public ShootView(Context context) {
         super(context);
@@ -80,11 +82,15 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
 
     private void init() {
         i(TAG, "ShootView init");
-//        ((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE)).setStreamMute(AudioManager.STREAM_SYSTEM, true);
+        //        ((AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE)).setStreamMute(AudioManager.STREAM_SYSTEM, true);
 
-        initHandler();
-        initCamera();
-        initFlash();
+        try {
+            initHandler();
+            initCamera();
+            initFlash();
+        } catch (SecurityException e) {
+            onHandler(e);
+        }
     }
 
     public void doTouchFocus(final Rect tfocusRect) {
@@ -104,21 +110,12 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN){
+    @Override public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             float x = event.getX();
             float y = event.getY();
-            Rect touchRect = new Rect(
-                    (int) (x - 100),
-                    (int) (y - 100),
-                    (int) (x + 100),
-                    (int) (y + 100));
-            final Rect targetFocusRect = new Rect(
-                    touchRect.left * 2000 / this.getWidth() - 1000,
-                    touchRect.top * 2000 / this.getHeight() - 1000,
-                    touchRect.right * 2000 / this.getWidth() - 1000,
-                    touchRect.bottom * 2000 / this.getHeight() - 1000);
+            Rect touchRect = new Rect((int) (x - 100), (int) (y - 100), (int) (x + 100), (int) (y + 100));
+            final Rect targetFocusRect = new Rect(touchRect.left * 2000 / this.getWidth() - 1000, touchRect.top * 2000 / this.getHeight() - 1000, touchRect.right * 2000 / this.getWidth() - 1000, touchRect.bottom * 2000 / this.getHeight() - 1000);
             doTouchFocus(targetFocusRect);
         }
         return true;
@@ -130,9 +127,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         mBackgroundHandler = new RecordHandler(mHandlerThread.getLooper());
     }
 
-
-    @Override
-    public boolean isBackCamera() {
+    @Override public boolean isBackCamera() {
         return mIsBackCamera;
     }
 
@@ -141,14 +136,10 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         this.setTransform(mat);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int size = Math.min(
-                getMeasuredWidth(),
-                getMeasuredHeight()
-        );
+        int size = Math.min(getMeasuredWidth(), getMeasuredHeight());
 
         i(TAG, "size: " + size);
         setMeasuredDimension(size, size);
@@ -157,13 +148,12 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     public void releaseCamera() {
         if (camera != null) {
             camera.stopPreview();
-//            camera.unlock();
+            //            camera.unlock();
             camera.release();
         }
     }
 
-    @Override
-    public void setFlashlightOn(boolean isOn) {
+    @Override public void setFlashlightOn(boolean isOn) {
         if (isFlashlightAvailable()) {
             try {
                 Camera.Parameters p = camera.getParameters();
@@ -175,40 +165,41 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         }
     }
 
-    @Override
-    public void switchCamera(boolean isBack) {
+    @Override public void switchCamera(boolean isBack) {
         mBackgroundHandler.sendMessage(mBackgroundHandler.obtainMessage(RecordHandler.PREPARE, isBack));
     }
 
     private void innerSwitchCamera(boolean isBack) {
         releaseCamera();
-        camera = Camera.open(isBack ? mCameraId.back : mCameraId.front);
-        mIsBackCamera = isBack;
-        final Camera.Parameters parameters = camera.getParameters();
-        mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
-        int[] fps = CameraUtil.getOptimalPreviewFpsRange(parameters.getSupportedPreviewFpsRange(), Constants.VIDEO_FPS);
-
-        parameters.setPreviewSize(mSize.width, mSize.height);
-        parameters.setPreviewFpsRange(fps[0], fps[1]);
-        camera.setParameters(parameters);
-        camera.setDisplayOrientation(90);
-        i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
-
         try {
-            startPreview();
-//            prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
+            camera = Camera.open(isBack ? mCameraId.back : mCameraId.front);
+            mIsBackCamera = isBack;
+            final Camera.Parameters parameters = camera.getParameters();
+            mSize = CameraUtil.getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), Constants.VIDEO_WIDTH, Constants.VIDEO_HEIGHT);
+            int[] fps = CameraUtil.getOptimalPreviewFpsRange(parameters.getSupportedPreviewFpsRange(), Constants.VIDEO_FPS);
+
+            parameters.setPreviewSize(mSize.width, mSize.height);
+            parameters.setPreviewFpsRange(fps[0], fps[1]);
+            camera.setParameters(parameters);
+            camera.setDisplayOrientation(90);
+            i(TAG, "setCamera, w: " + mSize.width + " h: " + mSize.height);
+
+            try {
+                startPreview();
+                //            prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (RuntimeException e) {
+            throw new SecurityException("catch RuntimeException to exception handler", e);
         }
     }
 
-    @Override
-    public boolean isFlashlightAvailable() {
+    @Override public boolean isFlashlightAvailable() {
         return mIsBackCamera && mHasFlash;
     }
 
-    @Override
-    public boolean isFrontCameraAvailable() {
+    @Override public boolean isFrontCameraAvailable() {
         return mHasFrontCamera;
     }
 
@@ -256,13 +247,11 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
 
             }
 
-            @Override
-            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
                 return false;
             }
 
-            @Override
-            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+            @Override public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
             }
         });
@@ -308,15 +297,26 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         }
     }
 
-    @Override
-    public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
+    @Override public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
         mRecordStartCallback = recordStartCallback;
         mRecordEndConsumer = recordEndConsumer;
         mBackgroundHandler.sendEmptyMessage(RecordHandler.START);
     }
 
-    @Override
-    public void onInfo(MediaRecorder mr, int what, int extra) {
+    @Override public void setSecurityExceptionHandler(SecurityExceptionHandler exceptionHandler) {
+        mExceptionHandler = exceptionHandler;
+    }
+
+    private void onHandler(SecurityException e) {
+        if (mExceptionHandler != null) {
+            mExceptionHandler.onHandler(e);
+        } else {
+            throw new SecurityException(e);
+        }
+    }
+
+
+    @Override public void onInfo(MediaRecorder mr, int what, int extra) {
         switch (what) {
             case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
                 mBackgroundHandler.sendEmptyMessage(RecordHandler.STOP);
@@ -327,23 +327,11 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
 
     private CamcorderProfile getProfile() {
         CamcorderProfile profile = null;
-        int[] allProfiles = {
-                CamcorderProfile.QUALITY_480P,
-                CamcorderProfile.QUALITY_TIME_LAPSE_480P,
+        int[] allProfiles = {CamcorderProfile.QUALITY_480P, CamcorderProfile.QUALITY_TIME_LAPSE_480P,
 
-                CamcorderProfile.QUALITY_720P,
-                CamcorderProfile.QUALITY_TIME_LAPSE_720P,
-                CamcorderProfile.QUALITY_LOW,
-                CamcorderProfile.QUALITY_TIME_LAPSE_LOW,
-                CamcorderProfile.QUALITY_QCIF,
-                CamcorderProfile.QUALITY_TIME_LAPSE_QCIF,
-                CamcorderProfile.QUALITY_CIF,
-                CamcorderProfile.QUALITY_TIME_LAPSE_CIF,
+                CamcorderProfile.QUALITY_720P, CamcorderProfile.QUALITY_TIME_LAPSE_720P, CamcorderProfile.QUALITY_LOW, CamcorderProfile.QUALITY_TIME_LAPSE_LOW, CamcorderProfile.QUALITY_QCIF, CamcorderProfile.QUALITY_TIME_LAPSE_QCIF, CamcorderProfile.QUALITY_CIF, CamcorderProfile.QUALITY_TIME_LAPSE_CIF,
 
-                CamcorderProfile.QUALITY_HIGH,
-                CamcorderProfile.QUALITY_TIME_LAPSE_HIGH,
-                CamcorderProfile.QUALITY_1080P,
-                CamcorderProfile.QUALITY_TIME_LAPSE_1080P,
+                CamcorderProfile.QUALITY_HIGH, CamcorderProfile.QUALITY_TIME_LAPSE_HIGH, CamcorderProfile.QUALITY_1080P, CamcorderProfile.QUALITY_TIME_LAPSE_1080P,
 
         };
         for (int oneProfile : allProfiles) {
@@ -352,7 +340,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
                 break;
             }
         }
-        if (profile == null) throw new IllegalArgumentException("no profile at all!!");
+        if (profile == null)
+            throw new IllegalArgumentException("no profile at all!!");
         return profile;
     }
 
@@ -365,8 +354,7 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
             super(looper);
         }
 
-        @Override
-        public void handleMessage(final Message msg) {
+        @Override public void handleMessage(final Message msg) {
             switch (msg.what) {
                 case RecordHandler.PREPARE:
                     boolean isBack = (boolean) msg.obj;

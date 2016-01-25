@@ -67,19 +67,14 @@
         <activity
             android:name=".ui.VideoVotedUpActivity_"
             android:label="@string/discovery_title"
-            android:theme="@style/AppTheme.VideoVoteUpActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity"/>
-        </activity>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.VideoVoteUpActivity"/>
         <activity
             android:name=".ui.SettingsActivity_"
             android:label="@string/title_settings"
-            android:theme="@style/AppTheme.Settings">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"/>
-        </activity>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.Settings"/>
+
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
@@ -89,13 +84,9 @@
             android:theme="@style/AppTheme.EntryActivity"/>
         <activity
             android:name=".ui.AccountActivity_"
+            android:parentActivityName=".wxapi.EntryActivity_"
             android:theme="@style/AppTheme.PhoneAccountActivity"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".wxapi.EntryActivity"/>
-            <!-- TODO just for test -->
-        </activity>
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -163,18 +154,17 @@
         </activity>
         <activity
             android:name=".ui.TagActivity_"
-            android:theme="@style/AppTheme.TagActivity">
-        </activity>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.TagActivity"/>
         <activity
             android:name=".ui.ShootActivity_"
-            android:theme="@style/AppTheme.ShootActivity"/>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.ShootActivity"
+            />
         <activity
             android:name=".ui.SearchActivity_"
-            android:theme="@style/AppTheme.SearchActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"/>
-        </activity>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.SearchActivity"/>
         <activity
             android:name=".ui.PlayActivity_"
             android:theme="@style/AppTheme.PlayActivity">
@@ -188,32 +178,21 @@
         </activity>
         <activity
             android:name=".ui.TagCreateActivity_"
-            android:theme="@style/AppTheme.TagCreateActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.VideoEditActivity_"/>
-        </activity>
+            android:parentActivityName=".ui.MomentCreateActivity_"
+            android:theme="@style/AppTheme.TagCreateActivity"/>
         <activity
             android:name=".ui.UserInfoActivity_"
-            android:theme="@style/AppTheme.UserInfoActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"/>
-        </activity>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.UserInfoActivity"
+            />
         <activity
             android:name=".ui.PlayMomentActivity_"
-            android:theme="@style/AppTheme.PlayMomentActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"/>
-        </activity>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.PlayMomentActivity"/>
         <activity
             android:name=".ui.ShareExportActivity_"
-            android:theme="@style/AppTheme.ShareOutputActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"/>
-        </activity>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.ShareOutputActivity"/>
         <activity
             android:name=".ui.ShareActivity_"
             android:theme="@style/AppTheme.ShareActivity">
@@ -229,11 +208,9 @@
         </activity>
         <activity
             android:name=".ui.UrlDetailActivity_"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity_"/>
-        </activity>
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme"/>
+
         <activity android:name=".ui.hybrd.CommonWebActivity_">
 
         </activity>
