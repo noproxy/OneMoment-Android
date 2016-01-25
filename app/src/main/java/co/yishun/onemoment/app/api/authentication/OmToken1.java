@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.api.authentication;
 
-import com.google.common.io.BaseEncoding;
+
+import android.util.Base64;
 
 import java.nio.charset.Charset;
 
@@ -16,12 +17,12 @@ class OmToken1 implements Token {
 
     OmToken1() {
         // "AC5 2T575 DCV6U PX7K5 1HZ6J 5S125 8NZIZ"
-//        mOrigin = "AC52T575DCV6UPX7K51HZ6J5S1258NZIZ";
+        //        mOrigin = "AC52T575DCV6UPX7K51HZ6J5S1258NZIZ";
         this.mOrigin = mStringGenerator.nextString();
         if (mOrigin.length() != 33) {
             throw new AssertionError("String length incorrect!");
         }
-        mValue = BaseEncoding.base64().encode(mOrigin.getBytes(Charset.forName("UTF-8")));
+        mValue = Base64.encodeToString(mOrigin.getBytes(Charset.forName("UTF-8")), Base64.DEFAULT);
     }
 
 

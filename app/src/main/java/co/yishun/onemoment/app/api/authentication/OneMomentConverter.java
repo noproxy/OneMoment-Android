@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.api.authentication;
 
-import com.google.common.base.Charsets;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +54,7 @@ public class OneMomentConverter implements Converter {
     @Override
     /**
      * Decode the encrypted body, then use Gson convert to Object
-     */
-    public Object fromBody(TypedInput body, Type type) throws ConversionException {
+     */ public Object fromBody(TypedInput body, Type type) throws ConversionException {
         String json = OneMomentEncoding.decode(body);
         int code;
         String msg;
@@ -166,12 +165,11 @@ public class OneMomentConverter implements Converter {
     /**
      * Just convert Object to json but not encrypted, do it later in Client.
      */
-    @Override
-    public TypedOutput toBody(Object object) {
+    @Override public TypedOutput toBody(Object object) {
         // will be encoded in OneMomentClient, so don't encode here
         String json = mGson.toJson(object);
         LogUtil.i(TAG, object + ", " + json);
-        return new JsonTypedOutput(json.getBytes(Charsets.UTF_8), Charsets.UTF_8.name());
+        return new JsonTypedOutput(json.getBytes(Charset.forName("UTF-8")), "UTF-8");
     }
 
     /**
@@ -186,23 +184,19 @@ public class OneMomentConverter implements Converter {
             this.mimeType = "application/json; charset=" + encode;
         }
 
-        @Override
-        public String fileName() {
+        @Override public String fileName() {
             return null;
         }
 
-        @Override
-        public String mimeType() {
+        @Override public String mimeType() {
             return mimeType;
         }
 
-        @Override
-        public long length() {
+        @Override public long length() {
             return jsonBytes.length;
         }
 
-        @Override
-        public void writeTo(OutputStream out) throws IOException {
+        @Override public void writeTo(OutputStream out) throws IOException {
             out.write(jsonBytes);
         }
     }

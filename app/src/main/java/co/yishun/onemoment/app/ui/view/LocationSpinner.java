@@ -22,56 +22,22 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.google.common.base.Splitter;
 
 import java.util.Arrays;
 import java.util.List;
 
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.Util;
 
 /**
  * Created by Carlos on 2015/8/11.
  */
 public class LocationSpinner extends LinearLayout implements View.OnClickListener {
-    public final static int[] provincesItemsRes = {
-            R.array.beijinProvinceItem,
-            R.array.tianjinProvinceItem,
-            R.array.hebeiProvinceItem,
-            R.array.shanxi1ProvinceItem,
-            R.array.neimengguProvinceItem,
-            R.array.liaoningProvinceItem,
-            R.array.jilinProvinceItem,
-            R.array.heilongjiangProvinceItem,
-            R.array.shanghaiProvinceItem,
-            R.array.jiangsuProvinceItem,
-            R.array.zhejiangProvinceItem,
-            R.array.anhuiProvinceItem,
-            R.array.fujianProvinceItem,
-            R.array.jiangxiProvinceItem,
-            R.array.shandongProvinceItem,
-            R.array.henanProvinceItem,
-            R.array.hubeiProvinceItem,
-            R.array.hunanProvinceItem,
-            R.array.guangdongProvinceItem,
-            R.array.guangxiProvinceItem,
-            R.array.hainanProvinceItem,
-            R.array.chongqingProvinceItem,
-            R.array.sichuanProvinceItem,
-            R.array.guizhouProvinceItem,
-            R.array.yunnanProvinceItem,
-            R.array.xizangProvinceItem,
-            R.array.shanxi2ProvinceItem,
-            R.array.gansuProvinceItem,
-            R.array.qinghaiProvinceItem,
-            R.array.ningxiaProvinceItem,
-            R.array.xinjiangProvinceItem,
-            R.array.hongkongProvinceItem,
-            R.array.aomenProvinceItem,
-            R.array.taiwanProvinceItem
-    };
+    public final static int[] provincesItemsRes = {R.array.beijinProvinceItem, R.array.tianjinProvinceItem, R.array.hebeiProvinceItem, R.array.shanxi1ProvinceItem, R.array.neimengguProvinceItem, R.array.liaoningProvinceItem, R.array.jilinProvinceItem, R.array.heilongjiangProvinceItem, R.array.shanghaiProvinceItem, R.array.jiangsuProvinceItem, R.array.zhejiangProvinceItem, R.array.anhuiProvinceItem, R.array.fujianProvinceItem, R.array.jiangxiProvinceItem, R.array.shandongProvinceItem, R.array.henanProvinceItem, R.array.hubeiProvinceItem, R.array.hunanProvinceItem, R.array.guangdongProvinceItem, R.array.guangxiProvinceItem, R.array.hainanProvinceItem, R.array.chongqingProvinceItem, R.array.sichuanProvinceItem, R.array.guizhouProvinceItem, R.array.yunnanProvinceItem, R.array.xizangProvinceItem, R.array.shanxi2ProvinceItem, R.array.gansuProvinceItem, R.array.qinghaiProvinceItem, R.array.ningxiaProvinceItem, R.array.xinjiangProvinceItem, R.array.hongkongProvinceItem, R.array.aomenProvinceItem, R.array.taiwanProvinceItem};
     private TextView mItemTextView;
     private ImageView mRightImageView;
-    private @ColorInt int mTextColor = getResources().getColor(android.R.color.darker_gray);
+    private
+    @ColorInt int mTextColor = getResources().getColor(android.R.color.darker_gray);
     private Drawable mRightDrawable = getResources().getDrawable(R.drawable.ic_right);
     private float mTextSize = 16;
     private OnLocationSelectedListener mListener;
@@ -125,8 +91,7 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
         this.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View v) {
+    @Override public void onClick(View v) {
         MaterialDialog dialog = new MaterialDialog.Builder(getContext()).theme(Theme.LIGHT).title(R.string.view_location_spinner_title).positiveText(R.string.view_location_spinner_positive_btn).customView(R.layout.layout_dialog_area_pick, false).build();
         View dialogView = dialog.getCustomView();
         assert dialogView != null;
@@ -135,24 +100,20 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
 
         districtSpinner.setEnabled(false);
         provinceSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, provinces));
-        provinceSpinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        districtSpinner.setEnabled(true);
-                        String dis[] = getResources().getStringArray(provincesItemsRes[position]);
-                        districtSpinner.setAdapter(new ArrayAdapter<>(getContext(),
-                                android.R.layout.simple_spinner_dropdown_item, dis
-                        ));
-                        int select = Arrays.asList(dis).indexOf(mDistrict);
-                        districtSpinner.setSelection(select == -1 ? 0 : select);
-                    }
+        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                districtSpinner.setEnabled(true);
+                String dis[] = getResources().getStringArray(provincesItemsRes[position]);
+                districtSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, dis));
+                int select = Arrays.asList(dis).indexOf(mDistrict);
+                districtSpinner.setSelection(select == -1 ? 0 : select);
+            }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        districtSpinner.setEnabled(false);
-                    }
-                });
+            @Override public void onNothingSelected(AdapterView<?> parent) {
+                districtSpinner.setEnabled(false);
+            }
+        });
         int select = Arrays.asList(provinces).indexOf(mProvince);
         provinceSpinner.setSelection(select == -1 ? 0 : select);
         dialog.setOnDismissListener(dialog1 -> {
@@ -172,22 +133,20 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
         mItemTextView.setText(pro + " " + dis);
     }
 
-    @Nullable
-    public String getSelectedLocation() {
+    @Nullable public String getSelectedLocation() {
         if (TextUtils.isEmpty(mProvince) || TextUtils.isEmpty(mDistrict))
             return null;
         return mProvince + " " + mDistrict;
     }
 
     public void setSelectedLocation(@NonNull String location) {
-        List<String> list = Splitter.on(" ").trimResults().splitToList(location);
+        List<String> list = Util.split(' ', location);
         if (list.size() == 2) {
             setProvinceAndDistrict(list.get(0), list.get(1));
         }
     }
 
-    @Nullable
-    public Pair<String, String> getSelectedProvinceAndDistrict() {
+    @Nullable public Pair<String, String> getSelectedProvinceAndDistrict() {
         if (TextUtils.isEmpty(mProvince) || TextUtils.isEmpty(mDistrict))
             return null;
         return new Pair<>(mProvince, mDistrict);
