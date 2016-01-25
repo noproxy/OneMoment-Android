@@ -27,8 +27,10 @@ import retrofit.http.Query;
 
 /**
  * Created by Carlos on 2015/8/8.
+ *
+ * Rename from World.
  */
-public interface World {
+public interface WorldAPI {
     @GET("/world/banners") ListWithError<Banner> getBanners(@Query("limit") Integer bannerNumLimit);
 
     @FormUrlEncoded

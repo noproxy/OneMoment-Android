@@ -20,7 +20,7 @@ import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.TagVideo;
@@ -97,8 +97,8 @@ public class PlayActivity extends BaseActivity {
     }
 
     @Click(R.id.worldShare) @Background void shareWorld(View view) {
-        World world = OneMomentV3.createAdapter().create(World.class);
-        ShareInfo shareInfo = world.shareWorld(worldTag.name);
+        WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
+        ShareInfo shareInfo = worldAPI.shareWorld(worldTag.name);
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 

@@ -19,10 +19,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
-import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.modelv4.ApiModel;
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
+import co.yishun.onemoment.app.api.modelv4.TodayWorld;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import retrofit.converter.ConversionException;
@@ -75,13 +75,15 @@ public class OneMomentConverterV4 implements Converter {
                 model = mGson.fromJson(data, HybrdData.class);
             } else if (rawType == World.class) {
                 model = mGson.fromJson(data.get("world"), World.class);
-            }else if (rawType == WorldVideo.class){
-                model  = mGson.fromJson(data.get("world_video"), WorldVideo.class);
-            } else if (rawType == List.class || rawType == ListWithError.class) {
+            } else if (rawType == WorldVideo.class) {
+                model = mGson.fromJson(data.get("world_video"), WorldVideo.class);
+            } else if (rawType == List.class || rawType == ListWithErrorV4.class) {
                 Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 if (genericType == WorldVideo.class) {
                     models = new ListWithErrorV4<>(mGson.fromJson(data.get("videos"), type));
                 } else if (genericType == World.class) {
+                    models = new ListWithErrorV4<>(mGson.fromJson(data.get("worlds"), type));
+                } else if (genericType == TodayWorld.class) {
                     models = new ListWithErrorV4<>(mGson.fromJson(data.get("worlds"), type));
                 }
             }

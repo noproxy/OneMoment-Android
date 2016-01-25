@@ -22,7 +22,7 @@ import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.model.Seed;
@@ -44,7 +44,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
     @ViewById TextView voteCountTextView;
     @ViewById TextView usernameTextView;
 
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
+    private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
     private List<TagVideo> tagVideos = new ArrayList<>();
     private int voteIndex;
     private Seed seed;
@@ -53,9 +53,9 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
 
     @Background void getData() {
         List<TagVideo> videos = isPrivate ?
-                mWorld.getPrivateVideoOfTag(worldTag.name, offset,
+                mWorldAPI.getPrivateVideoOfTag(worldTag.name, offset,
                         10, AccountManager.getUserInfo(mContext)._id) :
-                mWorld.getVideoOfTag(worldTag.name, offset,
+                mWorldAPI.getVideoOfTag(worldTag.name, offset,
                         10, AccountManager.getUserInfo(mContext)._id, seed);
         if (videos.size() == 0) {
             if (offset == 0) {
@@ -121,9 +121,9 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
         tagVideos.get(voteIndex).likeNum += tagVideos.get(voteIndex).liked ? 1 : -1;
         refreshUserInfo(videoPlayView.getCurrentIndex());
         if (tagVideos.get(voteIndex).liked) {
-            mWorld.likeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
+            mWorldAPI.likeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
         } else {
-            mWorld.unlikeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
+            mWorldAPI.unlikeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
         }
     }
 
