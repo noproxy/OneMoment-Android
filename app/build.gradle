@@ -58,6 +58,7 @@ android {
 
     productFlavors {
         dev {
+            // http://developer.android.com/intl/es/tools/building/multidex.html#dev-build
             minSdkVersion 21
             targetSdkVersion 23
         }
