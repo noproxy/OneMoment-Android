@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -71,7 +72,7 @@ import static org.android.agoo.client.BaseRegistrar.getRegistrationId;
 
 @EActivity
 public class MainActivity extends BaseActivity implements AccountManager.OnUserInfoChangeListener {
-    public static final int PERMISSIONS_REQUEST_RECORD_VIDEO = 4;
+    public static final int PERMISSIONS_REQUEST_RECORD_MOMENT = 4;
     public static final String PERMISSION[] = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
     private static final String TAG = "MainActivity";
     private static WeakReference<FloatingActionMenu> floatingActionMenu;
@@ -147,7 +148,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         if (request.size() > 0) {
             pendingShootRequestByPermission = new Pair<>(view, forWorld);
             // we don't need show an explanation
-            ActivityCompat.requestPermissions(this, request.toArray(new String[request.size()]), PERMISSIONS_REQUEST_RECORD_VIDEO);
+            ActivityCompat.requestPermissions(this, request.toArray(new String[request.size()]), PERMISSIONS_REQUEST_RECORD_MOMENT);
         } else {
             shootWithPermission(view, forWorld);
         }
@@ -168,7 +169,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PERMISSIONS_REQUEST_RECORD_VIDEO: {
+            case PERMISSIONS_REQUEST_RECORD_MOMENT: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && isAllGranted(grantResults)) {
                     if (pendingShootRequestByPermission != null) {
@@ -178,14 +179,32 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {
-                    pendingShootRequestByPermission = null;
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    boolean deniedForever = false;
+
+                    for (int i = 0, permissionsLength = permissions.length; i < permissionsLength; i++) {
+                        if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
+                                deniedForever = true;
+                            }
+                        }
+                    }
+
+                    if (deniedForever) {
+                        // user denied flagging NEVER ASK AGAIN
+                        // show information to tell when need these permission
+                        new MaterialDialog.Builder(this).positiveText(R.string.activity_shoot_permission_error_ok).content(R.string.activity_shoot_permission_error_msg).title(R.string.activity_shoot_permission_error_title).cancelable(false).show();
+                    } else {
+                        // show msg that we cannot do that
+                        Snackbar.make(getSnackbarAnchorWithView(pendingShootRequestByPermission != null ? pendingShootRequestByPermission.first : null), R.string.activity_main_msg_shoot_forbid, Snackbar.LENGTH_LONG).show();
+                    }
+
+                    pendingShootRequestByPermission = null;
                 }
                 return;
             }
-
+            default:
+                break;
             // other 'case' lines to check for other
             // permissions this app might request
         }
