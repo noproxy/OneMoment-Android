@@ -103,7 +103,7 @@ dependencies {
 //    compile fileTree(includes: ['*.jar'],dir: 'libs'){
 //        transitive false
 //    }
-    compile 'net.sourceforge.streamsupport:streamsupport:1.2.2'
+    compile 'net.sourceforge.streamsupport:streamsupport:1.4.1'
     compile "com.android.support:support-annotations:$SUPPORT_VERSION"
     compile "com.android.support:support-v4:$SUPPORT_VERSION"
     compile "com.android.support:appcompat-v7:$SUPPORT_VERSION"
@@ -114,21 +114,21 @@ dependencies {
 //TODO bug https://code.google.com/p/android/issues/detail?id=180462
 
 
-    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.5'
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.2'
+    compile 'com.squareup.okhttp:okhttp:2.7.2'
 
-    androidTestCompile 'com.android.support.test:runner:0.3'
-    androidTestCompile 'com.android.support.test:rules:0.3'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
-    androidTestUiAutomatorCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
+    androidTestCompile 'com.android.support.test:runner:0.4.1'
+    androidTestCompile 'com.android.support.test:rules:0.4.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestUiAutomatorCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 
     compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
-    compile 'com.umeng.analytics:analytics:5.5.3'
-    compile 'com.qiniu:qiniu-android-sdk:7.0.9'
+    compile 'com.umeng.analytics:analytics:5.6.4'
+    compile 'com.qiniu:qiniu-android-sdk:7.1.0'
     compile 'io.realm:realm-android:0.87.1'
     compile 'com.umeng.analytics:analytics:5.6.1'
 
@@ -137,22 +137,22 @@ dependencies {
     compile 'com.tojc.ormlite.android:ormlite-content-provider-library:1.0.4@aar'
 
     // UI
-    compile 'com.soundcloud.android:android-crop:0.9.10@aar'
+    compile 'com.soundcloud.android:android-crop:1.0.1@aar'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.5@aar'
-    compile 'com.daimajia.easing:library:1.0.1@aar'
+    compile 'com.daimajia.easing:library:1.0.2@aar'
     compile 'com.daimajia.androidanimations:library:1.1.3@aar'
     compile 'com.daimajia.androidviewhover:library:1.0.4@aar'
     compile 'nl.codesoup.cubicbezier:cubicbezier:1.0.0'
-    compile 'de.hdodenhof:circleimageview:1.3.0'
-    compile 'com.afollestad:material-dialogs:0.7.8.1'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.github.afollestad.material-dialogs:core:0.8.5.3@aar'
     compile 'com.malinskiy:superrecyclerview:1.1.1'
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     compile 'me.toxz.circularprogressview:library:1.0.3'
-    compile 'com.github.clans:fab:1.6.1'
+    compile 'com.github.clans:fab:1.6.2'
 
     compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
-    compile 'com.googlecode.mp4parser:isoparser:1.1.7'
+    compile 'com.googlecode.mp4parser:isoparser:1.1.17'
 }
 
 repositories {
@@ -178,7 +178,7 @@ repositories {
 }
 
 dependencies {
-    compile('com.github.ozodrukh:CircularReveal:1.1.1@aar') {
+    compile('com.github.ozodrukh:CircularReveal:1.3.1@aar') {
         transitive = true;
     }
 }
