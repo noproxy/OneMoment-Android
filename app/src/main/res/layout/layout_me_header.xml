@@ -14,8 +14,8 @@
         android:layout_centerInParent="true"
         android:contentDescription="@string/content_des_profile_image"
         android:src="@drawable/pic_profile_default"
-        app:border_color="@color/colorProfileImageBorder"
-        app:border_width="2dp"
+        app:civ_border_color="@color/colorProfileImageBorder"
+        app:civ_border_width="2dp"
         />
 
     <TextView

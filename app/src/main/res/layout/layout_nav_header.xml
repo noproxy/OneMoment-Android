@@ -19,8 +19,8 @@
         android:minHeight="56dp"
         android:minWidth="56dp"
         android:src="@drawable/pic_profile_default"
-        app:border_color="@color/colorProfileImageBorder"
-        app:border_width="2dp"/>
+        app:civ_border_color="@color/colorProfileImageBorder"
+        app:civ_border_width="2dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
