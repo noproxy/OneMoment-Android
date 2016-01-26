@@ -225,6 +225,10 @@
         <activity android:name=".ui.HomeContainerActivity_">
 
         </activity>
+        <activity
+            android:name=".ui.WorldVideosActivity_"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.WorldVideosActivity"/>
 
         <service android:name=".account.remind.ReminderService">
         </service>

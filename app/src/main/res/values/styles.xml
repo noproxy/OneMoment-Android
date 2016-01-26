@@ -111,6 +111,11 @@
     <style name="AppTheme.GuideActivity">
     </style>
 
+    <style name="AppTheme.WorldVideosActivity">
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="AppTheme.Animation.Activity" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/activity_fade_in</item>
         <item name="android:activityOpenExitAnimation">@anim/window_fade_out</item>
