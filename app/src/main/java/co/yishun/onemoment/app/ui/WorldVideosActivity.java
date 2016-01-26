@@ -121,7 +121,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 statusBarHeight = getResources().getDimensionPixelSize(resourceId);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     params.topMargin -= statusBarHeight;
                 }
             }

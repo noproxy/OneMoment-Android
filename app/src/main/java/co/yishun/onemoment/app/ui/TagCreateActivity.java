@@ -64,13 +64,14 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
+import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.Misc;
-import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.VideoTag;
-import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.VideoUtil;
@@ -103,8 +104,11 @@ public class TagCreateActivity extends BaseActivity
     @ViewById Toolbar toolbar;
     @ViewById EditText queryText;
     @ViewById ImageView addView;
-    @Extra WorldTag worldTag;
+    @Extra boolean forToday = false;
     @Extra boolean forWorld = false;
+    @Extra String worldId;
+    @Extra String worldName;
+
     /**
      * Just for read extra. if need read to do something, be careful that {@link #nextBtnClicked(View)} will move file to new place.
      */
@@ -124,25 +128,17 @@ public class TagCreateActivity extends BaseActivity
     private float tagY;
     private Moment momentToSave;
 
-    private boolean lifeCheck;
-    private boolean diaryCheck;
-    private boolean worldCheck;
-    private String worldId;
-    private String worldName;
+    private boolean forDiary;
 
-    @NonNull @Override
-    public View getSnackbarAnchorWithView(@Nullable View view) {
-        return super.getSnackbarAnchorWithView(tagContainer);
-    }
-
-    @Override
-    public void setPageInfo() {
-        mPageName = "TagCreateActivity";
+    @AfterInject void checkExtra() {
+        if (forWorld && (TextUtils.isEmpty(worldName) || TextUtils.isEmpty(worldId))) {
+            forWorld = false;
+            LogUtil.e(TAG, "video for world but world name or world id is empty");
+        }
     }
 
     @AfterViews void setupViews() {
         setupToolbar();
-
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -150,15 +146,17 @@ public class TagCreateActivity extends BaseActivity
 
         adapter = new TagSearchAdapter(this, this);
         recyclerView.setAdapter(adapter);
-//        setPreviewImage();
 
         tagContainer.post(() -> {
-            if (forWorld && worldTag != null && !"".equals(worldTag.name)) {
+            if (forWorld) {
                 tagX = 50;
                 tagY = 50;
-                addTag(worldTag.name);
+                addTag(worldName);
             }
         });
+
+        videoTypeView.setWorldCheck(forWorld, worldName);
+        videoTypeView.setTodayCheck(forToday);
     }
 
     private void setPreviewImage() {
@@ -207,19 +205,19 @@ public class TagCreateActivity extends BaseActivity
         PersonalWorldActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
     }
 
-    @Click(R.id.lifeTextView) void lifeTextViewClick() {
-        lifeCheck = !lifeCheck;
-        videoTypeView.setLifeCheck(lifeCheck);
+    @Click(R.id.todayTextView) void todayTextViewClick() {
+        forToday = !forToday;
+        videoTypeView.setTodayCheck(forToday);
     }
 
     @Click(R.id.diaryTextView) void diaryTextViewClick() {
-        diaryCheck = !diaryCheck;
-        videoTypeView.setDiaryCheck(diaryCheck);
+        forDiary = !forDiary;
+        videoTypeView.setDiaryCheck(forDiary);
     }
 
     @Click(R.id.worldClearView) void clearWorld() {
-        if (worldCheck) {
-            worldCheck = false;
+        if (forWorld) {
+            forWorld = false;
             worldName = null;
             videoTypeView.setWorldCheck(false, null);
         }
@@ -248,8 +246,8 @@ public class TagCreateActivity extends BaseActivity
             defaultTag.add(formatLocation(locationClient.getLastKnownLocation()));
         }
         defaultTag.add(new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date()));
-        if (forWorld && worldTag != null && !"".equals(worldTag.name)) {
-            defaultTag.add(worldTag.name);
+        if (forWorld) {
+            defaultTag.add(worldName);
         }
         adapter.addFixedItems(defaultTag);
         locationClient.start();
@@ -280,7 +278,7 @@ public class TagCreateActivity extends BaseActivity
 
     @OnActivityResult(REQUEST_SELECT_WORLD) void onSelectWorld(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            worldCheck = true;
+            forWorld = true;
             worldId = data.getStringExtra(PersonalWorldActivity.KEY_ID);
             worldName = data.getStringExtra(PersonalWorldActivity.KEY_NAME);
             videoTypeView.setWorldCheck(true, worldName);
@@ -307,60 +305,61 @@ public class TagCreateActivity extends BaseActivity
     }
 
     @Click void nextBtnClicked(View view) {
-        if (forWorld) {
+        if (forDiary) {
+            saveToMoment();
+        }
+        if (forWorld || forToday) {
             if (tagContainer.getVideoTags().size() == 0) {
                 showSnackMsg(R.string.activity_tag_create_no_tag_error);
             } else {
                 upload();
             }
-        } else {
-            final Moment moment = momentToSave;
-            try {
-                String thumbImage = VideoUtil.createThumbImage(this, moment, videoPath);
-                moment.setThumbPath(thumbImage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Calendar.getInstance().getTime());
-            List<Moment> result;
-            Where<Moment, Integer> w = momentDao.queryBuilder().where();
-            try {
-                result = w.and(w.eq("time", time), w.eq("owner", AccountManager.getUserInfo(this)._id)).query();
-
-                i(TAG, "delete old today moment: " + Arrays.toString(result.toArray()));
-
-                if (1 == momentDao.create(moment)) {
-                    i(TAG, "new moment: " + moment);
-
-                    RealmHelper.removeTags(moment.getTime());
-                    for (co.yishun.library.tag.VideoTag tag : tagContainer.getVideoTags()) {
-                        RealmHelper.addTodayTag(tag.getText(), tag.getX() / 100f, tag.getY() / 100f);
-                    }
-
-                    momentDao.delete(result);
-                    SyncManager.syncNow(this);
-
-                    for (Moment mToDe : result) {
-                        FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.LARGE_THUMB).delete();
-                        FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.MICRO_THUMB).delete();
-                        mToDe.getFile().delete();
-                    }
-                    showSnackMsg(R.string.activity_tag_create_moment_success);
-                    delayFinish();
-                    return;
-                }
-            } catch (SQLException e) {
-                LogUtil.e(TAG, "failed to save moment", e);
-                e.printStackTrace();
-            }
-            showSnackMsg(R.string.activity_tag_create_moment_fail);
-            //TODO need any longer? Moment.unlock();
         }
     }
 
-    @UiThread(delay = 500) void delayFinish() {
-        this.finish();
+    void saveToMoment() {
+        final Moment moment = momentToSave;
+        try {
+            String thumbImage = VideoUtil.createThumbImage(this, moment, videoPath);
+            moment.setThumbPath(thumbImage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Calendar.getInstance().getTime());
+        List<Moment> result;
+        Where<Moment, Integer> w = momentDao.queryBuilder().where();
+        try {
+            result = w.and(w.eq("time", time), w.eq("owner", AccountManager.getUserInfo(this)._id)).query();
+
+            i(TAG, "delete old today moment: " + Arrays.toString(result.toArray()));
+
+            if (1 == momentDao.create(moment)) {
+                i(TAG, "new moment: " + moment);
+
+                RealmHelper.removeTags(moment.getTime());
+                for (co.yishun.library.tag.VideoTag tag : tagContainer.getVideoTags()) {
+                    RealmHelper.addTodayTag(tag.getText(), tag.getX() / 100f, tag.getY() / 100f);
+                }
+
+                momentDao.delete(result);
+                SyncManager.syncNow(this);
+
+                for (Moment mToDe : result) {
+                    FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.LARGE_THUMB).delete();
+                    FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.MICRO_THUMB).delete();
+                    mToDe.getFile().delete();
+                }
+                showSnackMsg(R.string.activity_tag_create_moment_success);
+                delayFinish();
+                return;
+            }
+        } catch (SQLException e) {
+            LogUtil.e(TAG, "failed to save moment", e);
+            e.printStackTrace();
+        }
+        showSnackMsg(R.string.activity_tag_create_moment_fail);
+        //TODO need any longer? Moment.unlock();
     }
 
     /**
@@ -412,13 +411,16 @@ public class TagCreateActivity extends BaseActivity
         String tags = gson.toJson(tagArray);
         d(TAG, tags);
 
-        WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
-        Video uploadVideo = worldAPI.addVideoToWorld(AccountManager.getUserInfo(this)._id,
-                isPrivate ? "private" : "public", videoFile.getName(), tags);
-        if (uploadVideo.code == Constants.CODE_SUCCESS) {
-            hideProgress();
-            this.finish();
+        APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
+        if (forWorld) {
+            WorldVideo worldVideo = apiv4.createWorldVideo(worldId, videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);
         }
+        if (forToday) {
+            WorldVideo todayVideo = apiv4.createTodayVideo(videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);
+        }
+
+        hideProgress();
+        this.finish();
     }
 
     @Override
@@ -509,6 +511,20 @@ public class TagCreateActivity extends BaseActivity
         } else {
             adapter.replaceItem(position, item);
         }
+    }
+
+    @UiThread(delay = 500) void delayFinish() {
+        this.finish();
+    }
+
+    @NonNull @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
+        return super.getSnackbarAnchorWithView(tagContainer);
+    }
+
+    @Override
+    public void setPageInfo() {
+        mPageName = "TagCreateActivity";
     }
 
     void showKeyboard() {

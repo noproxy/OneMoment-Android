@@ -93,7 +93,7 @@ public class PlayActivity extends BaseActivity {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).worldTag(worldTag).forWorld(true).start();
+                .transitionY(location[1] + view.getHeight() / 2).forWorld(true).worldId(worldTag.name).start();
     }
 
     @Click(R.id.worldShare) @Background void shareWorld(View view) {

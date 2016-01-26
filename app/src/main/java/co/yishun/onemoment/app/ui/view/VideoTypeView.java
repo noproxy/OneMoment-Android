@@ -24,12 +24,12 @@ import co.yishun.onemoment.app.R;
  */
 public class VideoTypeView extends RelativeLayout {
     private TextView mWorldTextView;
-    private TextView mLifeTextView;
+    private TextView mTodayTextView;
     private TextView mDiaryTextView;
     private View mWorldClearView;
 
     private TextBgDrawable mWorldDrawable;
-    private TextBgDrawable mLifeDrawable;
+    private TextBgDrawable mTodayDrawable;
     private TextBgDrawable mDiaryDrawable;
     private CloseDrawable mWorldClearDrawable;
 
@@ -65,7 +65,7 @@ public class VideoTypeView extends RelativeLayout {
         oneDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
 
         mWorldTextView = (TextView) findViewById(R.id.worldTextView);
-        mLifeTextView = (TextView) findViewById(R.id.lifeTextView);
+        mTodayTextView = (TextView) findViewById(R.id.todayTextView);
         mDiaryTextView = (TextView) findViewById(R.id.diaryTextView);
         mWorldClearView = findViewById(R.id.worldClearView);
         mWorldClearView.setVisibility(INVISIBLE);
@@ -76,17 +76,17 @@ public class VideoTypeView extends RelativeLayout {
         colorWhite = getResources().getColor(R.color.colorWhite);
 
         mWorldDrawable = new TextBgDrawable(colorGrayDark, colorGray, true);
-        mLifeDrawable = new TextBgDrawable(colorGrayDark, colorGray);
+        mTodayDrawable = new TextBgDrawable(colorGrayDark, colorGray);
         mDiaryDrawable = new TextBgDrawable(colorGrayDark, colorGray);
         mWorldClearDrawable = new CloseDrawable(colorWhite);
 
         mWorldTextView.setBackground(mWorldDrawable);
-        mLifeTextView.setBackground(mLifeDrawable);
+        mTodayTextView.setBackground(mTodayDrawable);
         mDiaryTextView.setBackground(mDiaryDrawable);
         mWorldClearView.setBackground(mWorldClearDrawable);
 
         setWorldCheck(false, null);
-        setLifeCheck(false);
+        setTodayCheck(false);
         setDiaryCheck(false);
     }
 
@@ -104,13 +104,13 @@ public class VideoTypeView extends RelativeLayout {
         }
     }
 
-    public void setLifeCheck(boolean check) {
+    public void setTodayCheck(boolean check) {
         if (check) {
-            mLifeTextView.setTextColor(colorOrange);
-            mLifeDrawable.setColor(colorOrange, colorOrange);
+            mTodayTextView.setTextColor(colorOrange);
+            mTodayDrawable.setColor(colorOrange, colorOrange);
         } else {
-            mLifeTextView.setTextColor(colorGrayDark);
-            mLifeDrawable.setColor(colorGrayDark, colorGray);
+            mTodayTextView.setTextColor(colorGrayDark);
+            mTodayDrawable.setColor(colorGrayDark, colorGray);
         }
     }
 
@@ -140,14 +140,14 @@ public class VideoTypeView extends RelativeLayout {
         }
 
         mWorldTextView.setHeight(textHeight);
-        mLifeTextView.setHeight(textHeight);
+        mTodayTextView.setHeight(textHeight);
         mDiaryTextView.setHeight(textHeight);
         ((LayoutParams) mWorldTextView.getLayoutParams()).bottomMargin = margin;
 
         ((LayoutParams) mWorldClearView.getLayoutParams()).width = textHeight;
 
         mWorldDrawable.setSize(mWorldTextView.getWidth(), mWorldTextView.getHeight());
-        mLifeDrawable.setSize(mLifeTextView.getWidth(), mLifeTextView.getHeight());
+        mTodayDrawable.setSize(mTodayTextView.getWidth(), mTodayTextView.getHeight());
         mDiaryDrawable.setSize(mDiaryTextView.getWidth(), mDiaryTextView.getHeight());
         mWorldClearDrawable.setSize(mWorldClearView.getWidth(), mWorldClearView.getHeight());
     }

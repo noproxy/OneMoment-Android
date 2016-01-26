@@ -58,10 +58,10 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     int transitionY;
 
     // forwarding to MomentCreateActivity
-    @Extra
-    boolean forWorld = false;
-    @Extra
-    WorldTag worldTag;
+    @Extra boolean forWorld = false;
+    @Extra boolean forToday = false;
+    @Extra String worldId;
+    @Extra String worldName;
 
     private ViewGroup sceneRoot;
     private

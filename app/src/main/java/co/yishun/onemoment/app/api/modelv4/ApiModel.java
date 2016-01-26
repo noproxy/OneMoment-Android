@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.api.modelv4;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 /**
@@ -8,4 +10,8 @@ import java.io.Serializable;
 public class ApiModel implements Serializable {
     public String error;
     public String msg;
+
+    public boolean isSuccess() {
+        return TextUtils.equals(error, "Ok");
+    }
 }
