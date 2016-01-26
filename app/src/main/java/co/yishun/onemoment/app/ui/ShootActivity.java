@@ -57,7 +57,9 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     // forwarding to MomentCreateActivity
     @Extra boolean forWorld = false;
-    @Extra WorldTag worldTag;
+    @Extra boolean forToday = false;
+    @Extra String worldId;
+    @Extra String worldName;
 
     private ViewGroup sceneRoot;
     @Nullable private CameraGLSurfaceView mCameraGLSurfaceView;

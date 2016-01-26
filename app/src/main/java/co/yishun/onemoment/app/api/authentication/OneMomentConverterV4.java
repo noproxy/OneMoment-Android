@@ -75,7 +75,7 @@ public class OneMomentConverterV4 implements Converter {
             } else if (rawType == World.class) {
                 model = mGson.fromJson(data.get("world"), World.class);
             } else if (rawType == WorldVideo.class) {
-                model = mGson.fromJson(data.get("world_video"), WorldVideo.class);
+                model = mGson.fromJson(data.get("video"), WorldVideo.class);
             } else if (rawType == List.class || rawType == ListWithErrorV4.class) {
                 Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 if (genericType == WorldVideo.class) {

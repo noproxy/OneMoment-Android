@@ -23,7 +23,8 @@ public interface APIV4 {
     @POST("/world/video") @FormUrlEncoded WorldVideo createWorldVideo(
             @Field("world_id") String worldId,
             @Field("filename") String filename,
-            @Field("account_id") String userId, @Field("tags") String tags);
+            @Field("account_id") String userId,
+            @Field("tags") String tags);
 
     @GET("/world/videos") ListWithErrorV4<WorldVideo> getWorldVideos(
             @Query("world_id") String worldId,
@@ -33,7 +34,8 @@ public interface APIV4 {
 
     @POST("/world/today") @FormUrlEncoded WorldVideo createTodayVideo(
             @Field("filename") String filename,
-            @Field("account_id") String userId);
+            @Field("account_id") String userId,
+            @Field("tags") String tags);
 
     @GET("/world/todays") ListWithErrorV4<TodayWorld> getTodayWorlds(
             @Query("ranking") int ranking,

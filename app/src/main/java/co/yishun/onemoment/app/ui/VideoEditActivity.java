@@ -28,7 +28,6 @@ import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.view.VideoTypeView;
-import retrofit.http.POST;
 
 /**
  * Created by Carlos on 2015/10/29.
@@ -91,9 +90,9 @@ public class VideoEditActivity extends BaseActivity {
         PersonalWorldActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
     }
 
-    @Click(R.id.lifeTextView) void lifeTextViewClick() {
+    @Click(R.id.todayTextView) void lifeTextViewClick() {
         lifeCheck = !lifeCheck;
-        videoTypeView.setLifeCheck(lifeCheck);
+        videoTypeView.setTodayCheck(lifeCheck);
     }
 
     @Click(R.id.diaryTextView) void diaryTextViewClick() {
@@ -110,7 +109,7 @@ public class VideoEditActivity extends BaseActivity {
     }
 
     @Click void nextBtnClicked(View view) {
-        TagCreateActivity_.intent(this).worldTag(worldTag).forWorld(forWorld).isPrivate(isPrivate).videoPath(videoPath).start();
+//        TagCreateActivity_.intent(this).worldTag(worldTag).forWorld(forWorld).isPrivate(isPrivate).videoPath(videoPath).start();
         this.finish();
     }
 

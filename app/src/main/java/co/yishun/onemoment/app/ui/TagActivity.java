@@ -239,7 +239,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
+//        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
     }
 
     @Background void shareWorld(View view) {
