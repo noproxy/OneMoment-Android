@@ -139,6 +139,7 @@ public class TagCreateActivity extends BaseActivity
 
     @AfterViews void setupViews() {
         setupToolbar();
+        setPreviewImage();
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -164,9 +165,11 @@ public class TagCreateActivity extends BaseActivity
         momentToSave = new Moment.MomentBuilder(this).fromFile(new File(videoPath)).build();
         videoPath = momentToSave.getPath();
         try {
-            String largeThumbImage = VideoUtil.createLargeThumbImage(this, momentToSave, videoPath);
-            momentToSave.setLargeThumbPath(largeThumbImage);
-            Picasso.with(this).load(new File(largeThumbImage)).into(momentPreviewImageView);
+            File largeThumb = FileUtil.getThumbnailStoreFile(this, momentToSave, FileUtil.Type.LARGE_THUMB);
+            File smallThumb = FileUtil.getThumbnailStoreFile(this, momentToSave, FileUtil.Type.MICRO_THUMB);
+            VideoUtil.createThumbs(videoPath, largeThumb, smallThumb);
+            momentToSave.setLargeThumbPath(largeThumb.getPath());
+            Picasso.with(this).load(largeThumb).into(momentPreviewImageView);
         } catch (IOException e) {
             e(TAG, "create thumb failed");
             e.printStackTrace();
@@ -319,12 +322,6 @@ public class TagCreateActivity extends BaseActivity
 
     void saveToMoment() {
         final Moment moment = momentToSave;
-        try {
-            String thumbImage = VideoUtil.createThumbImage(this, moment, videoPath);
-            moment.setThumbPath(thumbImage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Calendar.getInstance().getTime());
         List<Moment> result;
