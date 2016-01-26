@@ -145,7 +145,7 @@ dependencies {
     compile 'com.daimajia.androidviewhover:library:1.0.4@aar'
     compile 'nl.codesoup.cubicbezier:cubicbezier:1.0.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.github.afollestad.material-dialogs:core:0.8.5.3@aar'
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') { transitive = true }
     compile 'com.malinskiy:superrecyclerview:1.1.1'
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     compile 'me.toxz.circularprogressview:library:1.0.3'
