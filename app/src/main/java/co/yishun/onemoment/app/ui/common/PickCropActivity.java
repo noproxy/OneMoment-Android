@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.ui.common;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import com.soundcloud.android.crop.Crop;
 
@@ -29,7 +28,7 @@ public abstract class PickCropActivity extends BaseActivity {
             try {
                 Uri selectedImage = data.getData();
                 mCroppedPictureUri = Uri.fromFile(new File(getCacheDir(), "croppedProfile"));
-                new Crop(selectedImage).output(mCroppedPictureUri).asSquare().start(this);
+                Crop.of(selectedImage, mCroppedPictureUri).asSquare().start(this);
             } catch (Exception e) {
                 onPictureSelectedFailed(e);
             }
@@ -38,8 +37,7 @@ public abstract class PickCropActivity extends BaseActivity {
         }
     }
 
-    @OnActivityResult(Crop.REQUEST_CROP)
-    public void onPictureCropped(int resultCode, Intent data) {
+    @OnActivityResult(Crop.REQUEST_CROP) public void onPictureCropped(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             onPictureCropped(mCroppedPictureUri);
         } else {
