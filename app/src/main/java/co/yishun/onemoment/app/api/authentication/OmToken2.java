@@ -1,19 +1,13 @@
 package co.yishun.onemoment.app.api.authentication;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
-
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
-import com.google.common.io.BaseEncoding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.TimeZone;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.mime.TypedOutput;
 
@@ -44,27 +38,26 @@ public class OmToken2 implements Token {
             out.close();
         }
         mData = data == null ? "" : new String(data);
-//        mOrigin = "AC52T575DCV6UPX7K51HZ6J5S1258NZIZ::http://api.yishun.co/v3/account/account/54c7530f7d40b52e24107956::1438940611:Asia/Shanghai";
-        mOrigin = Joiner.on(":").useForNull("").join(mRaw, mKey, mUrl, mData, expiredTime, TimeZone.getDefault().getID());
-        HashCode hashCode = Hashing.sha256().hashString(mOrigin, Charsets.UTF_8);
+        //        mOrigin = "AC52T575DCV6UPX7K51HZ6J5S1258NZIZ::http://api.yishun.co/v3/account/account/54c7530f7d40b52e24107956::1438940611:Asia/Shanghai";
+        mOrigin = Util.joinString("", ":", mRaw, mKey, mUrl, mData, String.valueOf(expiredTime), TimeZone.getDefault().getID());
 
-        mValue = BaseEncoding.base64().encode(hashCode.asBytes());
+        byte[] hashcode = Util.sha256(mOrigin);
+
+        mValue = Util.base64(hashcode);
+
         LogUtil.i(TAG, mValue);
     }
 
 
-    @Override
-    public String value() {
+    @Override public String value() {
         return mValue;
     }
 
-    @Override
-    public String origin() {
+    @Override public String origin() {
         return mOrigin;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "OmToken2{" +
                 "mToken1=" + mToken1 +
                 ", mValue='" + mValue + '\'' +

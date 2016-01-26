@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.google.common.base.Strings;
-
 import co.yishun.onemoment.app.R;
 
 /**
@@ -40,10 +38,10 @@ public class UIAutomatorTestActivity extends AppCompatActivity {
 
         // Get the message from the Intent.
         Intent intent = getIntent();
-        String message = Strings.nullToEmpty(intent.getStringExtra(KEY_EXTRA_MESSAGE));
+        String s = intent.getStringExtra(KEY_EXTRA_MESSAGE);
 
 
         // Show message.
-        ((TextView) findViewById(R.id.showTextView)).setText(message);
+        ((TextView) findViewById(R.id.showTextView)).setText(s);
     }
 }

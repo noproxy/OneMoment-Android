@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.api.authentication;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.google.common.base.Charsets;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -12,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -152,7 +152,7 @@ public class OneMomentClient extends OkClient {
     }
 
     private static class FakeTypeInput implements TypedInput {
-        private byte[] mFakeBody = OneMomentV3.FAKE_RESPONSE.getBytes(Charsets.UTF_8);
+        private byte[] mFakeBody = OneMomentV3.FAKE_RESPONSE.getBytes(Charset.forName("UTF-8"));
 
         @Override public String mimeType() {
             return "text/plain charset=UTF-8";
