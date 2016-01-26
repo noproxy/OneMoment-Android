@@ -1,9 +1,9 @@
 package co.yishun.onemoment.app.api.authentication;
 
 
-import android.util.Base64;
-
 import java.nio.charset.Charset;
+
+import co.yishun.onemoment.app.Util;
 
 /**
  * The first token in Double Token Verification.
@@ -22,7 +22,8 @@ class OmToken1 implements Token {
         if (mOrigin.length() != 33) {
             throw new AssertionError("String length incorrect!");
         }
-        mValue = Base64.encodeToString(mOrigin.getBytes(Charset.forName("UTF-8")), Base64.DEFAULT);
+
+        mValue = Util.base64(mOrigin.getBytes(Charset.forName("UTF-8")));
     }
 
 
