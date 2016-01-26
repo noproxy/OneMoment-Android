@@ -18,7 +18,7 @@ public class OneMomentV3 {
         mNonCacheRetrofit = new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(OneMomentClient.newNoCacheClient())
+                .setClient(OneMomentClientV3.newNoCacheClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.NETWORK_ONLY))
                 .build();
@@ -26,7 +26,7 @@ public class OneMomentV3 {
         mCacheOnlyRetrofit = new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(OneMomentClient.getCacheOnlyClient())
+                .setClient(OneMomentClientV3.getCacheOnlyClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.CACHE_ONLY))
                 .build();
@@ -36,7 +36,7 @@ public class OneMomentV3 {
         return new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(OneMomentClient.getCacheClient())
+                .setClient(OneMomentClientV3.getCacheClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.NORMAL))
                 .build();
