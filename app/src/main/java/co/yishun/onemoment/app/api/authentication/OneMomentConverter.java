@@ -166,7 +166,7 @@ public class OneMomentConverter implements Converter {
      * Just convert Object to json but not encrypted, do it later in Client.
      */
     @Override public TypedOutput toBody(Object object) {
-        // will be encoded in OneMomentClient, so don't encode here
+        // will be encoded in OneMomentClientV3, so don't encode here
         String json = mGson.toJson(object);
         LogUtil.i(TAG, object + ", " + json);
         return new JsonTypedOutput(json.getBytes(Charset.forName("UTF-8")), "UTF-8");
