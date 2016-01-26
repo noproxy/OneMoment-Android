@@ -5,6 +5,7 @@ import android.content.Context;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
+import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.Util;
@@ -20,6 +21,7 @@ import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
 /**
  * Created by Jinge on 2016/1/26.
  */
+@EBean
 public class WorldVideosController extends RecyclerController<Integer, SuperRecyclerView, WorldVideo, WorldVideoAdapter.SimpleViewHolder>
         implements OnMoreListener {
     public static final int COUNT_EVERY_PAGE = 10;

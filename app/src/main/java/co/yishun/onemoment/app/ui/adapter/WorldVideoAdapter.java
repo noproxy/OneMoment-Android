@@ -15,7 +15,6 @@ import java.util.List;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.loader.VideoTask;
-
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 
