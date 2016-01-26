@@ -61,7 +61,7 @@ public class Util {
     }
 
     public static String base64(byte[] bytes) {
-        return Base64.encodeToString(bytes, Base64.DEFAULT);
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 
     //TODO need test
