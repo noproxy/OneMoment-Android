@@ -39,7 +39,7 @@ public interface APIV4 {
             @Query("ranking") int ranking,
             @Query("limit") int limit);
 
-    @GET("world/today") WorldVideo getTodayVideo(
+    @GET("world/today") ListWithErrorV4<WorldVideo> getTodayVideos(
             @Query("name") String name,
             @Query("offset") int offset,
             @Query("limit") int limit);

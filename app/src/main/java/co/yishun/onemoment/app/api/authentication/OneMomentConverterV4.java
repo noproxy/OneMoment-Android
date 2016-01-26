@@ -2,8 +2,6 @@ package co.yishun.onemoment.app.api.authentication;
 
 import android.text.TextUtils;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,13 +10,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.api.modelv4.ApiModel;
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
@@ -46,7 +45,7 @@ public class OneMomentConverterV4 implements Converter {
     @Override public Object fromBody(TypedInput body, Type type) throws ConversionException {
         String json = null;
         try {
-            json = CharStreams.toString(new InputStreamReader(body.in(), Charsets.UTF_8));
+            json = Util.toString(body.in(), "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,7 +105,7 @@ public class OneMomentConverterV4 implements Converter {
     @Override public TypedOutput toBody(Object object) {
         String json = mGson.toJson(object);
         LogUtil.i(TAG, object + ", " + json);
-        return new JsonTypedOutput(json.getBytes(Charsets.UTF_8), Charsets.UTF_8.name());
+        return new JsonTypedOutput(json.getBytes(Charset.forName("UTF-8")), "UTF-8");
     }
 
     /**
