@@ -118,6 +118,13 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             params.leftMargin = imageRect.left;
             params.width = imageRect.right - imageRect.left;
             params.height = imageRect.bottom - imageRect.top;
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    params.topMargin -= statusBarHeight;
+                }
+            }
             transImage.setLayoutParams(params);
 
             transImage.setCorner(imageCorner);
