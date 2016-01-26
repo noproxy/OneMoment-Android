@@ -25,6 +25,7 @@ import co.yishun.onemoment.app.ui.ShareActivity;
 import co.yishun.onemoment.app.ui.ShareActivity_;
 import co.yishun.onemoment.app.ui.ShootActivity_;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
+import co.yishun.onemoment.app.ui.WorldVideosActivity_;
 
 /**
  * Created by Jinge on 2016/1/23.
@@ -115,8 +116,8 @@ public abstract class HybrdUrlHandler {
         } else if (TextUtils.equals(des, "edit")) {
             UserInfoActivity_.intent(context).start();
         } else if (TextUtils.equals(des, "world_square")) {
-            //TODO jump to world detail activity
-//            TagActivity_.intent(activity).start();
+            WorldVideosActivity_.intent(context).worldName(args.get(1))
+                    .videoNum(Integer.parseInt(args.get(2))).worldId(args.get(3)).start();
         } else if (TextUtils.equals(des, "badge")) {
             BadgeActivity_.intent(context).badgeDetail(args.get(1)).start();
         } else if (TextUtils.equals(des, "world")
