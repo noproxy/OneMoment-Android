@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+               xmlns:app="http://schemas.android.com/apk/res-auto"
+               android:interpolator="@interpolator/tag_decelerate"
+               app:duration="500">
+    <changeBounds>
+        <targets>
+            <target app:targetId="@id/transImage"/>
+        </targets>
+    </changeBounds>
+
+    <changeImageTransform>
+        <targets>
+            <target app:targetId="@id/transImage"/>
+        </targets>
+    </changeImageTransform>
+
+    <transition class="co.yishun.onemoment.app.ui.view.CornerTransition">
+        <targets>
+            <target app:targetId="@id/transImage"/>
+        </targets>
+    </transition>
+</transitionSet>

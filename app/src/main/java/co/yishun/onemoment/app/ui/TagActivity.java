@@ -63,6 +63,9 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @Extra int top;
     @Extra int from;
     @Extra WorldTag tag;
+    @Extra String worldName;
+    @Extra int videoNum;
+    @Extra String worldId;
     @Extra boolean isPrivate = false;
     @ViewById CoordinatorLayout coordinatorLayout;
 

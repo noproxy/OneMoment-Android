@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<co.yishun.onemoment.app.ui.view.RadioCornerImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/transImage"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:rc_heightRadio="3"
+    app:rc_widthRadio="5"
+    >
+
+</co.yishun.onemoment.app.ui.view.RadioCornerImageView>
