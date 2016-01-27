@@ -41,7 +41,7 @@ public class DiscoveryFragment extends ToolbarFragment implements AbstractRecycl
         Rect rect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
         LogUtil.d(TAG, rect.toString());
         WorldVideosActivity_.intent(this).thumbnail(item.thumbnail).worldName(item.name)
-                .videoNum(item.videoNum).worldId(item._id).forWorld(false)
+                .videosNum(item.videosNum).worldId(item._id).forWorld(false)
                 .imageRect(rect).imageCorner(12).flags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 .start();
     }

@@ -11,7 +11,7 @@ public class World extends ApiModel {
     public String thumbnail;
     public boolean available;
     public String name;
-    public int videoNum;
+    public int videosNum;
 
     public int ranking;
 

@@ -18,6 +18,7 @@ public class WorldVideo extends ApiModel implements VideoProvider {
     public List<VideoTag> tags;
     public String downloadUrl;
     public String filename;
+    public String avatarUrl;
 
     @Override public String getFilename() {
         return filename;
