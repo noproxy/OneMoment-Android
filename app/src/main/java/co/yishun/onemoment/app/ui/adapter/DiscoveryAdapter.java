@@ -36,7 +36,7 @@ public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<World, Discove
             holder.itemImageView.setImageResource(R.drawable.pic_slider_loading);
         else
             Picasso.with(mContext).load(item.thumbnail).placeholder(R.drawable.pic_slider_loading).into(holder.itemImageView);
-        holder.numTextView.setText(String.format(PeopleSuffix, item.videoNum));
+        holder.numTextView.setText(String.format(PeopleSuffix, item.videosNum));
         holder.tagTextView.setText(item.name);
         holder.tagTextView.setCompoundDrawablesWithIntrinsicBounds(
                 mContext.getResources().getDrawable(R.drawable.ic_world_tag_time), null, null, null);

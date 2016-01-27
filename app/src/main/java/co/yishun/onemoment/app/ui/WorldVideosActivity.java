@@ -58,7 +58,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     private static final String TAG = "WorldVideosActivity";
     @Extra String thumbnail;
     @Extra String worldName;
-    @Extra int videoNum;
+    @Extra int videosNum;
     @Extra String worldId;
     @Extra boolean forWorld;
     /**
@@ -159,13 +159,13 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
-        toolbar.setTitle(worldName);
         toolbar.setTitleTextColor(expendedTitleColor);
         toolbar.setSubtitleTextColor(expendedSubTitleColor);
-        String num = String.valueOf(videoNum);
+        String num = String.valueOf(videosNum);
         SpannableString ss = new SpannableString(num + "人加入");
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
+        ab.setTitle(worldName);
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
