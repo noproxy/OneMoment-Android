@@ -3,7 +3,6 @@ package co.yishun.library;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
-import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
@@ -18,8 +17,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import co.yishun.library.tag.VideoTag;
 
@@ -33,9 +30,10 @@ public class TagContainer extends FrameLayout {
     protected ViewDragHelper.Callback mCallback;
     protected int mSize;
     protected List<VideoTag> videoTags;
+    protected List<View> tagViews;
+    protected List<Rect> tagRects;
     protected boolean mEditable;
     protected boolean mSquare;
-    Map<View, Rect> viewRectMap;
 
     public TagContainer(Context context) {
         super(context);
@@ -66,7 +64,8 @@ public class TagContainer extends FrameLayout {
         mDragHelper = ViewDragHelper.create(this, mCallback);
 
         videoTags = new ArrayList<>(3);
-        viewRectMap = new ArrayMap<>(3);
+        tagViews = new ArrayList<>(3);
+        tagRects = new ArrayList<>(3);
     }
 
     protected View createTagView(VideoTag tag) {
@@ -79,7 +78,12 @@ public class TagContainer extends FrameLayout {
 
         if (mEditable) {
             tagView.findViewById(R.id.tagClearImage).setOnClickListener(v -> {
-                viewRectMap.remove(tagView);
+                int index = tagViews.indexOf(tagView);
+                if (index >= 0) {
+                    tagViews.remove(index);
+                    videoTags.remove(index);
+                    tagRects.remove(index);
+                }
                 removeView(tagView);
             });
         } else {
@@ -95,86 +99,107 @@ public class TagContainer extends FrameLayout {
     }
 
     public void addTag(VideoTag tag) {
-        videoTags.add(tag);
-        showTags();
-    }
+        View tagView = createTagView(tag);
 
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int left = (int) (tag.getX() * getSize() / 100);
+        int top = (int) (tag.getY() * getSize() / 100);
+        params.leftMargin = left;
+        params.topMargin = top;
+
+        tagView.measure(0, 0);       //must call measure!
+        Log.d(TAG, tagView.getMeasuredHeight() + " " + tagView.getMeasuredWidth());
+
+        if (params.leftMargin + tagView.getMeasuredWidth() > mSize)
+            params.leftMargin = mSize - tagView.getMeasuredWidth();
+        else if (params.leftMargin < 0)
+            params.leftMargin = 0;
+
+        if (params.topMargin < 0)
+            params.topMargin = 0;
+        else if (params.topMargin > mSize - tagView.getMeasuredHeight())
+            params.topMargin = mSize - tagView.getMeasuredHeight();
+
+        Rect rect = new Rect(params.leftMargin, params.topMargin,
+                params.leftMargin + tagView.getMeasuredWidth(), params.topMargin + tagView.getMeasuredHeight());
+        videoTags.add(tag);
+        tagViews.add(tagView);
+        tagRects.add(rect);
+        checkVertical(tagRects.size() - 1);
+        params.leftMargin = rect.left;
+        params.topMargin = rect.top;
+
+        tagView.setLayoutParams(params);
+        addView(tagView);
+    }
 
     public int getSize() {
         return mSize;
     }
 
-    public void showTags() {
-        clearTagsMap();
-
-        if (videoTags == null) return;
-
-        for (int i = 0; i < videoTags.size(); i++) {
-            VideoTag tag = videoTags.get(i);
-
-            View tagView = createTagView(tag);
-
-            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int left = (int) (tag.getX() * getSize() / 100);
-            int top = (int) (tag.getY() * getSize() / 100);
-            params.leftMargin = left;
-            params.topMargin = top;
-
-            tagView.measure(0, 0);       //must call measure!
-            Log.d(TAG, tagView.getMeasuredHeight() + " " + tagView.getMeasuredWidth());
-
-            if (params.leftMargin + tagView.getMeasuredWidth() > mSize)
-                params.leftMargin = mSize - tagView.getMeasuredWidth();
-            else if (params.leftMargin < 0)
-                params.leftMargin = 0;
-
-            if (params.topMargin < 0)
-                params.topMargin = 0;
-            else if (params.topMargin > mSize - tagView.getMeasuredHeight())
-                params.topMargin = mSize - tagView.getMeasuredHeight();
-
-            tagView.setLayoutParams(params);
-
-            addView(tagView);
-            viewRectMap.put(tagView, new Rect(params.leftMargin, params.topMargin,
-                    params.leftMargin + tagView.getMeasuredWidth(), params.topMargin + tagView.getMeasuredHeight()));
-        }
-    }
-
-    private void clearTagsMap() {
-        Log.d(TAG, "clear tags : " + videoTags.size());
-        Set<View> viewSet = viewRectMap.keySet();
-
-        for (View v : viewSet) {
+    private void clearTags() {
+        for (View v : tagViews) {
             removeView(v);
-        }viewRectMap.clear();
+        }
+        videoTags.clear();
+        tagViews.clear();
+        tagRects.clear();
     }
 
     public List<VideoTag> getVideoTags() {
+        for (int i = 0; i < videoTags.size(); i++) {
+            videoTags.get(i).setX(tagRects.get(i).left * 100f / mSize);
+            videoTags.get(i).setY(tagRects.get(i).top * 100f / mSize);
+        }
         return videoTags;
     }
 
     public void setVideoTags(List<VideoTag> videoTags) {
-        this.videoTags = videoTags;
-        showTags();
+        clearTags();
+        for (VideoTag tag : videoTags) {
+            addTag(tag);
+        }
     }
 
     @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        for (View v : viewRectMap.keySet()) {
+        for (int i = 0; i < tagViews.size(); i++) {
+            View v = tagViews.get(i);
             LayoutParams params = (LayoutParams) v.getLayoutParams();
-            Rect rect = viewRectMap.get(v);
+            Rect rect = tagRects.get(i);
             params.topMargin = rect.top;
             params.leftMargin = rect.left;
         }
     }
 
-    private int checkHorizontal(View view, int left, int dx) {
-        return 0;
+    private void checkHorizontal(int index) {
+        Rect origin = tagRects.get(index);
+        for (int i = 0; i < tagViews.size(); i++) {
+            Rect other = tagRects.get(i);
+            if (index != i && Rect.intersects(origin, other)) {
+                if (origin.right > other.right && origin.left < other.right) {
+                    origin.offsetTo(other.right, origin.top);
+                }
+                if (origin.left < other.left && origin.right > other.left) {
+                    origin.offsetTo(other.left - origin.width(), origin.top);
+                }
+            }
+        }
     }
 
-    private int checkVertival(View view) {
-        return 0;
+    private void checkVertical(int index) {
+        Rect origin = tagRects.get(index);
+        for (int i = 0; i < tagViews.size(); i++) {
+            Rect other = tagRects.get(i);
+            if (index != i && Rect.intersects(origin, other)) {
+                if (origin.bottom >= other.bottom && origin.top < other.bottom) {
+                    origin.offsetTo(origin.left, other.bottom);
+                }
+                if (origin.top > other.top && origin.bottom > other.top) {
+                    origin.offsetTo(origin.left, other.top - origin.height());
+                }
+            }
+        }
     }
 
     @Override
@@ -218,18 +243,24 @@ public class TagContainer extends FrameLayout {
             int leftBound = getPaddingLeft();
             int rightBound = getWidth() - child.getWidth();
             int newLeft = Math.min(Math.max(left, leftBound), rightBound);
-            Rect rect = viewRectMap.get(child);
+
+            int index = tagViews.indexOf(child);
+            Rect rect = tagRects.get(index);
             rect.offsetTo(newLeft, rect.top);
-            return newLeft;
+            checkHorizontal(index);
+            return rect.left;
         }
 
         @Override public int clampViewPositionVertical(View child, int top, int dy) {
             final int topBound = getPaddingTop();
             final int bottomBound = getHeight() - child.getHeight();
             final int newTop = Math.min(Math.max(top, topBound), bottomBound);
-            Rect rect = viewRectMap.get(child);
+
+            int index = tagViews.indexOf(child);
+            Rect rect = tagRects.get(index);
             rect.offsetTo(rect.left, newTop);
-            return newTop;
+            checkVertical(index);
+            return rect.top;
         }
     }
 
