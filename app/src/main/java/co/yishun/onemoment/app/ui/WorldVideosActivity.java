@@ -41,10 +41,11 @@ import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ShareInfo;
-import co.yishun.onemoment.app.api.model.TagVideo;
+import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
-import co.yishun.onemoment.app.ui.adapter.TagAdapter;
+import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.controller.WorldVideosController_;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 
@@ -52,7 +53,7 @@ import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
  * Created by Jinge on 2016/1/25.
  */
 @EActivity(R.layout.activity_world_videos)
-public class WorldVideosActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<TagVideo> {
+public class WorldVideosActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldVideo> {
     private static final String TAG = "WorldVideosActivity";
     @Extra String thumbnail;
     @Extra String worldName;
@@ -80,7 +81,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     private int collapsedSubTitleColor;
     private int expendedTitleColor;
     private int expendedSubTitleColor;
-    private TagAdapter tagAdapter;
+    private WorldVideoAdapter adapter;
     private boolean needTransition;
 
 
@@ -133,7 +134,6 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             setupTransition();
         }
 
-        Picasso.with(this).load(thumbnail).into(videoImageView);
         expendedTitleColor = getResources().getColor(R.color.colorPrimary);
         expendedSubTitleColor = getResources().getColor(R.color.colorPrimary);
         collapsedTitleColor = getResources().getColor(R.color.textColorPrimary);
@@ -149,9 +149,8 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         recyclerView.setLayoutManager(manager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
 
-        tagAdapter = new TagAdapter(this, this);
-        recyclerView.setAdapter(tagAdapter);
-//        TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag, isPrivate);
+        adapter = new WorldVideoAdapter(this, this);
+        recyclerView.setAdapter(adapter);
     }
 
     void setupToolbar() {
@@ -170,9 +169,9 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 
     @Override protected void onResume() {
         super.onResume();
-//        if (transitionOver) {
-//            TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag, isPrivate);
-//        }
+        WorldVideosController_.getInstance_(this).setup(adapter, recyclerView, worldId, worldName,
+                thumbnail, false, videoImageView);
+
     }
 
     @Override protected void onPause() {
@@ -206,7 +205,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 //        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
     }
 
-    @Override public void onClick(View view, TagVideo item) {
+    @Override public void onClick(View view, WorldVideo item) {
 //        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
     }
 

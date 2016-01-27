@@ -1,53 +1,99 @@
 package co.yishun.onemoment.app.ui.controller;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
+import android.widget.ImageView;
 
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
 
-import co.yishun.onemoment.app.Util;
+import java.lang.ref.WeakReference;
+
+import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.ListWithError;
-import co.yishun.onemoment.app.api.model.Seed;
-import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
+import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
+import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
 
 /**
- * Created by Jinge on 2016/1/26.
+ * Created by Jinge on 2016/1/27.
  */
 @EBean
 public class WorldVideosController extends RecyclerController<Integer, SuperRecyclerView, WorldVideo, WorldVideoAdapter.SimpleViewHolder>
         implements OnMoreListener {
-    public static final int COUNT_EVERY_PAGE = 10;
-    private static final String TAG = "TagController";
+    private static final String TAG = "WorldVideoController";
     private String mWorldId;
+    private String mWorldName;
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
-    private Seed seed;
-    private boolean mIsPrivate;
+    private boolean mForWorld;
+    private WeakReference<ImageView> mWorldPreview;
+    private String mThumbUrl;
+    private int order;
+    private boolean mThumbUrlInvalid;
 
     protected WorldVideosController(Context context) {
         super(context);
     }
 
-    public void setUp(AbstractRecyclerViewAdapter<WorldVideo, WorldVideoAdapter.SimpleViewHolder> adapter,
-                      SuperRecyclerView recyclerView, String worldId) {
+    public void setup(AbstractRecyclerViewAdapter<WorldVideo, WorldVideoAdapter.SimpleViewHolder> adapter,
+                      SuperRecyclerView recyclerView, String worldId, String worldName,
+                      String oldThumbUrl, boolean forWorld, ImageView worldPreview) {
+        mForWorld = forWorld;
         mWorldId = worldId;
+        mWorldName = worldName;
+        mThumbUrl = oldThumbUrl;
+        mWorldPreview = new WeakReference<>(worldPreview);
         super.setUp(adapter, recyclerView, 0);
         getRecyclerView().setOnMoreListener(this);
+        getWorldThumb();
     }
 
     @Override
-    protected ListWithErrorV4<WorldVideo> onLoad() {
-        ListWithErrorV4<WorldVideo> list;
-        list = mApiV4.getTodayVideos(mWorldId, 0, 6);
+    protected ListWithError<WorldVideo> onLoad() {
+        ListWithError<WorldVideo> list;
+        if (mForWorld) {
+            list = mApiV4.getWorldVideos(mWorldId, AccountManager.getUserInfo(mContext)._id, order, 6);
+            order = list.get(list.size() - 1).order;
+        } else {
+            list = mApiV4.getTodayVideos(mWorldName, getOffset(), 6);
+        }
+
+        if (mThumbUrlInvalid){
+            World world = ((WorldVideoListWithErrorV4) list).world;
+            mThumbUrl = world.thumbnail;
+            getWorldThumb();
+        }
+
         setOffset(getOffset() + list.size());
         return list;
+    }
+
+    @UiThread void getWorldThumb() {
+        Picasso.with(mContext).load(mThumbUrl).into(new Target() {
+            @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                mWorldPreview.get().setImageBitmap(bitmap);
+            }
+
+            @Override public void onBitmapFailed(Drawable errorDrawable) {
+                mThumbUrlInvalid = true;
+            }
+
+            @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+                mThumbUrlInvalid = true;
+            }
+        });
     }
 
     @Override
@@ -62,7 +108,8 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     }
 
     @Override
-    public void onMoreAsked(int overallItemsCount, int itemsBeforeMore, int maxLastVisiblePosition) {
+    public void onMoreAsked(int overallItemsCount, int itemsBeforeMore,
+                            int maxLastVisiblePosition) {
         if (overallItemsCount == itemsBeforeMore) {
             getRecyclerView().hideMoreProgress();
         }

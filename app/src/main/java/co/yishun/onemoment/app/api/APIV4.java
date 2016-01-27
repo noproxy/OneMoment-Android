@@ -2,8 +2,9 @@ package co.yishun.onemoment.app.api;
 
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
-import co.yishun.onemoment.app.api.modelv4.TodayWorld;
+import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
+import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -26,7 +27,7 @@ public interface APIV4 {
             @Field("account_id") String userId,
             @Field("tags") String tags);
 
-    @GET("/world/videos") ListWithErrorV4<WorldVideo> getWorldVideos(
+    @GET("/world/videos") WorldVideoListWithErrorV4<WorldVideo> getWorldVideos(
             @Query("world_id") String worldId,
             @Query("account_id") String userId,
             @Query("order") int order,
@@ -37,11 +38,11 @@ public interface APIV4 {
             @Field("account_id") String userId,
             @Field("tags") String tags);
 
-    @GET("/world/todays") ListWithErrorV4<TodayWorld> getTodayWorlds(
+    @GET("/world/todays") ListWithErrorV4<World> getTodayWorlds(
             @Query("ranking") int ranking,
             @Query("limit") int limit);
 
-    @GET("world/today") ListWithErrorV4<WorldVideo> getTodayVideos(
+    @GET("/world/today") WorldVideoListWithErrorV4<WorldVideo> getTodayVideos(
             @Query("name") String name,
             @Query("offset") int offset,
             @Query("limit") int limit);

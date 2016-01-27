@@ -13,6 +13,8 @@ public class World extends ApiModel {
     public String name;
     public int videoNum;
 
+    public int ranking;
+
     public String accountId;
     public int updateTime;
     public int order;
