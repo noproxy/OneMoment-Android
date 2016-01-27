@@ -12,15 +12,15 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.modelv4.TodayWorld;
+import co.yishun.onemoment.app.api.modelv4.World;
 
 /**
  * Created by Jinge on 2016/1/20.
  */
-public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<TodayWorld, DiscoveryAdapter.SimpleViewHolder> {
+public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<World, DiscoveryAdapter.SimpleViewHolder> {
     private final String PeopleSuffix;
 
-    public DiscoveryAdapter(Context context, OnItemClickListener<TodayWorld> listener) {
+    public DiscoveryAdapter(Context context, OnItemClickListener<World> listener) {
         super(context, listener);
         PeopleSuffix = context.getString(R.string.fragment_world_suffix_people_count);
     }
@@ -31,7 +31,7 @@ public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<TodayWorld, Di
     }
 
     @Override
-    public void onBindViewHolder(SimpleViewHolder holder, TodayWorld item, int position) {
+    public void onBindViewHolder(SimpleViewHolder holder, World item, int position) {
         if (TextUtils.isEmpty(item.thumbnail))
             holder.itemImageView.setImageResource(R.drawable.pic_slider_loading);
         else

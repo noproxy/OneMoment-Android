@@ -26,7 +26,8 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
-import co.yishun.onemoment.app.api.modelv4.TodayWorld;
+
+import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.ui.adapter.BannerHeaderProvider;
 import co.yishun.onemoment.app.ui.adapter.DiscoveryAdapter;
 import co.yishun.onemoment.app.ui.adapter.HeaderRecyclerAdapter;
@@ -48,7 +49,7 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
 
     }
 
-    public void setUp(Context context, HeaderCompatibleSuperRecyclerView recyclerView, DiscoveryAdapter.OnItemClickListener<TodayWorld> listener) {
+    public void setUp(Context context, HeaderCompatibleSuperRecyclerView recyclerView, DiscoveryAdapter.OnItemClickListener<World> listener) {
         mRecyclerView = recyclerView;
         mRanking = (int) Util.unixTimeStamp();
         mAdapter = new DiscoveryAdapter(context, listener);
@@ -94,7 +95,7 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
     }
 
     synchronized void synchronizedLoadTags() {
-        ListWithErrorV4<TodayWorld> list = mApiV4.getTodayWorlds(mRanking, 6);
+        ListWithErrorV4<World> list = mApiV4.getTodayWorlds(mRanking, 6);
         if (list.isSuccess()) {
             if (list.size() > 0) {
                 mRanking = list.get(list.size() - 1).ranking;
@@ -113,7 +114,7 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
         mRecyclerView.getSwipeToRefresh().setRefreshing(false);
     }
 
-    @UiThread void onLoadTags(List<TodayWorld> list) {
+    @UiThread void onLoadTags(List<World> list) {
         mAdapter.addAll(list);
         mRecyclerView.loadEnd();
         mRecyclerView.getSwipeToRefresh().setRefreshing(false);
