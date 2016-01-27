@@ -60,6 +60,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     @Extra String worldName;
     @Extra int videoNum;
     @Extra String worldId;
+    @Extra boolean forWorld;
     /**
      * imageRect contains the original position of the {@link #transImage}.
      * And {@link #imageCorner} is the original corner of the {@link #transImage}.
@@ -171,8 +172,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     @Override protected void onResume() {
         super.onResume();
         WorldVideosController_.getInstance_(this).setup(adapter, recyclerView, worldId, worldName,
-                thumbnail, false, videoImageView);
-
+                thumbnail, forWorld, videoImageView);
     }
 
     @Override protected void onPause() {
