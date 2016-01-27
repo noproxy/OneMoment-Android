@@ -195,7 +195,7 @@ public class TagContainer extends FrameLayout {
                 if (origin.bottom >= other.bottom && origin.top < other.bottom) {
                     origin.offsetTo(origin.left, other.bottom);
                 }
-                if (origin.top > other.top && origin.bottom > other.top) {
+                if (origin.top < other.top && origin.bottom > other.top) {
                     origin.offsetTo(origin.left, other.top - origin.height());
                 }
             }
