@@ -24,6 +24,8 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.text.Format;
+import java.util.Formatter;
 import java.util.List;
 
 import co.yishun.onemoment.app.BuildConfig;
@@ -115,15 +117,15 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private void webGetEnv(List<String> args) {
         String env = BuildConfig.DEBUG ? "development" : "production";
-        webView.loadUrl(toJs(env));
+        webView.loadUrl(String.format(toJs(env), HybrdUrlHandler.FUNC_GET_ENV));
     }
 
     private void webGetAccount(List<String> args) {
-        webView.loadUrl(toJs(AccountManager.getUserInfo(mActivity)));
+        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity)), HybrdUrlHandler.FUNC_GET_ACCOUNT));
     }
 
     private void webGetAccountId(List<String> args) {
-        webView.loadUrl(toJs(AccountManager.getUserInfo(mActivity)._id));
+        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity)._id), HybrdUrlHandler.FUNC_GET_ACCOUNT_ID));
     }
 
     private void webLog(List<String> args) {
@@ -168,7 +170,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webAuth(List<String> args) {
-        webView.loadUrl(toJs(OneMomentClientV4.getAuthStr()));
+        webView.loadUrl(String.format(toJs(OneMomentClientV4.getAuthStr()), HybrdUrlHandler.FUNC_GET_BASIC_AUTH_HEADER));
     }
 
     public void sendFinish() {
@@ -193,7 +195,7 @@ public abstract class BaseWebFragment extends BaseFragment {
                 arg = arg.substring(0, arg.length() - 1);
         }
 
-        String result = "javascript:ctx.androidreturn('[" + arg + "]')";
+        String result = "javascript:ctx.%sAndroidReturn('[" + arg + "]')";
         LogUtil.d(TAG, "load js : " + result);
         return result;
     }
@@ -224,23 +226,23 @@ public abstract class BaseWebFragment extends BaseFragment {
 
         private HybrdUrlHandler urlHandler = new HybrdUrlHandler() {
             @Override protected boolean handleInnerUrl(UrlModel urlModel) {
-                if (TextUtils.equals(urlModel.call, "getEnv")) {
+                if (TextUtils.equals(urlModel.call, FUNC_GET_ENV)) {
                     webGetEnv(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, "getAccount")) {
+                } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT)) {
                     webGetAccount(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, "getAccountId")) {
+                } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT_ID)) {
                     webGetAccountId(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, "log")) {
+                } else if (TextUtils.equals(urlModel.call, FUNC_LOG)) {
                     webLog(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, "alert")) {
+                } else if (TextUtils.equals(urlModel.call, FUNC_ALERT)) {
                     webAlert(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, "cancelAlert")) {
+                } else if (TextUtils.equals(urlModel.call, FUNC_CANCEL_AlERT)) {
                     webCancelAlert(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, "finish")) {
+                } else if (TextUtils.equals(urlModel.call, FUNC_FINISH)) {
                     webFinish(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, "load")) {
+                } else if (TextUtils.equals(urlModel.call, FUNC_LOAD)) {
                     webLoad(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, "basic_auth_header")) {
+                } else if (TextUtils.equals(urlModel.call, FUNC_GET_BASIC_AUTH_HEADER)) {
                     webAuth(urlModel.args);
                 } else {
                     LogUtil.i(TAG, "unknown call type");

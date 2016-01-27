@@ -19,7 +19,6 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.BadgeActivity_;
 import co.yishun.onemoment.app.ui.CreateWorldActivity_;
 import co.yishun.onemoment.app.ui.HomeContainerActivity_;
-import co.yishun.onemoment.app.ui.SettingsActivity;
 import co.yishun.onemoment.app.ui.SettingsActivity_;
 import co.yishun.onemoment.app.ui.ShareActivity;
 import co.yishun.onemoment.app.ui.ShareActivity_;
@@ -33,6 +32,16 @@ import co.yishun.onemoment.app.ui.WorldVideosActivity_;
 public abstract class HybrdUrlHandler {
 
     public static final String URL_PREFIX = Constants.APP_URL_PREFIX;
+    public static final String FUNC_GET_ACCOUNT_ID = "getAccountId";
+    public static final String FUNC_GET_ACCOUNT = "getAccount";
+    public static final String FUNC_JUMP = "jump";
+    public static final String FUNC_LOG = "log";
+    public static final String FUNC_ALERT = "alert";
+    public static final String FUNC_CANCEL_AlERT = "cancelAlert";
+    public static final String FUNC_FINISH = "finish";
+    public static final String FUNC_GET_ENV = "getEnv";
+    public static final String FUNC_LOAD = "load";
+    public static final String FUNC_GET_BASIC_AUTH_HEADER ="getBasicAuthHeader";
 
     private static final String TAG = "HybrdUrlHandler";
 
@@ -120,9 +129,9 @@ public abstract class HybrdUrlHandler {
         } else if (TextUtils.equals(des, "share")) {
             String type = args.get(1);
             int shareType;
-            if (TextUtils.equals(type, "badge")){
+            if (TextUtils.equals(type, "badge")) {
                 shareType = ShareActivity.TYPE_SHARE_BADGE;
-            } else if (TextUtils.equals(type, "world")){
+            } else if (TextUtils.equals(type, "world")) {
                 shareType = ShareActivity.TYPE_SHARE_WORLD;
             } else if (TextUtils.equals(type, "long_video")) {
                 shareType = ShareActivity.TYPE_SHARE_MOMENT;
@@ -135,7 +144,7 @@ public abstract class HybrdUrlHandler {
             shareInfo.imageUrl = args.get(3);
             shareInfo.link = args.get(4);
             ShareActivity_.intent(context).shareInfo(shareInfo).shareType(shareType).start();
-        }else{
+        } else {
             LogUtil.e(TAG, "unhandled jump type : " + des);
         }
         return true;
