@@ -30,6 +30,7 @@ import com.transitionseverywhere.TransitionSet;
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -188,14 +189,15 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         return super.onOptionsItemSelected(item);
     }
 
-    void addVideo(View view) {
+    @Click(R.id.worldAdd) void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).forWorld(true).start();
+                .transitionY(location[1] + view.getHeight() / 2)
+                .forWorld(true).worldId(worldId).worldName(worldName).start();
     }
 
-    @Background void shareWorld(View view) {
+    @Click(R.id.worldShare) @Background void shareWorld(View view) {
         WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
         ShareInfo shareInfo = worldAPI.shareWorld(worldName);
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
