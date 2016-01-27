@@ -29,6 +29,7 @@ import java.util.List;
 import co.yishun.onemoment.app.BuildConfig;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.api.authentication.OneMomentClientV4;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.PersonalWorldActivity;
@@ -112,28 +113,24 @@ public abstract class BaseWebFragment extends BaseFragment {
         webView.loadUrl(mUrl);
     }
 
-    private boolean webGetEnv(List<String> args) {
+    private void webGetEnv(List<String> args) {
         String env = BuildConfig.DEBUG ? "development" : "production";
         webView.loadUrl(toJs(env));
-        return true;
     }
 
-    private boolean webGetAccount(List<String> args) {
+    private void webGetAccount(List<String> args) {
         webView.loadUrl(toJs(AccountManager.getUserInfo(mActivity)));
-        return true;
     }
 
-    private boolean webGetAccountId(List<String> args) {
+    private void webGetAccountId(List<String> args) {
         webView.loadUrl(toJs(AccountManager.getUserInfo(mActivity)._id));
-        return true;
     }
 
-    private boolean webLog(List<String> args) {
+    private void webLog(List<String> args) {
         LogUtil.i(TAG, "js log : " + args.get(0));
-        return true;
     }
 
-    private boolean webAlert(List<String> args) {
+    private void webAlert(List<String> args) {
         String type = args.get(0);
         if (dialog != null && dialog.isShowing()) dialog.hide();
         if (TextUtils.equals(type, "alert")) {
@@ -145,17 +142,15 @@ public abstract class BaseWebFragment extends BaseFragment {
         } else {
             LogUtil.e(TAG, "unhandled alert type");
         }
-        return true;
     }
 
-    private boolean webCancelAlert(List<String> args) {
+    private void webCancelAlert(List<String> args) {
         if (dialog != null && dialog.isShowing()) {
             dialog.hide();
         }
-        return true;
     }
 
-    private boolean webFinish(List<String> args) {
+    private void webFinish(List<String> args) {
         String type = args.get(0);
         if (TextUtils.equals(type, "preview")) {
             Intent intent = new Intent();
@@ -166,12 +161,14 @@ public abstract class BaseWebFragment extends BaseFragment {
             LogUtil.e(TAG, "unhandled finish type");
         }
         mActivity.finish();
-        return true;
     }
 
-    private boolean webLoad(List<String> args) {
+    private void webLoad(List<String> args) {
         webView.loadUrl(toJs(mArg, false));
-        return true;
+    }
+
+    private void webAuth(List<String> args) {
+        webView.loadUrl(toJs(OneMomentClientV4.getAuthStr()));
     }
 
     public void sendFinish() {
@@ -227,22 +224,24 @@ public abstract class BaseWebFragment extends BaseFragment {
 
         private HybrdUrlHandler urlHandler = new HybrdUrlHandler() {
             @Override protected boolean handleInnerUrl(UrlModel urlModel) {
-                if (TextUtils.equals(urlModel.call, FUNC_GET_ENV)) {
-                    return webGetEnv(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT)) {
-                    return webGetAccount(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT_ID)) {
-                    return webGetAccountId(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, FUNC_LOG)) {
-                    return webLog(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, FUNC_ALERT)) {
-                    return webAlert(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, FUNC_CANCEL_AlERT)) {
-                    return webCancelAlert(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, FUNC_FINISH)) {
-                    return webFinish(urlModel.args);
-                } else if (TextUtils.equals(urlModel.call, FUNC_LOAD)) {
-                    return webLoad(urlModel.args);
+                if (TextUtils.equals(urlModel.call, "getEnv")) {
+                    webGetEnv(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, "getAccount")) {
+                    webGetAccount(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, "getAccountId")) {
+                    webGetAccountId(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, "log")) {
+                    webLog(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, "alert")) {
+                    webAlert(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, "cancelAlert")) {
+                    webCancelAlert(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, "finish")) {
+                    webFinish(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, "load")) {
+                    webLoad(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, "basic_auth_header")) {
+                    webAuth(urlModel.args);
                 } else {
                     LogUtil.i(TAG, "unknown call type");
                 }
