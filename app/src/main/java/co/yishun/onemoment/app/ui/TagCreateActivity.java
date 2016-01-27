@@ -139,7 +139,7 @@ public class TagCreateActivity extends BaseActivity
 
     @AfterViews void setupViews() {
         setupToolbar();
-        setPreviewImage();
+//        setPreviewImage();
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);

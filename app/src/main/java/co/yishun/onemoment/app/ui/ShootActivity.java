@@ -212,7 +212,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     @UiThread(delay = 200) void delayStart(File file) {
-        TagCreateActivity_.intent(this).videoPath(file.getPath()).start();
+        TagCreateActivity_.intent(this).forWorld(forWorld).forToday(forToday)
+                .worldId(worldId).worldName(worldName).videoPath(file.getPath()).start();
         this.finish();
     }
 
