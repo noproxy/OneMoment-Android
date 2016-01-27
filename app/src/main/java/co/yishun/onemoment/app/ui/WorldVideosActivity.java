@@ -162,7 +162,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         toolbar.setTitleTextColor(expendedTitleColor);
         toolbar.setSubtitleTextColor(expendedSubTitleColor);
         String num = String.valueOf(videosNum);
-        SpannableString ss = new SpannableString(num + "人加入");
+        SpannableString ss = new SpannableString(num + getString(R.string.fragment_world_suffix_people_count));
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
         ab.setTitle(worldName);
