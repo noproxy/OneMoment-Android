@@ -33,15 +33,6 @@ import co.yishun.onemoment.app.ui.WorldVideosActivity_;
 public abstract class HybrdUrlHandler {
 
     public static final String URL_PREFIX = Constants.APP_URL_PREFIX;
-    public static final String FUNC_GET_ACCOUNT_ID = "getAccountId";
-    public static final String FUNC_GET_ACCOUNT = "getAccount";
-    public static final String FUNC_JUMP = "jump";
-    public static final String FUNC_LOG = "log";
-    public static final String FUNC_ALERT = "alert";
-    public static final String FUNC_CANCEL_AlERT = "cancelAlert";
-    public static final String FUNC_FINISH = "finish";
-    public static final String FUNC_GET_ENV = "getEnv";
-    public static final String FUNC_LOAD = "load";
 
     private static final String TAG = "HybrdUrlHandler";
 
@@ -95,7 +86,7 @@ public abstract class HybrdUrlHandler {
                 urlModel.args.add(elementStr);
             }
 
-            if (TextUtils.equals(urlModel.call, FUNC_JUMP)) {
+            if (TextUtils.equals(urlModel.call, "jump")) {
                 return webJumpWithPosition(context, urlModel.args, posX, posY);
             }
             return handleInnerUrl(urlModel);

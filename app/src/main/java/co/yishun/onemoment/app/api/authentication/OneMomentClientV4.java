@@ -53,12 +53,7 @@ public class OneMomentClientV4 extends OneMomentClient {
         return result;
     }
 
-    @Override public Response execute(Request request) throws IOException {
-        List<Header> immutableHeaders = request.getHeaders();// this list is immutable
-        ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
-
-        TypedOutput body = request.getBody() == null ? null : new OneMomentTypedOut(request.getBody());
-
+    public static String getAuthStr() {
         String authUser = "android_d547a48206418eba571875c8395309d4";
         String authKey = "cc60e89190e7cddc1c2d405c9b482f290e05532670330f58f85a6488bf7ab751";
         String staticPw = "c73d0a8c053199ecb9714c225bbb85b1f19e6b5088c6f73540de7debcfc0b586";
@@ -69,8 +64,16 @@ public class OneMomentClientV4 extends OneMomentClient {
         String authStr = username + ":" + password;
         String authStrbase64 = Base64.encodeToString(authStr.getBytes(), Base64.NO_WRAP);
         LogUtil.d(TAG, expireTime + "  " + authStrbase64);
+        return authStrbase64.trim();
+    }
 
-        headers.add(new Header("Authentication", "Basic " + authStrbase64.trim()));
+    @Override public Response execute(Request request) throws IOException {
+        List<Header> immutableHeaders = request.getHeaders();// this list is immutable
+        ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
+
+        TypedOutput body = request.getBody() == null ? null : new OneMomentTypedOut(request.getBody());
+        
+        headers.add(new Header("Authentication", "Basic " + getAuthStr()));
         LogUtil.d(TAG, System.getProperty("http.agent"));
         headers.add(new Header("UserAgent", System.getProperty("http.agent")));
 
