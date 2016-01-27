@@ -1,12 +1,11 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 
 import co.yishun.onemoment.app.LogUtil;
-import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.data.FileUtil;
 
 /**
@@ -18,14 +17,14 @@ public class VideoTask {
     private static final String TAG = "VideoTask";
 
     private Context context;
-    private Video video;
+    private VideoProvider video;
     private int type;
     private OnVideoListener videoListener;
     private OnImageListener imageListener;
     private VideoDownloadTask downloadTask;
     private VideoImageTask imageTask;
 
-    public VideoTask(Context context, Video video, int type) {
+    public VideoTask(Context context, VideoProvider video, int type) {
         this.video = video;
         this.context = context;
         this.type = type;
@@ -79,7 +78,7 @@ public class VideoTask {
         }
     }
 
-    void getVideo(Video video) {
+    void getVideo(VideoProvider video) {
         if (videoListener != null) {
             videoListener.onVideoLoad(video);
         } else {
@@ -111,7 +110,7 @@ public class VideoTask {
     }
 
     public interface OnVideoListener {
-        void onVideoLoad(Video video);
+        void onVideoLoad(VideoProvider video);
     }
 
     public interface OnImageListener {

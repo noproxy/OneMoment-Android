@@ -1,14 +1,13 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.LogUtil;
-import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.VideoUtil;
 
@@ -30,9 +29,9 @@ public class VideoImageTask extends LoaderTask {
     }
 
     @Override
-    protected Boolean doInBackground(Video... videos) {
-        final Video video = videos[0];
-        LogUtil.d(TAG, "start image " + video.fileName + " " + this.toString());
+    protected Boolean doInBackground(VideoProvider... videos) {
+        final VideoProvider video = videos[0];
+        LogUtil.d(TAG, "start image " + video.getFilename() + " " + this.toString());
         File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
         large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
         small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);

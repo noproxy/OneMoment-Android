@@ -27,7 +27,7 @@ import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.model.TagVideo;
-import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.data.FileUtil;
 
 /**
@@ -57,11 +57,11 @@ public class PlayTagVideoFragment extends PlayFragment {
         refreshUserInfo();
     }
 
-    @UiThread void addVideo(Video video) {
+    @UiThread void addVideo(VideoProvider video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         List<VideoTag> tags = new LinkedList<>();
-        for (int i = 0; i < video.tags.size(); i++) {
-            tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x, video.tags.get(i).y));
+        for (int i = 0; i < oneVideo.tags.size(); i++) {
+            tags.add(new BaseVideoTag(oneVideo.tags.get(i).name, oneVideo.tags.get(i).x, oneVideo.tags.get(i).y));
         }
         NetworkVideo videoResource = new NetworkVideo(tags, videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);

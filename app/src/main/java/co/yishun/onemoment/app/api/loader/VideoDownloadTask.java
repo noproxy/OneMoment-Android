@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
@@ -15,7 +14,7 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.LogUtil;
-import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.data.FileUtil;
 
 /**
@@ -25,7 +24,7 @@ public class VideoDownloadTask extends LoaderTask {
     private static final String TAG = "VideoDownloadTask";
     private Context mContext;
     private File videoFile;
-    private Video video;
+    private VideoProvider video;
     private WeakReference<VideoTask> videoTaskReference;
 
     public VideoDownloadTask(Context context) {
@@ -38,19 +37,20 @@ public class VideoDownloadTask extends LoaderTask {
     }
 
     @Override
-    protected Boolean doInBackground(Video... videos) {
+    protected Boolean doInBackground(VideoProvider... videos) {
         video = videos[0];
-        LogUtil.d(TAG, "start video " + video.fileName);
+        LogUtil.d(TAG, "start video " + video.getFilename());
         videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
 
         OkHttpClient httpClient = VideoTaskManager.httpClient;
-        Call call = httpClient.newCall(new Request.Builder().url(video.domain + video.fileName).get().build());
+
+        Call call = httpClient.newCall(new Request.Builder().url(video.getDownloadUrl()).get().build());
         Response response;
         InputStream input = null;
         FileOutputStream output = null;
         try {
             response = call.execute();
-            LogUtil.d(TAG, "start net " + video.fileName + " " + this.toString());
+            LogUtil.d(TAG, "start net " + video.getFilename()+ " " + this.toString());
             if (response.code() == 200) {
                 input = response.body().byteStream();
                 output = new FileOutputStream(videoFile);
@@ -58,7 +58,7 @@ public class VideoDownloadTask extends LoaderTask {
                 if (fileLength == 0) {
                     LogUtil.e(TAG, "error file length " + this.toString());
                     return false;
-                } else if (videoFile.length() == fileLength){
+                } else if (videoFile.length() == fileLength) {
                     return true;
                 }
 
@@ -66,20 +66,21 @@ public class VideoDownloadTask extends LoaderTask {
                 byte data[] = new byte[2048];
                 long total = 0;
                 int count;
-                LogUtil.d(TAG, "start while " + fileLength + " " + video.fileName + " " + this.toString());
+                LogUtil.d(TAG, "start while " + fileLength + " " + video.getFilename() + " " + this.toString());
                 while ((count = input.read(data)) != -1) {
                     if (isCancelled()) {
-                        LogUtil.d(TAG, "cancel " + video.fileName + " " + this.toString());
+                        LogUtil.d(TAG, "cancel " + video.getFilename() + " " + this.toString());
                         input.close();
                         return false;
                     }
                     total += count;
                     output.write(data, 0, count);
                 }
-                LogUtil.d(TAG, "end while " + video.fileName + " " + videoFile.length() + " " + fileLength + " " + this.toString());
+                LogUtil.d(TAG, "end while " + video.getFilename() + " " + videoFile.length() + " " + fileLength + " " + this.toString());
 
                 return total == fileLength;
             } else {
+                LogUtil.e(TAG, "net error");
                 return false;
             }
         } catch (IOException ignore) {
@@ -98,12 +99,12 @@ public class VideoDownloadTask extends LoaderTask {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
-            LogUtil.d(TAG, "stop video" + " " + this.toString());
+            LogUtil.e(TAG, "stop video" + " " + this.toString());
             if (videoTaskReference.get() != null) {
                 videoTaskReference.get().getVideo(video);
             }
         } else {
-            LogUtil.d(TAG, "error video " + result + " " + this.toString());
+            LogUtil.e(TAG, "error video " + result + " " + this.toString());
             if (videoFile != null && videoFile.exists()) {
                 videoFile.delete();
             }

@@ -27,8 +27,8 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
-import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.data.FileUtil;
 
 /**
@@ -82,9 +82,9 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
     }
 
     @Override
-    public void onVideoLoad(Video video) {
+    public void onVideoLoad(VideoProvider video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
-        videoPlayView.setToLocal(video.domain + video.fileName, videoFile.getPath());
+        videoPlayView.setToLocal(video.getDownloadUrl(), videoFile.getPath());
         if (!mReady) {
             onLoad();
             mReady = true;

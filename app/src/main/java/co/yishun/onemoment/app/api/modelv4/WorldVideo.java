@@ -8,7 +8,7 @@ import co.yishun.onemoment.app.api.model.VideoTag;
  *
  * Created by Jinge on 2016/1/23.
  */
-public class WorldVideo extends ApiModel {
+public class WorldVideo extends ApiModel implements VideoProvider {
     public String _id;
     public String accountId;
     public int createTime;
@@ -17,4 +17,17 @@ public class WorldVideo extends ApiModel {
     public boolean available;
     public List<VideoTag> tags;
     public String downloadUrl;
+    public String filename;
+
+    @Override public String getFilename() {
+        return filename;
+    }
+
+    @Override public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    @Override public String getKey() {
+        return filename.substring(0, filename.lastIndexOf("."));
+    }
 }
