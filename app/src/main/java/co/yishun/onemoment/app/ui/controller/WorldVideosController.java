@@ -17,6 +17,7 @@ import org.androidannotations.annotations.UiThread;
 import java.lang.ref.WeakReference;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
@@ -83,15 +84,18 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     @UiThread void getWorldThumb() {
         Picasso.with(mContext).load(mThumbUrl).into(new Target() {
             @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                mThumbUrlInvalid = false;
                 mWorldPreview.get().setImageBitmap(bitmap);
             }
 
             @Override public void onBitmapFailed(Drawable errorDrawable) {
                 mThumbUrlInvalid = true;
+                mWorldPreview.get().setImageResource(R.drawable.pic_slider_loading);
             }
 
             @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
                 mThumbUrlInvalid = true;
+                mWorldPreview.get().setImageResource(R.drawable.pic_slider_loading);
             }
         });
     }

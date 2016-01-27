@@ -100,7 +100,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         TransitionManager.go(scene, set);
 
         transImage = (RadioCornerImageView) findViewById(R.id.transImage);
-        Picasso.with(this).load(thumbnail).into(transImage);
+        Picasso.with(this).load(thumbnail).placeholder(R.drawable.pic_slider_loading).error(R.drawable.pic_slider_loading).into(transImage);
 
         ObjectAnimator appbarAnimator = ObjectAnimator.ofFloat(appBar, "alpha", 0, 1).setDuration(200);
         appbarAnimator.setStartDelay(400);
@@ -116,7 +116,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             appBar.setAlpha(0);
             recyclerView.setAlpha(0);
 
-            Picasso.with(this).load(thumbnail).into(transImage);
+            Picasso.with(this).load(thumbnail).placeholder(R.drawable.pic_slider_loading).error(R.drawable.pic_slider_loading).into(transImage);
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) transImage.getLayoutParams();
             params.topMargin = imageRect.top;
             params.leftMargin = imageRect.left;

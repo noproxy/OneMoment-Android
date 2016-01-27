@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".ui.TagActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -14,23 +13,21 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:elevation="@dimen/app_bar_elevation"
-        android:fitsSystemWindows="true">
+        >
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             app:contentScrim="@color/colorPrimary"
-            app:titleEnabled="false"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false"
             >
 
             <RelativeLayout
                 android:id="@+id/videoFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax"
                 >
 
@@ -38,17 +35,17 @@
                     android:id="@+id/videoImageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/pic_more_discovery"
-                    app:rc_widthRadio="5"
-                    app:rc_heightRadio="3"/>
+                    android:src="@color/colorPrimary"
+                    app:rc_heightRadio="3"
+                    app:rc_widthRadio="5"/>
 
                 <View
                     android:id="@+id/videoMask"
-                    android:background="@drawable/bg_tag_activity_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/videoImageView"
                     android:layout_alignTop="@id/videoImageView"
-                    android:layout_alignBottom="@id/videoImageView"/>
+                    android:background="@drawable/bg_tag_activity_image"/>
             </RelativeLayout>
 
             <include layout="@layout/layout_toolbar_play_activity"/>
