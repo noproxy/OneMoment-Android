@@ -1,13 +1,12 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.os.AsyncTask;
-import android.util.Log;
+import android.support.v4.util.Pair;
 
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,8 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import co.yishun.onemoment.app.LogUtil;
-import co.yishun.onemoment.app.api.model.Video;
-import java8.util.stream.StreamSupport;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 
 /**
  * Created by Jinge on 2015/11/13.
@@ -45,7 +43,7 @@ public class VideoTaskManager {
 
     private static VideoTaskManager instance;
     private List<AsyncTask> asyncTaskList = new ArrayList<>();
-    private List<TaskEntry<LoaderTask, Video[]>> taskMap = new ArrayList<>();
+    private List<Pair<LoaderTask, VideoProvider[]>> taskMap = new ArrayList<>();
 
     public static VideoTaskManager getInstance() {
         synchronized (VideoTaskManager.class) {
@@ -56,14 +54,14 @@ public class VideoTaskManager {
         return instance;
     }
 
-    public void executeTask(LoaderTask task, Video... params) {
+    public void executeTask(LoaderTask task, VideoProvider... params) {
         asyncTaskList.add(task);
         LogUtil.d(TAG, asyncTaskList.size() + "");
 
         if (poolQueue.size() >= 96) {
             LogUtil.d(TAG, "pool size over");
 //            taskMap.put(task, params);
-            taskMap.add(new TaskEntry<>(task, params));
+            taskMap.add(new Pair<>(task, params));
         } else {
             task.executeOnExecutor(executor, params);
         }
@@ -73,7 +71,7 @@ public class VideoTaskManager {
         asyncTaskList.remove(task);
         LogUtil.d(TAG, asyncTaskList.size() + "");
         for (int i = 0; i < taskMap.size(); ) {
-            if (taskMap.get(i).key == task) {
+            if (taskMap.get(i).first == task) {
                 taskMap.remove(i);
                 break;
             } else i++;
@@ -81,9 +79,9 @@ public class VideoTaskManager {
         if (poolQueue.size() < 96) {
             LogUtil.d(TAG, "pool size ok");
             if (taskMap.size() > 0) {
-                TaskEntry<LoaderTask, Video[]> e = taskMap.get(0);
+                Pair<LoaderTask, VideoProvider[]> e = taskMap.get(0);
                 taskMap.remove(0);
-                executeTask(e.getKey(), e.getValue());
+                executeTask(e.first, e.second);
             }
         }
     }
@@ -108,29 +106,4 @@ public class VideoTaskManager {
         asyncTaskList.clear();
     }
 
-    class TaskEntry<K, V> {
-        public K key;
-        public V value;
-
-        public TaskEntry(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        public boolean equals(Object object) {
-            if (!(object instanceof TaskEntry)) {
-                return false;
-            }
-            TaskEntry e = (TaskEntry) object;
-            return value == e.getValue();
-        }
-
-        public K getKey() {
-            return key;
-        }
-
-        public V getValue() {
-            return value;
-        }
-    }
 }

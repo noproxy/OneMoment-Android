@@ -15,7 +15,7 @@ import java.util.List;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.loader.VideoTask;
-import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 
 /**
@@ -64,10 +64,10 @@ public class WorldVideoAdapter extends AbstractRecyclerViewAdapter<WorldVideo, W
             if (videoTask != null) {
                 videoTask.cancel();
             }
-//            videoTask = new VideoTask(mContext, video, VideoTask.TYPE_VIDEO | VideoTask.TYPE_IMAGE)
-//                    .setImageListener(this::setImage)
-//                    .setVideoListener(this::setVideo)
-//                    .start();
+            videoTask = new VideoTask(mContext, video, VideoTask.TYPE_VIDEO | VideoTask.TYPE_IMAGE)
+                    .setImageListener(this::setImage)
+                    .setVideoListener(this::setVideo)
+                    .start();
         }
 
         void setImage(File large, File small) {
@@ -75,8 +75,8 @@ public class WorldVideoAdapter extends AbstractRecyclerViewAdapter<WorldVideo, W
             Picasso.with(mContext).load(small).into(itemImageView);
         }
 
-        void setVideo(Video video) {
-            LogUtil.d("Video", "get a video " + video.fileName);
+        void setVideo(VideoProvider video) {
+            LogUtil.d("Video", "get a video " + video.getFilename());
         }
 
     }
