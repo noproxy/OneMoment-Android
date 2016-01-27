@@ -109,7 +109,7 @@ public abstract class HybrdUrlHandler {
         } else if (TextUtils.equals(des, "world_square")) {
             WorldVideosActivity_.intent(context).worldName(args.get(1))
                     .videoNum(Integer.parseInt(args.get(2))).worldId(args.get(3))
-                    .thumbnail(args.get(4)).start();
+                    .thumbnail(args.get(4)).forWorld(true).start();
         } else if (TextUtils.equals(des, "badge")) {
             BadgeActivity_.intent(context).badgeDetail(args.get(1)).start();
         } else if (TextUtils.equals(des, "world")
