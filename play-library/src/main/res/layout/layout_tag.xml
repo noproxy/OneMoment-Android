@@ -10,17 +10,19 @@
     <TextView
         android:id="@+id/tagTextView"
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
+        android:layout_height="28dp"
         android:layout_marginLeft="8dp"
         android:gravity="center"
         android:textColor="@android:color/white"
-        tools:text="hello"/>
+        tools:text="看这里"/>
 
     <ImageView
         android:id="@+id/tagClearImage"
-        android:layout_width="24dp"
+        android:layout_width="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="4dp"
         android:layout_height="match_parent"
-        android:padding="6dp"
-        android:src="@drawable/ic_action_close"/>
+        android:src="@drawable/ic_tag_delete"/>
 
 </LinearLayout>
