@@ -88,7 +88,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         needTransition = imageRect != null;
     }
 
-    @UiThread(delay = 200) void setupTransition() {
+    @UiThread(delay = 100) void setupTransition() {
         ViewGroup sceneRoot = transitionFrameLayout;
         LogUtil.d(TAG, imageRect.toString());
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_world_videos_end, this);
@@ -100,11 +100,13 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         transImage = (RadioCornerImageView) findViewById(R.id.transImage);
         Picasso.with(this).load(thumbnail).into(transImage);
 
-        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(appBar, "alpha", 0, 1).setDuration(200);
-        alphaAnimator.setStartDelay(500);
-        alphaAnimator.start();
+        ObjectAnimator appbarAnimator = ObjectAnimator.ofFloat(appBar, "alpha", 0, 1).setDuration(200);
+        appbarAnimator.setStartDelay(400);
+        appbarAnimator.start();
 
-        ObjectAnimator.ofFloat(recyclerView, "alpha", 0, 1).setDuration(500).start();
+        ObjectAnimator recyclerAnimator = ObjectAnimator.ofFloat(recyclerView, "alpha", 0, 1).setDuration(200);
+        recyclerAnimator.setStartDelay(400);
+        recyclerAnimator.start();
     }
 
     @AfterViews void setupViews() {

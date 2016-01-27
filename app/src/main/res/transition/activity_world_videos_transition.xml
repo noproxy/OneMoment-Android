@@ -20,4 +20,10 @@
             <target app:targetId="@id/transImage"/>
         </targets>
     </transition>
+
+    <fade>
+        <targets>
+            <target app:targetId="@id/transBackground"/>
+        </targets>
+    </fade>
 </transitionSet>
