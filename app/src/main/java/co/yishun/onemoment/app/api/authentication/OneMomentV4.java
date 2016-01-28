@@ -11,7 +11,7 @@ import retrofit.RestAdapter;
  */
 public class OneMomentV4 {
     public static final String API_BASE_URL = Constants.API_V4_URL_TEST;
-    public static final String FAKE_RESPONSE = "{\"msg\": \"fake success\",\n    \"code\": -99}";
+    public static final String FAKE_RESPONSE = "{\"msg\": \"fake success\",\n    \"error\": \"error:fake\"}";
 
     public static RestAdapter createAdapter() {
         return new RestAdapter.Builder()

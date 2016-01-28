@@ -6,6 +6,7 @@ import com.qiniu.android.dns.util.Hex;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,11 +81,21 @@ public class OneMomentClientV4 extends OneMomentClient {
     }
 
     @Override
+    protected byte[] getFakeBody() {
+        return OneMomentV4.FAKE_RESPONSE.getBytes(Charset.forName("UTF-8"));
+    }
+
+    @Override
+    protected byte[] encode(byte[] body) throws IOException {
+        return body;
+    }
+
+    @Override
     public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
 
-        TypedOutput body = request.getBody() == null ? null : new OneMomentTypedOut(request.getBody());
+        TypedOutput body = request.getBody();
 
         headers.add(new Header("Authentication", "Basic " + getAuthStr()));
         LogUtil.d(TAG, System.getProperty("http.agent"));

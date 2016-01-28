@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,10 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -86,10 +91,13 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     private int expendedSubTitleColor;
     private WorldVideoAdapter adapter;
     private boolean needTransition;
+    private boolean showAdd;
 
 
     @AfterInject void checkExtra() {
         needTransition = imageRect != null;
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        showAdd = forWorld || TextUtils.equals(today, worldName);
     }
 
     @UiThread(delay = 100) void setupTransition() {
@@ -131,6 +139,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             transImage.setCorner(imageCorner);
             setupTransition();
         }
+        if (!showAdd) findViewById(R.id.worldAdd).setVisibility(View.GONE);
 
         expendedTitleColor = getResources().getColor(R.color.colorPrimary);
         expendedSubTitleColor = getResources().getColor(R.color.colorPrimary);
