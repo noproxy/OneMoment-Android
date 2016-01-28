@@ -23,12 +23,8 @@ import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.APIV4;
-import co.yishun.onemoment.app.api.WorldAPI;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.loader.VideoTask;
-import co.yishun.onemoment.app.api.model.Seed;
-import co.yishun.onemoment.app.api.model.WorldTag;
 import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
@@ -41,19 +37,15 @@ import co.yishun.onemoment.app.data.FileUtil;
 public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.OnVideoChangeListener,
         VideoTask.OnVideoListener {
     private static final String TAG = "platworld";
-    @FragmentArg WorldTag worldTag;
     @FragmentArg String worldName;
     @FragmentArg String worldId;
     @FragmentArg boolean forWorld;
-    @FragmentArg boolean isPrivate = false;
 
     @ViewById TextView voteCountTextView;
     @ViewById TextView usernameTextView;
 
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private List<VideoProvider> tagVideos = new ArrayList<>();
-    private int voteIndex;
-    private Seed seed;
     private int order;
     private int offset = 0;
     private boolean mReady = false;

@@ -16,4 +16,5 @@ public interface VideoProvider extends QiniuKeyProvider {
     String getDownloadUrl();
     List<VideoTag> getTags();
     String getAvatarUrl();
+    String getNickname();
 }

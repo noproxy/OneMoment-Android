@@ -249,11 +249,11 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     }
 
     void videoImageClick(View v) {
-        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
+//        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
     }
 
     @Override public void onClick(View view, TagVideo item) {
-        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
+//        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
     }
 
     private class OffsetChangeListener implements AppBarLayout.OnOffsetChangedListener {

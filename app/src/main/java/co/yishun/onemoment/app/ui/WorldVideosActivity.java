@@ -216,12 +216,11 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 
 
     @Click(R.id.videoImageView) void videoImageClick(View v) {
-//        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
         PlayActivity_.intent(this).worldId(worldId).worldName(worldName).forWorld(forWorld).videosNum(videosNum).type(PlayActivity.TYPE_WORLD).start();
     }
 
     @Override public void onClick(View view, WorldVideo item) {
-//        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
+        PlayActivity_.intent(this).video(item).type(PlayActivity.TYPE_VIDEO).worldName(worldName).start();
     }
 
     @Override public void setPageInfo() {

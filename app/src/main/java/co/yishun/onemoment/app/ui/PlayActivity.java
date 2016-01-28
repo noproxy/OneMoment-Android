@@ -25,6 +25,7 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ShareInfo;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
@@ -41,8 +42,7 @@ public class PlayActivity extends BaseActivity {
     private static final String TAG = "PlayActivity";
 
     @Extra int type;
-    @Extra TagVideo oneVideo;
-    @Extra WorldTag worldTag;
+    @Extra VideoProvider video;
     @Extra boolean isPrivate = false;
     @Extra String worldName;
     @Extra String worldId;
@@ -64,7 +64,7 @@ public class PlayActivity extends BaseActivity {
 
         switch (type) {
             case TYPE_VIDEO:
-                PlayTagVideoFragment playTagVideoFragment = PlayTagVideoFragment_.builder().oneVideo(oneVideo).build();
+                PlayTagVideoFragment playTagVideoFragment = PlayTagVideoFragment_.builder().video(video).build();
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, playTagVideoFragment).commit();
                 break;
             case TYPE_WORLD:
@@ -97,13 +97,13 @@ public class PlayActivity extends BaseActivity {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).forWorld(true).worldId(worldTag.name).start();
+                .transitionY(location[1] + view.getHeight() / 2).forWorld(true).worldId(worldId).worldName(worldName).start();
     }
 
     @Click(R.id.worldShare) @Background void shareWorld(View view) {
         WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
-        ShareInfo shareInfo = worldAPI.shareWorld(worldTag.name);
-        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
+//        ShareInfo shareInfo = worldAPI.shareWorld(worldTag.name);
+//        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 
     @Override

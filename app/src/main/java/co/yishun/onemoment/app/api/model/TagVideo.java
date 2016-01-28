@@ -20,4 +20,8 @@ public class TagVideo extends Video {
     @Override public String getAvatarUrl() {
         return avatar;
     }
+
+    @Override public String getNickname() {
+        return nickname;
+    }
 }
