@@ -1,6 +1,9 @@
 package co.yishun.onemoment.app.api.modelv4;
 
+import java.util.List;
+
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
+import co.yishun.onemoment.app.api.model.VideoTag;
 
 /**
  * Created by Jinge on 2016/1/27.
@@ -11,4 +14,6 @@ import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 public interface VideoProvider extends QiniuKeyProvider {
     String getFilename();
     String getDownloadUrl();
+    List<VideoTag> getTags();
+    String getAvatarUrl();
 }

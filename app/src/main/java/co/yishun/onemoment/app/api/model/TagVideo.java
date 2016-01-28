@@ -16,4 +16,8 @@ public class TagVideo extends Video {
     public String nickname;
 
     public Seed seed;
+
+    @Override public String getAvatarUrl() {
+        return avatar;
+    }
 }
