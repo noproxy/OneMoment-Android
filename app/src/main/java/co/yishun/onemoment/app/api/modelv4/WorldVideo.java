@@ -28,6 +28,14 @@ public class WorldVideo extends ApiModel implements VideoProvider {
         return downloadUrl;
     }
 
+    @Override public List<VideoTag> getTags() {
+        return tags;
+    }
+
+    @Override public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
     @Override public String getKey() {
         return filename.substring(0, filename.lastIndexOf("."));
     }

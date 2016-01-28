@@ -208,8 +208,10 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 
-    void videoImageClick(View v) {
+
+    @Click(R.id.videoImageView) void videoImageClick(View v) {
 //        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
+        PlayActivity_.intent(this).worldId(worldId).worldName(worldName).forWorld(forWorld).videosNum(videosNum).type(PlayActivity.TYPE_WORLD).start();
     }
 
     @Override public void onClick(View view, WorldVideo item) {

@@ -32,6 +32,14 @@ public class Video extends ApiModel implements VideoProvider {
         return domain + fileName;
     }
 
+    @Override public List<VideoTag> getTags() {
+        return tags;
+    }
+
+    @Override public String getAvatarUrl() {
+        return null;
+    }
+
     @StringDef({"public", "private"})
     public @interface Type {
     }

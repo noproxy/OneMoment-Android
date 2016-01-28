@@ -230,7 +230,7 @@ public class TagContainer extends FrameLayout {
             size = widthSize;
         }
         mSize = size;
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 
     protected class ContainerCallback extends ViewDragHelper.Callback {

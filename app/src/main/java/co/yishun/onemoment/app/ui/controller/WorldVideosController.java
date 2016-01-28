@@ -81,9 +81,10 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     }
 
     @UiThread void getWorldThumb() {
-        if (TextUtils.isEmpty(mThumbUrl))
+        if (TextUtils.isEmpty(mThumbUrl)) {
+            mThumbUrlInvalid = true;
             mWorldPreview.get().setImageResource(R.drawable.pic_slider_loading);
-        else
+        } else
             Picasso.with(mContext).load(mThumbUrl).into(new Target() {
                 @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     mThumbUrlInvalid = false;

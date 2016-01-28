@@ -44,6 +44,10 @@ public class PlayActivity extends BaseActivity {
     @Extra TagVideo oneVideo;
     @Extra WorldTag worldTag;
     @Extra boolean isPrivate = false;
+    @Extra String worldName;
+    @Extra String worldId;
+    @Extra int videosNum;
+    @Extra boolean forWorld;
 
     @ViewById Toolbar toolbar;
 
@@ -64,7 +68,7 @@ public class PlayActivity extends BaseActivity {
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, playTagVideoFragment).commit();
                 break;
             case TYPE_WORLD:
-                PlayWorldFragment playWorldFragment = PlayWorldFragment_.builder().worldTag(worldTag).build();
+                PlayWorldFragment playWorldFragment = PlayWorldFragment_.builder().worldId(worldId).worldName(worldName).forWorld(forWorld).build();
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, playWorldFragment).commit();
                 break;
         }
@@ -80,9 +84,9 @@ public class PlayActivity extends BaseActivity {
         final ActionBar ab = activity.getSupportActionBar();
         assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(worldTag.name);
-        String num = String.valueOf(worldTag.videosCount);
-        SpannableString ss = new SpannableString(num + "人加入");
+        ab.setTitle(worldName);
+        String num = String.valueOf(videosNum);
+        SpannableString ss = new SpannableString(String.format(getString(R.string.fragment_world_suffix_people_count), videosNum));
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
         LogUtil.i("setupToolbar", "set home as up true");
