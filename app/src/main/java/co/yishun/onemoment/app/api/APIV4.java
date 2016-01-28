@@ -1,7 +1,10 @@
 package co.yishun.onemoment.app.api;
 
+import android.support.annotation.Nullable;
+
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
+import co.yishun.onemoment.app.api.modelv4.UploadToken;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
@@ -46,4 +49,11 @@ public interface APIV4 {
             @Query("name") String name,
             @Query("offset") int offset,
             @Query("limit") int limit);
+
+    @GET("/misc/upload_token") UploadToken getUploadToken(
+            @Query("filename") @Nullable String filename);
+
+    @GET("/misc/upload_token") UploadToken getUploadToken(
+            @Query("filename") @Nullable String filename,
+            @Query("type") String type);
 }
