@@ -46,6 +46,7 @@ import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ShareInfo;
+import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
@@ -60,10 +61,7 @@ import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 @EActivity(R.layout.activity_world_videos)
 public class WorldVideosActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldVideo> {
     private static final String TAG = "WorldVideosActivity";
-    @Extra String thumbnail;
-    @Extra String worldName;
-    @Extra int videosNum;
-    @Extra String worldId;
+    @Extra WorldProvider world;
     @Extra boolean forWorld;
     /**
      * imageRect contains the original position of the {@link #transImage}.
@@ -95,7 +93,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     @AfterInject void checkExtra() {
         needTransition = imageRect != null;
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        showAdd = forWorld || TextUtils.equals(today, worldName);
+        showAdd = forWorld || TextUtils.equals(today, world.getName());
     }
 
     @UiThread(delay = 100) void setupTransition() {
@@ -108,10 +106,10 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         TransitionManager.go(scene, set);
 
         transImage = (RadioCornerImageView) findViewById(R.id.transImage);
-        if(TextUtils.isEmpty(thumbnail)){
+        if(TextUtils.isEmpty(world.getThumb())){
             Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
         }else {
-            Picasso.with(this).load(thumbnail).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
+            Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
         }
 
         appBar.animate().alpha(1).setDuration(200).setStartDelay(400).start();
@@ -123,10 +121,10 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             appBar.setAlpha(0);
             recyclerView.setAlpha(0);
 
-            if(TextUtils.isEmpty(thumbnail)){
+            if(TextUtils.isEmpty(world.getThumb())){
                 Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
             }else {
-                Picasso.with(this).load(thumbnail).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
+                Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
             }
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) transImage.getLayoutParams();
             params.topMargin = imageRect.top;
@@ -172,18 +170,17 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         assert ab != null;
         toolbar.setTitleTextColor(expendedTitleColor);
         toolbar.setSubtitleTextColor(expendedSubTitleColor);
-        String num = String.valueOf(videosNum);
-        SpannableString ss = new SpannableString(String.format(getString(R.string.fragment_world_suffix_people_count), videosNum));
+        String num = String.valueOf(world.getVideosNum());
+        SpannableString ss = new SpannableString(String.format(getString(R.string.fragment_world_suffix_people_count), world.getVideosNum()));
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
-        ab.setTitle(worldName);
+        ab.setTitle(world.getName());
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override protected void onResume() {
         super.onResume();
-        WorldVideosController_.getInstance_(this).setup(adapter, recyclerView, worldId, worldName,
-                thumbnail, forWorld, videoImageView);
+        WorldVideosController_.getInstance_(this).setup(adapter, recyclerView, world, forWorld, videoImageView);
     }
 
     @Override protected void onPause() {
@@ -205,22 +202,22 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
                 .transitionY(location[1] + view.getHeight() / 2)
-                .forWorld(true).worldId(worldId).worldName(worldName).start();
+                .forWorld(true).world(world).start();
     }
 
     @Click(R.id.worldShare) @Background void shareWorld(View view) {
         WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
-        ShareInfo shareInfo = worldAPI.shareWorld(worldName);
+        ShareInfo shareInfo = worldAPI.shareWorld(world.getName());
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 
 
     @Click(R.id.videoImageView) void videoImageClick(View v) {
-        PlayActivity_.intent(this).worldId(worldId).worldName(worldName).forWorld(forWorld).videosNum(videosNum).type(PlayActivity.TYPE_WORLD).start();
+        PlayActivity_.intent(this).world(world).forWorld(forWorld).type(PlayActivity.TYPE_WORLD).start();
     }
 
     @Override public void onClick(View view, WorldVideo item) {
-        PlayActivity_.intent(this).video(item).type(PlayActivity.TYPE_VIDEO).worldName(worldName).start();
+        PlayActivity_.intent(this).world(world).video(item).type(PlayActivity.TYPE_VIDEO).start();
     }
 
     @Override public void setPageInfo() {

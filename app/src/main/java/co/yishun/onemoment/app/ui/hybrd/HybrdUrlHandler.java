@@ -15,6 +15,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.ShareInfo;
+import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.BadgeActivity_;
 import co.yishun.onemoment.app.ui.CreateWorldActivity_;
@@ -116,9 +117,12 @@ public abstract class HybrdUrlHandler {
         } else if (TextUtils.equals(des, "edit")) {
             UserInfoActivity_.intent(context).start();
         } else if (TextUtils.equals(des, "world_square")) {
-            WorldVideosActivity_.intent(context).worldName(args.get(1))
-                    .videosNum(Integer.parseInt(args.get(2))).worldId(args.get(3))
-                    .thumbnail(args.get(4)).forWorld(true).start();
+            World world = new World();
+            world.name=args.get(1);
+            world.videosNum = Integer.parseInt(args.get(2));
+            world._id=args.get(3);
+            world.thumbnail = args.get(4);
+            WorldVideosActivity_.intent(context).world(world).forWorld(true).start();
         } else if (TextUtils.equals(des, "badge")) {
             BadgeActivity_.intent(context).badgeDetail(args.get(1)).start();
         } else if (TextUtils.equals(des, "world")

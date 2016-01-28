@@ -77,15 +77,20 @@ public class OneMomentConverterV4 implements Converter {
                 model = mGson.fromJson(data.get("world"), World.class);
             } else if (rawType == WorldVideo.class) {
                 model = mGson.fromJson(data.get("video"), WorldVideo.class);
-            } else if (rawType == List.class || rawType == ListWithErrorV4.class || rawType == WorldVideoListWithErrorV4.class) {
+            } else if (rawType == List.class || rawType == ListWithErrorV4.class) {
+                Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                if (genericType == WorldVideo.class) {
+                    models = new ListWithErrorV4<>(mGson.fromJson(data.get("videos"), type));
+                } else if (genericType == World.class) {
+                    models = new ListWithErrorV4<>(mGson.fromJson(data.get("worlds"), type));
+                }
+            } else if (rawType == WorldVideoListWithErrorV4.class) {
                 Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 if (genericType == WorldVideo.class) {
                     models = new WorldVideoListWithErrorV4<>(mGson.fromJson(data.get("videos"), type));
                     String key = "world";
                     if (!data.has(key)) key = "today";
                     ((WorldVideoListWithErrorV4) models).world = mGson.fromJson(data.get(key), World.class);
-                } else if (genericType == World.class) {
-                    models = new ListWithErrorV4<>(mGson.fromJson(data.get("worlds"), type));
                 }
             }
         } else {
@@ -99,6 +104,7 @@ public class OneMomentConverterV4 implements Converter {
                 models = new ListWithErrorV4<>(new ArrayList<>(0));
             } else if (rawType == WorldVideoListWithErrorV4.class) {
                 models = new WorldVideoListWithErrorV4<>(new ArrayList<>(0));
+                ((WorldVideoListWithErrorV4) models).world = new World();
             }
         }
 

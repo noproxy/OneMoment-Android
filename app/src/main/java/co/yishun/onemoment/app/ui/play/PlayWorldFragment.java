@@ -26,6 +26,7 @@ import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.modelv4.VideoProvider;
+import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -37,8 +38,7 @@ import co.yishun.onemoment.app.data.FileUtil;
 public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.OnVideoChangeListener,
         VideoTask.OnVideoListener {
     private static final String TAG = "platworld";
-    @FragmentArg String worldName;
-    @FragmentArg String worldId;
+    @FragmentArg WorldProvider world;
     @FragmentArg boolean forWorld;
 
     @ViewById TextView voteCountTextView;
@@ -52,8 +52,8 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
 
     @Background void getData() {
         WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
-                mApiV4.getWorldVideos(worldId, AccountManager.getUserInfo(mContext)._id, order, 6) :
-                mApiV4.getTodayVideos(worldName, offset, 6);
+                mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, order, 6) :
+                mApiV4.getTodayVideos(world.getName(), offset, 6);
         if (videos.size() == 0) {
             if (offset == 0) {
                 onLoadError(R.string.fragment_play_world_video_null);
