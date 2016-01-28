@@ -96,7 +96,6 @@ import static co.yishun.onemoment.app.LogUtil.i;
 @EActivity(R.layout.activity_tag_create)
 public class TagCreateActivity extends BaseActivity
         implements AbstractRecyclerViewAdapter.OnItemClickListener<String> {
-    public static final int REQUEST_CODE_SEARCH = 1;
     private static final String TAG = "TagCreateActivity";
 
     private static final int REQUEST_SELECT_WORLD = 1;
@@ -125,8 +124,6 @@ public class TagCreateActivity extends BaseActivity
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
     private boolean searching = false;
     private LocationClient locationClient;
-    private float tagX;
-    private float tagY;
     private Moment momentToSave;
 
     private boolean forDiary;
@@ -147,14 +144,6 @@ public class TagCreateActivity extends BaseActivity
 
         adapter = new TagSearchAdapter(this, this);
         recyclerView.setAdapter(adapter);
-
-        tagContainer.post(() -> {
-            if (forWorld) {
-                tagX = 50;
-                tagY = 50;
-                addTag(world.getName());
-            }
-        });
 
         videoTypeView.setWorldCheck(forWorld, world.getName());
         videoTypeView.setTodayCheck(forToday);
@@ -295,12 +284,10 @@ public class TagCreateActivity extends BaseActivity
             showSnackMsg(R.string.activity_tag_create_tag_number_error);
             return false;
         }
-        tagX = 50f;
-        tagY = 50f;
         VideoTag videoTag = new VideoTag();
         videoTag.name = tag;
-        videoTag.setX(tagX);
-        videoTag.setY(tagY);
+        videoTag.setX(50);
+        videoTag.setY(50);
         videoTag.type = "words";
         tagContainer.addTag(videoTag);
         return true;
@@ -311,11 +298,7 @@ public class TagCreateActivity extends BaseActivity
             saveToMoment();
         }
         if (forWorld || forToday) {
-            if (tagContainer.getVideoTags().size() == 0) {
-                showSnackMsg(R.string.activity_tag_create_no_tag_error);
-            } else {
-                upload();
-            }
+            upload();
         }
     }
 

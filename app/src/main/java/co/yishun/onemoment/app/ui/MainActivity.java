@@ -151,7 +151,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private void shootWithPermission(View view, boolean forWorld) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).start();
 
         if (!forWorld) {
             goToShootDiary = true;
