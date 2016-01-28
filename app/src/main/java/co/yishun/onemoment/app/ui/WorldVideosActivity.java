@@ -1,7 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
@@ -110,7 +108,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         TransitionManager.go(scene, set);
 
         transImage = (RadioCornerImageView) findViewById(R.id.transImage);
-        Picasso.with(this).load(thumbnail).into(transImage);
+        Picasso.with(this).load(thumbnail).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
 
         appBar.animate().alpha(1).setDuration(200).setStartDelay(400).start();
         recyclerView.animate().alpha(1).setDuration(200).setStartDelay(400).start();
@@ -121,7 +119,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             appBar.setAlpha(0);
             recyclerView.setAlpha(0);
 
-            Picasso.with(this).load(thumbnail).into(transImage);
+            Picasso.with(this).load(thumbnail).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) transImage.getLayoutParams();
             params.topMargin = imageRect.top;
             params.leftMargin = imageRect.left;
