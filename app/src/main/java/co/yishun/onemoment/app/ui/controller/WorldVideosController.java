@@ -20,7 +20,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
-import co.yishun.onemoment.app.api.model.ListWithError;
+import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
@@ -61,8 +61,8 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     }
 
     @Override
-    protected ListWithError<WorldVideo> onLoad() {
-        ListWithError<WorldVideo> list;
+    protected ListErrorProvider<WorldVideo> onLoad() {
+        ListErrorProvider<WorldVideo> list;
         if (mForWorld) {
             list = mApiV4.getWorldVideos(mWorldId, AccountManager.getUserInfo(mContext)._id, order, 6);
             order = list.get(list.size() - 1).order;
@@ -104,7 +104,7 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     }
 
     @Override
-    @UiThread void onLoadEnd(ListWithError<WorldVideo> list) {
+    @UiThread void onLoadEnd(ListErrorProvider<WorldVideo> list) {
         if (list == null || !list.isSuccess()) {
             onLoadError();
             getRecyclerView().hideMoreProgress();

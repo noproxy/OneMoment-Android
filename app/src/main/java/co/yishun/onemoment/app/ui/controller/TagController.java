@@ -15,6 +15,7 @@ import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 
@@ -56,7 +57,7 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
     }
 
     @Override
-    @UiThread void onLoadEnd(ListWithError<TagVideo> list) {
+    @UiThread void onLoadEnd(ListErrorProvider<TagVideo> list) {
 
         if (list == null || !list.isSuccess()) {
             onLoadError();
