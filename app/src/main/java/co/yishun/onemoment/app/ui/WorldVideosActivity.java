@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
-import android.animation.ObjectAnimator;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
@@ -103,13 +104,8 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         transImage = (RadioCornerImageView) findViewById(R.id.transImage);
         Picasso.with(this).load(thumbnail).placeholder(R.drawable.pic_slider_loading).error(R.drawable.pic_slider_loading).into(transImage);
 
-        ObjectAnimator appbarAnimator = ObjectAnimator.ofFloat(appBar, "alpha", 0, 1).setDuration(200);
-        appbarAnimator.setStartDelay(400);
-        appbarAnimator.start();
-
-        ObjectAnimator recyclerAnimator = ObjectAnimator.ofFloat(recyclerView, "alpha", 0, 1).setDuration(200);
-        recyclerAnimator.setStartDelay(400);
-        recyclerAnimator.start();
+        appBar.animate().alpha(1).setDuration(200).setStartDelay(400).start();
+        recyclerView.animate().alpha(1).setDuration(200).setStartDelay(400).start();
     }
 
     @AfterViews void setupViews() {
@@ -162,7 +158,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         toolbar.setTitleTextColor(expendedTitleColor);
         toolbar.setSubtitleTextColor(expendedSubTitleColor);
         String num = String.valueOf(videosNum);
-        SpannableString ss = new SpannableString(num + getString(R.string.fragment_world_suffix_people_count));
+        SpannableString ss = new SpannableString(String.format(getString(R.string.fragment_world_suffix_people_count), videosNum));
         ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
         ab.setTitle(worldName);
