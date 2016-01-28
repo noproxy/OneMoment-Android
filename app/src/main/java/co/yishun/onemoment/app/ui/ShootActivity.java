@@ -25,6 +25,8 @@ import java.io.File;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.api.modelv4.World;
+import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
@@ -58,8 +60,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     // forwarding to MomentCreateActivity
     @Extra boolean forWorld = false;
     @Extra boolean forToday = false;
-    @Extra String worldId;
-    @Extra String worldName;
+    @Extra WorldProvider world;
 
     private ViewGroup sceneRoot;
     @Nullable private CameraGLSurfaceView mCameraGLSurfaceView;
@@ -212,8 +213,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     }
 
     @UiThread(delay = 200) void delayStart(File file) {
-        TagCreateActivity_.intent(this).forWorld(forWorld).forToday(forToday)
-                .worldId(worldId).worldName(worldName).videoPath(file.getPath()).start();
+        TagCreateActivity_.intent(this).forWorld(forWorld).forToday(forToday).world(world).videoPath(file.getPath()).start();
         this.finish();
     }
 

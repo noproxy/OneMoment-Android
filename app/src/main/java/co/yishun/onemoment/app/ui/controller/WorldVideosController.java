@@ -22,6 +22,7 @@ import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.api.modelv4.World;
+import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
@@ -34,12 +35,10 @@ import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
 public class WorldVideosController extends RecyclerController<Integer, SuperRecyclerView, WorldVideo, WorldVideoAdapter.SimpleViewHolder>
         implements OnMoreListener {
     private static final String TAG = "WorldVideoController";
-    private String mWorldId;
-    private String mWorldName;
+    private WorldProvider mWorld;
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private boolean mForWorld;
     private WeakReference<ImageView> mWorldPreview;
-    private String mThumbUrl;
     private int order;
     private boolean mThumbUrlInvalid;
 
@@ -48,12 +47,9 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     }
 
     public void setup(AbstractRecyclerViewAdapter<WorldVideo, WorldVideoAdapter.SimpleViewHolder> adapter,
-                      SuperRecyclerView recyclerView, String worldId, String worldName,
-                      String oldThumbUrl, boolean forWorld, ImageView worldPreview) {
+                      SuperRecyclerView recyclerView, WorldProvider world, boolean forWorld, ImageView worldPreview) {
         mForWorld = forWorld;
-        mWorldId = worldId;
-        mWorldName = worldName;
-        mThumbUrl = oldThumbUrl;
+        mWorld = world;
         mWorldPreview = new WeakReference<>(worldPreview);
         super.setUp(adapter, recyclerView, 0);
         getRecyclerView().setOnMoreListener(this);
@@ -64,15 +60,15 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     protected ListErrorProvider<WorldVideo> onLoad() {
         ListErrorProvider<WorldVideo> list;
         if (mForWorld) {
-            list = mApiV4.getWorldVideos(mWorldId, AccountManager.getUserInfo(mContext)._id, order, 6);
+            list = mApiV4.getWorldVideos(mWorld.getId(), AccountManager.getUserInfo(mContext)._id, order, 6);
             order = list.get(list.size() - 1).order;
         } else {
-            list = mApiV4.getTodayVideos(mWorldName, getOffset(), 6);
+            list = mApiV4.getTodayVideos(mWorld.getName(), getOffset(), 6);
         }
 
         if (mThumbUrlInvalid) {
             World world = ((WorldVideoListWithErrorV4) list).world;
-            mThumbUrl = world.thumbnail;
+            mWorld.setThumb(world.thumbnail);
             getWorldThumb();
         }
 
@@ -81,11 +77,11 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     }
 
     @UiThread void getWorldThumb() {
-        if (TextUtils.isEmpty(mThumbUrl)) {
+        if (TextUtils.isEmpty(mWorld.getThumb())) {
             mThumbUrlInvalid = true;
-            mWorldPreview.get().setImageResource(R.drawable.pic_banner_default);
+            Picasso.with(mContext).load(R.drawable.pic_banner_default).into(mWorldPreview.get());
         } else
-            Picasso.with(mContext).load(mThumbUrl).into(new Target() {
+            Picasso.with(mContext).load(mWorld.getThumb()).into(new Target() {
                 @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     mThumbUrlInvalid = false;
                     mWorldPreview.get().setImageBitmap(bitmap);
@@ -93,12 +89,12 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
 
                 @Override public void onBitmapFailed(Drawable errorDrawable) {
                     mThumbUrlInvalid = true;
-                    mWorldPreview.get().setImageResource(R.drawable.pic_banner_default);
+                    Picasso.with(mContext).load(R.drawable.pic_banner_default).into(mWorldPreview.get());
                 }
 
                 @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
                     mThumbUrlInvalid = true;
-                    mWorldPreview.get().setImageResource(R.drawable.pic_banner_default);
+                    Picasso.with(mContext).load(R.drawable.pic_banner_default).into(mWorldPreview.get());
                 }
             });
     }

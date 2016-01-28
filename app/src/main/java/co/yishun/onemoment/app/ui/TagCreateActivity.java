@@ -71,6 +71,8 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.VideoTag;
+import co.yishun.onemoment.app.api.modelv4.World;
+import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -106,8 +108,7 @@ public class TagCreateActivity extends BaseActivity
     @ViewById ImageView addView;
     @Extra boolean forToday = false;
     @Extra boolean forWorld = false;
-    @Extra String worldId;
-    @Extra String worldName;
+    @Extra WorldProvider world;
 
     /**
      * Just for read extra. if need read to do something, be careful that {@link #nextBtnClicked(View)} will move file to new place.
@@ -131,9 +132,8 @@ public class TagCreateActivity extends BaseActivity
     private boolean forDiary;
 
     @AfterInject void checkExtra() {
-        if (forWorld && (TextUtils.isEmpty(worldName) || TextUtils.isEmpty(worldId))) {
-            forWorld = false;
-            LogUtil.e(TAG, "video for world but world name or world id is empty");
+        if (world == null) {
+            world = new World();
         }
     }
 
@@ -152,11 +152,11 @@ public class TagCreateActivity extends BaseActivity
             if (forWorld) {
                 tagX = 50;
                 tagY = 50;
-                addTag(worldName);
+                addTag(world.getName());
             }
         });
 
-        videoTypeView.setWorldCheck(forWorld, worldName);
+        videoTypeView.setWorldCheck(forWorld, world.getName());
         videoTypeView.setTodayCheck(forToday);
     }
 
@@ -221,7 +221,6 @@ public class TagCreateActivity extends BaseActivity
     @Click(R.id.worldClearView) void clearWorld() {
         if (forWorld) {
             forWorld = false;
-            worldName = null;
             videoTypeView.setWorldCheck(false, null);
         }
     }
@@ -250,7 +249,7 @@ public class TagCreateActivity extends BaseActivity
         }
         defaultTag.add(new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date()));
         if (forWorld) {
-            defaultTag.add(worldName);
+            defaultTag.add(world.getName());
         }
         adapter.addFixedItems(defaultTag);
         locationClient.start();
@@ -282,9 +281,9 @@ public class TagCreateActivity extends BaseActivity
     @OnActivityResult(REQUEST_SELECT_WORLD) void onSelectWorld(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             forWorld = true;
-            worldId = data.getStringExtra(PersonalWorldActivity.KEY_ID);
-            worldName = data.getStringExtra(PersonalWorldActivity.KEY_NAME);
-            videoTypeView.setWorldCheck(true, worldName);
+            world.setId(data.getStringExtra(PersonalWorldActivity.KEY_ID));
+            world.setName(data.getStringExtra(PersonalWorldActivity.KEY_NAME));
+            videoTypeView.setWorldCheck(true, world.getName());
         }
     }
 
@@ -410,7 +409,7 @@ public class TagCreateActivity extends BaseActivity
 
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
         if (forWorld) {
-            WorldVideo worldVideo = apiv4.createWorldVideo(worldId, videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);
+            WorldVideo worldVideo = apiv4.createWorldVideo(world.getId(), videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);
         }
         if (forToday) {
             WorldVideo todayVideo = apiv4.createTodayVideo(videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);

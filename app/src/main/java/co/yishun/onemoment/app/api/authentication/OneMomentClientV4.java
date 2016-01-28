@@ -85,7 +85,7 @@ public class OneMomentClientV4 extends OneMomentClient {
         headers.add(new Header("Authentication", "Basic " + getAuthStr()));
         LogUtil.d(TAG, System.getProperty("http.agent"));
         headers.add(new Header("UserAgent", System.getProperty("http.agent")));
-        headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 7 + ",max-stale"));
+//        headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 7 + ",max-stale"));
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
 
