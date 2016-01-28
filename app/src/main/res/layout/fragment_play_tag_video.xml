@@ -48,6 +48,6 @@
 
     </co.yishun.onemoment.app.ui.view.SquareFrameLayout>
 
-    <include layout="@layout/layout_play_vote"/>
+    <!--<include layout="@layout/layout_play_vote"/>-->
 
 </LinearLayout>
