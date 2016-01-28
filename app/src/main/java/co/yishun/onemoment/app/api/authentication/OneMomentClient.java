@@ -6,16 +6,12 @@ import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import co.yishun.onemoment.app.data.FileUtil;
 import retrofit.client.OkClient;
 import retrofit.mime.TypedInput;
-import retrofit.mime.TypedOutput;
 
 /**
  * Created by Jinge on 2016/1/27.
@@ -29,14 +25,14 @@ public abstract class OneMomentClient extends OkClient {
         super(mOkHttpClient);
     }
 
-    protected abstract byte[] getFakeBody();
-
-    protected abstract byte[] encode(byte[] body) throws IOException;
-
     public static void setUpCache(Context context) {
         Cache cache = new Cache(FileUtil.getCacheDirectory(context, true), CACHE_SIZE);
         mOkHttpClient.setCache(cache);
     }
+
+    protected abstract byte[] getFakeBody();
+
+    protected abstract byte[] encode(byte[] body) throws IOException;
 
     protected class FakeTypeInput implements TypedInput {
         private byte[] mFakeBody = getFakeBody();

@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
@@ -86,6 +87,16 @@ public class OneMomentConverterV4 implements Converter {
                 } else if (genericType == World.class) {
                     models = new ListWithErrorV4<>(mGson.fromJson(data.get("worlds"), type));
                 }
+            }
+        } else {
+            if (rawType == HybrdData.class) {
+                model = new HybrdData();
+            } else if (rawType == World.class) {
+                model = new World();
+            } else if (rawType == WorldVideo.class) {
+                model = new WorldVideo();
+            } else if (rawType == List.class || rawType == ListWithErrorV4.class || rawType == WorldVideoListWithErrorV4.class) {
+                models = new ListWithErrorV4<>(new ArrayList<>(0));
             }
         }
 
