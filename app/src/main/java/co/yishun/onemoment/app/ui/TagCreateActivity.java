@@ -65,12 +65,9 @@ import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.api.APIV4;
-import co.yishun.onemoment.app.api.Misc;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
-import co.yishun.onemoment.app.api.model.UploadToken;
-import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.VideoTag;
+import co.yishun.onemoment.app.api.modelv4.UploadToken;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
@@ -346,8 +343,8 @@ public class TagCreateActivity extends BaseActivity
      */
     @Background void upload() {
         showProgress();
-        Video video = new Video();
-        video.fileName = Constants.WORLD_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id +
+        WorldVideo video = new WorldVideo();
+        video.filename = Constants.WORLD_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id +
                 Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
         File tmp = new File(videoPath);
         File videoFile = new File(FileUtil.getWorldVideoStoreFile(this, video).getPath() + Constants.VIDEO_FILE_SUFFIX);
@@ -356,9 +353,8 @@ public class TagCreateActivity extends BaseActivity
 
         UploadManager uploadManager = new UploadManager();
         d(TAG, "upload " + videoFile.getName());
-        UploadToken token = OneMomentV3.createAdapter().create(Misc.class)
-                .getUploadToken(videoFile.getName());
-        if (token.code <= 0) {
+        UploadToken token = OneMomentV4.createAdapter().create(APIV4.class).getUploadToken(videoFile.getName());
+        if (!token.isSuccess()) {
             e(TAG, "get upload token error: " + token.msg);
             return;
         }
