@@ -40,6 +40,10 @@ public class Video extends ApiModel implements VideoProvider {
         return null;
     }
 
+    @Override public String getNickname() {
+        return null;
+    }
+
     @StringDef({"public", "private"})
     public @interface Type {
     }

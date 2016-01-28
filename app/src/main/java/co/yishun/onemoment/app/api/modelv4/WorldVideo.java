@@ -19,6 +19,7 @@ public class WorldVideo extends ApiModel implements VideoProvider {
     public String downloadUrl;
     public String filename;
     public String avatarUrl;
+    public String nickname;
 
     @Override public String getFilename() {
         return filename;
@@ -34,6 +35,10 @@ public class WorldVideo extends ApiModel implements VideoProvider {
 
     @Override public String getAvatarUrl() {
         return avatarUrl;
+    }
+
+    @Override public String getNickname() {
+        return nickname;
     }
 
     @Override public String getKey() {
