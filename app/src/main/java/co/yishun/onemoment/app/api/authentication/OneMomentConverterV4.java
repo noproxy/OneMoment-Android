@@ -95,8 +95,10 @@ public class OneMomentConverterV4 implements Converter {
                 model = new World();
             } else if (rawType == WorldVideo.class) {
                 model = new WorldVideo();
-            } else if (rawType == List.class || rawType == ListWithErrorV4.class || rawType == WorldVideoListWithErrorV4.class) {
+            } else if (rawType == List.class || rawType == ListWithErrorV4.class) {
                 models = new ListWithErrorV4<>(new ArrayList<>(0));
+            } else if (rawType == WorldVideoListWithErrorV4.class) {
+                models = new WorldVideoListWithErrorV4<>(new ArrayList<>(0));
             }
         }
 
