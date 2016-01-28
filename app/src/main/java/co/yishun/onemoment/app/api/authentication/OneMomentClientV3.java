@@ -2,7 +2,10 @@ package co.yishun.onemoment.app.api.authentication;
 
 import android.support.annotation.Nullable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -36,6 +39,16 @@ public class OneMomentClientV3 extends OneMomentClient {
 
     public static OneMomentClientV3 getCachedClient() {
         return mInstance;
+    }
+
+    @Override protected byte[] getFakeBody() {
+        return OneMomentV3.FAKE_RESPONSE.getBytes(Charset.forName("UTF-8"));
+    }
+
+    @Override protected byte[] encode(byte[] body) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream.write(body);
+        return OneMomentEncoding.encodingStream(outputStream);
     }
 
     @Override public Response execute(Request request) throws IOException {
@@ -85,10 +98,52 @@ public class OneMomentClientV3 extends OneMomentClient {
         return new OmToken1();
     }
 
-    private Token generateOmToken2(Token token1, String url, @Nullable TypedOutput data, long expireTime) throws IOException {
+    private Token generateOmToken2(Token token1, String url,
+                                   @Nullable TypedOutput data, long expireTime) throws IOException {
         int urlEndIndex = url.indexOf('?');
         if (urlEndIndex == -1)
             urlEndIndex = url.length();
         return new OmToken2(token1, url.substring(0, urlEndIndex), data, expireTime);
     }
+
+    private class OneMomentTypedOut implements TypedOutput {
+        private final TypedOutput mTypedOutput;
+        private byte[] mData;
+        private IOException mException;
+
+        public OneMomentTypedOut(TypedOutput typedOutput) {
+            this.mTypedOutput = typedOutput;
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            try {
+                mTypedOutput.writeTo(outputStream);
+                mData = OneMomentEncoding.encodingStream(outputStream);
+            } catch (IOException e) {
+                mException = e;
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override public String fileName() {
+            return mTypedOutput.fileName();
+        }
+
+        @Override public String mimeType() {
+            return "text/plain; charset=UTF-8";
+        }
+
+        @Override public long length() {
+            return mData.length;
+        }
+
+        @Override public void writeTo(OutputStream out) throws IOException {
+            if (mData == null)
+                throw new IOException(mException);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            stream.write(mData);
+            stream.writeTo(out);
+        }
+    }
+
 }
