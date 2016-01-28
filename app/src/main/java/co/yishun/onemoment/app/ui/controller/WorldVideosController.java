@@ -61,9 +61,11 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
         ListErrorProvider<WorldVideo> list;
         if (mForWorld) {
             list = mApiV4.getWorldVideos(mWorld.getId(), AccountManager.getUserInfo(mContext)._id, order, 6);
-            order = list.get(list.size() - 1).order;
         } else {
             list = mApiV4.getTodayVideos(mWorld.getName(), getOffset(), 6);
+        }
+        if (list.isSuccess() && list.size() > 0) {
+            order = list.get(list.size() - 1).order;
         }
 
         if (mThumbUrlInvalid) {
