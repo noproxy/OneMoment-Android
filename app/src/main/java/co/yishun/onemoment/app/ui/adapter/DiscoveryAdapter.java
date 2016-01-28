@@ -33,9 +33,9 @@ public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<World, Discove
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, World item, int position) {
         if (TextUtils.isEmpty(item.thumbnail))
-            holder.itemImageView.setImageResource(R.drawable.pic_slider_loading);
+            holder.itemImageView.setImageResource(R.drawable.pic_banner_default);
         else
-            Picasso.with(mContext).load(item.thumbnail).placeholder(R.drawable.pic_slider_loading).into(holder.itemImageView);
+            Picasso.with(mContext).load(item.thumbnail).placeholder(R.drawable.pic_banner_default).into(holder.itemImageView);
         holder.numTextView.setText(String.format(PeopleSuffix, item.videosNum));
         holder.tagTextView.setText(item.name);
     }

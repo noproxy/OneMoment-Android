@@ -83,7 +83,7 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     @UiThread void getWorldThumb() {
         if (TextUtils.isEmpty(mThumbUrl)) {
             mThumbUrlInvalid = true;
-            mWorldPreview.get().setImageResource(R.drawable.pic_slider_loading);
+            mWorldPreview.get().setImageResource(R.drawable.pic_banner_default);
         } else
             Picasso.with(mContext).load(mThumbUrl).into(new Target() {
                 @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -93,12 +93,12 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
 
                 @Override public void onBitmapFailed(Drawable errorDrawable) {
                     mThumbUrlInvalid = true;
-                    mWorldPreview.get().setImageResource(R.drawable.pic_slider_loading);
+                    mWorldPreview.get().setImageResource(R.drawable.pic_banner_default);
                 }
 
                 @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
                     mThumbUrlInvalid = true;
-                    mWorldPreview.get().setImageResource(R.drawable.pic_slider_loading);
+                    mWorldPreview.get().setImageResource(R.drawable.pic_banner_default);
                 }
             });
     }

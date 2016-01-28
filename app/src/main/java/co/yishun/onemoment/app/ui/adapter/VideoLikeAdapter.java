@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.ui.adapter;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,7 @@ public class VideoLikeAdapter extends AbstractRecyclerViewAdapter<TagVideo, Vide
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, TagVideo item, int position) {
         //TODO there is a video
-        Picasso.with(mContext).load(R.drawable.pic_slider_loading).fit().into(holder.itemImageView);
+        Picasso.with(mContext).load(R.drawable.pic_banner_default).fit().into(holder.itemImageView);
         holder.setUp(item);
     }
 

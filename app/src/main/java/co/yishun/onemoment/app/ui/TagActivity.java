@@ -112,7 +112,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         params.topMargin += top;
         videoImageView.setLayoutParams(params);
 
-        Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_slider_loading).error(R.drawable.pic_slider_loading).into(videoImageView);
+        Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(videoImageView);
     }
 
     @UiThread(delay = 100) @AfterViews void sceneTransition() {
@@ -130,7 +130,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         findViewById(R.id.worldAdd).setOnClickListener(this::addVideo);
         findViewById(R.id.worldShare).setOnClickListener(this::shareWorld);
 
-        Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_slider_loading).error(R.drawable.pic_slider_loading).into(videoImageView);
+        Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(videoImageView);
         videoImageView.setOnClickListener(this::videoImageClick);
 
         int spanCount = 3;
