@@ -19,7 +19,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"/>
 
-    <include
-        layout="@layout/layout_play_vote"/>
+    <!--<include layout="@layout/layout_play_vote"/>-->
 
 </LinearLayout>

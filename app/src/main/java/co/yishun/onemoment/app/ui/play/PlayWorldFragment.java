@@ -111,8 +111,8 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
         videoPlayView.addAvatarUrl(video.getAvatarUrl());
     }
 
-    @Click(R.id.voteCountTextView)
-    @Background void voteClick() {
+//    @Click(R.id.voteCountTextView)
+//    @Background void voteClick() {
 //        voteIndex = videoPlayView.getCurrentIndex();
 //        tagVideos.get(voteIndex).liked = !tagVideos.get(voteIndex).liked;
 //        tagVideos.get(voteIndex).likeNum += tagVideos.get(voteIndex).liked ? 1 : -1;
@@ -122,7 +122,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
 //        } else {
 //            mApiV4.unlikeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
 //        }
-    }
+//    }
 
     @UiThread void refreshUserInfo(int index) {
 //        if (tagVideos.get(index).liked) {
@@ -133,7 +133,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
 //            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
 //        }
 //        voteCountTextView.setText(tagVideos.get(index).likeNum + "");
-//        usernameTextView.setText(tagVideos.get(index).nickname);
+        usernameTextView.setText(tagVideos.get(index).getNickname());
     }
 
 
