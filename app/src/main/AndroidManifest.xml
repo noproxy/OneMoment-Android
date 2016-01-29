@@ -194,6 +194,7 @@
             android:theme="@style/AppTheme.ShareOutputActivity"/>
         <activity
             android:name=".ui.ShareActivity_"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.ShareActivity">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>

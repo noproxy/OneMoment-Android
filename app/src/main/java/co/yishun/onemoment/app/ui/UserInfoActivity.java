@@ -37,8 +37,10 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.account.auth.AuthHelper;
 import co.yishun.onemoment.app.account.auth.LoginListener;
 import co.yishun.onemoment.app.account.auth.OAuthToken;
+import co.yishun.onemoment.app.account.auth.QQHelper;
 import co.yishun.onemoment.app.account.auth.UserInfo;
 import co.yishun.onemoment.app.account.auth.WeiboHelper;
 import co.yishun.onemoment.app.api.Account;
@@ -74,6 +76,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
 
     private Uri croppedProfileUri;
     private boolean avatarUploadOk = false;
+    private AuthHelper mAuthHelper;
 
     @Override
     public void setPageInfo() {
@@ -139,7 +142,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
     void weiboClicked(View view) {
         User user = AccountManager.getUserInfo(this);
         if (TextUtils.isEmpty(user.weiboUid)) {
-            new WeiboHelper(this).login(new LoginListener() {
+            mAuthHelper = new WeiboHelper(this);
+            mAuthHelper.login(new LoginListener() {
                 @Override
                 public void onSuccess(OAuthToken token) {
                     LogUtil.d(TAG, "login success");
@@ -254,6 +258,16 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         locationFragment.setContent(user.location);
     }
 
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (mAuthHelper instanceof QQHelper)
+            ((QQHelper) mAuthHelper).handleIntent(requestCode, resultCode, data);
+
+        if (mAuthHelper instanceof WeiboHelper) {
+            ((WeiboHelper) mAuthHelper).handleIntent(requestCode, resultCode, data);
+        }
+    }
+
     @Override
     public void onPictureSelectedFailed(Exception e) {
 
@@ -364,7 +378,9 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
 
         @Nullable
         @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater,
+                                 @Nullable ViewGroup container,
+                                 @Nullable Bundle savedInstanceState) {
             super.onCreateView(inflater, container, savedInstanceState);
             rootView = (ViewGroup) inflater.inflate(R.layout.fragment_user_info_item, container, false);
             itemTitle = (TextView) rootView.findViewById(R.id.itemTitle);
