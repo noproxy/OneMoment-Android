@@ -42,10 +42,11 @@ import java.util.Locale;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.WorldAPI;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.api.APIV4;
+import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
-import co.yishun.onemoment.app.api.model.ShareInfo;
+import co.yishun.onemoment.app.api.modelv4.ShareInfo;
 import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
@@ -106,9 +107,9 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         TransitionManager.go(scene, set);
 
         transImage = (RadioCornerImageView) findViewById(R.id.transImage);
-        if(TextUtils.isEmpty(world.getThumb())){
+        if (TextUtils.isEmpty(world.getThumb())) {
             Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
-        }else {
+        } else {
             Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
         }
 
@@ -121,9 +122,9 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             appBar.setAlpha(0);
             recyclerView.setAlpha(0);
 
-            if(TextUtils.isEmpty(world.getThumb())){
+            if (TextUtils.isEmpty(world.getThumb())) {
                 Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
-            }else {
+            } else {
                 Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
             }
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) transImage.getLayoutParams();
@@ -206,11 +207,11 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     }
 
     @Click(R.id.worldShare) @Background void shareWorld(View view) {
-        WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
-        ShareInfo shareInfo = worldAPI.shareWorld(world.getName());
+        APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
+        ShareInfo shareInfo = forWorld ? apiv4.shareWorld(world.getName(), AccountManager.getUserInfo(this)._id) :
+                apiv4.shareToday(world.getName(), AccountManager.getUserInfo(this)._id);
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
-
 
     @Click(R.id.videoImageView) void videoImageClick(View v) {
         PlayActivity_.intent(this).world(world).forWorld(forWorld).type(PlayActivity.TYPE_WORLD).start();

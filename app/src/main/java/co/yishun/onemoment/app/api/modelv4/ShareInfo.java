@@ -1,11 +1,9 @@
-package co.yishun.onemoment.app.api.model;
-
-import co.yishun.onemoment.app.api.modelv4.ShareInfoProvider;
+package co.yishun.onemoment.app.api.modelv4;
 
 /**
  * Created by Jinge on 2015/12/11.
  */
-public class ShareInfo extends ApiModel implements ShareInfoProvider{
+public class ShareInfo extends ApiModel implements ShareInfoProvider {
     public String imageUrl;
     public String link;
     public String title;

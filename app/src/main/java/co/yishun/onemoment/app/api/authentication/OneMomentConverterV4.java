@@ -22,6 +22,7 @@ import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.api.modelv4.ApiModel;
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
+import co.yishun.onemoment.app.api.modelv4.ShareInfo;
 import co.yishun.onemoment.app.api.modelv4.UploadToken;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
@@ -72,14 +73,12 @@ public class OneMomentConverterV4 implements Converter {
 
         if (TextUtils.equals(error, "Ok")) {
             JsonObject data = jsonObject.getAsJsonObject("data");
-            if (rawType == HybrdData.class) {
-                model = mGson.fromJson(data, HybrdData.class);
+            if (rawType == HybrdData.class || rawType == UploadToken.class || rawType == ShareInfo.class) {
+                model = mGson.fromJson(data, rawType);
             } else if (rawType == World.class) {
                 model = mGson.fromJson(data.get("world"), World.class);
             } else if (rawType == WorldVideo.class) {
                 model = mGson.fromJson(data.get("video"), WorldVideo.class);
-            } else if (rawType == UploadToken.class) {
-                model = mGson.fromJson(data, UploadToken.class);
             } else if (rawType == List.class || rawType == ListWithErrorV4.class) {
                 Type genericType = ((ParameterizedType) type).getActualTypeArguments()[0];
                 if (genericType == WorldVideo.class) {
@@ -99,13 +98,15 @@ public class OneMomentConverterV4 implements Converter {
         } else {
             if (rawType == HybrdData.class) {
                 model = new HybrdData();
+            } else if (rawType == UploadToken.class) {
+                model = new UploadToken();
+            } else if (rawType == ShareInfo.class) {
+                model = new ShareInfo();
             } else if (rawType == World.class) {
                 model = new World();
             } else if (rawType == WorldVideo.class) {
                 model = new WorldVideo();
-            } else if (rawType == UploadToken.class) {
-                model = new UploadToken();
-            }else if (rawType == List.class || rawType == ListWithErrorV4.class) {
+            } else if (rawType == List.class || rawType == ListWithErrorV4.class) {
                 models = new ListWithErrorV4<>(new ArrayList<>(0));
             } else if (rawType == WorldVideoListWithErrorV4.class) {
                 models = new WorldVideoListWithErrorV4<>(new ArrayList<>(0));
