@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,13 +19,16 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.WorldAPI;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
-import co.yishun.onemoment.app.api.model.ShareInfo;
-import co.yishun.onemoment.app.api.model.TagVideo;
-import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.account.AccountManager;
+import co.yishun.onemoment.app.api.APIV4;
+import co.yishun.onemoment.app.api.authentication.OneMomentV4;
+import co.yishun.onemoment.app.api.modelv4.ShareInfo;
 import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -59,6 +63,9 @@ public class PlayActivity extends BaseActivity {
     @AfterViews void setupView() {
         fragmentManager = getSupportFragmentManager();
         setupToolbar(this, toolbar);
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        if (!forWorld && !TextUtils.equals(today, world.getName()))
+            findViewById(R.id.worldAdd).setVisibility(View.GONE);
 
         switch (type) {
             case TYPE_VIDEO:
@@ -99,9 +106,10 @@ public class PlayActivity extends BaseActivity {
     }
 
     @Click(R.id.worldShare) @Background void shareWorld(View view) {
-        WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
-//        ShareInfo shareInfo = worldAPI.shareWorld(worldTag.name);
-//        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
+        APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
+        ShareInfo shareInfo = forWorld ? apiv4.shareWorld(world.getName(), AccountManager.getUserInfo(this)._id) :
+                apiv4.shareToday(world.getName(), AccountManager.getUserInfo(this)._id);
+        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 
     @Override

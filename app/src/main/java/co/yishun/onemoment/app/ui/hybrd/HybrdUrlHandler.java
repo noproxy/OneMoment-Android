@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
-import co.yishun.onemoment.app.api.model.ShareInfo;
+import co.yishun.onemoment.app.api.modelv4.ShareInfo;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.ui.BadgeActivity_;
@@ -42,7 +42,7 @@ public abstract class HybrdUrlHandler {
     public static final String FUNC_FINISH = "finish";
     public static final String FUNC_GET_ENV = "getEnv";
     public static final String FUNC_LOAD = "load";
-    public static final String FUNC_GET_BASIC_AUTH_HEADER ="getBasicAuthHeader";
+    public static final String FUNC_GET_BASIC_AUTH_HEADER = "getBasicAuthHeader";
 
     private static final String TAG = "HybrdUrlHandler";
 
@@ -118,9 +118,9 @@ public abstract class HybrdUrlHandler {
             UserInfoActivity_.intent(context).start();
         } else if (TextUtils.equals(des, "world_square")) {
             World world = new World();
-            world.name=args.get(1);
+            world.name = args.get(1);
             world.videosNum = Integer.parseInt(args.get(2));
-            world._id=args.get(3);
+            world._id = args.get(3);
             world.thumbnail = args.get(4);
             WorldVideosActivity_.intent(context).world(world).forWorld(true).start();
         } else if (TextUtils.equals(des, "badge")) {

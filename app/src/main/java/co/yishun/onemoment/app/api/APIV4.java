@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
+import co.yishun.onemoment.app.api.modelv4.ShareInfo;
 import co.yishun.onemoment.app.api.modelv4.UploadToken;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
@@ -49,6 +50,14 @@ public interface APIV4 {
             @Query("name") String name,
             @Query("offset") int offset,
             @Query("limit") int limit);
+
+    @POST("/world/share_today") @FormUrlEncoded ShareInfo shareToday(
+            @Field("name") String name,
+            @Field("account_id") String userId);
+
+    @POST("world/share") @FormUrlEncoded ShareInfo shareWorld(
+            @Field("world_id") String worldId,
+            @Field("account_id") String userId);
 
     @GET("/misc/upload_token") UploadToken getUploadToken(
             @Query("filename") @Nullable String filename);
