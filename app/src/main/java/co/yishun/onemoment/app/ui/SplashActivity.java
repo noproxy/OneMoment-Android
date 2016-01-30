@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -216,7 +217,7 @@ public class SplashActivity extends BaseActivity {
             int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRID_UPDATE_TIME, 0);
             int lastUnzipTime = preferences.getInt(PREFERENCE_HYBRID_UNZIP_TIME, 0);
             if (lastUnzipTime < lastUpdateTime) {
-                if (hybridFile.length() == 0) {
+                if (hybridFile.length() == 0 || !TextUtils.equals(FileUtil.calculateMD5(hybridFile), preferences.getString(PREFERENCE_HYBRID_MD5, ""))) {
                     FileUtil.copyResToFile(context, R.raw.hybrd_default, hybridFile.getPath());
                 }
                 FileUtil.unZip(hybridFile.getPath(), FileUtil.getInternalFile(context, Constants.HYBRD_UNZIP_DIR).getPath());
