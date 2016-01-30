@@ -106,7 +106,7 @@ public class SplashActivity extends BaseActivity {
         }
         updateCover(coverFile);
 
-        String hybrdFileName = preferences.getString(PREFERENCE_HYBRD_NAME, "hybrd.zip");
+        String hybrdFileName = preferences.getString(PREFERENCE_HYBRD_NAME, "hybrd_default.zip");
         File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
         updateHybrd(hybrdFile);
     }
@@ -181,7 +181,10 @@ public class SplashActivity extends BaseActivity {
     @Background void updateHybrd(File hybrdFile) {
         int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRD_UPDATE_TIME, 0);
         int lastUnzipTime =preferences.getInt(PREFERENCE_HYBRD_UNZIP_TIME, 0);
-        if (lastUnzipTime < lastUpdateTime) {
+        if (lastUnzipTime <= lastUpdateTime) {
+            if (hybrdFile.length() == 0) {
+                FileUtil.copyResToFile(this, R.raw.hybrd_default, hybrdFile.getPath());
+            }
             FileUtil.unZip(hybrdFile.getPath(), FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR).getPath());
             preferences.edit().putInt(PREFERENCE_HYBRD_UNZIP_TIME, (int) Util.unixTimeStamp()).apply();
         }
