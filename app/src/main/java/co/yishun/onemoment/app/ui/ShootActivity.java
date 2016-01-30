@@ -24,8 +24,6 @@ import java.io.File;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.model.WorldTag;
-import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.function.Callback;
@@ -89,7 +87,6 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         sceneRoot = (ViewGroup) findViewById(R.id.linearLayout);
         sceneRoot.setVisibility(View.INVISIBLE);
         sceneRoot.post(() -> {
-            int finalRadius = (int) Math.hypot(sceneRoot.getWidth(), sceneRoot.getHeight());
             // before lollipop, the topMargin start below statusBar
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -98,6 +95,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
                     transitionY -= result;
                 }
             }
+            int finalRadius = (int) Math.hypot(Math.max(transitionX, sceneRoot.getWidth() - transitionX),
+                    Math.max(transitionY, sceneRoot.getHeight() - transitionY));
             SupportAnimator animator = ViewAnimationUtils.createCircularReveal(sceneRoot, transitionX, transitionY, 0, finalRadius);
             LogUtil.d(TAG, transitionX + " " + transitionY + " " + finalRadius);
             animator.setDuration(350);
