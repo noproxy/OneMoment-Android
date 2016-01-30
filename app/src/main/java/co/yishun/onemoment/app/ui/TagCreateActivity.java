@@ -144,6 +144,8 @@ public class TagCreateActivity extends BaseActivity
 
         videoTypeView.setWorldCheck(forWorld, world.getName());
         videoTypeView.setTodayCheck(forToday);
+
+        nextBtn.setEnabled(forDiary || forWorld || forToday);
     }
 
     private void setPreviewImage() {
@@ -197,11 +199,13 @@ public class TagCreateActivity extends BaseActivity
     @Click(R.id.todayTextView) void todayTextViewClick() {
         forToday = !forToday;
         videoTypeView.setTodayCheck(forToday);
+        nextBtn.setEnabled(forDiary || forWorld || forToday);
     }
 
     @Click(R.id.diaryTextView) void diaryTextViewClick() {
         forDiary = !forDiary;
         videoTypeView.setDiaryCheck(forDiary);
+        nextBtn.setEnabled(forDiary || forWorld || forToday);
     }
 
     @Click(R.id.worldClearView) void clearWorld() {
@@ -209,6 +213,7 @@ public class TagCreateActivity extends BaseActivity
             forWorld = false;
             videoTypeView.setWorldCheck(false, null);
         }
+        nextBtn.setEnabled(forDiary || forWorld || forToday);
     }
 
     void setupSearch() {
@@ -271,6 +276,7 @@ public class TagCreateActivity extends BaseActivity
             world.setName(data.getStringExtra(PersonalWorldActivity.KEY_NAME));
             videoTypeView.setWorldCheck(true, world.getName());
         }
+        nextBtn.setEnabled(forDiary || forWorld || forToday);
     }
 
     boolean addTag(String tag) {
