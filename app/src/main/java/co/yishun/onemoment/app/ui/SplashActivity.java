@@ -110,7 +110,7 @@ public class SplashActivity extends BaseActivity {
         // use static AsyncTask to ensure not keeping this activity's reference
         new CoverUpdateTask(this).execute(coverFile);
 
-        String hybrdFileName = preferences.getString(PREFERENCE_HYBRID_NAME, "hybrd.zip");
+        String hybrdFileName = preferences.getString(PREFERENCE_HYBRID_NAME, "hybrd_default.zip");
         File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
         new HybridUpdateTask(this).execute(hybrdFile);
     }
@@ -216,6 +216,9 @@ public class SplashActivity extends BaseActivity {
             int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRID_UPDATE_TIME, 0);
             int lastUnzipTime = preferences.getInt(PREFERENCE_HYBRID_UNZIP_TIME, 0);
             if (lastUnzipTime < lastUpdateTime) {
+                if (hybridFile.length() == 0) {
+                    FileUtil.copyResToFile(context, R.raw.hybrd_default, hybridFile.getPath());
+                }
                 FileUtil.unZip(hybridFile.getPath(), FileUtil.getInternalFile(context, Constants.HYBRD_UNZIP_DIR).getPath());
                 preferences.edit().putInt(PREFERENCE_HYBRID_UNZIP_TIME, (int) Util.unixTimeStamp()).apply();
             }

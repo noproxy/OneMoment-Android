@@ -281,6 +281,29 @@ public class FileUtil {
         }
     }
 
+    public static void copyResToFile(Context context, int id, String path) {
+        InputStream in = context.getResources().openRawResource(id);
+        FileOutputStream out = null;
+        byte[] buff = new byte[1024];
+        int read;
+        try {
+            out = new FileOutputStream(path);
+            while ((read = in.read(buff)) > 0) {
+                out.write(buff, 0, read);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+                if (out != null)
+                    out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static File getInternalFile(Context context, String filename) {
         return new File(context.getFilesDir(), filename);
     }
