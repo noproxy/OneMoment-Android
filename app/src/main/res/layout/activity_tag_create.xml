@@ -68,7 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"
+        android:background="@drawable/bg_next_btn"
         android:minHeight="48dp"
         android:text="@string/activity_moment_create_next_btn_text"
         android:textColor="@color/textColorPrimaryInverse"
