@@ -34,6 +34,8 @@ public class MeFragment extends ToolbarFragment {
         meWebFragment = CommonWebFragment_.builder().mUrl(url).build();
         getFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, meWebFragment, BaseWebFragment.TAG_WEB).commit();
+
+        meWebFragment.setRefreshable(true);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.home;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +35,8 @@ public class WorldFragment extends ToolbarFragment {
         worldWebFragment = CommonWebFragment_.builder().mUrl(url).build();
         getFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, worldWebFragment, BaseWebFragment.TAG_WEB).commit();
+
+        worldWebFragment.setRefreshable(true);
     }
 
     @Override protected int getTitleDrawableRes() {
