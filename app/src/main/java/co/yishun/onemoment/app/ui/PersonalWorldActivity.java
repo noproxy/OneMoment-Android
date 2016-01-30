@@ -32,6 +32,8 @@ public class PersonalWorldActivity extends BaseWebActivity {
     @AfterViews void setupViews() {
         setupToolbar();
         setupFragment();
+
+        mWebFragment.setRefreshable(true);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {

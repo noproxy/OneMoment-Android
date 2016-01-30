@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.support.annotation.CallSuper;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.webkit.WebResourceError;
@@ -24,8 +25,6 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.text.Format;
-import java.util.Formatter;
 import java.util.List;
 
 import co.yishun.onemoment.app.BuildConfig;
@@ -49,6 +48,7 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private static final String TAG = "BaseWebFragment";
 
+    @ViewById protected SwipeRefreshLayout swipeRefreshLayout;
     @ViewById protected WebView webView;
 
     protected BaseActivity mActivity;
@@ -58,6 +58,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     protected int posY;
     protected float touchX;
     protected float touchY;
+    protected boolean mRefreshable;
 
     @FragmentArg protected String mUrl;
     @FragmentArg protected String mArg;
@@ -113,6 +114,22 @@ public abstract class BaseWebFragment extends BaseFragment {
             posY = location[1];
         });
         webView.loadUrl(mUrl);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (mRefreshable) reload();
+        });
+    }
+
+    public void setRefreshable(boolean refreshable) {
+        mRefreshable = refreshable;
+    }
+
+    public void reload() {
+        webView.reload();
+    }
+
+    private void loadOver() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void webGetEnv(List<String> args) {
@@ -222,6 +239,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         return mHybrdDir;
     }
 
+    public interface WebViewLoadListener {
+        void loadOver();
+    }
+
     private class BaseWebClient extends WebViewClient {
 
         private HybrdUrlHandler urlHandler = new HybrdUrlHandler() {
@@ -250,6 +271,11 @@ public abstract class BaseWebFragment extends BaseFragment {
                 return true;
             }
         };
+
+        @Override public void onPageFinished(WebView view, String url) {
+            loadOver();
+            super.onPageFinished(view, url);
+        }
 
         @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
             url = HybrdUrlHandler.urlDecode(url);
