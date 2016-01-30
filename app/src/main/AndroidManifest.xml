@@ -170,13 +170,8 @@
             android:theme="@style/AppTheme.PlayActivity">
         </activity>
         <activity
-            android:name=".ui.VideoEditActivity_"
-            android:parentActivityName=".ui.MainActivity_"
-            android:theme="@style/AppTheme.TagCreateActivity"/>
-        <activity
             android:name=".ui.TagCreateActivity_"
-            android:theme="@style/AppTheme.TagCreateActivity"
-            android:parentActivityName=".ui.VideoEditActivity_"/>
+            android:theme="@style/AppTheme.TagCreateActivity"/>
         <activity
             android:name=".ui.UserInfoActivity_"
             android:parentActivityName=".ui.MainActivity_"
@@ -203,10 +198,6 @@
             android:name=".ui.GuideActivity_"
             android:theme="@style/AppTheme.GuideActivity">
         </activity>
-        <activity
-            android:name=".ui.UrlDetailActivity_"
-            android:parentActivityName=".ui.MainActivity_"
-            android:theme="@style/AppTheme"/>
         <activity android:name=".ui.hybrd.CommonWebActivity_">
 
         </activity>
