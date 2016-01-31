@@ -18,6 +18,11 @@ import android.webkit.WebViewClient;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EFragment;
@@ -25,14 +30,19 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import co.yishun.onemoment.app.BuildConfig;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.authentication.OneMomentClientV4;
+import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
+import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
+import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.ui.PersonalWorldActivity;
 import co.yishun.onemoment.app.ui.SplashActivity;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -76,6 +86,11 @@ public abstract class BaseWebFragment extends BaseFragment {
     @Override public void onDestroy() {
         super.onDestroy();
         webView.clearCache(false);
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        if (mRefreshable) reload();
     }
 
     @AfterInject void setDefault() {
@@ -125,7 +140,8 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     public void reload() {
-        webView.reload();
+        if (webView != null)
+            webView.reload();
     }
 
     private void loadOver() {
@@ -188,6 +204,29 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private void webAuth(List<String> args) {
         webView.loadUrl(String.format(toJs(OneMomentClientV4.getAuthStr()), HybrdUrlHandler.FUNC_GET_BASIC_AUTH_HEADER));
+    }
+
+    private void webGetDiary(List<String> args) {
+        String startDate = args.get(0);
+        int numRequest = Integer.parseInt(args.get(1));
+        try {
+            Dao<Moment, Integer> momentDao = OpenHelperManager.getHelper(mActivity, MomentDatabaseHelper.class).getDao(Moment.class);
+            List<Moment> moments = momentDao.queryBuilder().limit(numRequest).where().ge("time", startDate).and().eq("owner", AccountManager.getUserInfo(mActivity)._id).query();
+
+            Gson gson = new Gson();
+            JsonArray jsonArray = new JsonArray();
+            for (Moment m : moments) {
+                JsonObject filename = new JsonObject();
+                filename.addProperty("filename",m.getPath());
+                jsonArray.add(filename);
+            }
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("videos_num", moments.size());
+            jsonObject.add("videos", jsonArray);
+            webView.loadUrl(String.format(toJs(gson.toJson(jsonObject)), HybrdUrlHandler.FUNC_GET_DIARY));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendFinish() {
@@ -265,6 +304,8 @@ public abstract class BaseWebFragment extends BaseFragment {
                     webLoad(urlModel.args);
                 } else if (TextUtils.equals(urlModel.call, FUNC_GET_BASIC_AUTH_HEADER)) {
                     webAuth(urlModel.args);
+                } else if (TextUtils.equals(urlModel.call, FUNC_GET_DIARY)) {
+                    webGetDiary(urlModel.args);
                 } else {
                     LogUtil.i(TAG, "unknown call type");
                 }
