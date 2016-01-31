@@ -43,6 +43,7 @@ public abstract class HybrdUrlHandler {
     public static final String FUNC_GET_ENV = "getEnv";
     public static final String FUNC_LOAD = "load";
     public static final String FUNC_GET_BASIC_AUTH_HEADER = "getBasicAuthHeader";
+    public static final String FUNC_GET_DIARY = "getDiary";
 
     private static final String TAG = "HybrdUrlHandler";
 
