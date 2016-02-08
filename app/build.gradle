@@ -161,7 +161,10 @@ repositories {
     }
 }
 
-dependencies { compile 'co.yishun.library:momentcalendar:0.1.4' }
+dependencies {
+    compile 'co.yishun.library:momentcalendar:0.1.4'
+    compile 'co.yishun.library:datacenter:0.0.1'
+}
 
 repositories {
     maven {
