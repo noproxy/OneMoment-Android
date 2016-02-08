@@ -22,8 +22,8 @@ public abstract class TabPagerFragment extends ToolbarFragment {
 
     private ViewPager mViewPager;
 
-    protected abstract
-    @ArrayRes int getTabTitleArrayResources();
+    @ArrayRes
+    protected abstract int getTabTitleArrayResources();
 
     private PagerAdapter getViewPager(LayoutInflater inflater) {
         String titles[] = getResources().getStringArray(getTabTitleArrayResources());
@@ -57,13 +57,13 @@ public abstract class TabPagerFragment extends ToolbarFragment {
         };
     }
 
-    protected abstract
-    @NonNull View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
+    @NonNull
+    protected abstract View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
 
-    protected abstract
-    @LayoutRes int getContentViewId(Bundle savedInstanceState);
+    @LayoutRes
+    protected abstract int getContentViewId(Bundle savedInstanceState);
 
-    protected int getCurrentItem(){
+    protected int getCurrentItem() {
         return mViewPager.getCurrentItem();
     }
 
