@@ -131,7 +131,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.7.4'
 
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
-    compile 'com.squareup.okhttp3:okhttp:3.1.0'
+    compile 'com.squareup.okhttp3:okhttp:3.1.1'
 
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
