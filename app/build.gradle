@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
+
+plugins {
+    id "me.tatarka.retrolambda" version "3.3.0-beta4" // to support instant run
+}
 
 
 Properties properties = new Properties()
