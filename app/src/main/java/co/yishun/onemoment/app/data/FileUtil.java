@@ -25,11 +25,9 @@ import co.yishun.onemoment.app.config.Constants;
 import static co.yishun.onemoment.app.config.Constants.URL_HYPHEN;
 
 /**
- * Util to create storing paths of videos, images and read information from those file name.
- * <p>
- * You should always give a {@link QiniuKeyProvider} to provide a standard naming part for images and videos.
- * <p>
- * Created by Carlos on 2015/8/21.
+ * Util to create storing paths of videos, images and read information from those file name. <p> You
+ * should always give a {@link QiniuKeyProvider} to provide a standard naming part for images and
+ * videos. <p> Created by Carlos on 2015/8/21.
  */
 public class FileUtil {
     public static final String MOMENT_STORE_DIR = "moment";
@@ -129,9 +127,8 @@ public class FileUtil {
     }
 
     /**
-     * return media type by file path.
-     * <p>
-     * You must ensure the file is one of {@link Type}. Otherwise it may cause wrong result.
+     * return media type by file path. <p> You must ensure the file is one of {@link Type}.
+     * Otherwise it may cause wrong result.
      *
      * @param filePath of the media file
      * @return type of the media file
@@ -170,7 +167,33 @@ public class FileUtil {
         return new File(getCacheDirectory(context, false), "video-" + System.currentTimeMillis() + ".mp4");
     }
 
+    /*
+    * for cache normal
+    */
     public static File getCacheDirectory(Context context, boolean preferExternal) {
+        File appCacheDir = null;
+
+        if (preferExternal && Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            appCacheDir = getExternalDirectory(context);
+        }
+
+        if (appCacheDir == null) {
+            appCacheDir = context.getCacheDir();
+        }
+
+        if (appCacheDir == null) {
+            String cacheDirPath = "/data/data/" + context.getPackageName() + "/cache_short/";
+            LogUtil.d(FileUtil.class.getName(), "Can't define system cache directory! use " + cacheDirPath);
+            appCacheDir = new File(cacheDirPath);
+        }
+
+        return appCacheDir;
+    }
+
+    /*
+     * for cache only
+     */
+    public static File getLongCacheDirectory(Context context, boolean preferExternal) {
         File appCacheDir = null;
 
         if (preferExternal && Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -220,10 +243,9 @@ public class FileUtil {
     }
 
     /**
-     * Copy file from {@code src} to {@code dst}.
-     * {@link File#renameTo(File)} cannot move file from internal storage to external storage.
-     * This method won't delete the {@code src} file.
-     * If you want to move instead of copy, you should delete the {@code src} file.
+     * Copy file from {@code src} to {@code dst}. {@link File#renameTo(File)} cannot move file from
+     * internal storage to external storage. This method won't delete the {@code src} file. If you
+     * want to move instead of copy, you should delete the {@code src} file.
      *
      * @return true, if the copy success; false, otherwise.
      */
