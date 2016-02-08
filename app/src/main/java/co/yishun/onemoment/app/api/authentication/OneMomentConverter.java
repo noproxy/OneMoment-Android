@@ -17,6 +17,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.ApiModel;
+import co.yishun.onemoment.app.api.model.ApiModel.CacheType;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.Domain;
@@ -37,24 +38,25 @@ import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 
 /**
- * Convert between body and ApiModel Object.
- * <p>
- * Created by Carlos on 2015/8/8.
+ * Convert between body and ApiModel Object. <p> Created by Carlos on 2015/8/8.
  */
 public class OneMomentConverter implements Converter {
     private static final String TAG = "OneMomentConverter";
     private final Gson mGson;
+    private final CacheType mCacheType;
     private JsonParser mJsonParser = new JsonParser();
 
-    public OneMomentConverter() {
+    public OneMomentConverter(CacheType type) {
         // we should custom TypeAdapter to fit ApiModel structure
+        mCacheType = type;
         mGson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
     }
 
-    @Override
     /**
      * Decode the encrypted body, then use Gson convert to Object
-     */ public Object fromBody(TypedInput body, Type type) throws ConversionException {
+     */
+    @Override
+    public Object fromBody(TypedInput body, Type type) throws ConversionException {
         String json = OneMomentEncoding.decode(body);
         int code;
         String msg;
@@ -151,11 +153,16 @@ public class OneMomentConverter implements Converter {
             models.code = code;
             models.errorCode = errorCode;
             models.msg = msg;
+            models.cacheType = mCacheType;
+            for (ApiModel apiModel : models) {
+                apiModel.cacheType = mCacheType;
+            }
             return models;
         }
         if (model == null) {
             model = new ApiModel();
         }
+        model.cacheType = mCacheType;
         model.msg = msg;
         model.code = code;
         model.errorCode = errorCode;
@@ -165,7 +172,8 @@ public class OneMomentConverter implements Converter {
     /**
      * Just convert Object to json but not encrypted, do it later in Client.
      */
-    @Override public TypedOutput toBody(Object object) {
+    @Override
+    public TypedOutput toBody(Object object) {
         // will be encoded in OneMomentClient, so don't encode here
         String json = mGson.toJson(object);
         LogUtil.i(TAG, object + ", " + json);
@@ -184,19 +192,23 @@ public class OneMomentConverter implements Converter {
             this.mimeType = "application/json; charset=" + encode;
         }
 
-        @Override public String fileName() {
+        @Override
+        public String fileName() {
             return null;
         }
 
-        @Override public String mimeType() {
+        @Override
+        public String mimeType() {
             return mimeType;
         }
 
-        @Override public long length() {
+        @Override
+        public long length() {
             return jsonBytes.length;
         }
 
-        @Override public void writeTo(OutputStream out) throws IOException {
+        @Override
+        public void writeTo(OutputStream out) throws IOException {
             out.write(jsonBytes);
         }
     }

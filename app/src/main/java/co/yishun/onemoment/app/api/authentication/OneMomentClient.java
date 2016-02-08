@@ -21,6 +21,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.Util;
+import co.yishun.onemoment.app.api.model.ApiModel.CacheType;
 import co.yishun.onemoment.app.data.FileUtil;
 import retrofit.client.Header;
 import retrofit.client.OkClient;
@@ -33,31 +34,46 @@ import static co.yishun.onemoment.app.LogUtil.i;
 
 
 /**
- * Custom client to replace request with double token verified one. And encrypted body if have.
- * <p>
+ * Custom client to replace request with double token verified one. And encrypted body if have. <p>
  * Created by Carlos on 2015/8/5.
  */
 public class OneMomentClient extends OkClient {
     public static final String TAG = "OneMomentClient";
     public static final int DEFAULT_EXPIRE_TIME = 10;
     public static final int CACHE_SIZE = 1024 * 1024 * 10;
-    private static final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private static OneMomentClient mInstance = new OneMomentClient();
+    private static final OkHttpClient mCacheOkHttpClient = new OkHttpClient();
+    private static final OkHttpClient mCacheOnlyOkHttpClient = new OkHttpClient();
+    private static final OneMomentClient mCacheInstance = new OneMomentClient(mCacheOkHttpClient, CacheType.NORMAL);
+    private static final OneMomentClient mCacheOnlyInstance = new OneMomentClient(mCacheOnlyOkHttpClient, CacheType.CACHE_ONLY);
+    private final CacheType mCacheType;
 
-    private OneMomentClient() {
-        super(mOkHttpClient);
+
+    private OneMomentClient(OkHttpClient client, CacheType cacheType) {
+        super(client);
+        mCacheType = cacheType;
     }
 
-    public static OneMomentClient getCachedClient() {
-        return mInstance;
+    public static OneMomentClient getCacheClient() {
+        return mCacheInstance;
     }
 
-    public void setUpCache(Context context) {
-        Cache cache = new Cache(FileUtil.getCacheDirectory(context, true), CACHE_SIZE);
-        mOkHttpClient.setCache(cache);
+    public static OneMomentClient getCacheOnlyClient() {
+        return mCacheOnlyInstance;
     }
 
-    @Override public Response execute(Request request) throws IOException {
+    public static OneMomentClient newNoCacheClient() {
+        return new OneMomentClient(new OkHttpClient(), CacheType.NORMAL);
+    }
+
+    public static void setUpCache(Context context) {
+        Cache cacheOnly = new Cache(FileUtil.getLongCacheDirectory(context, true), CACHE_SIZE);
+        mCacheOnlyOkHttpClient.setCache(cacheOnly);
+        Cache cacheNormal = new Cache(FileUtil.getCacheDirectory(context, true), CACHE_SIZE);
+        mCacheOkHttpClient.setCache(cacheNormal);
+    }
+
+    @Override
+    public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
 
@@ -76,8 +92,18 @@ public class OneMomentClient extends OkClient {
         headers.add(new Header("Om-et", String.valueOf(expiredTime)));
         headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
 
-        // one week cached
-        headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 7 + ",max-stale"));
+        switch (mCacheType) {
+            case CACHE_ONLY:
+                // one month cached
+                headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 30 + ",max-stale"));
+                break;
+            case NORMAL:
+                // one minute
+                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
+                break;
+            default:
+                break;
+        }
 
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
@@ -130,19 +156,23 @@ public class OneMomentClient extends OkClient {
 
         }
 
-        @Override public String fileName() {
+        @Override
+        public String fileName() {
             return mTypedOutput.fileName();
         }
 
-        @Override public String mimeType() {
+        @Override
+        public String mimeType() {
             return "text/plain; charset=UTF-8";
         }
 
-        @Override public long length() {
+        @Override
+        public long length() {
             return mData.length;
         }
 
-        @Override public void writeTo(OutputStream out) throws IOException {
+        @Override
+        public void writeTo(OutputStream out) throws IOException {
             if (mData == null)
                 throw new IOException(mException);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -154,15 +184,18 @@ public class OneMomentClient extends OkClient {
     private static class FakeTypeInput implements TypedInput {
         private byte[] mFakeBody = OneMomentV3.FAKE_RESPONSE.getBytes(Charset.forName("UTF-8"));
 
-        @Override public String mimeType() {
+        @Override
+        public String mimeType() {
             return "text/plain charset=UTF-8";
         }
 
-        @Override public long length() {
+        @Override
+        public long length() {
             return mFakeBody.length;
         }
 
-        @Override public InputStream in() throws IOException {
+        @Override
+        public InputStream in() throws IOException {
             // we should encrypt the fake body
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             outputStream.write(mFakeBody);

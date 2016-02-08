@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.api;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;

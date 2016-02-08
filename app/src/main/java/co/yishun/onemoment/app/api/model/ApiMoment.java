@@ -1,18 +1,18 @@
 package co.yishun.onemoment.app.api.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.SerializedName;
 import com.sina.weibo.sdk.utils.LogUtil;
 
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.model.Moment;
 
 /**
- * This is a model represent CompatMoment from Server API 2.0
- * Created by Carlos on 2015/8/8.
+ * This is a model represent CompatMoment from Server API 2.0 Created by Carlos on 2015/8/8.
  */
-public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuKeyProvider, Moment.MomentProvider {
+public class ApiMoment extends ApiModel implements Comparable, QiniuKeyProvider, Moment.MomentProvider {
     private static final String TAG = "ApiMoment";
     public String mimeType = "video/mp4";
     public String hash;
@@ -59,11 +59,12 @@ public class ApiMoment extends ApiModel implements Comparable<ApiMoment>, QiniuK
     }
 
     @Override
-    public int compareTo(final @NonNull ApiMoment apiMoment) {
-        return (int) (putTime - apiMoment.putTime);
+    public int compareTo(final @NonNull Object apiMoment) {
+        return (int) (putTime - ((ApiMoment) apiMoment).putTime);
     }
 
-    @Override public String getKey() {
+    @Override
+    public String getKey() {
 //        if (BuildConfig.DEBUG && !key.equals(getOwnerID() + Constants.URL_HYPHEN + this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp() + Constants.VIDEO_FILE_SUFFIX))
 //            throw new AssertionError("qiniu key is not corroding to server's");
         // because of history, there are some key not accorded with standard.

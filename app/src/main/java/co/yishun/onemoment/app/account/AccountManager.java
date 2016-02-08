@@ -1,21 +1,17 @@
 package co.yishun.onemoment.app.account;
 
+import com.google.gson.Gson;
+
 import android.accounts.Account;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import co.yishun.onemoment.app.LogUtil;
@@ -52,6 +48,7 @@ public class AccountManager {
     }
 
     public static boolean isLogin(Context context) {
+        context = context.getApplicationContext();
         if (getAccount(context) == null) return false;
         else if (getUserInfo(context) == null) {
             deleteAccount(context);
@@ -61,6 +58,7 @@ public class AccountManager {
     }
 
     public static void saveAccount(Context context, User user) {
+        context = context.getApplicationContext();
         Account newAccount = new Account(user.nickname, ACCOUNT_TYPE);
         Bundle bundle = new Bundle();
         bundle.putString(ACCOUNT_ID_KEY, user._id);
@@ -70,11 +68,13 @@ public class AccountManager {
     }
 
     public static String getAccountId(Context context) {
+        context = context.getApplicationContext();
         account = getAccount(context);
         return getAccountManager(context).getUserData(account, ACCOUNT_ID_KEY);
     }
 
     public static void deleteAccount(Context context) {
+        context = context.getApplicationContext();
         account = getAccount(context);
         mUser = null;
         deleteUserInfo(context);
@@ -85,11 +85,11 @@ public class AccountManager {
     }
 
     /**
-     * delete account create in version 1.x
-     * because {@link Account#name} of account in 1.x equals {@link User#_id}, while
-     * {@link Account#name} of account in 1.x equals {@link User#nickname}.
+     * delete account create in version 1.x because {@link Account#name} of account in 1.x equals
+     * {@link User#_id}, while {@link Account#name} of account in 1.x equals {@link User#nickname}.
      */
     public static void deleteOldAccount(Context context, User user) {
+        context = context.getApplicationContext();
         Account[] accounts = getAccountManager(context).getAccountsByType(ACCOUNT_TYPE);
         for (Account a : accounts) {
             if (TextUtils.equals(a.name, user._id)) {
@@ -101,6 +101,7 @@ public class AccountManager {
     }
 
     public static boolean updateOrCreateUserInfo(Context context, User user) {
+        context = context.getApplicationContext();
         deleteUserInfo(context);
         return saveUserInfo(context, user);
     }
@@ -152,10 +153,11 @@ public class AccountManager {
             mUser = null;
     }
 
-    public static User getUserInfo(Context con) {
+    public static User getUserInfo(Context context) {
         //TODO user info file check and download
+        context = context.getApplicationContext();
         if (mUser == null) {
-            loadUserInfo(con);
+            loadUserInfo(context.getApplicationContext());
         }
         return mUser;
     }
