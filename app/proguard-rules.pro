@@ -142,6 +142,12 @@
     @retrofit.http.* <methods>;
 }
 
+# for retrofit2
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
 # for steamsupport
 -dontwarn java8.**
 #-keep class java8.**
