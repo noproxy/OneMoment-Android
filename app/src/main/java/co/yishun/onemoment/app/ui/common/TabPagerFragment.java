@@ -16,16 +16,23 @@ import android.view.ViewGroup;
 import co.yishun.onemoment.app.R;
 
 /**
+ * Abstract fragment encapsulate the view pager.
+ *
  * Created by yyz on 7/21/15.
  */
 public abstract class TabPagerFragment extends ToolbarFragment {
 
     private ViewPager mViewPager;
 
+    /**
+     * retrieve the title text resources array for all tabs.
+     *
+     * return the array resources id for tabs's titles.
+     */
     @ArrayRes
     protected abstract int getTabTitleArrayResources();
 
-    private PagerAdapter getViewPager(LayoutInflater inflater) {
+    protected final PagerAdapter getViewPager(LayoutInflater inflater) {
         String titles[] = getResources().getStringArray(getTabTitleArrayResources());
         return new PagerAdapter() {
             @Override
@@ -57,13 +64,26 @@ public abstract class TabPagerFragment extends ToolbarFragment {
         };
     }
 
+    /**
+     * create view of the page at the position
+     *
+     * @param inflater  for inflater layout
+     * @param container the parent of the view
+     * @param position  where the view will be placed.
+     * @return view oth the page.
+     */
     @NonNull
     protected abstract View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position);
 
+    /**
+     * get content view id of the fragment.
+     *
+     * @return layout resource id
+     */
     @LayoutRes
     protected abstract int getContentViewId(Bundle savedInstanceState);
 
-    protected int getCurrentItem() {
+    protected final int getCurrentItem() {
         return mViewPager.getCurrentItem();
     }
 
