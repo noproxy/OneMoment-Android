@@ -1,7 +1,5 @@
 package co.yishun.onemoment.app.account.sync.moment;
 
-import android.util.Log;
-
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
