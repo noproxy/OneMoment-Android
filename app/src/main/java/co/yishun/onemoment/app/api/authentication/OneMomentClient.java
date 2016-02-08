@@ -33,31 +33,35 @@ import static co.yishun.onemoment.app.LogUtil.i;
 
 
 /**
- * Custom client to replace request with double token verified one. And encrypted body if have.
- * <p>
+ * Custom client to replace request with double token verified one. And encrypted body if have. <p>
  * Created by Carlos on 2015/8/5.
  */
 public class OneMomentClient extends OkClient {
     public static final String TAG = "OneMomentClient";
     public static final int DEFAULT_EXPIRE_TIME = 10;
     public static final int CACHE_SIZE = 1024 * 1024 * 10;
-    private static final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private static OneMomentClient mInstance = new OneMomentClient();
+    private static final OkHttpClient mCachedOkHttpClient = new OkHttpClient();
+    private static OneMomentClient mInstance = new OneMomentClient(mCachedOkHttpClient);
 
-    private OneMomentClient() {
-        super(mOkHttpClient);
+    private OneMomentClient(OkHttpClient client) {
+        super(client);
     }
 
     public static OneMomentClient getCachedClient() {
         return mInstance;
     }
 
-    public void setUpCache(Context context) {
-        Cache cache = new Cache(FileUtil.getCacheDirectory(context, true), CACHE_SIZE);
-        mOkHttpClient.setCache(cache);
+    public static OneMomentClient newNoCacheClient() {
+        return new OneMomentClient(new OkHttpClient());
     }
 
-    @Override public Response execute(Request request) throws IOException {
+    public void setUpCache(Context context) {
+        Cache cache = new Cache(FileUtil.getCacheDirectory(context, true), CACHE_SIZE);
+        mCachedOkHttpClient.setCache(cache);
+    }
+
+    @Override
+    public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
 
@@ -130,19 +134,23 @@ public class OneMomentClient extends OkClient {
 
         }
 
-        @Override public String fileName() {
+        @Override
+        public String fileName() {
             return mTypedOutput.fileName();
         }
 
-        @Override public String mimeType() {
+        @Override
+        public String mimeType() {
             return "text/plain; charset=UTF-8";
         }
 
-        @Override public long length() {
+        @Override
+        public long length() {
             return mData.length;
         }
 
-        @Override public void writeTo(OutputStream out) throws IOException {
+        @Override
+        public void writeTo(OutputStream out) throws IOException {
             if (mData == null)
                 throw new IOException(mException);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -154,15 +162,18 @@ public class OneMomentClient extends OkClient {
     private static class FakeTypeInput implements TypedInput {
         private byte[] mFakeBody = OneMomentV3.FAKE_RESPONSE.getBytes(Charset.forName("UTF-8"));
 
-        @Override public String mimeType() {
+        @Override
+        public String mimeType() {
             return "text/plain charset=UTF-8";
         }
 
-        @Override public long length() {
+        @Override
+        public long length() {
             return mFakeBody.length;
         }
 
-        @Override public InputStream in() throws IOException {
+        @Override
+        public InputStream in() throws IOException {
             // we should encrypt the fake body
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             outputStream.write(mFakeBody);
