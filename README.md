@@ -1,6 +1,5 @@
 ## Import
 
-
 ### local properties
 
 You must define those
@@ -13,27 +12,6 @@ You must define those
     KEYSTORE_PATH=/path/to/keystore/file
 
 in your ```local.properties``` file in project root directory.
-
-### Intellij IDEA/Android Studio
-
-Execute ```gradle idea``` under root project, then directly open this project from IDEA or android studio.
-
-### Eclipse
-
-
-Add ```apply plugin: 'eclipse'``` to all projects:
-
-```
-allprojects {
-    repositories {
-        jcenter()
-    }
-    apply plugin: 'eclipse'
-}
-```
-
-Then, execute ```gradle eclipse``` under root project, then directly open this project from eclipse.
-
 
 
 ## Gitignore
@@ -50,6 +28,18 @@ File [.gitignore](.gitignore) has some contains necessary rules. Please keep the
 - Only use UTF-8 encoding file
 - Only use LF line break
 - Never use Non-ASCII character except resource file
+
+## Style
+
+Apply code style from  https://github.com/google/styleguide/blob/gh-pages/intellij-java-google-style.xml.
+
+Step: 
+
+ Download the intellij-java-google-style.xml file from the http://code.google.com/p/google-styleguide/ repo.
+ Copy it into your config/codestyles folder in your intellij/android-studio settings folder. Then restart IDE.
+ Under Settings/Code Style select the google-styleguide as current code style.
+    
+
 
 
 
