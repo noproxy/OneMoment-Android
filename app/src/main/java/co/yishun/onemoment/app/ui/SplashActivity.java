@@ -1,8 +1,10 @@
 package co.yishun.onemoment.app.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,7 +17,6 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -49,10 +50,12 @@ public class SplashActivity extends BaseActivity {
     public static final String PREFERENCE_SPLASH_COVER_NAME = "splash_cover_name";
     public static final String PREFERENCE_SPLASH_STAY = "splash_stay";
     public static final String DEFAULT_SPLASH_COVER_NAME = "splash_cover_0.png";
-    private static final String TAG = "SplashActivity";
+    public static final String TAG = "SplashActivity";
 
-    @ViewById ImageView splashImageView;
-    @ViewById ImageView splashCover;
+    @ViewById
+    ImageView splashImageView;
+    @ViewById
+    ImageView splashCover;
 
     private SharedPreferences preferences;
 
@@ -67,7 +70,7 @@ public class SplashActivity extends BaseActivity {
         }
         preferences = getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
         showProgress(R.string.activity_splash_data_migration);
-        DataMigration.dataInit(this);
+        DataMigration.dataInit(this.getApplicationContext());
         hideProgress();
         delayShowCover();
     }
@@ -81,7 +84,8 @@ public class SplashActivity extends BaseActivity {
         return preferences.getBoolean(PREFERENCE_IS_FIRST_LAUNCH, true);
     }
 
-    @UiThread(delay = 1600) void delayShowCover() {
+    @UiThread(delay = 1600)
+    void delayShowCover() {
         String coverName = preferences.getString(PREFERENCE_SPLASH_COVER_NAME, DEFAULT_SPLASH_COVER_NAME);
         File coverFile = FileUtil.getInternalFile(this, coverName);
         if (coverFile.length() > 0) {
@@ -93,7 +97,8 @@ public class SplashActivity extends BaseActivity {
         } else {
             endWithStartMain();
         }
-        updateCover(coverFile);
+        // use static AsyncTask to ensure not keeping this activity's reference
+        new CoverUpdateTask(this).execute(coverFile);
     }
 
     void endWithStartMain() {
@@ -109,63 +114,75 @@ public class SplashActivity extends BaseActivity {
             EntryActivity_.intent(this).start();
     }
 
-    @Background void updateCover(File coverFile) {
-        LogUtil.d(TAG, "get cover url");
-        Misc misc = OneMomentV3.createAdapter().create(Misc.class);
-        SplashCover splashCover = misc.getSplashCover();
-        long lastUpdateTime = preferences.getLong(PREFERENCE_SPLASH_UPDATE_TIME, 0L);
-
-        if (splashCover.updateTime > lastUpdateTime) {
-            OkHttpClient client = new OkHttpClient();
-            Call call = client.newCall(new Request.Builder().url(splashCover.url).build());
-            InputStream input = null;
-            FileOutputStream output = null;
-            try {
-                Response response = call.execute();
-                if (response.code() == 200) {
-                    input = response.body().byteStream();
-                    long inputLength = response.body().contentLength();
-                    LogUtil.d(TAG, "get image " + splashCover.url + " length " + inputLength);
-                    if (inputLength == 0) {
-                        return;
-                    }
-                    File newCover = new File(coverFile.getParent(), "splash_cover_" + splashCover.updateTime + ".png");
-                    if (newCover.exists()) newCover.delete();
-                    newCover.createNewFile();
-                    LogUtil.d(TAG, "into " + newCover.getPath());
-                    output = new FileOutputStream(newCover);
-
-                    byte data[] = new byte[2048];
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        output.write(data, 0, count);
-                    }
-                    preferences.edit()
-                            .putLong(PREFERENCE_SPLASH_UPDATE_TIME, splashCover.updateTime)
-                            .putInt(PREFERENCE_SPLASH_STAY, splashCover.stay)
-                            .putString(PREFERENCE_SPLASH_COVER_NAME, newCover.getName())
-                            .apply();
-                    coverFile.delete();
-                    LogUtil.i(TAG, "finish image download");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (output != null)
-                        output.close();
-                    if (input != null)
-                        input.close();
-                } catch (IOException ignored) {
-                }
-            }
-        }
-
-    }
-
     @Override
     public void setPageInfo() {
         mIsPage = true;
         mPageName = "SplashActivity";
+    }
+
+    private static final class CoverUpdateTask extends AsyncTask<File, Void, Void> {
+        private final SharedPreferences preferences;
+
+        private CoverUpdateTask(final Context context) {
+            this.preferences = context.getApplicationContext().getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
+        }
+
+
+        @Override
+        protected Void doInBackground(File... params) {
+            File coverFile = params[0];
+            LogUtil.d(TAG, "get cover url");
+            Misc misc = OneMomentV3.createAdapter().create(Misc.class);
+            SplashCover splashCover = misc.getSplashCover();
+            long lastUpdateTime = preferences.getLong(PREFERENCE_SPLASH_UPDATE_TIME, 0L);
+
+            if (splashCover.updateTime > lastUpdateTime) {
+                OkHttpClient client = new OkHttpClient();
+                Call call = client.newCall(new Request.Builder().url(splashCover.url).build());
+                InputStream input = null;
+                FileOutputStream output = null;
+                try {
+                    Response response = call.execute();
+                    if (response.code() == 200) {
+                        input = response.body().byteStream();
+                        long inputLength = response.body().contentLength();
+                        LogUtil.d(TAG, "get image " + splashCover.url + " length " + inputLength);
+                        if (inputLength == 0) {
+                            return null;
+                        }
+                        File newCover = new File(coverFile.getParent(), "splash_cover_" + splashCover.updateTime + ".png");
+                        if (newCover.exists()) newCover.delete();
+                        newCover.createNewFile();
+                        LogUtil.d(TAG, "into " + newCover.getPath());
+                        output = new FileOutputStream(newCover);
+
+                        byte data[] = new byte[2048];
+                        int count;
+                        while ((count = input.read(data)) != -1) {
+                            output.write(data, 0, count);
+                        }
+                        preferences.edit()
+                                .putLong(PREFERENCE_SPLASH_UPDATE_TIME, splashCover.updateTime)
+                                .putInt(PREFERENCE_SPLASH_STAY, splashCover.stay)
+                                .putString(PREFERENCE_SPLASH_COVER_NAME, newCover.getName())
+                                .apply();
+                        coverFile.delete();
+                        LogUtil.i(TAG, "finish image download");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (output != null)
+                            output.close();
+                        if (input != null)
+                            input.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+
+            return null;
+        }
     }
 }
