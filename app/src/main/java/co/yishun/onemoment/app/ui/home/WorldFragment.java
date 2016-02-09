@@ -166,7 +166,7 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
 
         @Override
         public List<WorldTag> loadNecessary(RankingIndex index) {
-            return load(mNoCacheWorld, index.getRanking());
+            return null;
         }
 
         private List<WorldTag> load(World world, String ranking) {

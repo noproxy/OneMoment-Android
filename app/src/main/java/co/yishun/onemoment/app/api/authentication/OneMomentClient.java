@@ -95,11 +95,18 @@ public class OneMomentClient extends OkClient {
         switch (mCacheType) {
             case CACHE_ONLY:
                 // one month cached
-                headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 30 + ",max-stale"));
+                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale=" + 60 * 60 * 24 * 30));
                 break;
             case NORMAL:
                 // one minute
-                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
+                boolean have = false;
+                for (Header header : headers) {
+                    if (header.getName().equals("Cache-Control")) {
+                        have = true;
+                        break;
+                    }
+                }
+                if (!have) headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
                 break;
             case NO_CACHE:
                 headers.add(new Header("Cache-Control", "no-cache"));
