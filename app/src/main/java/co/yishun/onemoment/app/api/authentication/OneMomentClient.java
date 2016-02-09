@@ -61,8 +61,8 @@ public class OneMomentClient extends OkClient {
         return mCacheOnlyInstance;
     }
 
-    public static OneMomentClient newNoCacheClient() {
-        return new OneMomentClient(new OkHttpClient(), CacheType.NORMAL);
+    public static OneMomentClient getNoCacheClient() {
+        return new OneMomentClient(new OkHttpClient(), CacheType.NO_CACHE);
     }
 
     public static void setUpCache(Context context) {
