@@ -60,11 +60,16 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     public static final int FROM_WORLD_FRAGMENT = 0;
     public static final int FROM_SEARCH_ACTIVITY = 1;
     private static final String TAG = "TagActivity";
-    @Extra int top;
-    @Extra int from;
-    @Extra WorldTag tag;
-    @Extra boolean isPrivate = false;
-    @ViewById CoordinatorLayout coordinatorLayout;
+    @Extra
+    int top;
+    @Extra
+    int from;
+    @Extra
+    WorldTag tag;
+    @Extra
+    boolean isPrivate = false;
+    @ViewById
+    CoordinatorLayout coordinatorLayout;
 
     Toolbar toolbar;
     SuperRecyclerView recyclerView;
@@ -79,7 +84,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     private int expendedTitleColor;
     private int expendedSubTitleColor;
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "TagActivity";
     }
 
@@ -90,7 +96,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         recyclerView = ((SuperRecyclerView) coordinatorLayout.findViewById(R.id.recyclerView));
     }
 
-    @AfterViews void preTransition() {
+    @AfterViews
+    void preTransition() {
         if (from == FROM_WORLD_FRAGMENT) {
             coordinatorLayout.addView(LayoutInflater.from(this).inflate(R.layout.scene_activity_tag_world_smooth, coordinatorLayout, false));
         } else if (from == FROM_SEARCH_ACTIVITY) {
@@ -112,7 +119,9 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_slider_loading).error(R.drawable.pic_slider_loading).into(videoImageView);
     }
 
-    @UiThread(delay = 100) @AfterViews void sceneTransition() {
+    @UiThread(delay = 100)
+    @AfterViews
+    void sceneTransition() {
         ViewGroup sceneRoot = coordinatorLayout;
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_activity_tag, this);
 
@@ -144,7 +153,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         transitionOver = true;
     }
 
-    @UiThread(delay = 600) void afterTransition() {
+    @UiThread(delay = 600)
+    void afterTransition() {
         AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appBar);
         toolbar = ((Toolbar) findViewById(R.id.toolbar));
         collapsingToolbarLayout = ((CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout));
@@ -157,19 +167,22 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         appbar.addOnOffsetChangedListener(new OffsetChangeListener());
     }
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
         if (transitionOver) {
             TagController_.getInstance_(this).setUp(tagAdapter, recyclerView, tag, isPrivate);
         }
     }
 
-    @Override protected void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         VideoTaskManager.getInstance().quit();
     }
 
-    @CallSuper protected ActionBar setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
+    @CallSuper
+    protected ActionBar setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
         if (toolbar == null)
             throw new UnsupportedOperationException("You need bind Toolbar instance to" + " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
         activity.setSupportActionBar(toolbar);
@@ -225,7 +238,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
                 ((startB + (int) (fraction * (endB - startB)))));
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
             return true;
@@ -239,7 +253,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
     }
 
-    @Background void shareWorld(View view) {
+    @Background
+    void shareWorld(View view) {
         World world = OneMomentV3.createAdapter().create(World.class);
         ShareInfo shareInfo = world.shareWorld(tag.name);
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
@@ -249,13 +264,15 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
     }
 
-    @Override public void onClick(View view, TagVideo item) {
+    @Override
+    public void onClick(View view, TagVideo item) {
         PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
     }
 
     private class OffsetChangeListener implements AppBarLayout.OnOffsetChangedListener {
 
-        @Override public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             int insetTop = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ? 0 : statusBarHeight;
             float fraction = Math.abs(verticalOffset) / (float) (appBarLayout.getHeight() -
                     ViewCompat.getMinimumHeight(collapsingToolbarLayout) - insetTop);
