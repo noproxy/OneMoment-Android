@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.malinskiy.superrecyclerview.HeaderCompatibleSuperRecyclerView;
 
@@ -17,6 +18,7 @@ import org.androidannotations.annotations.EFragment;
 import java.util.List;
 
 import co.yishun.library.datacenter.DataCenter;
+import co.yishun.library.datacenter.LoadIndexProvider;
 import co.yishun.library.datacenter.SuperRecyclerViewLoadMore;
 import co.yishun.library.datacenter.SuperRecyclerViewRefreshable;
 import co.yishun.onemoment.app.R;
@@ -76,9 +78,36 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
             recyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
 
             DataCenterWorldAdapter adapter = new DataCenterWorldAdapter(getActivity(), this);
+            adapter.setLoader(new WorldTagLoader(false));
+            adapter.setLoadIndexProvider(new LoadIndexProvider<RankingIndex, WorldTag>() {
+                @Override
+                public RankingIndex initInstance() {
+                    return new RankingIndex(null);
+                }
+
+                @Override
+                public RankingIndex resetIndex() {
+                    return new RankingIndex("");
+                }
+            });
             adapter.setLoadMore(new SuperRecyclerViewLoadMore(recyclerView));
             adapter.setRefreshable(new SuperRecyclerViewRefreshable(recyclerView));
-            adapter.setLoader(new WorldTagLoader(false));
+
+            adapter.setOnEndListener(new DataCenter.OnEndListener<RankingIndex, WorldTag>() {
+                @Override
+                public void onFail(RankingIndex index) {
+                    if (index.getRanking() == null) {
+                        Toast.makeText(getContext(), "Refresh failed", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Load failed", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onSuccess(RankingIndex index) {
+
+                }
+            });
             recyclerView.setAdapter(adapter);
 
             adapter.loadNext();
@@ -121,35 +150,83 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
         mPageName = "WorldFragment";
     }
 
-    public static class WorldTagLoader implements DataCenter.DataLoader<WorldTag> {
+    public static class WorldTagLoader implements DataCenter.DataLoader<RankingIndex, WorldTag> {
         private static final World mCacheOnlyWorld = OneMomentV3.getCacheOnlyRetrofit().create(World.class);
-        private static final World mNoCacheWorld = OneMomentV3.getCacheOnlyRetrofit().create(World.class);
+        private static final World mNoCacheWorld = OneMomentV3.getNoCacheRetrofit().create(World.class);
         private final boolean isRecommend;
-        private String ranking;
-        //TODO not properly implement: ranking not reset when refresh. Will be solved in next DataCenter update.
-
 
         public WorldTagLoader(boolean recommend) {
             isRecommend = recommend;
         }
 
         @Override
-        public List<WorldTag> loadOptional(int page) {
-            return load(mCacheOnlyWorld, page);
+        public List<WorldTag> loadOptional(RankingIndex index) {
+            return load(mCacheOnlyWorld, index.getRanking());
         }
 
         @Override
-        public List<WorldTag> loadNecessary(int page) {
-            return load(mNoCacheWorld, page);
+        public List<WorldTag> loadNecessary(RankingIndex index) {
+            return load(mNoCacheWorld, index.getRanking());
         }
 
-        private List<WorldTag> load(World world, int page) {
+        private List<WorldTag> load(World world, String ranking) {
             ListWithError<WorldTag> list = world.getWorldTagList(5, ranking, isRecommend ? "recommend" : "time");
             if (list.isSuccess()) {
-                ranking = list.get(list.size() - 1).ranking;
                 return list;
             } else
                 return null;
+        }
+    }
+
+    public static class RankingIndex implements LoadIndexProvider.LoadIndex<WorldTag> {
+        private String ranking;
+
+        public RankingIndex(String ranking) {
+            this.ranking = ranking;
+        }
+
+        public String getRanking() {
+            return ranking;
+        }
+
+        @Override
+        public void increment(List<WorldTag> result) {
+            ranking = getMinRanking(result);
+        }
+
+        private String getMinRanking(List<WorldTag> result) {
+            int rankInt = Integer.MAX_VALUE;
+            for (WorldTag worldTag : result) {
+                int r = Integer.valueOf(worldTag.ranking);
+                if (r < rankInt) {
+                    rankInt = r;
+                }
+            }
+            if (rankInt != Integer.MAX_VALUE)
+                return String.valueOf(rankInt);
+            else
+                return null;
+        }
+
+        @Override
+        public void reset() {
+            ranking = null;
+        }
+
+        @Override
+        public boolean equals(LoadIndexProvider.LoadIndex<WorldTag> another) {
+            return another instanceof RankingIndex && (ranking != null && ranking.equals(((RankingIndex) another).ranking) || (ranking == null && ((RankingIndex) another).ranking == null));
+        }
+
+        @Override
+        public LoadIndexProvider.LoadIndex<WorldTag> getCopy() {
+            try {
+                //noinspection unchecked
+                return (LoadIndexProvider.LoadIndex<WorldTag>) clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 }

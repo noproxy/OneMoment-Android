@@ -15,11 +15,12 @@ import com.squareup.picasso.Picasso;
 import co.yishun.library.datacenter.DataCenterAdapter;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.ui.home.WorldFragment;
 
 /**
  * Created by carlos on 2/9/16.
  */
-public class DataCenterWorldAdapter extends DataCenterAdapter<WorldTag, DataCenterWorldAdapter.SimpleViewHolder> {
+public class DataCenterWorldAdapter extends DataCenterAdapter<WorldFragment.RankingIndex, WorldTag, DataCenterWorldAdapter.SimpleViewHolder> {
     private final AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag> mListener;
     private final String PeopleSuffix;
     private final Drawable[] mTagDrawable;
