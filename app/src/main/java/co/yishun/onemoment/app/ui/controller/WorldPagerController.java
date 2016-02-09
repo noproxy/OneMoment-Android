@@ -32,6 +32,7 @@ import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
  * Created by Carlos on 2015/8/16.
  */
 @EBean
+@Deprecated
 public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
     private static final String TAG = "WorldPagerController";
     private WorldAdapter mAdapter;

@@ -18,6 +18,7 @@ import co.yishun.onemoment.app.api.model.WorldTag;
 /**
  * Created by Carlos on 2015/8/14.
  */
+@Deprecated
 public class WorldAdapter extends AbstractRecyclerViewAdapter<WorldTag, WorldAdapter.SimpleViewHolder> {
     private final String PeopleSuffix;
     private final Drawable[] mTagDrawable;
