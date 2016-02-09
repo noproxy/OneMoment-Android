@@ -21,6 +21,7 @@ import co.yishun.onemoment.app.ui.SearchActivity_;
 import co.yishun.onemoment.app.ui.TagActivity;
 import co.yishun.onemoment.app.ui.TagActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
+import co.yishun.onemoment.app.ui.adapter.BannerHeaderProvider;
 import co.yishun.onemoment.app.ui.common.TabPagerFragment;
 import co.yishun.onemoment.app.ui.controller.WorldPagerController;
 import co.yishun.onemoment.app.ui.controller.WorldPagerController_;
@@ -41,6 +42,18 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
     @Override
     protected int getTabTitleArrayResources() {
         return R.array.world_page_title;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        BannerHeaderProvider.stopSliderAutoCycle();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BannerHeaderProvider.startSliderAutoCycle();
     }
 
     @NonNull
