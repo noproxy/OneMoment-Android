@@ -101,6 +101,8 @@ public class OneMomentClient extends OkClient {
                 // one minute
                 headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
                 break;
+            case NO_CACHE:
+                headers.add(new Header("Cache-Control", "no-cache"));
             default:
                 break;
         }
