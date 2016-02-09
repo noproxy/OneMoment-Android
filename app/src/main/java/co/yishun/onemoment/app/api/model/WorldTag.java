@@ -11,6 +11,8 @@ public class WorldTag extends ApiModel {
     public String ranking;
     @SerializedName("videos_num")
     public int videosCount;
+    @SerializedName("_id")
+    public String id;
     public String name;
     public String thumbnail;
     @SerializedName("like_num")
@@ -24,14 +26,17 @@ public class WorldTag extends ApiModel {
 
     @Override
     public int compareTo(Object another) {
-        return Integer.parseInt(((WorldTag) another).ranking) - Integer.parseInt(ranking);
+        if (this.equals(another))
+            return 0;
+        else
+            return Integer.parseInt(((WorldTag) another).ranking) - Integer.parseInt(ranking);
         // Collections.sort is in ascending natural order. So this value being positive means
         // this one will be placed later. So flip.
     }
 
     @Override
     public boolean equals(Object another) {
-        return another instanceof WorldTag && ((WorldTag) another).ranking.equals(ranking);
+        return another instanceof WorldTag && ((WorldTag) another).id.equals(id);
     }
 
     @StringDef({"public", "private"})
