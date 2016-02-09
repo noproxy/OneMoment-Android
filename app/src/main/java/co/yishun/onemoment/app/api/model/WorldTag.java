@@ -24,7 +24,14 @@ public class WorldTag extends ApiModel {
 
     @Override
     public int compareTo(Object another) {
-        return Integer.parseInt(ranking) - Integer.parseInt(((WorldTag) another).ranking);
+        return Integer.parseInt(((WorldTag) another).ranking) - Integer.parseInt(ranking);
+        // Collections.sort is in ascending natural order. So this value being positive means
+        // this one will be placed later. So flip.
+    }
+
+    @Override
+    public boolean equals(Object another) {
+        return another instanceof WorldTag && ((WorldTag) another).ranking.equals(ranking);
     }
 
     @StringDef({"public", "private"})

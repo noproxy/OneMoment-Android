@@ -73,7 +73,6 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
             controller.setUp(inflater.getContext(), recyclerView, position == 0, mWorld, this);
 //        container.addView(recyclerView); why work properly before I comment this line?
         } else {
-            //TODO bug WorldTag not correctly implement Updatable, so DataCenter's data is not properly
             recyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
 
             DataCenterWorldAdapter adapter = new DataCenterWorldAdapter(getActivity(), this);
