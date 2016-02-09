@@ -1,7 +1,6 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 
@@ -27,7 +26,7 @@ public class VideoTask {
 
     public VideoTask(Context context, Video video, int type) {
         this.video = video;
-        this.context = context;
+        this.context = context.getApplicationContext();
         this.type = type;
     }
 
@@ -42,7 +41,7 @@ public class VideoTask {
     }
 
     public VideoTask start() {
-        if ((type & TYPE_IMAGE) == TYPE_IMAGE){
+        if ((type & TYPE_IMAGE) == TYPE_IMAGE) {
             File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
             File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
             if (small.length() > 0) {
