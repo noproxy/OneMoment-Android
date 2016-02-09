@@ -126,6 +126,7 @@ public class WorldFragment extends TabPagerFragment implements AbstractRecyclerV
         private static final World mNoCacheWorld = OneMomentV3.getCacheOnlyRetrofit().create(World.class);
         private final boolean isRecommend;
         private String ranking;
+        //TODO not properly implement: ranking not reset when refresh. Will be solved in next DataCenter update.
 
 
         public WorldTagLoader(boolean recommend) {
