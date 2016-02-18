@@ -19,8 +19,8 @@ import co.yishun.onemoment.app.ui.hybrd.CommonWebActivity_;
  * Created by Carlos on 2015/8/14.
  */
 public class BannerHeaderProvider implements HeaderRecyclerAdapter.HeaderProvider {
-    SliderLayout worldSlider;
     protected Context context;
+    SliderLayout worldSlider;
 
 
     public BannerHeaderProvider(Context context) {

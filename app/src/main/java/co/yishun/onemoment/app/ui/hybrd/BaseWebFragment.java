@@ -19,7 +19,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -31,14 +30,12 @@ import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import co.yishun.onemoment.app.BuildConfig;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.authentication.OneMomentClientV4;
-import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -217,7 +214,7 @@ public abstract class BaseWebFragment extends BaseFragment {
             JsonArray jsonArray = new JsonArray();
             for (Moment m : moments) {
                 JsonObject filename = new JsonObject();
-                filename.addProperty("filename",m.getPath());
+                filename.addProperty("filename", m.getPath());
                 jsonArray.add(filename);
             }
             JsonObject jsonObject = new JsonObject();

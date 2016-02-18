@@ -5,7 +5,6 @@ import java.util.List;
 import co.yishun.onemoment.app.api.model.VideoTag;
 
 /**
- *
  * Created by Jinge on 2016/1/23.
  */
 public class WorldVideo extends ApiModel implements VideoProvider {

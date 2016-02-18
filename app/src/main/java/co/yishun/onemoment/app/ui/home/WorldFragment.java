@@ -1,6 +1,5 @@
 package co.yishun.onemoment.app.ui.home;
 
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;

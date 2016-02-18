@@ -14,10 +14,6 @@ import org.androidannotations.annotations.ViewById;
 import java.io.File;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountManager;
-import co.yishun.onemoment.app.api.APIV4;
-import co.yishun.onemoment.app.api.authentication.OneMomentV4;
-import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;

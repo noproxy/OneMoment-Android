@@ -5,7 +5,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -25,7 +24,6 @@ import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.VotedUpController_;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
-import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 
 /**

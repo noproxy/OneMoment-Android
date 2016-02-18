@@ -15,9 +15,9 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
+import co.yishun.onemoment.app.ui.common.ToolbarFragment;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment;
-import co.yishun.onemoment.app.ui.common.ToolbarFragment;
 import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment_;
 
 /**
