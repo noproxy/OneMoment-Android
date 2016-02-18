@@ -17,7 +17,9 @@ public class OMApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         LogUtil.setUp(this);
+//        OneMomentClientV3.getCachedClient().setUpCache(this);
         OneMomentClient.setUpCache(this);
+//        OneMomentClientV4.getCachedClient().setUpCache(this);
         MobclickAgent.openActivityDurationTrack(false);
     }
 

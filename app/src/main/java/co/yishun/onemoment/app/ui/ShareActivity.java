@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -20,8 +19,7 @@ import java.net.URL;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.model.ShareInfo;
-import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.api.modelv4.ShareInfoProvider;
 import co.yishun.onemoment.app.ui.common.WXRespActivity;
 import co.yishun.onemoment.app.ui.share.ShareController;
 
@@ -33,8 +31,9 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     public static final String TAG = "ShareActivity";
     public static final int TYPE_SHARE_MOMENT = 0;
     public static final int TYPE_SHARE_WORLD = 1;
+    public static final int TYPE_SHARE_BADGE = 2;
 
-    @Extra ShareInfo shareInfo;
+    @Extra ShareInfoProvider shareInfo;
     @Extra int shareType;
 
     @ViewById TextView shareText;
@@ -43,7 +42,8 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shareController = new ShareController(this, shareInfo.imageUrl, shareInfo.link, shareInfo.title, this);
+        shareController = new ShareController(this, shareInfo.getImageUrl(), shareInfo.getLink(), shareInfo.getTitle(), this);
+        LogUtil.d(TAG, shareInfo.getImageUrl() + shareInfo.getTitle() + shareInfo.getLink());
         if (savedInstanceState != null)
             shareController.onNewIntent(getIntent());
     }
@@ -61,15 +61,17 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
 
     @Override protected void onResume() {
         super.onResume();
-        if(mReceiver == null) LogUtil.d(TAG, "receiver is null");
+        if (mReceiver == null) LogUtil.d(TAG, "receiver is null");
         LogUtil.d(TAG, "onResume");
     }
 
     @AfterViews void setUp() {
         if (shareType == TYPE_SHARE_MOMENT)
             shareText.setText(getString(R.string.activity_share_share_moment));
-        else
+        else if (shareType == TYPE_SHARE_WORLD)
             shareText.setText(getString(R.string.activity_share_share_world));
+        else if (shareType == TYPE_SHARE_BADGE)
+            shareText.setText(getString(R.string.activity_share_share_badge));
     }
 
     @Click(R.id.relativeLayout) void linearLayoutClick() {
@@ -103,7 +105,7 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
 
     @Background void getBitmap() {
         try {
-            Bitmap bitmap = BitmapFactory.decodeStream(new URL(shareInfo.imageUrl).openStream());
+            Bitmap bitmap = BitmapFactory.decodeStream(new URL(shareInfo.getImageUrl()).openStream());
             shareController.setBitmap(bitmap);
             shareController.share();
         } catch (IOException e) {

@@ -39,15 +39,15 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="16dp">
 
-        <co.yishun.library.OnemomentPlayerView
+        <co.yishun.library.VideoPlayerView
             android:id="@+id/videoPlayView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </co.yishun.library.OnemomentPlayerView>
+        </co.yishun.library.VideoPlayerView>
 
     </co.yishun.onemoment.app.ui.view.SquareFrameLayout>
 
-    <include layout="@layout/layout_play_vote"/>
+    <!--<include layout="@layout/layout_play_vote"/>-->
 
 </LinearLayout>

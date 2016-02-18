@@ -9,6 +9,8 @@ public class Constants {
     public static final String API_KEY = "";
     public static final String API_V3_URL = "http://api.yishun.co/v3";
 //    public static final String API_V3_URL = "http://sandbox.api.yishun.co:53470/v3";//for test
+    public static final String API_V4_URL = "http://api.yishun.co/v4";
+    public static final String API_V4_URL_TEST = "http://sandbox.api.yishun.co:53470/v4";
     public static final String AES_KEY = "QJBBNfrwp2oN4ZBwT9qZ4MGObN8y56bEydJj48L8xVs=";
     public static final String MIME_TYPE = "video/mp4";
     public static final String VIDEO_FILE_SUFFIX = ".mp4";
@@ -19,6 +21,10 @@ public class Constants {
     public static final String PROFILE_SUFFIX = ".png";
     public static final String WORLD_VIDEO_PREFIX = "videoworld-world2-";
     public static final String EXPORT_VIDEO_PREFIX = "yishunExport-";
+
+    public static final String HYBRD_UNZIP_DIR = "hybrd";
+    public static final String FILE_URL_PREFIX = "file://";
+    public static final String APP_URL_PREFIX = "ysjs://";
 
     public static final String IDENTITY_DIR = "identity";
     public static final String IDENTITY_INFO_FILE_NAME = "info";
@@ -43,6 +49,10 @@ public class Constants {
     public static final String QQ_APP_ID = "1104574591";
     public static final String WE_CHAT_APP_ID = "wx669ce174488102f4";
     public static final String WEIBO_APP_ID = "4070980764";
+
+    public static class ErrorStr {
+        public static final String SUCCESS = "Ok";
+    }
 
     public static class ErrorCode {
         public static final int INPUT_MISSING = -1;

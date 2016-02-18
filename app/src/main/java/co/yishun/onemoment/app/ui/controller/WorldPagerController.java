@@ -18,7 +18,7 @@ import java.util.List;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.model.Banner;
 import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.WorldTag;
@@ -37,17 +37,17 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
     private WorldAdapter mAdapter;
     private HeaderCompatibleSuperRecyclerView mRecyclerView;
     private boolean isRecommend;
-    private World mWorld;
+    private WorldAPI mWorldAPI;
     private BannerHeaderProvider mBannerHeaderProvider;
     private String ranking = "";
 
     public WorldPagerController() {
     }
 
-    public void setUp(Context context, HeaderCompatibleSuperRecyclerView mRecyclerView, boolean recommend, World world, WorldAdapter.OnItemClickListener<WorldTag> listener) {
+    public void setUp(Context context, HeaderCompatibleSuperRecyclerView mRecyclerView, boolean recommend, WorldAPI worldAPI, WorldAdapter.OnItemClickListener<WorldTag> listener) {
         this.mRecyclerView = mRecyclerView;
         isRecommend = recommend;
-        mWorld = world;
+        mWorldAPI = worldAPI;
         this.mAdapter = new WorldAdapter(context, listener);
         RecyclerView.Adapter trueAdapter = mAdapter;
 
@@ -77,7 +77,7 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
     }
 
     @Background void loadBanners() {
-        ListWithError<Banner> banners = mWorld.getBanners(null);
+        ListWithError<Banner> banners = mWorldAPI.getBanners(null);
         if (banners.isSuccess()) {
             onLoadBanners(banners);
         } else {
@@ -94,7 +94,7 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
     }
 
     synchronized void synchronizedLoadTags() {
-        ListWithError<WorldTag> list = mWorld.getWorldTagList(5, ranking, isRecommend ? "recommend" : "time");
+        ListWithError<WorldTag> list = mWorldAPI.getWorldTagList(5, ranking, isRecommend ? "recommend" : "time");
         if (list.isSuccess()) {
             ranking = list.get(list.size() - 1).ranking;
             onLoadTags(list);

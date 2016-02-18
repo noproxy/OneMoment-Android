@@ -1,159 +1,62 @@
 package co.yishun.onemoment.app.ui.home;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.malinskiy.superrecyclerview.SuperRecyclerView;
-import com.squareup.picasso.Picasso;
+import android.widget.FrameLayout;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
+
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.account.AccountManager;
-import co.yishun.onemoment.app.api.Account;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
-import co.yishun.onemoment.app.api.model.User;
-import co.yishun.onemoment.app.api.model.WorldTag;
-import co.yishun.onemoment.app.ui.TagActivity;
-import co.yishun.onemoment.app.ui.TagActivity_;
+import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
-import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
-import co.yishun.onemoment.app.ui.adapter.MeAdapter;
-import co.yishun.onemoment.app.ui.common.TabPagerFragment;
-import co.yishun.onemoment.app.ui.controller.MeController_;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
+import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment;
+import co.yishun.onemoment.app.ui.common.ToolbarFragment;
+import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment_;
 
 /**
  * Created by yyz on 7/21/15.
  */
 @EFragment(R.layout.fragment_me)
-public class MeFragment extends TabPagerFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldTag>, AccountManager.OnUserInfoChangeListener {
-    private static final String TAG = "MeFragment";
-    @ViewById
-    TextView nickNameTextView;
-    @ViewById
-    TextView voteCountTextView;
-    @ViewById
-    ImageView profileImageView;
-    private Context mContext;
+public class MeFragment extends ToolbarFragment {
+    CommonWebFragment meWebFragment;
+    @ViewById FrameLayout containerFrameLayout;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-        AccountManager.addOnUserInfoChangedListener(this);
+    @AfterViews void setUpViews() {
+        File hybrdDir = FileUtil.getInternalFile(getActivity(), Constants.HYBRD_UNZIP_DIR);
+        String url = Constants.FILE_URL_PREFIX + new File(hybrdDir, "build/pages/mine/mine.html").getPath();
+        meWebFragment = CommonWebFragment_.builder().mUrl(url).build();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.containerFrameLayout, meWebFragment, BaseWebFragment.TAG_WEB).commit();
+
+        meWebFragment.setRefreshable(true);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        AccountManager.removeOnUserInfoChangedListener(this);
-    }
-
-    @AfterViews
-    void setHeader() {
-        User user = AccountManager.getUserInfo(getContext());
-        invalidateUserInfo(user);
-        updateUserInfo();
-    }
-
-    @Background
-    void updateUserInfo() {
-        Account account = OneMomentV3.createAdapter().create(Account.class);
-        User user = account.getUserInfo(AccountManager.getAccountId(getContext()));
-        AccountManager.updateOrCreateUserInfo(this.getActivity(), user);
-        invalidateUserInfo(user);
-    }
-
-    @Override
-    protected int getTitleDrawableRes() {
-        return R.drawable.pic_me_title;
-    }
-
-
-    @Override
-    protected int getTabTitleArrayResources() {
-        return R.array.me_page_title;
-    }
-
-    @NonNull
-    @Override
-    protected View onCreatePagerView(LayoutInflater inflater, ViewGroup container, int position) {
-        View rootView = inflater.inflate(R.layout.page_world, container, false);
-
-        SuperRecyclerView recyclerView = (SuperRecyclerView) rootView.findViewById(R.id.recyclerView);
-        LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(manager);
-
-        MeAdapter adapter = new MeAdapter(inflater.getContext(), this);
-        recyclerView.setAdapter(adapter);
-        MeController_.getInstance_(inflater.getContext()).setUp(adapter, recyclerView, position == 0);
-
-        container.addView(rootView);
-        return rootView;
-    }
-
-    @Override
-    protected int getContentViewId(Bundle savedInstanceState) {
-        return R.layout.fragment_me;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_me, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.fragment_me_action_modify_info:
-                UserInfoActivity_.intent(this).start();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.fragment_me_action_modify_info) {
+            UserInfoActivity_.intent(getContext()).start();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View view, WorldTag item) {
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        TagActivity_.intent(this).tag(item).top(location[1]).from(TagActivity.FROM_SEARCH_ACTIVITY).isPrivate(getCurrentItem() != 0).start();
+    @Override protected int getTitleDrawableRes() {
+        return R.drawable.pic_me_title;
     }
-
-    @UiThread
-    void invalidateUserInfo(User user) {
-        if (user == null) {
-            return;
-        }
-        Picasso.with(getContext()).load(user.avatarUrl).into(profileImageView);
-        nickNameTextView.setText(user.nickname);
-        String vote = String.format(mContext.getResources().getString(R.string.fragment_me_vote_format_text), String.valueOf(user.likedWorldVideos.length));
-        voteCountTextView.setText(vote);
-    }
-
-    @Override
-    public void onUserInfoChange(User info) {
-        invalidateUserInfo(info);
-    }
-
     @Override
     public void setPageInfo() {
         mPageName = "MeFragment";
     }
+
 }

@@ -9,12 +9,13 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.account.AccountManager;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.Seed;
 import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagAdapter;
 
@@ -27,7 +28,7 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
     public static final int COUNT_EVERY_PAGE = 10;
     private static final String TAG = "TagController";
     private WorldTag mTag;
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
+    private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
     private Seed seed;
     private boolean mIsPrivate;
 
@@ -47,16 +48,16 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
     protected ListWithError<TagVideo> onLoad() {
         ListWithError<TagVideo> list;
         if (mIsPrivate)
-            list = mWorld.getPrivateVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id);
+            list = mWorldAPI.getPrivateVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id);
         else
-            list = mWorld.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id, seed);
+            list = mWorldAPI.getVideoOfTag(mTag.name, getOffset(), COUNT_EVERY_PAGE, AccountManager.getUserInfo(mContext)._id, seed);
 
         setOffset(getOffset() + list.size());
         return list;
     }
 
     @Override
-    @UiThread void onLoadEnd(ListWithError<TagVideo> list) {
+    @UiThread void onLoadEnd(ListErrorProvider<TagVideo> list) {
 
         if (list == null || !list.isSuccess()) {
             onLoadError();

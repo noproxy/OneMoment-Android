@@ -16,47 +16,44 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import co.yishun.library.OnemomentPlayerView;
+import co.yishun.library.VideoPlayerView;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
-import co.yishun.onemoment.app.api.World;
-import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.APIV4;
+import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.loader.VideoTask;
-import co.yishun.onemoment.app.api.model.Seed;
-import co.yishun.onemoment.app.api.model.TagVideo;
-import co.yishun.onemoment.app.api.model.Video;
-import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
+import co.yishun.onemoment.app.api.modelv4.WorldProvider;
+import co.yishun.onemoment.app.api.modelv4.WorldVideo;
+import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
 import co.yishun.onemoment.app.data.FileUtil;
 
 /**
  * Created on 2015/10/28.
  */
 @EFragment(R.layout.fragment_play_world)
-public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerView.OnVideoChangeListener,
+public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.OnVideoChangeListener,
         VideoTask.OnVideoListener {
     private static final String TAG = "platworld";
-    @FragmentArg WorldTag worldTag;
-    @FragmentArg boolean isPrivate = false;
+    @FragmentArg WorldProvider world;
+    @FragmentArg boolean forWorld;
 
     @ViewById TextView voteCountTextView;
     @ViewById TextView usernameTextView;
 
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
-    private List<TagVideo> tagVideos = new ArrayList<>();
-    private int voteIndex;
-    private Seed seed;
+    private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
+    private List<VideoProvider> tagVideos = new ArrayList<>();
+    private int order;
     private int offset = 0;
     private boolean mReady = false;
 
     @Background void getData() {
-        List<TagVideo> videos = isPrivate ?
-                mWorld.getPrivateVideoOfTag(worldTag.name, offset,
-                        10, AccountManager.getUserInfo(mContext)._id) :
-                mWorld.getVideoOfTag(worldTag.name, offset,
-                        10, AccountManager.getUserInfo(mContext)._id, seed);
+        WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
+                mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, order, 6) :
+                mApiV4.getTodayVideos(world.getName(), offset, 6);
         if (videos.size() == 0) {
             if (offset == 0) {
                 onLoadError(R.string.fragment_play_world_video_null);
@@ -64,9 +61,9 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
             return;
         }
         offset += videos.size();
-        seed = videos.get(0).seed;
+        order = videos.world.order;
 
-        for (TagVideo oneVideo : videos) {
+        for (VideoProvider oneVideo : videos) {
             if (mContext == null) {
                 return;
             }
@@ -82,22 +79,22 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
     }
 
     @Override
-    public void onVideoLoad(Video video) {
+    public void onVideoLoad(VideoProvider video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
-        videoPlayView.setToLocal(video.domain + video.fileName, videoFile.getPath());
+        videoPlayView.setToLocal(video.getDownloadUrl(), videoFile.getPath());
         if (!mReady) {
             onLoad();
             mReady = true;
         }
     }
 
-    @UiThread void addVideo(TagVideo video) {
+    @UiThread void addVideo(VideoProvider video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         List<VideoTag> tags = new LinkedList<>();
-        for (int i = 0; i < video.tags.size(); i++) {
-            tags.add(new BaseVideoTag(video.tags.get(i).name, video.tags.get(i).x, video.tags.get(i).y));
+        for (int i = 0; i < video.getTags().size(); i++) {
+            tags.add(new BaseVideoTag(video.getTags().get(i).name, video.getTags().get(i).x, video.getTags().get(i).y));
         }
-        NetworkVideo videoResource = new NetworkVideo(video.domain + video.fileName, tags);
+        NetworkVideo videoResource = new NetworkVideo(video.getDownloadUrl(), tags);
         if (videoFile.length() > 0) {
             videoResource.setPath(videoFile.getPath());
             if (!mReady) {
@@ -111,32 +108,32 @@ public class PlayWorldFragment extends PlayFragment implements OnemomentPlayerVi
 
         videoPlayView.addVideoResource(videoResource);
         tagVideos.add(video);
-        videoPlayView.addAvatarUrl((video).avatar);
+        videoPlayView.addAvatarUrl(video.getAvatarUrl());
     }
 
-    @Click(R.id.voteCountTextView)
-    @Background void voteClick() {
-        voteIndex = videoPlayView.getCurrentIndex();
-        tagVideos.get(voteIndex).liked = !tagVideos.get(voteIndex).liked;
-        tagVideos.get(voteIndex).likeNum += tagVideos.get(voteIndex).liked ? 1 : -1;
-        refreshUserInfo(videoPlayView.getCurrentIndex());
-        if (tagVideos.get(voteIndex).liked) {
-            mWorld.likeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
-        } else {
-            mWorld.unlikeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
-        }
-    }
+//    @Click(R.id.voteCountTextView)
+//    @Background void voteClick() {
+//        voteIndex = videoPlayView.getCurrentIndex();
+//        tagVideos.get(voteIndex).liked = !tagVideos.get(voteIndex).liked;
+//        tagVideos.get(voteIndex).likeNum += tagVideos.get(voteIndex).liked ? 1 : -1;
+//        refreshUserInfo(videoPlayView.getCurrentIndex());
+//        if (tagVideos.get(voteIndex).liked) {
+//            mApiV4.likeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
+//        } else {
+//            mApiV4.unlikeVideo(tagVideos.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
+//        }
+//    }
 
     @UiThread void refreshUserInfo(int index) {
-        if (tagVideos.get(index).liked) {
-            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall_Inverse);
-            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
-        } else {
-            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall);
-            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
-        }
-        voteCountTextView.setText(tagVideos.get(index).likeNum + "");
-        usernameTextView.setText(tagVideos.get(index).nickname);
+//        if (tagVideos.get(index).liked) {
+//            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall_Inverse);
+//            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);
+//        } else {
+//            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall);
+//            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_gray, 0, 0, 0);
+//        }
+//        voteCountTextView.setText(tagVideos.get(index).likeNum + "");
+        usernameTextView.setText(tagVideos.get(index).getNickname());
     }
 
 

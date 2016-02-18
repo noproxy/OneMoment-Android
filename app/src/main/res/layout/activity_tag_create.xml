@@ -2,67 +2,77 @@
 <RelativeLayout
     android:id="@+id/relativeLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <include
+    <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/layout_toolbar_search"
-        />
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="@dimen/toolbar_elevation"
+        android:fitsSystemWindows="true"
+        app:contentInsetStart="72dp"
+        app:layout_collapseMode="pin">
 
+        <ImageButton
+            android:id="@+id/addView"
+            style="@style/AppTheme.Widget.ImageButton"
+            android:layout_width="48dp"
+            android:layout_height="56dp"
+            android:layout_gravity="right"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_action_add_tag"/>
+
+        <EditText
+            android:id="@+id/queryText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:singleLine="true"
+            android:visibility="gone"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <co.yishun.onemoment.app.ui.view.SquareVideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"/>
+
+    <co.yishun.library.TagContainer
+        android:id="@+id/tagContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tc_editable="true"
+        android:layout_alignTop="@id/videoView"
+        android:layout_alignBottom="@id/videoView"
+        app:tc_square="true"/>
+
+    <co.yishun.onemoment.app.ui.view.VideoTypeView
+        android:id="@+id/videoTypeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/videoView"
+        android:layout_marginBottom="48dp"/>
 
     <Button
         android:id="@+id/nextBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"
+        android:background="@drawable/bg_next_btn"
         android:minHeight="48dp"
         android:text="@string/activity_moment_create_next_btn_text"
         android:textColor="@color/textColorPrimaryInverse"
         />
-
-    <co.yishun.library.EditTagContainer
-        android:id="@+id/editTagContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/nextBtn"
-        android:layout_below="@id/toolbar"
-        >
-
-        <co.yishun.onemoment.app.ui.view.RadioCornerImageView
-            android:id="@+id/momentPreviewImageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pic_world_empty"
-            />
-
-        <LinearLayout
-            android:id="@+id/hintTextContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/momentPreviewImageView"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:text="@string/activity_tag_create_tag_hint"
-                android:background="@drawable/bg_hint_tag_create"
-                android:paddingBottom="12dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:paddingTop="12dp"/>
-
-        </LinearLayout>
-
-    </co.yishun.library.EditTagContainer>
 
     <FrameLayout
         android:id="@+id/searchFrame"
@@ -70,7 +80,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         android:background="@color/colorWindowTranslucentBlack"
-        tools:visibility="invisible">
+        android:visibility="gone">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"

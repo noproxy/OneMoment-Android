@@ -1,11 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,13 +8,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -32,18 +27,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.github.clans.fab.FloatingActionMenu;
 import com.squareup.picasso.Picasso;
-import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
 import org.androidannotations.annotations.AfterInject;
@@ -51,7 +42,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,7 +51,6 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.SyncManager;
 import co.yishun.onemoment.app.api.model.User;
-import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -79,7 +68,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     public static final int PERMISSIONS_REQUEST_RECORD_MOMENT = 4;
     public static final String PERMISSION[] = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
     private static final String TAG = "MainActivity";
-    private static WeakReference<FloatingActionMenu> floatingActionMenu;
+
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     @Extra boolean checkLOC = false;
@@ -91,6 +80,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private ImageView profileImageView;
     private TextView usernameTextView;
     private TextView locationTextView;
+    private FloatingActionButton fab;
     private BroadcastReceiver mSyncChangedReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
             if (currentItemId == R.id.navigation_item_1) {
@@ -161,7 +151,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private void shootWithPermission(View view, boolean forWorld) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).start();
+        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).start();
 
         if (!forWorld) {
             goToShootDiary = true;
@@ -171,7 +161,9 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_RECORD_MOMENT: {
                 // If request is cancelled, the result arrays are empty.
@@ -253,7 +245,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
-        setActionMenu();
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(v -> startShoot(v, true));
         navigationTo(R.id.navigation_item_0);
     }
 
@@ -298,85 +291,12 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         UserInfoActivity_.intent(this).start();
     }
 
-    private void setActionMenu() {
-        FloatingActionMenu fam = (FloatingActionMenu) findViewById(R.id.fab);
-        floatingActionMenu = new WeakReference<>(fam);
-        fam.findViewById(R.id.worldFABBtn).setOnClickListener(v -> {
-            MobclickAgent.onEvent(this, Constants.UmengData.FAB_WORLD_CLICK);
-            startShoot(v, true);
-            fam.close(false);
-        });
-        fam.findViewById(R.id.diaryFABBtn).setOnClickListener(v -> {
-            MobclickAgent.onEvent(this, Constants.UmengData.FAB_DIARY_CLICK);
-            startShoot(v, false);
-            fam.close(false);
-        });
-        createCustomAnimation(fam);
-    }
-
-    private void createCustomAnimation(FloatingActionMenu menu) {
-        ImageView menuIcon = menu.getMenuIconView();
-
-        AnimatorSet openSet = new AnimatorSet();
-        ObjectAnimator openBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal", getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorPrimary));
-        openBackground.setEvaluator(new ArgbEvaluator());
-        openBackground.setDuration(200);
-
-        ObjectAnimator openRotate = ObjectAnimator.ofFloat(menuIcon, "rotation", 0f, -180f);
-        openRotate.setDuration(200);
-        openRotate.addListener(new AnimatorListenerAdapter() {
-            @Override public void onAnimationStart(Animator animation) {
-                menu.setMenuButtonColorNormalResId(R.color.colorPrimary);
-                menu.setMenuButtonColorPressedResId(R.color.colorPrimaryDark);
-                menuIcon.setImageResource(R.drawable.ic_action_close);
-            }
-        });
-        openSet.play(openRotate).with(openBackground);
-        openSet.setInterpolator(new OvershootInterpolator(1));
-
-        AnimatorSet closeSet = new AnimatorSet();
-        ObjectAnimator closeBackground = ObjectAnimator.ofInt(menu, "menuButtonColorNormal", getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent));
-        closeBackground.setEvaluator(new ArgbEvaluator());
-        closeBackground.setDuration(200);
-
-        ObjectAnimator closeRotate = ObjectAnimator.ofFloat(menuIcon, "rotation", -90, 0f);
-        closeRotate.setDuration(200);
-        closeRotate.addListener(new AnimatorListenerAdapter() {
-            @Override public void onAnimationStart(Animator animation) {
-                menu.setMenuButtonColorNormalResId(R.color.colorAccent);
-                menu.setMenuButtonColorPressedResId(R.color.colorAccentDark);
-                menuIcon.setImageResource(R.drawable.ic_fab);
-            }
-        });
-        closeSet.play(closeRotate).with(closeBackground);
-        closeSet.setInterpolator(new OvershootInterpolator(1));
-
-        menu.setIconToggleAnimatorSet(openSet);
-        menu.setOnMenuToggleListener(opened -> menu.setIconToggleAnimatorSet(opened ? closeSet : openSet));
-    }
-
     private void registerSyncListener() {
         registerReceiver(mSyncChangedReceiver, new IntentFilter(SyncManager.SYNC_BROADCAST_ACTION_LOCAL_UPDATE));
     }
 
     private void unregisterSyncListener() {
         unregisterReceiver(mSyncChangedReceiver);
-    }
-
-    @Override public boolean dispatchTouchEvent(MotionEvent event) {
-        // collapse fab if click outside of fab
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            Rect outRect = new Rect();
-            FloatingActionMenu fam = floatingActionMenu.get();
-            if (fam != null) {
-                fam.getGlobalVisibleRect(outRect);
-                if (!outRect.contains(((int) event.getRawX()), ((int) event.getRawY()))) {
-                    fam.clearFocus();
-                    fam.close(false);
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event);
     }
 
     @UiThread void invalidateUserInfo(User user) {
@@ -441,7 +361,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
                 navigationTo(R.id.navigation_item_0);
                 ((NavigationView) findViewById(R.id.navigationView)).setCheckedItem(R.id.navigation_item_0);
             } else
-                supportFinishAfterTransition();
+                super.onBackPressed();
         }
     }
 
@@ -479,8 +399,9 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         syncToggle();
     }
 
-    @NonNull @Override public View getSnackbarAnchorWithView(@Nullable View view) {
-        FloatingActionMenu fab = floatingActionMenu.get();
+    @NonNull
+    @Override
+    public View getSnackbarAnchorWithView(@Nullable View view) {
         if (fab != null) {
             return fab;
         } else

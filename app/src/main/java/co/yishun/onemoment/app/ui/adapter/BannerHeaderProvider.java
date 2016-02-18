@@ -1,9 +1,6 @@
 package co.yishun.onemoment.app.ui.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,14 +13,14 @@ import java.util.List;
 
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.model.Banner;
-import co.yishun.onemoment.app.ui.UrlDetailActivity_;
+import co.yishun.onemoment.app.ui.hybrd.CommonWebActivity_;
 
 /**
  * Created by Carlos on 2015/8/14.
  */
 public class BannerHeaderProvider implements HeaderRecyclerAdapter.HeaderProvider {
     SliderLayout worldSlider;
-    private Context context;
+    protected Context context;
 
 
     public BannerHeaderProvider(Context context) {
@@ -52,7 +49,8 @@ public class BannerHeaderProvider implements HeaderRecyclerAdapter.HeaderProvide
                     String url = banner.href;
                     if (!url.startsWith("http://") && !url.startsWith("https://"))
                         url = "http://" + url;
-                    UrlDetailActivity_.intent(context).url(url).start();
+//                    UrlDetailActivity_.intent(context).url(url).start();
+                    CommonWebActivity_.intent(context).url(url).start();
                 });
                 return imageView;
             }
@@ -65,7 +63,7 @@ public class BannerHeaderProvider implements HeaderRecyclerAdapter.HeaderProvide
             public View getView() {
                 ImageView imageView = (ImageView) View.inflate(context, R.layout.layout_slider_image, null);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Picasso.with(context).load(R.drawable.pic_banner_empty).into(imageView);
+                Picasso.with(context).load(R.drawable.pic_banner_default).into(imageView);
                 return imageView;
             }
         };

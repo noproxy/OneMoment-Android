@@ -39,7 +39,7 @@ import org.androidannotations.annotations.ViewById;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
 import co.yishun.onemoment.app.api.model.ShareInfo;
@@ -63,6 +63,9 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     @Extra int top;
     @Extra int from;
     @Extra WorldTag tag;
+    @Extra String worldName;
+    @Extra int videoNum;
+    @Extra String worldId;
     @Extra boolean isPrivate = false;
     @ViewById CoordinatorLayout coordinatorLayout;
 
@@ -109,7 +112,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         params.topMargin += top;
         videoImageView.setLayoutParams(params);
 
-        Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_slider_loading).error(R.drawable.pic_slider_loading).into(videoImageView);
+        Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(videoImageView);
     }
 
     @UiThread(delay = 100) @AfterViews void sceneTransition() {
@@ -127,7 +130,7 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
         findViewById(R.id.worldAdd).setOnClickListener(this::addVideo);
         findViewById(R.id.worldShare).setOnClickListener(this::shareWorld);
 
-        Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_slider_loading).error(R.drawable.pic_slider_loading).into(videoImageView);
+        Picasso.with(this).load(tag.domain + tag.thumbnail).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(videoImageView);
         videoImageView.setOnClickListener(this::videoImageClick);
 
         int spanCount = 3;
@@ -236,21 +239,21 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
+//        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
     }
 
     @Background void shareWorld(View view) {
-        World world = OneMomentV3.createAdapter().create(World.class);
-        ShareInfo shareInfo = world.shareWorld(tag.name);
+        WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
+        ShareInfo shareInfo = worldAPI.shareWorld(tag.name);
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 
     void videoImageClick(View v) {
-        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
+//        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
     }
 
     @Override public void onClick(View view, TagVideo item) {
-        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
+//        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
     }
 
     private class OffsetChangeListener implements AppBarLayout.OnOffsetChangedListener {

@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <co.yishun.library.OnemomentPlayerView
+    <co.yishun.library.VideoPlayerView
         android:id="@+id/videoPlayView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </co.yishun.library.OnemomentPlayerView>
+    </co.yishun.library.VideoPlayerView>
 
     <TextView
         android:id="@+id/usernameTextView"
@@ -19,7 +19,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"/>
 
-    <include
-        layout="@layout/layout_play_vote"/>
+    <!--<include layout="@layout/layout_play_vote"/>-->
 
 </LinearLayout>

@@ -14,7 +14,7 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
-import co.yishun.onemoment.app.api.model.ListWithError;
+import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 
 /**
@@ -63,7 +63,7 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     /*
     to ensure onLoad() execute synchronized
      */
-    private synchronized ListWithError<I> synchronizedLoad() {
+    private synchronized ListErrorProvider<I> synchronizedLoad() {
         return onLoad();
     }
 
@@ -72,7 +72,7 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
      *
      * @return list of I, null if error occurs in loading.
      */
-    protected abstract ListWithError<I> onLoad();
+    protected abstract ListErrorProvider<I> onLoad();
 
     /**
      * Respond to error occurs in loading. You should make a reflection to user now. But you don't need to care about the load progress view.
@@ -89,7 +89,7 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
      * <p>
      * Don't forget to call {@link #onLoadError()} and to remove refresh and loading view if you override.
      */
-    @UiThread void onLoadEnd(ListWithError<I> list) {
+    @UiThread void onLoadEnd(ListErrorProvider<I> list) {
         if (list == null || !list.isSuccess()) {
             onLoadError();
         } else {

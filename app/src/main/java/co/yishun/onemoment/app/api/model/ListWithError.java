@@ -7,15 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.config.Constants;
 
 /**
  * Created by Carlos on 12/31/15.
  */
-public class ListWithError<E> extends ApiModel implements List<E> {
-    public int code;
-    public int errorCode = 1;
-    public String msg;
+public class ListWithError<E> extends ApiModel implements ListErrorProvider<E> {
     List<E> mList;
 
     public ListWithError(List<E> mList) {
@@ -121,9 +119,5 @@ public class ListWithError<E> extends ApiModel implements List<E> {
 
     @NonNull @Override public <T> T[] toArray(T[] array) {
         return mList.toArray(array);
-    }
-
-    public boolean isSuccess() {
-        return code == Constants.CODE_SUCCESS;
     }
 }

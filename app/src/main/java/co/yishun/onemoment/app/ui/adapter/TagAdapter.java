@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.loader.VideoTask;
 import co.yishun.onemoment.app.api.model.TagVideo;
-import co.yishun.onemoment.app.api.model.Video;
+import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 
 /**
  * Created by Carlos on 2015/8/17.
@@ -76,8 +75,8 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
             Picasso.with(mContext).load(small).into(itemImageView);
         }
 
-        void setVideo(Video video) {
-            LogUtil.d("Video", "get a video " + video.fileName);
+        void setVideo(VideoProvider video) {
+            LogUtil.d("Video", "get a video " + video.getFilename());
         }
 
     }

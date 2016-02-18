@@ -1,5 +1,7 @@
 package co.yishun.onemoment.app.api.model;
 
+import java.io.Serializable;
+
 /**
  * Interface to provide standard api naming. It must obey those naming rules:
  *     <ul>
@@ -15,6 +17,6 @@ package co.yishun.onemoment.app.api.model;
  *
  * Created by Carlos on 2015/8/24.
  */
-public interface QiniuKeyProvider {
+public interface QiniuKeyProvider extends Serializable {
     String getKey();
 }

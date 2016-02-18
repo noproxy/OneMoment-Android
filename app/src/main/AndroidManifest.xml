@@ -170,12 +170,7 @@
             android:theme="@style/AppTheme.PlayActivity">
         </activity>
         <activity
-            android:name=".ui.MomentCreateActivity_"
-            android:parentActivityName=".ui.MainActivity_"
-            android:theme="@style/AppTheme.MomentCreateActivity"/>
-        <activity
             android:name=".ui.TagCreateActivity_"
-            android:parentActivityName=".ui.MomentCreateActivity_"
             android:theme="@style/AppTheme.TagCreateActivity"/>
         <activity
             android:name=".ui.UserInfoActivity_"
@@ -203,10 +198,29 @@
             android:name=".ui.GuideActivity_"
             android:theme="@style/AppTheme.GuideActivity">
         </activity>
+
+        <activity android:name=".ui.hybrd.CommonWebActivity_">
+
+        </activity>
+        <activity android:name=".ui.hybrd.EmptyWebActivity_">
+
+        </activity>
+        <activity android:name=".ui.PersonalWorldActivity_">
+
+        </activity>
+        <activity android:name=".ui.CreateWorldActivity_">
+
+        </activity>
+        <activity android:name=".ui.BadgeActivity_">
+
+        </activity>
+        <activity android:name=".ui.HomeContainerActivity_">
+
+        </activity>
         <activity
-            android:name=".ui.UrlDetailActivity_"
+            android:name=".ui.WorldVideosActivity_"
             android:parentActivityName=".ui.MainActivity_"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme.WorldVideosActivity"/>
 
         <service android:name=".account.remind.ReminderService">
         </service>

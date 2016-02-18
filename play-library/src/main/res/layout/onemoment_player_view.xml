@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <co.yishun.library.PlayTagContainer
-        android:id="@+id/om_tags_container"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -23,6 +22,11 @@
             android:layout_height="wrap_content"
             app:rrim_forceSquare="true"/>
 
+        <co.yishun.library.TagContainer
+            android:id="@+id/om_tags_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <ImageView
             android:id="@+id/om_play_btn"
             android:layout_width="48dp"
@@ -37,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"/>
 
-    </co.yishun.library.PlayTagContainer>
+    </RelativeLayout>
 
     <co.yishun.library.AvatarRecyclerView
         android:id="@+id/om_avatar_recycler_view"

@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -29,11 +30,16 @@ import java.io.InputStream;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
+import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.account.remind.ReminderReceiver;
+import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.Misc;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
+import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.model.SplashCover;
+import co.yishun.onemoment.app.api.modelv4.HybrdData;
+import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.DataMigration;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
@@ -49,8 +55,13 @@ public class SplashActivity extends BaseActivity {
     public static final String PREFERENCE_SPLASH_UPDATE_TIME = "splash_update_time";
     public static final String PREFERENCE_SPLASH_COVER_NAME = "splash_cover_name";
     public static final String PREFERENCE_SPLASH_STAY = "splash_stay";
+    public static final String PREFERENCE_HYBRD_NAME = "hybrd_name";
+    public static final String PREFERENCE_HYBRD_UPDATE_TIME = "hybrd_update_time";
+    public static final String PREFERENCE_HYBRD_UNZIP_TIME = "hybrd_unzip_time";
+    public static final String PREFERENCE_HYBRD_MD5 = "hybrd_md5";
+    public static final String PREFERENCE_HYBRD_LENGTH = "hybrd_length";
     public static final String DEFAULT_SPLASH_COVER_NAME = "splash_cover_0.png";
-    public static final String TAG = "SplashActivity";
+    private static final String TAG = "SplashActivity";
 
     @ViewById
     ImageView splashImageView;
@@ -99,13 +110,17 @@ public class SplashActivity extends BaseActivity {
         }
         // use static AsyncTask to ensure not keeping this activity's reference
         new CoverUpdateTask(this).execute(coverFile);
+
+        String hybrdFileName = preferences.getString(PREFERENCE_HYBRD_NAME, "hybrd_default.zip");
+        File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
+        updateHybrd(hybrdFile);
     }
 
     void endWithStartMain() {
         this.finish();
         if (isFirstLaunch()) {
             sendBroadcast(new Intent(ReminderReceiver.ACTION_UPDATE_REMIND));
-            GuideActivity_.intent(this).isFirstLuanch(true).start();
+            GuideActivity_.intent(this).isFirstLaunch(true).start();
             getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE).edit()
                     .putBoolean(PREFERENCE_IS_FIRST_LAUNCH, false).apply();
         } else if (AccountManager.isLogin(this))
@@ -118,6 +133,70 @@ public class SplashActivity extends BaseActivity {
     public void setPageInfo() {
         mIsPage = true;
         mPageName = "SplashActivity";
+    }
+
+    @Background void updateHybrd(File hybrdFile) {
+        int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRD_UPDATE_TIME, 0);
+        int lastUnzipTime = preferences.getInt(PREFERENCE_HYBRD_UNZIP_TIME, 0);
+        if (lastUnzipTime <= lastUpdateTime) {
+            if (hybrdFile.length() == 0 || !TextUtils.equals(FileUtil.calculateMD5(hybrdFile), preferences.getString(PREFERENCE_HYBRD_MD5, ""))) {
+                FileUtil.copyResToFile(this, R.raw.hybrd_default, hybrdFile.getPath());
+            }
+            FileUtil.unZip(hybrdFile.getPath(), FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR).getPath());
+            preferences.edit().putInt(PREFERENCE_HYBRD_UNZIP_TIME, (int) Util.unixTimeStamp()).apply();
+        }
+        HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
+        if (hybrdData.updateTime > lastUpdateTime) {
+            String url = "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip";
+            OkHttpClient client = new OkHttpClient();
+            Call call = client.newCall(new Request.Builder().url(url).build());
+            InputStream input = null;
+            FileOutputStream output = null;
+            try {
+                Response response = call.execute();
+                if (response.code() == 200) {
+                    input = response.body().byteStream();
+                    long inputLength = response.body().contentLength();
+                    LogUtil.d(TAG, "get hybrd " + url + " length " + inputLength);
+                    if (inputLength == 0) {
+                        return;
+                    }
+                    File newFile = new File(hybrdFile.getParent(), "hybrd_" + hybrdData.updateTime + ".zip");
+                    if (newFile.exists()) newFile.delete();
+                    newFile.createNewFile();
+                    LogUtil.d(TAG, "into " + newFile.getPath());
+                    output = new FileOutputStream(newFile);
+
+                    byte data[] = new byte[2048];
+                    int count;
+                    while ((count = input.read(data)) != -1) {
+                        output.write(data, 0, count);
+                    }
+
+                    String newMd5 = FileUtil.calculateMD5(newFile);
+                    if (TextUtils.equals(hybrdData.md5, newMd5)) {
+                        preferences.edit()
+                                .putString(PREFERENCE_HYBRD_NAME, newFile.getName())
+                                .putInt(PREFERENCE_HYBRD_UPDATE_TIME, hybrdData.updateTime)
+                                .putString(PREFERENCE_HYBRD_MD5, hybrdData.md5)
+                                .putLong(PREFERENCE_HYBRD_LENGTH, hybrdData.length)
+                                .apply();
+                        hybrdFile.delete();
+                        LogUtil.i(TAG, "finish hybrd download");
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (output != null)
+                        output.close();
+                    if (input != null)
+                        input.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
     }
 
     private static final class CoverUpdateTask extends AsyncTask<File, Void, Void> {

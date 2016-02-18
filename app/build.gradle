@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
 
-
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
@@ -11,6 +10,9 @@ retrolambda {
     // Note: due to a limitation in retrolamba, this will set incremental to false. The default is false.
     defaultMethods false
     incremental true
+// may don't need, commented by Carlos
+//   jvmArgs '-noverify'
+
 }
 
 android {
@@ -37,8 +39,8 @@ android {
         applicationId "co.yishun.onemoment.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 10
-        versionName "2.0-dev"
+        versionCode 15
+        versionName "2.3-dev"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -130,6 +132,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.4'
     compile 'com.squareup.okhttp:okhttp:2.7.4'
 
+    //TODO add for upgrade later, by Carlos
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
     compile 'com.squareup.okhttp3:okhttp:3.1.1'
 

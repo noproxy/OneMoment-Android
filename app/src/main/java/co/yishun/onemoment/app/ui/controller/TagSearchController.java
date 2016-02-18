@@ -8,7 +8,7 @@ import org.androidannotations.annotations.EBean;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.yishun.onemoment.app.api.World;
+import co.yishun.onemoment.app.api.WorldAPI;
 import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ListWithError;
 import co.yishun.onemoment.app.api.model.WorldTag;
@@ -20,7 +20,7 @@ import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
  */
 @EBean
 public class TagSearchController extends RecyclerController<Integer, RecyclerView, String, TagSearchAdapter.TagSearchViewHolder> {
-    private World mWorld = OneMomentV3.createAdapter().create(World.class);
+    private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
     private String mWords;
 
     protected TagSearchController(Context context) {
@@ -35,7 +35,7 @@ public class TagSearchController extends RecyclerController<Integer, RecyclerVie
 
     @Override
     protected ListWithError<String> onLoad() {
-        ListWithError<WorldTag> worldTags = mWorld.getSuggestedTagName(mWords);
+        ListWithError<WorldTag> worldTags = mWorldAPI.getSuggestedTagName(mWords);
         List<String> tagNames = new ArrayList<>(worldTags.size());
         for (WorldTag worldTag : worldTags) {
             tagNames.add(worldTag.name);
