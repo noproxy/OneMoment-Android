@@ -30,7 +30,7 @@ public class WorldFragment extends ToolbarFragment {
 
     @AfterViews void setUpViews() {
         File hybrdFile = FileUtil.getInternalFile(getActivity(), Constants.HYBRD_UNZIP_DIR);
-        String url = Constants.FILE_URL_PREFIX + new File(hybrdFile, "build/pages/pages_list/pages_list.html").getPath();
+        String url = Constants.FILE_URL_PREFIX + new File(hybrdFile, "build/pages/world/world.html").getPath();
         worldWebFragment = CommonWebFragment_.builder().mUrl(url).build();
         getFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, worldWebFragment, BaseWebFragment.TAG_WEB).commit();
