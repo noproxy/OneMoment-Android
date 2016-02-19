@@ -32,6 +32,9 @@ import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
  * Created by Carlos on 2015/8/16.
  */
 @EBean
+@Deprecated
+// not used any more, WorldFragment use hybrd instead. So static stopping BannerHeaderProvider
+// auto cycle in DiscoveryFragment is OK. By Carlos.
 public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
     private static final String TAG = "WorldPagerController";
     private WorldAdapter mAdapter;
