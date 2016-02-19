@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.Where;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EFragment;
@@ -205,11 +206,15 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private void webGetDiary(List<String> args) {
         String startDate = args.get(0);
-        int numRequest = Integer.parseInt(args.get(1));
+        long numRequest = Long.parseLong(args.get(1));
         try {
             Dao<Moment, Integer> momentDao = OpenHelperManager.getHelper(mActivity, MomentDatabaseHelper.class).getDao(Moment.class);
             // use gt instead of ge according document required, By Carlos
-            List<Moment> moments = momentDao.queryBuilder().limit(numRequest).where().gt("time", startDate).and().eq("owner", AccountManager.getUserInfo(mActivity)._id).query();
+            Where<Moment, Integer> where = momentDao.queryBuilder().limit(numRequest).where().eq("owner", AccountManager.getUserInfo(mActivity)._id);
+            // start date can be empty for getting all videos started at any day.
+            if (!TextUtils.isEmpty(startDate))
+                where.and().gt("time", startDate);
+            List<Moment> moments = where.query();
 
             Gson gson = new Gson();
             JsonArray jsonArray = new JsonArray();
