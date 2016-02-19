@@ -13,41 +13,50 @@ public class OneMomentV3 {
     public static final String FAKE_RESPONSE = "{\"msg\": \"fake success\",\n    \"code\": -99}";
     private static final RestAdapter mNonCacheRetrofit;
     private static final RestAdapter mCacheOnlyRetrofit;
+    private static final RestAdapter mCacheRetrofit;
 
     static {
         mNonCacheRetrofit = new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(OMCYyzBackup.newNoCacheClient())
+                .setClient(OneMomentClient.getNoCacheClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
-                .setConverter(new OneMomentConverter(ApiModel.CacheType.NETWORK_ONLY))
+                .setConverter(new OneMomentConverter(ApiModel.CacheType.NO_CACHE))
                 .build();
 
         mCacheOnlyRetrofit = new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(OMCYyzBackup.getCacheOnlyClient())
+                .setClient(OneMomentClient.getCacheOnlyClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.CACHE_ONLY))
                 .build();
-    }
-
-    public static RestAdapter createAdapter() {
-        return new RestAdapter.Builder()
+        mCacheRetrofit = new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(OMCYyzBackup.getCacheClient())
+                .setClient(OneMomentClient.getCacheClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.NORMAL))
                 .build();
+    }
+
+    /**
+     * use {@link #getCacheRetrofit()} instead.
+     */
+    @Deprecated
+    public static RestAdapter createAdapter() {
+        return getCacheRetrofit();
+    }
+
+    public static RestAdapter getCacheRetrofit() {
+        return mCacheRetrofit;
     }
 
     public static RestAdapter getCacheOnlyRetrofit() {
         return mCacheOnlyRetrofit;
     }
 
-    @Deprecated
-    public static RestAdapter getNetworkOnlyRetrofit() {
+    public static RestAdapter getNoCacheRetrofit() {
         return mNonCacheRetrofit;
     }
 }
