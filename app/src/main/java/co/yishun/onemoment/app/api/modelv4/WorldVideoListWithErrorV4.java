@@ -7,6 +7,7 @@ import java.util.List;
  */
 public class WorldVideoListWithErrorV4<E> extends ListWithErrorV4<E> {
     public World world;
+
     public WorldVideoListWithErrorV4(List<E> mList) {
         super(mList);
     }

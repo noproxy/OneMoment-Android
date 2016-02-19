@@ -15,8 +15,8 @@
     <TextView
         android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"/>
 
     <!--<include layout="@layout/layout_play_vote"/>-->

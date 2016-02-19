@@ -22,7 +22,7 @@ public class WorldBannerHeaderProvider extends BannerHeaderProvider {
         SliderLayout sliderLayout = (SliderLayout) super.getHeaderView(viewGroup);
         viewGroup.removeView(sliderLayout);
 
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context)
+        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.layout_header_world, viewGroup, false);
         linearLayout.addView(sliderLayout, 0);
         return linearLayout;

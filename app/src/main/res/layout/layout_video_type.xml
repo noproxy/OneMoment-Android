@@ -20,9 +20,9 @@
         android:id="@+id/worldClearView"
         android:layout_width="20dp"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/worldTextView"
         android:layout_alignLeft="@id/worldTextView"
         android:layout_alignTop="@id/worldTextView"
-        android:layout_alignBottom="@id/worldTextView"
         />
 
     <LinearLayout

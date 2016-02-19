@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
-import co.yishun.onemoment.app.config.Constants;
 
 /**
  * Created by Carlos on 12/31/15.

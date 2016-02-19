@@ -107,9 +107,4 @@
     <string name="activity_shoot_permission_error_title">无法打开相机</string>
     <string name="activity_main_msg_shoot_forbid">没有权限拍摄，请确认权限设置。</string>
     <string name="activity_shoot_permission_error_settings">设置</string>
-    <string name="video_type_add_to_diary">添加到日记</string>
-    <string name="video_type_add_to_world">添加到世界</string>
-    <string name="video_type_life_in_a_day">浮生一日</string>
-    <string name="activity_personal_world_title">我的世界</string>
-    <string name="activity_create_world_title">创建世界</string>
 </resources>

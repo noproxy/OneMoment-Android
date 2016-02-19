@@ -5,15 +5,11 @@ import android.support.annotation.ArrayRes;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import co.yishun.onemoment.app.R;
 
 /**
  * Abstract fragment encapsulate the view pager.

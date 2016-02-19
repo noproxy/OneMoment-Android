@@ -81,7 +81,7 @@ public class SplashActivity extends BaseActivity {
         }
         preferences = getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
         showProgress(R.string.activity_splash_data_migration);
-        DataMigration.dataInit(this);
+        DataMigration.dataInit(this.getApplicationContext());
         hideProgress();
         delayShowCover();
     }
@@ -147,7 +147,7 @@ public class SplashActivity extends BaseActivity {
         protected Void doInBackground(File... params) {
             File coverFile = params[0];
             LogUtil.d(TAG, "get cover url");
-            Misc misc = OneMomentV3.createAdapter().create(Misc.class);
+            Misc misc = OneMomentV3.getCacheRetrofit().create(Misc.class);
             SplashCover splashCover = misc.getSplashCover();
             long lastUpdateTime = preferences.getLong(PREFERENCE_SPLASH_UPDATE_TIME, 0L);
 

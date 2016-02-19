@@ -19,10 +19,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.Where;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EFragment;
@@ -31,14 +31,12 @@ import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import co.yishun.onemoment.app.BuildConfig;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.authentication.OneMomentClientV4;
-import co.yishun.onemoment.app.api.modelv4.ListErrorProvider;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -208,16 +206,21 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private void webGetDiary(List<String> args) {
         String startDate = args.get(0);
-        int numRequest = Integer.parseInt(args.get(1));
+        long numRequest = Long.parseLong(args.get(1));
         try {
             Dao<Moment, Integer> momentDao = OpenHelperManager.getHelper(mActivity, MomentDatabaseHelper.class).getDao(Moment.class);
-            List<Moment> moments = momentDao.queryBuilder().limit(numRequest).where().ge("time", startDate).and().eq("owner", AccountManager.getUserInfo(mActivity)._id).query();
+            // use gt instead of ge according document required, By Carlos
+            Where<Moment, Integer> where = momentDao.queryBuilder().limit(numRequest).where().eq("owner", AccountManager.getUserInfo(mActivity)._id);
+            // start date can be empty for getting all videos started at any day.
+            if (!TextUtils.isEmpty(startDate))
+                where.and().gt("time", startDate);
+            List<Moment> moments = where.query();
 
             Gson gson = new Gson();
             JsonArray jsonArray = new JsonArray();
             for (Moment m : moments) {
                 JsonObject filename = new JsonObject();
-                filename.addProperty("filename",m.getPath());
+                filename.addProperty("filename", m.getPath());
                 jsonArray.add(filename);
             }
             JsonObject jsonObject = new JsonObject();

@@ -6,7 +6,6 @@ import android.support.annotation.DrawableRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;

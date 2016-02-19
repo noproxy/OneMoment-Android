@@ -6,7 +6,9 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include android:id="@+id/toolbar" layout="@layout/layout_toolbar"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"/>
 
     <Button
         android:id="@+id/finishButton"
@@ -22,10 +24,10 @@
 
     <FrameLayout
         android:id="@+id/containerFrameLayout"
-        android:layout_below="@id/toolbar"
-        android:layout_above="@id/finishButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/finishButton"
+        android:layout_below="@id/toolbar"
         />
 
 </RelativeLayout>

@@ -7,8 +7,6 @@ import android.support.multidex.MultiDexApplication;
 import com.umeng.analytics.MobclickAgent;
 
 import co.yishun.onemoment.app.api.authentication.OneMomentClient;
-import co.yishun.onemoment.app.api.authentication.OneMomentClientV3;
-import co.yishun.onemoment.app.api.authentication.OneMomentClientV4;
 
 /**
  * Created by Carlos on 2015/10/16.

@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
 
-
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
@@ -130,6 +129,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.4'
     compile 'com.squareup.okhttp:okhttp:2.7.4'
 
+    //TODO add for upgrade later, by Carlos
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
     compile 'com.squareup.okhttp3:okhttp:3.1.1'
 

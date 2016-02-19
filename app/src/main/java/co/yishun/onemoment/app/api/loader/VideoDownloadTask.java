@@ -50,7 +50,7 @@ public class VideoDownloadTask extends LoaderTask {
         FileOutputStream output = null;
         try {
             response = call.execute();
-            LogUtil.d(TAG, "start net " + video.getFilename()+ " " + this.toString());
+            LogUtil.d(TAG, "start net " + video.getFilename() + " " + this.toString());
             if (response.code() == 200) {
                 input = response.body().byteStream();
                 output = new FileOutputStream(videoFile);
