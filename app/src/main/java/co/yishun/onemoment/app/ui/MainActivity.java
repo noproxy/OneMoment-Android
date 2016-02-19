@@ -167,7 +167,9 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_RECORD_MOMENT: {
                 // If request is cancelled, the result arrays are empty.
