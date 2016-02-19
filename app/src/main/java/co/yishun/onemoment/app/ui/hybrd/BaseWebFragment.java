@@ -101,7 +101,7 @@ public abstract class BaseWebFragment extends BaseFragment {
         }
 
         int lastUpdateTime = mActivity.getSharedPreferences(SplashActivity.RUNTIME_PREFERENCE, Context.MODE_PRIVATE)
-                .getInt(SplashActivity.PREFERENCE_HYBRD_UPDATE_TIME, 0);
+                .getInt(SplashActivity.PREFERENCE_HYBRID_UPDATE_TIME, 0);
         if (mUrl.startsWith(Constants.FILE_URL_PREFIX)) mUrl += "?time=" + lastUpdateTime;
     }
 
