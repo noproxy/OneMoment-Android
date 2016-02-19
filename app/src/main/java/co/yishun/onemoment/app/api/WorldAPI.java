@@ -4,9 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.GsonBuilder;
-
 import java.util.List;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
@@ -18,6 +15,7 @@ import co.yishun.onemoment.app.api.model.TagVideo;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.VideoTag;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.util.GsonFactory;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -27,7 +25,7 @@ import retrofit.http.Query;
 
 /**
  * Created by Carlos on 2015/8/8.
- *
+ * <p>
  * Rename from World.
  */
 public interface WorldAPI {
@@ -69,8 +67,7 @@ public interface WorldAPI {
     );
 
     @POST("/world/share")
-    @FormUrlEncoded
-    ShareInfo shareWorld(@Field("tag_name") String tagName);
+    @FormUrlEncoded ShareInfo shareWorld(@Field("tag_name") String tagName);
 
     @StringDef({"recommend", "time"})
     @interface Sort {
@@ -78,7 +75,7 @@ public interface WorldAPI {
 
     class Util {
         public static String getTagsJson(@NonNull List<VideoTag> tags) {
-            return new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().toJson(tags);
+            return GsonFactory.newNamingGson().toJson(tags);
         }
     }
 }

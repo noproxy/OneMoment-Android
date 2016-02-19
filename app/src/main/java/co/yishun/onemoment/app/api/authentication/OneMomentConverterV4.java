@@ -2,9 +2,7 @@ package co.yishun.onemoment.app.api.authentication;
 
 import android.text.TextUtils;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -27,6 +25,7 @@ import co.yishun.onemoment.app.api.modelv4.UploadToken;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
+import co.yishun.onemoment.app.util.GsonFactory;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
@@ -42,7 +41,7 @@ public class OneMomentConverterV4 implements Converter {
 
     public OneMomentConverterV4() {
         // we should custom TypeAdapter to fit ApiModel structure
-        mGson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+        mGson = GsonFactory.newNamingGson();
     }
 
     @Override public Object fromBody(TypedInput body, Type type) throws ConversionException {

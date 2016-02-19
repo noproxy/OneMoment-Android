@@ -45,6 +45,7 @@ import co.yishun.onemoment.app.ui.PersonalWorldActivity;
 import co.yishun.onemoment.app.ui.SplashActivity;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
+import co.yishun.onemoment.app.util.GsonFactory;
 
 
 /**
@@ -216,7 +217,7 @@ public abstract class BaseWebFragment extends BaseFragment {
                 where.and().gt("time", startDate);
             List<Moment> moments = where.query();
 
-            Gson gson = new Gson();
+            Gson gson = GsonFactory.newNormalGson();
             JsonArray jsonArray = new JsonArray();
             for (Moment m : moments) {
                 JsonObject filename = new JsonObject();
@@ -245,7 +246,7 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     public String toJs(Object o, boolean encode) {
         String arg;
-        arg = new Gson().toJson(o);
+        arg = GsonFactory.newNormalGson().toJson(o);
         if (encode) {
             arg = arg.replace("\"", "\\\"");
         } else {

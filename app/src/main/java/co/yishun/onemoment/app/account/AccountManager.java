@@ -1,7 +1,5 @@
 package co.yishun.onemoment.app.account;
 
-import com.google.gson.Gson;
-
 import android.accounts.Account;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +15,7 @@ import java.util.HashMap;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.util.GsonFactory;
 
 /**
  * Created by Carlos on 2015/8/13.
@@ -111,7 +110,7 @@ public class AccountManager {
             String path = getUserInfoDir(context);
             LogUtil.i(TAG, "save identity info, path: " + path);
             mUser = user;
-            String userJson = new Gson().toJson(mUser);
+            String userJson = GsonFactory.newNamingGson().toJson(mUser);
             FileWriter fileWriter = new FileWriter(path);
             fileWriter.write(userJson);
             fileWriter.flush();
@@ -139,7 +138,7 @@ public class AccountManager {
             String path = getUserInfoDir(context);
             LogUtil.i(TAG, "load identity info, path: " + path);
             FileReader fileReader = new FileReader(path);
-            mUser = new Gson().fromJson(fileReader, User.class);
+            mUser = GsonFactory.newNamingGson().fromJson(fileReader, User.class);
             fileReader.close();
         } catch (IOException e) {
             e.printStackTrace();

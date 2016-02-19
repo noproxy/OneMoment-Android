@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.google.gson.Gson;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
@@ -20,6 +18,7 @@ import java.io.IOException;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.util.GsonFactory;
 
 import static co.yishun.onemoment.app.LogUtil.e;
 import static co.yishun.onemoment.app.LogUtil.i;
@@ -61,7 +60,7 @@ public class WeiboHelper implements AuthHelper {
 
         try {
             Response response = client.newCall(request).execute();
-            return new Gson().fromJson(response.body().string(), UserInfo.class);
+            return GsonFactory.newNormalGson().fromJson(response.body().string(), UserInfo.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -101,7 +100,7 @@ public class WeiboHelper implements AuthHelper {
         });
     }
 
-    public void handleIntent(int requestCode, int resultCode, Intent data){
+    public void handleIntent(int requestCode, int resultCode, Intent data) {
         ssoHandler.authorizeCallBack(requestCode, resultCode, data);
     }
 

@@ -62,6 +62,7 @@ import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
 import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.util.GsonFactory;
 import co.yishun.onemoment.app.video.VideoCommand;
 import co.yishun.onemoment.app.video.VideoConcat;
 
@@ -335,7 +336,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
             e.printStackTrace();
         }
 
-        Gson gson = new Gson();
+        Gson gson = GsonFactory.newNormalGson();
         JsonArray allTagArray = new JsonArray();
         for (Moment m : selectedMoments) {
             JsonArray momentTags = new JsonArray();
