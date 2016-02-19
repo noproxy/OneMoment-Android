@@ -15,6 +15,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.ui.WorldVideosActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
+import co.yishun.onemoment.app.ui.adapter.BannerHeaderProvider;
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
 import co.yishun.onemoment.app.ui.controller.DiscoveryController_;
 
@@ -26,6 +27,17 @@ public class DiscoveryFragment extends ToolbarFragment implements AbstractRecycl
 
     private static final String TAG = "DiscoveryFragment";
     @ViewById HeaderCompatibleSuperRecyclerView recyclerView;
+
+
+    @Override public void onResume() {
+        super.onResume();
+        BannerHeaderProvider.stopSliderAutoCycle();
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        BannerHeaderProvider.stopSliderAutoCycle();
+    }
 
     @AfterViews void setupViews() {
         DiscoveryController_.getInstance_(getContext()).setUp(getContext(), recyclerView, this);
