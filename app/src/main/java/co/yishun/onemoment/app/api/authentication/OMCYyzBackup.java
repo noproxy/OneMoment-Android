@@ -61,8 +61,8 @@ public class OMCYyzBackup extends OkClient {
         return mCacheOnlyInstance;
     }
 
-    public static OMCYyzBackup newNoCacheClient() {
-        return new OMCYyzBackup(new OkHttpClient(), CacheType.NORMAL);
+    public static OMCYyzBackup getNoCacheClient() {
+        return new OMCYyzBackup(new OkHttpClient(), CacheType.NO_CACHE);
     }
 
     public static void setUpCache(Context context) {
