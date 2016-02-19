@@ -226,7 +226,8 @@ public abstract class BaseWebFragment extends BaseFragment {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("videos_num", moments.size());
             jsonObject.add("videos", jsonArray);
-            webView.loadUrl(String.format(toJs(gson.toJson(jsonObject)), HybrdUrlHandler.FUNC_GET_DIARY));
+            // here set encode false By Carlos
+            webView.loadUrl(String.format(toJs(gson.toJson(jsonObject), false), HybrdUrlHandler.FUNC_GET_DIARY));
         } catch (SQLException e) {
             e.printStackTrace();
         }
