@@ -208,7 +208,8 @@ public abstract class BaseWebFragment extends BaseFragment {
         int numRequest = Integer.parseInt(args.get(1));
         try {
             Dao<Moment, Integer> momentDao = OpenHelperManager.getHelper(mActivity, MomentDatabaseHelper.class).getDao(Moment.class);
-            List<Moment> moments = momentDao.queryBuilder().limit(numRequest).where().ge("time", startDate).and().eq("owner", AccountManager.getUserInfo(mActivity)._id).query();
+            // use gt instead of ge according document required, By Carlos
+            List<Moment> moments = momentDao.queryBuilder().limit(numRequest).where().gt("time", startDate).and().eq("owner", AccountManager.getUserInfo(mActivity)._id).query();
 
             Gson gson = new Gson();
             JsonArray jsonArray = new JsonArray();
