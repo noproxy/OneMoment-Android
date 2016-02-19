@@ -153,7 +153,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webGetAccount(List<String> args) {
-        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity)), HybrdUrlHandler.FUNC_GET_ACCOUNT));
+        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity), true, true), HybrdUrlHandler.FUNC_GET_ACCOUNT));
     }
 
     private void webGetAccountId(List<String> args) {
@@ -244,9 +244,14 @@ public abstract class BaseWebFragment extends BaseFragment {
         return toJs(o, true);
     }
 
-    public String toJs(Object o, boolean encode) {
+    public String toJs(Object o, boolean encode, boolean naming) {
         String arg;
-        arg = GsonFactory.newNormalGson().toJson(o);
+        Gson gson;
+        if (naming)
+            gson = GsonFactory.newNamingGson();
+        else
+            gson = GsonFactory.newNormalGson();
+        arg = gson.toJson(o);
         if (encode) {
             arg = arg.replace("\"", "\\\"");
         } else {
@@ -259,6 +264,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         String result = "javascript:ctx.%sAndroidReturn('[" + arg + "]')";
         LogUtil.d(TAG, "load js : " + result);
         return result;
+    }
+
+    public String toJs(Object o, boolean encode) {
+        return toJs(o, encode, false);
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
