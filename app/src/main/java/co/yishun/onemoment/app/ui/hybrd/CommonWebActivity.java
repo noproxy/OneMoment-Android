@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui.hybrd;
 
 import android.text.TextUtils;
+import android.view.MenuItem;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -21,6 +22,14 @@ public class CommonWebActivity extends BaseWebActivity {
     @AfterViews void setupViews() {
         setupToolbar();
         setupFragment();
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void setPageInfo() {
