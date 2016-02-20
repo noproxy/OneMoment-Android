@@ -79,12 +79,11 @@ public class OneMomentClientV4 extends OneMomentClient {
     @Override public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
+        headers.add(new Header("User-Agent", Util.getUserAgent()));
 
         TypedOutput body = request.getBody();
 
         headers.add(new Header("Authentication", "Basic " + getAuthStr()));
-        LogUtil.d(TAG, System.getProperty("http.agent"));
-        headers.add(new Header("UserAgent", System.getProperty("http.agent")));
 //        headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 7 + ",max-stale"));
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET

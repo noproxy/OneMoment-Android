@@ -76,6 +76,7 @@ public class OMCYyzBackup extends OkClient {
     public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
+        headers.add(new Header("User-Agent", Util.getUserAgent()));
 
         Token token1 = generateOmToken1();
         i(TAG, token1.toString());
