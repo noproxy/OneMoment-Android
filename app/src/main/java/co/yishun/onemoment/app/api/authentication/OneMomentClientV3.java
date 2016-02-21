@@ -72,7 +72,7 @@ public class OneMomentClientV3 extends OneMomentClient {
         headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
 
         // one week cached
-        headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 7 + ",max-stale"));
+        headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
 
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
