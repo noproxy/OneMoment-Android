@@ -110,6 +110,12 @@ public abstract class BaseWebFragment extends BaseFragment {
         webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setAllowFileAccessFromFileURLs(true);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setDatabaseEnabled(true);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            webView.getSettings().setDatabasePath(FileUtil.getDatabasePath(getContext()));
+        }
+
         webView.setWebViewClient(new BaseWebClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (mActivity.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE)) {
