@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import co.yishun.onemoment.app.R;
@@ -32,10 +33,24 @@ public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<World, Discove
 
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, World item, int position) {
+        holder.numTextView.setVisibility(View.INVISIBLE);
+        holder.tagTextView.setVisibility(View.INVISIBLE);
+
         if (TextUtils.isEmpty(item.thumbnail))
             holder.itemImageView.setImageResource(R.drawable.pic_banner_default);
         else
-            Picasso.with(mContext).load(item.thumbnail).placeholder(R.drawable.pic_banner_default).into(holder.itemImageView);
+            Picasso.with(mContext).load(item.thumbnail).placeholder(R.drawable.pic_banner_default).into(holder.itemImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    holder.numTextView.setVisibility(View.VISIBLE);
+                    holder.tagTextView.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
         holder.numTextView.setText(String.format(peopleSuffix, item.videosNum));
         holder.tagTextView.setText(item.name);
     }
