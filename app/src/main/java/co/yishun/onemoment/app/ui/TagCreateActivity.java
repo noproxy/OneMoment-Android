@@ -133,7 +133,8 @@ public class TagCreateActivity extends BaseActivity
 
     @AfterViews void setupViews() {
         setupToolbar();
-//        setPreviewImage();
+        setPreviewImage();
+        setVideo();
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -157,6 +158,7 @@ public class TagCreateActivity extends BaseActivity
             File smallThumb = FileUtil.getThumbnailStoreFile(this, momentToSave, FileUtil.Type.MICRO_THUMB);
             VideoUtil.createThumbs(videoPath, largeThumb, smallThumb);
             momentToSave.setLargeThumbPath(largeThumb.getPath());
+            momentToSave.setThumbPath(smallThumb.getPath());
             Picasso.with(this).load(largeThumb).into(momentPreviewImageView);
         } catch (IOException e) {
             e(TAG, "create thumb failed");
@@ -173,15 +175,15 @@ public class TagCreateActivity extends BaseActivity
         i("setupToolbar", "set home as up true");
     }
 
-    @AfterViews void setVideo() {
+    void setVideo() {
         if (videoPath == null) return;
         videoView.setVideoPath(videoPath);
-        videoView.seekTo(300);
         playVideo();
     }
 
     @UiThread(delay = 500) void playVideo() {
         videoView.seekTo(0);
+        momentPreviewImageView.setVisibility(View.INVISIBLE);
         videoView.start();
     }
 
