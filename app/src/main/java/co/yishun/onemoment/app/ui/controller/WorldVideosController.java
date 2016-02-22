@@ -78,23 +78,27 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
         return list;
     }
 
-    @UiThread void getWorldThumb() {
+    @UiThread
+    void getWorldThumb() {
         if (TextUtils.isEmpty(mWorld.getThumb())) {
             mThumbUrlInvalid = true;
             Picasso.with(mContext).load(R.drawable.pic_banner_default).into(mWorldPreview.get());
         } else
             Picasso.with(mContext).load(mWorld.getThumb()).into(new Target() {
-                @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     mThumbUrlInvalid = false;
                     mWorldPreview.get().setImageBitmap(bitmap);
                 }
 
-                @Override public void onBitmapFailed(Drawable errorDrawable) {
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
                     mThumbUrlInvalid = true;
                     Picasso.with(mContext).load(R.drawable.pic_banner_default).into(mWorldPreview.get());
                 }
 
-                @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
                     mThumbUrlInvalid = true;
                     Picasso.with(mContext).load(R.drawable.pic_banner_default).into(mWorldPreview.get());
                 }
@@ -102,7 +106,8 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     }
 
     @Override
-    @UiThread void onLoadEnd(ListErrorProvider<WorldVideo> list) {
+    @UiThread
+    void onLoadEnd(ListErrorProvider<WorldVideo> list) {
         if (list == null || !list.isSuccess()) {
             onLoadError();
             getRecyclerView().hideMoreProgress();

@@ -2,6 +2,8 @@ package co.yishun.onemoment.app.api.authentication;
 
 import android.support.annotation.Nullable;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,6 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.Util;
+import co.yishun.onemoment.app.api.model.ApiModel;
 import retrofit.client.Header;
 import retrofit.client.Request;
 import retrofit.client.Response;
@@ -24,34 +27,46 @@ import static co.yishun.onemoment.app.LogUtil.i;
 
 
 /**
- * Custom client to replace request with double token verified one. And encrypted body if have.
- * <p>
+ * Custom client to replace request with double token verified one. And encrypted body if have. <p>
  * Created by Carlos on 2015/8/5.
  */
 public class OneMomentClientV3 extends OneMomentClient {
     public static final String TAG = "OneMomentClientV3";
     public static final int DEFAULT_EXPIRE_TIME = 10;
-    private static OneMomentClientV3 mInstance = new OneMomentClientV3();
 
-    protected OneMomentClientV3() {
-        super();
+    private static final OneMomentClientV3 mCacheInstance = new OneMomentClientV3(mCacheOkHttpClient, ApiModel.CacheType.NORMAL);
+    private static final OneMomentClientV3 mCacheOnlyInstance = new OneMomentClientV3(mCacheOnlyOkHttpClient, ApiModel.CacheType.CACHE_ONLY);
+
+    private OneMomentClientV3(OkHttpClient client, ApiModel.CacheType cacheType) {
+        super(client, cacheType);
     }
 
-    public static OneMomentClientV3 getCachedClient() {
-        return mInstance;
+    public static OneMomentClientV3 getCacheClient() {
+        return mCacheInstance;
     }
 
-    @Override protected byte[] getFakeBody() {
+    public static OneMomentClientV3 getCacheOnlyClient() {
+        return mCacheOnlyInstance;
+    }
+
+    public static OneMomentClientV3 newNoCacheClient() {
+        return new OneMomentClientV3(new OkHttpClient(), ApiModel.CacheType.NORMAL);
+    }
+
+    @Override
+    protected byte[] getFakeBody() {
         return OneMomentV3.FAKE_RESPONSE.getBytes(Charset.forName("UTF-8"));
     }
 
-    @Override protected byte[] encode(byte[] body) throws IOException {
+    @Override
+    protected byte[] encode(byte[] body) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(body);
         return OneMomentEncoding.encodingStream(outputStream);
     }
 
-    @Override public Response execute(Request request) throws IOException {
+    @Override
+    public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
         headers.add(new Header("User-Agent", Util.getUserAgent()));
@@ -71,8 +86,18 @@ public class OneMomentClientV3 extends OneMomentClient {
         headers.add(new Header("Om-et", String.valueOf(expiredTime)));
         headers.add(new Header("Om-tz", TimeZone.getDefault().getID()));
 
-        // one week cached
-        headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
+        switch (mCacheType) {
+            case CACHE_ONLY:
+                // one month cached
+                headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 30 + ",max-stale"));
+                break;
+            case NORMAL:
+                // one minute
+                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
+                break;
+            default:
+                break;
+        }
 
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
@@ -126,19 +151,23 @@ public class OneMomentClientV3 extends OneMomentClient {
 
         }
 
-        @Override public String fileName() {
+        @Override
+        public String fileName() {
             return mTypedOutput.fileName();
         }
 
-        @Override public String mimeType() {
+        @Override
+        public String mimeType() {
             return "text/plain; charset=UTF-8";
         }
 
-        @Override public long length() {
+        @Override
+        public long length() {
             return mData.length;
         }
 
-        @Override public void writeTo(OutputStream out) throws IOException {
+        @Override
+        public void writeTo(OutputStream out) throws IOException {
             if (mData == null)
                 throw new IOException(mException);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();

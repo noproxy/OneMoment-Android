@@ -17,7 +17,7 @@ public class OneMomentV4 {
         return new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL)
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(OneMomentClientV4.getCachedClient())
+                .setClient(OneMomentClientV4.getCacheClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
                 .setConverter(new OneMomentConverterV4())
                 .build();

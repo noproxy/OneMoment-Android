@@ -6,7 +6,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.umeng.analytics.MobclickAgent;
 
-import co.yishun.onemoment.app.api.authentication.OMCYyzBackup;
+import co.yishun.onemoment.app.api.authentication.OneMomentClient;
 
 /**
  * Created by Carlos on 2015/10/16.
@@ -17,9 +17,7 @@ public class OMApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         LogUtil.setUp(this);
-//        OneMomentClientV3.getCachedClient().setUpCache(this);
-        OMCYyzBackup.setUpCache(this);
-//        OneMomentClientV4.getCachedClient().setUpCache(this);
+        OneMomentClient.setUpCache(this);
         MobclickAgent.openActivityDurationTrack(false);
     }
 

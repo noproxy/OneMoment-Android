@@ -18,7 +18,6 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.picasso.Picasso;
 
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -56,11 +55,11 @@ public class SplashActivity extends BaseActivity {
     public static final String PREFERENCE_SPLASH_UPDATE_TIME = "splash_update_time";
     public static final String PREFERENCE_SPLASH_COVER_NAME = "splash_cover_name";
     public static final String PREFERENCE_SPLASH_STAY = "splash_stay";
-    public static final String PREFERENCE_HYBRD_NAME = "hybrd_name";
-    public static final String PREFERENCE_HYBRD_UPDATE_TIME = "hybrd_update_time";
-    public static final String PREFERENCE_HYBRD_UNZIP_TIME = "hybrd_unzip_time";
-    public static final String PREFERENCE_HYBRD_MD5 = "hybrd_md5";
-    public static final String PREFERENCE_HYBRD_LENGTH = "hybrd_length";
+    public static final String PREFERENCE_HYBRID_NAME = "hybrid_name";
+    public static final String PREFERENCE_HYBRID_UPDATE_TIME = "hybrid_update_time";
+    public static final String PREFERENCE_HYBRID_MD5 = "hybrid_md5";
+    public static final String PREFERENCE_HYBRID_LENGTH = "hybrid_length";
+    public static final String PREFERENCE_HYBRID_UNZIP_TIME = "hybrd_unzip_time";
     public static final String DEFAULT_SPLASH_COVER_NAME = "splash_cover_0.png";
     private static final String TAG = "SplashActivity";
 
@@ -112,9 +111,9 @@ public class SplashActivity extends BaseActivity {
         // use static AsyncTask to ensure not keeping this activity's reference
         new CoverUpdateTask(this).execute(coverFile);
 
-        String hybrdFileName = preferences.getString(PREFERENCE_HYBRD_NAME, "hybrd_default.zip");
+        String hybrdFileName = preferences.getString(PREFERENCE_HYBRID_NAME, "hybrd_default.zip");
         File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
-        updateHybrd(hybrdFile);
+        new HybridUpdateTask(this).execute(hybrdFile);
     }
 
     void endWithStartMain() {
@@ -136,70 +135,6 @@ public class SplashActivity extends BaseActivity {
         mPageName = "SplashActivity";
     }
 
-    @Background void updateHybrd(File hybrdFile) {
-        int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRD_UPDATE_TIME, 0);
-        int lastUnzipTime = preferences.getInt(PREFERENCE_HYBRD_UNZIP_TIME, 0);
-        if (lastUnzipTime <= lastUpdateTime) {
-            if (hybrdFile.length() == 0 || !TextUtils.equals(FileUtil.calculateMD5(hybrdFile), preferences.getString(PREFERENCE_HYBRD_MD5, ""))) {
-                FileUtil.copyResToFile(this, R.raw.hybrd_default, hybrdFile.getPath());
-            }
-            FileUtil.unZip(hybrdFile.getPath(), FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR).getPath());
-            preferences.edit().putInt(PREFERENCE_HYBRD_UNZIP_TIME, (int) Util.unixTimeStamp()).apply();
-        }
-        HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
-        if (hybrdData.updateTime > lastUpdateTime) {
-            String url = "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip";
-            OkHttpClient client = new OkHttpClient();
-            Call call = client.newCall(new Request.Builder().url(url).build());
-            InputStream input = null;
-            FileOutputStream output = null;
-            try {
-                Response response = call.execute();
-                if (response.code() == 200) {
-                    input = response.body().byteStream();
-                    long inputLength = response.body().contentLength();
-                    LogUtil.d(TAG, "get hybrd " + url + " length " + inputLength);
-                    if (inputLength == 0) {
-                        return;
-                    }
-                    File newFile = new File(hybrdFile.getParent(), "hybrd_" + hybrdData.updateTime + ".zip");
-                    if (newFile.exists()) newFile.delete();
-                    newFile.createNewFile();
-                    LogUtil.d(TAG, "into " + newFile.getPath());
-                    output = new FileOutputStream(newFile);
-
-                    byte data[] = new byte[2048];
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        output.write(data, 0, count);
-                    }
-
-                    String newMd5 = FileUtil.calculateMD5(newFile);
-                    if (TextUtils.equals(hybrdData.md5, newMd5)) {
-                        preferences.edit()
-                                .putString(PREFERENCE_HYBRD_NAME, newFile.getName())
-                                .putInt(PREFERENCE_HYBRD_UPDATE_TIME, hybrdData.updateTime)
-                                .putString(PREFERENCE_HYBRD_MD5, hybrdData.md5)
-                                .putLong(PREFERENCE_HYBRD_LENGTH, hybrdData.length)
-                                .apply();
-                        hybrdFile.delete();
-                        LogUtil.i(TAG, "finish hybrd download");
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (output != null)
-                        output.close();
-                    if (input != null)
-                        input.close();
-                } catch (IOException ignored) {
-                }
-            }
-        }
-    }
-
     private static final class CoverUpdateTask extends AsyncTask<File, Void, Void> {
         private final SharedPreferences preferences;
 
@@ -212,7 +147,7 @@ public class SplashActivity extends BaseActivity {
         protected Void doInBackground(File... params) {
             File coverFile = params[0];
             LogUtil.d(TAG, "get cover url");
-            Misc misc = OneMomentV3.createAdapter().create(Misc.class);
+            Misc misc = OneMomentV3.getCacheRetrofit().create(Misc.class);
             SplashCover splashCover = misc.getSplashCover();
             long lastUpdateTime = preferences.getLong(PREFERENCE_SPLASH_UPDATE_TIME, 0L);
 
@@ -262,6 +197,81 @@ public class SplashActivity extends BaseActivity {
                 }
             }
 
+            return null;
+        }
+    }
+
+    private final class HybridUpdateTask extends AsyncTask<File, Void, Void> {
+
+        private final SharedPreferences preferences;
+        private Context context;
+
+        private HybridUpdateTask(final Context context) {
+            this.preferences = context.getApplicationContext().getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE);
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(File... params) {
+            File hybridFile = params[0];
+            int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRID_UPDATE_TIME, 0);
+            int lastUnzipTime = preferences.getInt(PREFERENCE_HYBRID_UNZIP_TIME, 0);
+            if (lastUnzipTime < lastUpdateTime) {
+                if (hybridFile.length() == 0 || !TextUtils.equals(FileUtil.calculateMD5(hybridFile), preferences.getString(PREFERENCE_HYBRID_MD5, ""))) {
+                    FileUtil.copyResToFile(context, R.raw.hybrd_default, hybridFile.getPath());
+                }
+                FileUtil.unZip(hybridFile.getPath(), FileUtil.getInternalFile(context, Constants.HYBRD_UNZIP_DIR).getPath());
+                preferences.edit().putInt(PREFERENCE_HYBRID_UNZIP_TIME, (int) Util.unixTimeStamp()).apply();
+            }
+            HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
+            if (hybrdData.updateTime > lastUpdateTime) {
+                String url = "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip";
+                OkHttpClient client = new OkHttpClient();
+                Call call = client.newCall(new Request.Builder().url(url).build());
+                InputStream input = null;
+                FileOutputStream output = null;
+                try {
+                    Response response = call.execute();
+                    if (response.code() == 200) {
+                        input = response.body().byteStream();
+                        long inputLength = response.body().contentLength();
+                        LogUtil.d(TAG, "get image " + url + " length " + inputLength);
+                        if (inputLength == 0) {
+                            return null;
+                        }
+                        File newFile = new File(hybridFile.getParent(), "hybrd_" + hybrdData.updateTime + ".zip");
+                        if (newFile.exists()) newFile.delete();
+                        newFile.createNewFile();
+                        LogUtil.d(TAG, "into " + newFile.getPath());
+                        output = new FileOutputStream(newFile);
+
+                        byte data[] = new byte[2048];
+                        int count;
+                        while ((count = input.read(data)) != -1) {
+                            output.write(data, 0, count);
+                        }
+
+                        preferences.edit()
+                                .putString(PREFERENCE_HYBRID_NAME, newFile.getName())
+                                .putInt(PREFERENCE_HYBRID_UPDATE_TIME, hybrdData.updateTime)
+                                .putString(PREFERENCE_HYBRID_MD5, hybrdData.md5)
+                                .putLong(PREFERENCE_HYBRID_LENGTH, hybrdData.length)
+                                .apply();
+                        hybridFile.delete();
+                        LogUtil.i(TAG, "finish image download");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (output != null)
+                            output.close();
+                        if (input != null)
+                            input.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
             return null;
         }
     }

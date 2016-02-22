@@ -10,9 +10,6 @@ retrolambda {
     // Note: due to a limitation in retrolamba, this will set incremental to false. The default is false.
     defaultMethods false
     incremental true
-// may don't need, commented by Carlos
-//   jvmArgs '-noverify'
-
 }
 
 android {

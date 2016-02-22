@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.api.authentication;
 import android.util.Base64;
 
 import com.qiniu.android.dns.util.Hex;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -16,6 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.Util;
+import co.yishun.onemoment.app.api.model.ApiModel;
 import retrofit.client.Header;
 import retrofit.client.Request;
 import retrofit.client.Response;
@@ -30,14 +32,24 @@ public class OneMomentClientV4 extends OneMomentClient {
 
     public static final int DEFAULT_EXPIRE_TIME = 15;
     private static final String TAG = "OneMomentClientV4";
-    protected static OneMomentClientV4 mInstance = new OneMomentClientV4();
 
-    private OneMomentClientV4() {
-        super();
+    private static final OneMomentClientV4 mCacheInstance = new OneMomentClientV4(mCacheOkHttpClient, ApiModel.CacheType.NORMAL);
+    private static final OneMomentClientV4 mCacheOnlyInstance = new OneMomentClientV4(mCacheOnlyOkHttpClient, ApiModel.CacheType.CACHE_ONLY);
+
+    private OneMomentClientV4(OkHttpClient client, ApiModel.CacheType cacheType) {
+        super(client, cacheType);
     }
 
-    public static OneMomentClientV4 getCachedClient() {
-        return mInstance;
+    public static OneMomentClientV4 getCacheClient() {
+        return mCacheInstance;
+    }
+
+    public static OneMomentClientV4 getCacheOnlyClient() {
+        return mCacheOnlyInstance;
+    }
+
+    public static OneMomentClientV4 newNoCacheClient() {
+        return new OneMomentClientV4(new OkHttpClient(), ApiModel.CacheType.NORMAL);
     }
 
     public static String HmacSHA256Encode(String key, String data) {
@@ -68,15 +80,18 @@ public class OneMomentClientV4 extends OneMomentClient {
         return authStrbase64.trim();
     }
 
-    @Override protected byte[] getFakeBody() {
+    @Override
+    protected byte[] getFakeBody() {
         return OneMomentV4.FAKE_RESPONSE.getBytes(Charset.forName("UTF-8"));
     }
 
-    @Override protected byte[] encode(byte[] body) throws IOException {
+    @Override
+    protected byte[] encode(byte[] body) throws IOException {
         return body;
     }
 
-    @Override public Response execute(Request request) throws IOException {
+    @Override
+    public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
         headers.add(new Header("User-Agent", Util.getUserAgent()));
@@ -85,6 +100,19 @@ public class OneMomentClientV4 extends OneMomentClient {
 
         headers.add(new Header("Authentication", "Basic " + getAuthStr()));
 //        headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 7 + ",max-stale"));
+
+        switch (mCacheType) {
+            case CACHE_ONLY:
+                // one month cached
+                headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 30 + ",max-stale"));
+                break;
+            case NORMAL:
+                // one minute
+                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
+                break;
+            default:
+                break;
+        }
 
         Request verifiedRequest = new Request(request.getMethod(), request.getUrl(), headers, body);// be null if method is GET
 

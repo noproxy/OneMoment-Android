@@ -71,7 +71,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
-    @Extra boolean checkLOC = false;
+    @Extra
+    boolean checkLOC = false;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     private FragmentManager fragmentManager;
@@ -82,7 +83,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private TextView locationTextView;
     private FloatingActionButton fab;
     private BroadcastReceiver mSyncChangedReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             if (currentItemId == R.id.navigation_item_1) {
                 Bundle extra = intent.getExtras();
                 long unixTimeStamp = extra.getLong(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP);
@@ -100,7 +102,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private boolean goToShootDiary = false;
     private Pair<View, Boolean> pendingShootRequestByPermission = null;
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
         // refresh diary in case moment update
         if (currentItemId == R.id.navigation_item_1 && goToShootDiary) {
@@ -110,15 +113,18 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         registerSyncListener();
     }
 
-    @Override protected void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         unregisterReceiver(mSyncChangedReceiver);
     }
 
-    @AfterInject void showMoveLOCDialog() {
+    @AfterInject
+    void showMoveLOCDialog() {
         if (checkLOC)
             new MaterialDialog.Builder(this).theme(Theme.LIGHT).content(R.string.activity_main_move_LOC_moments).positiveText(R.string.activity_main_move_LOC_moments_positive).negativeText(R.string.activity_main_move_LOC_moments_negative).callback(new MaterialDialog.ButtonCallback() {
-                @Override public void onPositive(MaterialDialog dialog) {
+                @Override
+                public void onPositive(MaterialDialog dialog) {
                     super.onPositive(dialog);
                     DataMigration.moveLOCMomentsToUser(MainActivity.this);
                 }
@@ -193,7 +199,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             builder.negativeText(R.string.activity_shoot_permission_error_settings);
                             builder.callback(new MaterialDialog.ButtonCallback() {
-                                @Override public void onNegative(MaterialDialog dialog) {
+                                @Override
+                                public void onNegative(MaterialDialog dialog) {
                                     try {
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
@@ -234,7 +241,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         return true;
     }
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -282,12 +290,14 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         drawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    @UiThread(delay = 300) void delayStartSettingsActivity() {
+    @UiThread(delay = 300)
+    void delayStartSettingsActivity() {
         SettingsActivity_.intent(this).start();
         //TODO add animation
     }
 
-    @UiThread(delay = 300) void delayStartUserInfoActivity() {
+    @UiThread(delay = 300)
+    void delayStartUserInfoActivity() {
         UserInfoActivity_.intent(this).start();
     }
 
@@ -299,7 +309,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         unregisterReceiver(mSyncChangedReceiver);
     }
 
-    @UiThread void invalidateUserInfo(User user) {
+    @UiThread
+    void invalidateUserInfo(User user) {
         if (user == null) {
             return;
         }
@@ -349,11 +360,13 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         return true;
     }
 
-    @UiThread(delay = 300) void delayCommit(Fragment targetFragment) {
+    @UiThread(delay = 300)
+    void delayCommit(Fragment targetFragment) {
         fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commitAllowingStateLoss();
     }
 
-    @Override public void onBackPressed() {
+    @Override
+    public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
@@ -365,17 +378,20 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         }
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         AccountManager.removeOnUserInfoChangedListener(this);
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         // no global option menu, but fragment would add menu
         return true;
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         // no global option menu to handle, fragment handles itself.
         // Just forwarding to DrawerToggle to handle item in NavigationDrawer
         return mDrawerToggle.onOptionsItemSelected(item);
@@ -389,12 +405,14 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         startActivity(new Intent(this, UIAutomatorTestActivity.class));
     }
 
-    @Override protected void onPostCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         syncToggle();
     }
 
-    @Override public void onConfigurationChanged(Configuration newConfig) {
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         syncToggle();
     }
@@ -408,12 +426,14 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             return super.getSnackbarAnchorWithView(view);
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mIsPage = false;
         mPageName = "MainActivity";
     }
 
-    @Override public void onUserInfoChange(User info) {
+    @Override
+    public void onUserInfoChange(User info) {
         invalidateUserInfo(info);
     }
 }

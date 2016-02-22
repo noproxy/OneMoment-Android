@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui.hybrd;
 import android.support.annotation.CallSuper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -36,5 +37,17 @@ public abstract class BaseWebActivity extends BaseActivity {
         mWebFragment = CommonWebFragment_.builder().mUrl(url).build();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, mWebFragment, BaseWebFragment.TAG_WEB).commit();
+    }
+
+    /**
+     * Activities extend {@link BaseWebActivity} will call {@link #finish()} when the navigation up button clicked.
+     *
+     * */
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
