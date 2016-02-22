@@ -49,7 +49,7 @@ public class WorldFragment extends ToolbarFragment {
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.fragment_world_action_add) {
-            CreateWorldActivity_.intent(getContext()).start();
+            CreateWorldActivity_.intent(getContext()).start();//TODO may ask for result, and remove refresh every time MainActivity onResume
             return true;
         }
         return super.onOptionsItemSelected(item);
