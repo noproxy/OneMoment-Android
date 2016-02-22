@@ -107,4 +107,5 @@
     <string name="activity_shoot_permission_error_title">无法打开相机</string>
     <string name="activity_main_msg_shoot_forbid">没有权限拍摄，请确认权限设置。</string>
     <string name="activity_shoot_permission_error_settings">设置</string>
+    <string name="text_load_nothing">没有更多了…</string>
 </resources>
