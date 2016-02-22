@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
@@ -21,6 +20,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.Account;
 import co.yishun.onemoment.app.config.Constants;
+import co.yishun.onemoment.app.util.GsonFactory;
 
 
 /**
@@ -52,7 +52,7 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
 
         try {
             Response response = client.newCall(new Request.Builder().url(url).build()).execute();
-            UserInfoResponse infoResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(response.body().string(), UserInfoResponse.class);
+            UserInfoResponse infoResponse = GsonFactory.newNamingGson().fromJson(response.body().string(), UserInfoResponse.class);
             return from(infoResponse);
         } catch (Exception e) {
             LogUtil.i(TAG, "Exception when get wechat user info");

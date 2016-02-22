@@ -82,6 +82,7 @@ import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagSearchController_;
 import co.yishun.onemoment.app.ui.view.VideoTypeView;
+import co.yishun.onemoment.app.util.GsonFactory;
 
 import static co.yishun.onemoment.app.LogUtil.d;
 import static co.yishun.onemoment.app.LogUtil.e;
@@ -385,7 +386,7 @@ public class TagCreateActivity extends BaseActivity
             e.printStackTrace();
         }
 
-        Gson gson = new Gson();
+        Gson gson = GsonFactory.newNormalGson();
         JsonArray tagArray = gson.toJsonTree(tagContainer.getVideoTags()).getAsJsonArray();
         for (JsonElement element : tagArray) {
             element.getAsJsonObject().remove("code");

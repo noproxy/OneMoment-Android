@@ -65,6 +65,7 @@
     <string name="activity_guide_enter">Enter</string>
 
     <string name="text_load_error">Load failed, please check network!</string>
+    <string name="text_load_nothing">No more available</string>
     <string name="activity_user_info_weibo_id_bind_forbid">Weibo has been binded, bind failed.</string>
 
     <string name="activity_splash_data_migration">Updating…</string>

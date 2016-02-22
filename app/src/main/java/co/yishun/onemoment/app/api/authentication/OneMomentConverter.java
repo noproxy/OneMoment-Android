@@ -1,8 +1,6 @@
 package co.yishun.onemoment.app.api.authentication;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -31,6 +29,7 @@ import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.api.model.User;
 import co.yishun.onemoment.app.api.model.Video;
 import co.yishun.onemoment.app.api.model.WorldTag;
+import co.yishun.onemoment.app.util.GsonFactory;
 import java8.util.stream.StreamSupport;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
@@ -49,7 +48,7 @@ public class OneMomentConverter implements Converter {
     public OneMomentConverter(CacheType type) {
         // we should custom TypeAdapter to fit ApiModel structure
         mCacheType = type;
-        mGson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+        mGson = GsonFactory.newNamingGson();
     }
 
     /**

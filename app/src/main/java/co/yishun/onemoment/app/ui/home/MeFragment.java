@@ -26,11 +26,14 @@ import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment_;
 @EFragment(R.layout.fragment_me)
 public class MeFragment extends ToolbarFragment {
     CommonWebFragment meWebFragment;
-    @ViewById FrameLayout containerFrameLayout;
+    @ViewById
+    FrameLayout containerFrameLayout;
 
-    @AfterViews void setUpViews() {
+    @AfterViews
+    void setUpViews() {
         File hybrdDir = FileUtil.getInternalFile(getActivity(), Constants.HYBRD_UNZIP_DIR);
         String url = Constants.FILE_URL_PREFIX + new File(hybrdDir, "build/pages/mine/mine.html").getPath();
+//        String testBaiduUrl = "http://www.baidu.com";
         meWebFragment = CommonWebFragment_.builder().mUrl(url).build();
         getFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, meWebFragment, BaseWebFragment.TAG_WEB).commit();
@@ -38,12 +41,14 @@ public class MeFragment extends ToolbarFragment {
         meWebFragment.setRefreshable(true);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_me, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.fragment_me_action_modify_info) {
             UserInfoActivity_.intent(getContext()).start();
             return true;
@@ -51,9 +56,11 @@ public class MeFragment extends ToolbarFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override protected int getTitleDrawableRes() {
+    @Override
+    protected int getTitleDrawableRes() {
         return R.drawable.pic_me_title;
     }
+
     @Override
     public void setPageInfo() {
         mPageName = "MeFragment";

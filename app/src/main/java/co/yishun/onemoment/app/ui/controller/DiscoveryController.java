@@ -15,6 +15,7 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -37,6 +38,7 @@ import co.yishun.onemoment.app.ui.adapter.HeaderRecyclerAdapter;
 @EBean
 public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
     private static final String TAG = "DiscoveryController";
+    AtomicBoolean isLoading = new AtomicBoolean(false);
     private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private DiscoveryAdapter mAdapter;
@@ -58,7 +60,6 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setRefreshListener(this);
-        mRecyclerView.setOnMoreListener(this);
 
         mBannerHeaderProvider = new BannerHeaderProvider(context);
         trueAdapter = new HeaderRecyclerAdapter(trueAdapter, mBannerHeaderProvider);
@@ -76,7 +77,8 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
         return mRecyclerView;
     }
 
-    @Background void loadBanners() {
+    @Background
+    void loadBanners() {
         ListWithError<Banner> banners = mWorldAPI.getBanners(null);
         if (banners.isSuccess()) {
             onLoadBanners(banners);
@@ -85,11 +87,18 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
         }
     }
 
-    @UiThread void onLoadBanners(List<Banner> banners) {
+    @UiThread
+    void onLoadBanners(List<Banner> banners) {
         mBannerHeaderProvider.setupBanners(banners);
     }
 
-    @Background void loadTags() {
+    @Background
+    void loadTags() {
+        if (isLoading.get()) {
+            LogUtil.i(TAG, "isLoading, cancel");
+            return;
+        }
+        isLoading.set(true);
         synchronizedLoadTags();
     }
 
@@ -99,40 +108,55 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
             if (list.size() > 0) {
                 mRanking = list.get(list.size() - 1).ranking;
                 onLoadTags(list);
-            } else {
                 onLoadEnd();
+            } else {
+                onLoadNothing();
             }
         } else {
             onLoadError();
+            onLoadEnd();
         }
     }
 
-    @UiThread void onLoadError() {
-        Snackbar.make(mRecyclerView, R.string.text_load_error, Snackbar.LENGTH_LONG).show();
+    @UiThread
+    void onLoadNothing() {
+        Snackbar.make(mRecyclerView, R.string.text_load_nothing, Snackbar.LENGTH_LONG).show();
+        LogUtil.i(TAG, "load to nothing. Disable loading more.");
+        isLoading.set(false);
+        mRecyclerView.setOnMoreListener(null);
         mRecyclerView.loadEnd();
-        mRecyclerView.getSwipeToRefresh().setRefreshing(false);
     }
 
-    @UiThread void onLoadTags(List<World> list) {
+    @UiThread
+    void onLoadError() {
+        Snackbar.make(mRecyclerView, R.string.text_load_error, Snackbar.LENGTH_LONG).show();
+    }
+
+    @UiThread
+    void onLoadTags(List<World> list) {
         mAdapter.addAll(list);
-        mRecyclerView.loadEnd();
-        mRecyclerView.getSwipeToRefresh().setRefreshing(false);
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
-    @UiThread void onLoadEnd() {
+    @UiThread
+    void onLoadEnd() {
+        LogUtil.i(TAG, "load end");
+        isLoading.set(false);
+        mRecyclerView.setOnMoreListener(this);
         mRecyclerView.loadEnd();
     }
 
     @Override
     public void onRefresh() {
         mAdapter.clear();
+        mRanking = (int) Util.unixTimeStamp();
         loadTags();
     }
 
     @Override
     public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
         LogUtil.i(TAG, "start load more, int numberOfItems, int numberBeforeMore, int currentItemPos: " + numberOfItems + ", " + numberBeforeMore + ", " + currentItemPos);
+        mRecyclerView.setOnMoreListener(null);
         loadTags();
     }
 }

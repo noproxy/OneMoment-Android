@@ -71,6 +71,15 @@ public class FileUtil {
     }
 
     /**
+     * Get database path for WebView.
+     *
+     * @return path
+     */
+    public static String getDatabasePath(Context context) {
+        return context.getApplicationInfo().dataDir + "/databases/";
+    }
+
+    /**
      * Retrieve the moment file path.
      *
      * @return file of the moment shot at this time.

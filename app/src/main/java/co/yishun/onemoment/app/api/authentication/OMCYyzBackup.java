@@ -76,6 +76,7 @@ public class OMCYyzBackup extends OkClient {
     public Response execute(Request request) throws IOException {
         List<Header> immutableHeaders = request.getHeaders();// this list is immutable
         ArrayList<Header> headers = new ArrayList<>(immutableHeaders);
+        headers.add(new Header("User-Agent", Util.getUserAgent()));
 
         Token token1 = generateOmToken1();
         i(TAG, token1.toString());
@@ -95,12 +96,21 @@ public class OMCYyzBackup extends OkClient {
         switch (mCacheType) {
             case CACHE_ONLY:
                 // one month cached
-                headers.add(new Header("Cache-Control", "max-age=" + 60 * 60 * 24 * 30 + ",max-stale"));
+                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale=" + 60 * 60 * 24 * 30));
                 break;
             case NORMAL:
                 // one minute
-                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
+                boolean have = false;
+                for (Header header : headers) {
+                    if (header.getName().equals("Cache-Control")) {
+                        have = true;
+                        break;
+                    }
+                }
+                if (!have) headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
                 break;
+            case NO_CACHE:
+                headers.add(new Header("Cache-Control", "no-cache"));
             default:
                 break;
         }

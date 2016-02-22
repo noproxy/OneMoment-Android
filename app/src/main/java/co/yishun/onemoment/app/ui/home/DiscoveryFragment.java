@@ -31,7 +31,7 @@ public class DiscoveryFragment extends ToolbarFragment implements AbstractRecycl
 
     @Override public void onResume() {
         super.onResume();
-        BannerHeaderProvider.stopSliderAutoCycle();
+        BannerHeaderProvider.startSliderAutoCycle();
     }
 
     @Override public void onPause() {

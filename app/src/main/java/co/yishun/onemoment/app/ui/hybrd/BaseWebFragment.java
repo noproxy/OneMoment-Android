@@ -45,6 +45,7 @@ import co.yishun.onemoment.app.ui.PersonalWorldActivity;
 import co.yishun.onemoment.app.ui.SplashActivity;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
+import co.yishun.onemoment.app.util.GsonFactory;
 
 
 /**
@@ -109,6 +110,12 @@ public abstract class BaseWebFragment extends BaseFragment {
         webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setAllowFileAccessFromFileURLs(true);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setDatabaseEnabled(true);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            webView.getSettings().setDatabasePath(FileUtil.getDatabasePath(getContext()));
+        }
+
         webView.setWebViewClient(new BaseWebClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (mActivity.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE)) {
@@ -152,7 +159,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webGetAccount(List<String> args) {
-        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity)), HybrdUrlHandler.FUNC_GET_ACCOUNT));
+        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity), true, true), HybrdUrlHandler.FUNC_GET_ACCOUNT));
     }
 
     private void webGetAccountId(List<String> args) {
@@ -216,7 +223,7 @@ public abstract class BaseWebFragment extends BaseFragment {
                 where.and().gt("time", startDate);
             List<Moment> moments = where.query();
 
-            Gson gson = new Gson();
+            Gson gson = GsonFactory.newNormalGson();
             JsonArray jsonArray = new JsonArray();
             for (Moment m : moments) {
                 JsonObject filename = new JsonObject();
@@ -226,7 +233,8 @@ public abstract class BaseWebFragment extends BaseFragment {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("videos_num", moments.size());
             jsonObject.add("videos", jsonArray);
-            webView.loadUrl(String.format(toJs(gson.toJson(jsonObject)), HybrdUrlHandler.FUNC_GET_DIARY));
+            // here set encode false By Carlos
+            webView.loadUrl(String.format(toJs(gson.toJson(jsonObject), false), HybrdUrlHandler.FUNC_GET_DIARY));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -242,9 +250,14 @@ public abstract class BaseWebFragment extends BaseFragment {
         return toJs(o, true);
     }
 
-    public String toJs(Object o, boolean encode) {
+    public String toJs(Object o, boolean encode, boolean naming) {
         String arg;
-        arg = new Gson().toJson(o);
+        Gson gson;
+        if (naming)
+            gson = GsonFactory.newNamingGson();
+        else
+            gson = GsonFactory.newNormalGson();
+        arg = gson.toJson(o);
         if (encode) {
             arg = arg.replace("\"", "\\\"");
         } else {
@@ -257,6 +270,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         String result = "javascript:ctx.%sAndroidReturn('[" + arg + "]')";
         LogUtil.d(TAG, "load js : " + result);
         return result;
+    }
+
+    public String toJs(Object o, boolean encode) {
+        return toJs(o, encode, false);
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

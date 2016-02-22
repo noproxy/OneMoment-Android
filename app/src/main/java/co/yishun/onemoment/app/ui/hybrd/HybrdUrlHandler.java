@@ -92,6 +92,9 @@ public abstract class HybrdUrlHandler {
             for (JsonElement element : jsonArray) {
                 String elementStr;
                 elementStr = element.toString();
+                //noinspection ResultOfMethodCallIgnored
+                elementStr = elementStr.replace("\\n", "\n");// Gson escape every splash, so restore newline
+
                 if (elementStr.startsWith("\"") && elementStr.endsWith("\""))
                     elementStr = elementStr.substring(1, elementStr.length() - 1);
                 urlModel.args.add(elementStr);

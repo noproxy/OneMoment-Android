@@ -1,6 +1,8 @@
 package co.yishun.onemoment.app;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Carlos on 2015/8/5.
@@ -116,5 +119,16 @@ public class Util {
             count += n;
         }
         return count;
+    }
+
+    public static @NonNull String getUserAgent() {
+        String userAgent = System.getProperty("http.agent");
+        if (TextUtils.isEmpty(userAgent)) {
+            String release = Build.VERSION.RELEASE;
+            String arch = System.getProperty("os.arch");
+            String language = Locale.getDefault().getDisplayName();
+            userAgent = String.format("OneMoment/2.0 (Linux; U; Android %s; %s; %s)", release, arch, language);
+        }
+        return userAgent;
     }
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import co.yishun.onemoment.app.R;
@@ -18,11 +19,11 @@ import co.yishun.onemoment.app.api.modelv4.World;
  * Created by Jinge on 2016/1/20.
  */
 public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<World, DiscoveryAdapter.SimpleViewHolder> {
-    private final String PeopleSuffix;
+    private final String peopleSuffix;
 
     public DiscoveryAdapter(Context context, OnItemClickListener<World> listener) {
         super(context, listener);
-        PeopleSuffix = context.getString(R.string.fragment_world_suffix_people_count);
+        peopleSuffix = context.getString(R.string.fragment_world_suffix_people_count);
     }
 
     @Override
@@ -32,11 +33,25 @@ public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<World, Discove
 
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, World item, int position) {
+        holder.numTextView.setVisibility(View.INVISIBLE);
+        holder.tagTextView.setVisibility(View.INVISIBLE);
+
         if (TextUtils.isEmpty(item.thumbnail))
             holder.itemImageView.setImageResource(R.drawable.pic_banner_default);
         else
-            Picasso.with(mContext).load(item.thumbnail).placeholder(R.drawable.pic_banner_default).into(holder.itemImageView);
-        holder.numTextView.setText(String.format(PeopleSuffix, item.videosNum));
+            Picasso.with(mContext).load(item.thumbnail).placeholder(R.drawable.pic_banner_default).into(holder.itemImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    holder.numTextView.setVisibility(View.VISIBLE);
+                    holder.tagTextView.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+        holder.numTextView.setText(String.format(peopleSuffix, item.videosNum));
         holder.tagTextView.setText(item.name);
     }
 

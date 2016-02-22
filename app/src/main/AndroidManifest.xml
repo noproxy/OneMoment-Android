@@ -198,6 +198,8 @@
             android:name=".ui.GuideActivity_"
             android:theme="@style/AppTheme.GuideActivity">
         </activity>
+
+        // Don't add parentActivityName to this activity.
         <activity android:name=".ui.hybrd.CommonWebActivity_">
 
         </activity>
