@@ -149,6 +149,7 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
     @Override
     public void onRefresh() {
         mAdapter.clear();
+        mRanking = (int) Util.unixTimeStamp();
         loadTags();
     }
 
