@@ -1,12 +1,12 @@
 package co.yishun.onemoment.app.ui.hybrd;
 
-import android.content.Context;
-import android.text.TextUtils;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import android.content.Context;
+import android.text.TextUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -100,7 +100,7 @@ public abstract class HybrdUrlHandler {
                 urlModel.args.add(elementStr);
             }
 
-            if (TextUtils.equals(urlModel.call, "jump")) {
+            if (TextUtils.equals(urlModel.call, FUNC_JUMP)) {
                 return webJumpWithPosition(context, urlModel.args, posX, posY);
             }
             return handleInnerUrl(urlModel);
