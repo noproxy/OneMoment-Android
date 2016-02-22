@@ -49,7 +49,7 @@ public class OneMomentV3 {
         return new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL)
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
-                .setClient(OneMomentClientV3.getCachedClient())
+                .setClient(OneMomentClientV3.getCacheClient())
                 .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.NORMAL))
                 //TODO CacheType not work yet. New Cache mechanism is under construction. By Carlos

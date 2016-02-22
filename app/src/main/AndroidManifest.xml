@@ -199,7 +199,8 @@
             android:theme="@style/AppTheme.GuideActivity">
         </activity>
 
-        // Don't add parentActivityName to this activity.
+        <!--Don't add parentActivityName for hybrid activities.
+        They will be started according url instead of certain activities.-->
         <activity android:name=".ui.hybrd.CommonWebActivity_">
 
         </activity>

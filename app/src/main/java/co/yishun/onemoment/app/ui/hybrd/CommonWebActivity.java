@@ -24,14 +24,6 @@ public class CommonWebActivity extends BaseWebActivity {
         setupFragment();
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override public void setPageInfo() {
         mPageName = "CommonWebActivity";
     }
