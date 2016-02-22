@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="fragment_integrate_info_nickname_hint">Nickname</string>
     <string name="fragment_integrate_info_sign_up_progress">Signing up, please wait…</string>
     <string name="fragment_integrate_info_sign_up_success">Sign up success.</string>
     <string name="fragment_integrate_info_sign_up_success_but_avatar_upload_failed">Sign up success. But upload avatar failed, you can update it later.</string>
