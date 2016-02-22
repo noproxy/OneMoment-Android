@@ -24,14 +24,15 @@
         />
 
     <EditText
-        android:id="@+id/nickNameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:gravity="center"
-        android:hint="Nickname"
-        android:padding="16dp"
+            android:id="@+id/nickNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:hint="Nickname"
+            android:padding="16dp"
         />
 
     <co.yishun.onemoment.app.ui.view.GenderSpinner
