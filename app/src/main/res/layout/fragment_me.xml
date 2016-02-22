@@ -1,38 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/coordinatorLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.MainActivity">
 
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/app_bar_elevation"
-        android:fitsSystemWindows="true"
-        >
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/app_bar_elevation"
+            android:fitsSystemWindows="true"
+    >
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            app:contentInsetStart="72dp"
-            app:layout_scrollFlags="scroll|enterAlways"
-            />
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:contentInsetStart="72dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+        />
 
     </android.support.design.widget.AppBarLayout>
 
+    <!-- This will add Coordinator behavior, but need remove fragment code, add
+     WebView here directly-->
+    <!--<android.support.v4.widget.NestedScrollView-->
+    <!--android:id="@+id/scrollContainer"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
     <FrameLayout
-        android:id="@+id/containerFrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
-
+            android:id="@+id/containerFrameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+    />
+    <!-- this line will cause wrong height of WebView-->
+    <!-- app:layout_behavior="@string/i_view_behavior"-->
+    <!--</android.support.v4.widget.NestedScrollView>-->
 </android.support.design.widget.CoordinatorLayout>
