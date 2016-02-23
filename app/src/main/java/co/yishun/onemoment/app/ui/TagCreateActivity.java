@@ -372,6 +372,14 @@ public class TagCreateActivity extends BaseActivity
                     FileUtil.getThumbnailStoreFile(this, mToDe, FileUtil.Type.MICRO_THUMB).delete();
                     mToDe.getFile().delete();
                 }
+
+                //TODO send broadcast whenever local moment changed, those lines code copy from MomentSyncImpl
+                String timestamp = moment.getUnixTimeStamp();
+                Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_LOCAL_UPDATE);
+                intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP, timestamp);
+                LogUtil.i(TAG, "create new moment, send a broadcast. timestamp: " + timestamp);
+                this.sendBroadcast(intent);
+
                 showSnackMsg(R.string.activity_tag_create_moment_success);
                 delayFinish();
                 return;

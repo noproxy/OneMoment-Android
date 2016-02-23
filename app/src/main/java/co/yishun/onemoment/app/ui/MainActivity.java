@@ -87,7 +87,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         public void onReceive(Context context, Intent intent) {
             if (currentItemId == R.id.navigation_item_1) {
                 Bundle extra = intent.getExtras();
-                long unixTimeStamp = extra.getLong(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP);
+                long unixTimeStamp = Long.parseLong(extra.getString(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP));
 
                 boolean needUpdate = ((DiaryFragment) fragmentManager.findFragmentById(R.id.fragment_container)).isCurrentMonth(new Date(unixTimeStamp * 1000));
                 if (needUpdate)
@@ -110,13 +110,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             goToShootDiary = false;
             updateDiary();
         }
-        registerSyncListener();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(mSyncChangedReceiver);
     }
 
     @AfterInject
@@ -245,6 +238,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        registerSyncListener();
 
         RealmHelper.setup(this);
         PushAgent mPushAgent = PushAgent.getInstance(this);
@@ -381,6 +375,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterSyncListener();
         AccountManager.removeOnUserInfoChangedListener(this);
     }
 
