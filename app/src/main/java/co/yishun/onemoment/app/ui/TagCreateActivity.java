@@ -97,26 +97,42 @@ public class TagCreateActivity extends BaseActivity
     private static final String TAG = "TagCreateActivity";
 
     private static final int REQUEST_SELECT_WORLD = 1;
-    @ViewById VideoView videoView;
-    @ViewById VideoTypeView videoTypeView;
-    @ViewById Toolbar toolbar;
-    @ViewById EditText queryText;
-    @ViewById ImageView addView;
-    @Extra boolean forToday = false;
-    @Extra boolean forWorld = false;
-    @Extra WorldProvider world;
+    @ViewById
+    VideoView videoView;
+    @ViewById
+    VideoTypeView videoTypeView;
+    @ViewById
+    Toolbar toolbar;
+    @ViewById
+    EditText queryText;
+    @ViewById
+    ImageView addView;
+    @Extra
+    boolean forToday = false;
+    @Extra
+    boolean forWorld = false;
+    @Extra
+    WorldProvider world;
     /**
      * Just for read extra. if need read to do something, be careful that {@link #nextBtnClicked(View)} will move file to new place.
      */
-    @Extra String videoPath;
-    @Extra boolean isPrivate;
-    @ViewById TagContainer tagContainer;
-    @ViewById ImageView momentPreviewImageView;
-    @ViewById FrameLayout searchFrame;
-    @ViewById RecyclerView recyclerView;
-    @ViewById Button nextBtn;
+    @Extra
+    String videoPath;
+    @Extra
+    boolean isPrivate;
+    @ViewById
+    TagContainer tagContainer;
+    @ViewById
+    ImageView momentPreviewImageView;
+    @ViewById
+    FrameLayout searchFrame;
+    @ViewById
+    RecyclerView recyclerView;
+    @ViewById
+    Button nextBtn;
     TagSearchAdapter adapter;
-    @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
+    @OrmLiteDao(helper = MomentDatabaseHelper.class)
+    Dao<Moment, Integer> momentDao;
     private boolean searching = false;
     private LocationClient locationClient;
     private Moment momentToSave;
@@ -126,13 +142,15 @@ public class TagCreateActivity extends BaseActivity
      */
     private boolean played = false;
 
-    @AfterInject void checkExtra() {
+    @AfterInject
+    void checkExtra() {
         if (world == null) {
             world = new World();
         }
     }
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         setupToolbar();
         setPreviewImage();
         setVideo();
@@ -184,7 +202,8 @@ public class TagCreateActivity extends BaseActivity
         playVideo();
     }
 
-    @UiThread(delay = 2000) void playVideo() {
+    @UiThread(delay = 2000)
+    void playVideo() {
         LogUtil.i(TAG, "play video");
         // set invisible will make it not clickable
         videoView.start();
@@ -192,7 +211,8 @@ public class TagCreateActivity extends BaseActivity
         played = true;
     }
 
-    @Click(R.id.momentPreviewImageView) void replay() {
+    @Click(R.id.momentPreviewImageView)
+    void replay() {
         Log.i(TAG, "replay");
         if (!videoView.isPlaying() && played) {
             videoView.seekTo(0);
@@ -200,23 +220,27 @@ public class TagCreateActivity extends BaseActivity
         }
     }
 
-    @Click(R.id.worldTextView) void selectWorld() {
+    @Click(R.id.worldTextView)
+    void selectWorld() {
         PersonalWorldActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
     }
 
-    @Click(R.id.todayTextView) void todayTextViewClick() {
+    @Click(R.id.todayTextView)
+    void todayTextViewClick() {
         forToday = !forToday;
         videoTypeView.setTodayCheck(forToday);
         nextBtn.setEnabled(forDiary || forWorld || forToday);
     }
 
-    @Click(R.id.diaryTextView) void diaryTextViewClick() {
+    @Click(R.id.diaryTextView)
+    void diaryTextViewClick() {
         forDiary = !forDiary;
         videoTypeView.setDiaryCheck(forDiary);
         nextBtn.setEnabled(forDiary || forWorld || forToday);
     }
 
-    @Click(R.id.worldClearView) void clearWorld() {
+    @Click(R.id.worldClearView)
+    void clearWorld() {
         if (forWorld) {
             forWorld = false;
             videoTypeView.setWorldCheck(false, null);
@@ -269,7 +293,8 @@ public class TagCreateActivity extends BaseActivity
         locationClient.stop();
     }
 
-    @UiThread(delay = 200) void viewChange() {
+    @UiThread(delay = 200)
+    void viewChange() {
         searchFrame.setVisibility(View.GONE);
         queryText.setVisibility(View.GONE);
         addView.setImageResource(R.drawable.ic_action_add_tag);
@@ -277,7 +302,8 @@ public class TagCreateActivity extends BaseActivity
         nextBtn.setVisibility(View.VISIBLE);
     }
 
-    @OnActivityResult(REQUEST_SELECT_WORLD) void onSelectWorld(int resultCode, Intent data) {
+    @OnActivityResult(REQUEST_SELECT_WORLD)
+    void onSelectWorld(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             forWorld = true;
             world.setId(data.getStringExtra(PersonalWorldActivity.KEY_ID));
@@ -304,7 +330,8 @@ public class TagCreateActivity extends BaseActivity
         return true;
     }
 
-    @Click void nextBtnClicked(View view) {
+    @Click
+    void nextBtnClicked(View view) {
         if (forDiary) {
             saveToMoment();
         }
@@ -355,7 +382,8 @@ public class TagCreateActivity extends BaseActivity
     /**
      * Upload the video file to qiniu, if this video is for a world
      */
-    @Background void upload() {
+    @Background
+    void upload() {
         showProgress();
         WorldVideo video = new WorldVideo();
         video.filename = Constants.WORLD_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id +
@@ -419,11 +447,13 @@ public class TagCreateActivity extends BaseActivity
         }
     }
 
-    @Click void searchFrameClicked(View view) {
+    @Click
+    void searchFrameClicked(View view) {
         recoverSearch();
     }
 
-    @Click void addViewClicked(View view) {
+    @Click
+    void addViewClicked(View view) {
         if (searching) {
             addTag(queryText.getText().toString());
             recoverSearch();
@@ -450,14 +480,16 @@ public class TagCreateActivity extends BaseActivity
 
 
     @AfterTextChange(R.id.queryText)
-    @EditorAction(R.id.queryText) void search() {
+    @EditorAction(R.id.queryText)
+    void search() {
         if ("".equals(queryText.getText().toString())) {
             return;
         }
         TagSearchController_.getInstance_(this).setUp(adapter, recyclerView, queryText.getText().toString());
     }
 
-    @AfterInject void setupLocation() {
+    @AfterInject
+    void setupLocation() {
         locationClient = new LocationClient(getApplicationContext());
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);
@@ -494,7 +526,8 @@ public class TagCreateActivity extends BaseActivity
         return province + " " + city;
     }
 
-    @UiThread void addItem(int position, String item) {
+    @UiThread
+    void addItem(int position, String item) {
         if (position < 0) {
             adapter.add(item);
         } else {
@@ -502,11 +535,13 @@ public class TagCreateActivity extends BaseActivity
         }
     }
 
-    @UiThread(delay = 500) void delayFinish() {
+    @UiThread(delay = 500)
+    void delayFinish() {
         this.finish();
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return super.getSnackbarAnchorWithView(tagContainer);
     }
