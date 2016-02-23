@@ -1,5 +1,9 @@
 package co.yishun.onemoment.app.ui;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -24,9 +28,6 @@ import android.widget.VideoView;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
 import com.qiniu.android.storage.UploadManager;
@@ -114,7 +115,8 @@ public class TagCreateActivity extends BaseActivity
     @Extra
     WorldProvider world;
     /**
-     * Just for read extra. if need read to do something, be careful that {@link #nextBtnClicked(View)} will move file to new place.
+     * Just for read extra. if need read to do something, be careful that {@link
+     * #nextBtnClicked(View)} will move file to new place.
      */
     @Extra
     String videoPath;
@@ -173,8 +175,10 @@ public class TagCreateActivity extends BaseActivity
         momentToSave = new Moment.MomentBuilder(this).fromFile(new File(videoPath)).build();
         videoPath = momentToSave.getPath();
         try {
-            File largeThumb = FileUtil.getThumbnailStoreFile(this, momentToSave, FileUtil.Type.LARGE_THUMB);
-            File smallThumb = FileUtil.getThumbnailStoreFile(this, momentToSave, FileUtil.Type.MICRO_THUMB);
+            File largeThumb =
+                    FileUtil.getThumbnailStoreFile(this, momentToSave, FileUtil.Type.LARGE_THUMB);
+            File smallThumb =
+                    FileUtil.getThumbnailStoreFile(this, momentToSave, FileUtil.Type.MICRO_THUMB);
             VideoUtil.createThumbs(videoPath, largeThumb, smallThumb);
             momentToSave.setLargeThumbPath(largeThumb.getPath());
             momentToSave.setThumbPath(smallThumb.getPath());
@@ -343,7 +347,8 @@ public class TagCreateActivity extends BaseActivity
     void saveToMoment() {
         final Moment moment = momentToSave;
 
-        String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Calendar.getInstance().getTime());
+        String time =
+                new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(Calendar.getInstance().getTime());
         List<Moment> result;
         Where<Moment, Integer> w = momentDao.queryBuilder().where();
         try {
@@ -389,13 +394,15 @@ public class TagCreateActivity extends BaseActivity
         video.filename = Constants.WORLD_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id +
                 Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
         File tmp = new File(videoPath);
-        File videoFile = new File(FileUtil.getWorldVideoStoreFile(this, video).getPath() + Constants.VIDEO_FILE_SUFFIX);
+        File videoFile = new File(
+                FileUtil.getWorldVideoStoreFile(this, video).getPath() + Constants.VIDEO_FILE_SUFFIX);
         tmp.renameTo(videoFile);
         videoPath = videoFile.getPath();
 
         UploadManager uploadManager = new UploadManager();
         d(TAG, "upload " + videoFile.getName());
-        UploadToken token = OneMomentV4.createAdapter().create(APIV4.class).getUploadToken(videoFile.getName());
+        UploadToken token =
+                OneMomentV4.createAdapter().create(APIV4.class).getUploadToken(videoFile.getName());
         if (!token.isSuccess()) {
             e(TAG, "get upload token error: " + token.msg);
             return;
@@ -430,10 +437,12 @@ public class TagCreateActivity extends BaseActivity
 
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
         if (forWorld) {
-            WorldVideo worldVideo = apiv4.createWorldVideo(world.getId(), videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);
+            WorldVideo worldVideo =
+                    apiv4.createWorldVideo(world.getId(), videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);
         }
         if (forToday) {
-            WorldVideo todayVideo = apiv4.createTodayVideo(videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);
+            WorldVideo todayVideo =
+                    apiv4.createTodayVideo(videoFile.getName(), AccountManager.getUserInfo(this)._id, tags);
         }
 
         hideProgress();
