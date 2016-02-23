@@ -2,14 +2,16 @@ package co.yishun.onemoment.app.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -41,7 +43,6 @@ import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OrmLiteDao;
-import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.solovyev.android.views.llm.LinearLayoutManager;
@@ -97,16 +98,15 @@ public class TagCreateActivity extends BaseActivity
     private static final String TAG = "TagCreateActivity";
 
     private static final int REQUEST_SELECT_WORLD = 1;
+    private final Drawable transparentDrawable = new ColorDrawable(getResources().getColor(android.R.color.transparent));
     @ViewById VideoView videoView;
     @ViewById VideoTypeView videoTypeView;
-
     @ViewById Toolbar toolbar;
     @ViewById EditText queryText;
     @ViewById ImageView addView;
     @Extra boolean forToday = false;
     @Extra boolean forWorld = false;
     @Extra WorldProvider world;
-
     /**
      * Just for read extra. if need read to do something, be careful that {@link #nextBtnClicked(View)} will move file to new place.
      */
@@ -117,14 +117,16 @@ public class TagCreateActivity extends BaseActivity
     @ViewById FrameLayout searchFrame;
     @ViewById RecyclerView recyclerView;
     @ViewById Button nextBtn;
-
     TagSearchAdapter adapter;
     @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
     private boolean searching = false;
     private LocationClient locationClient;
     private Moment momentToSave;
-
     private boolean forDiary;
+    /**
+     * flag that whether video path has been set.
+     */
+    private boolean played = false;
 
     @AfterInject void checkExtra() {
         if (world == null) {
@@ -177,19 +179,24 @@ public class TagCreateActivity extends BaseActivity
     }
 
     void setVideo() {
+        LogUtil.i(TAG, "set video: " + videoPath);
         if (videoPath == null) return;
         videoView.setVideoPath(videoPath);
         playVideo();
     }
 
-    @UiThread(delay = 500) void playVideo() {
+    @UiThread(delay = 1000) void playVideo() {
+        LogUtil.i(TAG, "play video");
         videoView.seekTo(0);
-        momentPreviewImageView.setVisibility(View.INVISIBLE);
+        // set invisible will make it not clickable
+        momentPreviewImageView.setImageDrawable(transparentDrawable);
         videoView.start();
+        played = true;
     }
 
-    @Touch(R.id.videoView) void videoClick(View view, MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+    @Click(R.id.momentPreviewImageView) void replay() {
+        Log.i(TAG, "replay");
+        if (!videoView.isPlaying() && played) {
             videoView.seekTo(0);
             videoView.start();
         }

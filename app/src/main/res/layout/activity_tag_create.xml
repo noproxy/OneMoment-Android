@@ -57,11 +57,12 @@
         app:tc_square="true"/>
 
     <ImageView
-            android:id="@+id/momentPreviewImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignBottom="@id/videoView"
-            android:layout_alignTop="@id/videoView"/>
+        android:id="@+id/momentPreviewImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@id/videoView"
+        android:layout_alignTop="@id/videoView"
+        android:visibility="visible"/>
 
     <co.yishun.onemoment.app.ui.view.VideoTypeView
         android:id="@+id/videoTypeView"
