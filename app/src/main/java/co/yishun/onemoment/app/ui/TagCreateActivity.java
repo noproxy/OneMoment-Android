@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -98,7 +97,6 @@ public class TagCreateActivity extends BaseActivity
     private static final String TAG = "TagCreateActivity";
 
     private static final int REQUEST_SELECT_WORLD = 1;
-    private final Drawable transparentDrawable = new ColorDrawable(getResources().getColor(android.R.color.transparent));
     @ViewById VideoView videoView;
     @ViewById VideoTypeView videoTypeView;
     @ViewById Toolbar toolbar;
@@ -189,7 +187,7 @@ public class TagCreateActivity extends BaseActivity
         LogUtil.i(TAG, "play video");
         videoView.seekTo(0);
         // set invisible will make it not clickable
-        momentPreviewImageView.setImageDrawable(transparentDrawable);
+        momentPreviewImageView.setImageDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         videoView.start();
         played = true;
     }
