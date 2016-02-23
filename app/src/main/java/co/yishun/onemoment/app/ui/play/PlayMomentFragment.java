@@ -17,6 +17,7 @@ import co.yishun.library.VideoPlayerView;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
@@ -32,6 +33,7 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
 public class PlayMomentFragment extends PlayFragment
         implements VideoPlayerView.OnVideoChangeListener {
 
+    private static final String TAG = "PlayMomentFragment";
     @FragmentArg
     String startDate;
     @FragmentArg
@@ -52,6 +54,7 @@ public class PlayMomentFragment extends PlayFragment
                 //noinspection unchecked
                 Collections.sort(momentList);
                 for (Moment moment : momentList) {
+                    LogUtil.i(TAG, moment.toString());
                     if (moment.getFile().length() == 0) continue;
                     List<OMLocalVideoTag> omLocalVideoTags = RealmHelper.getTags(moment.getTime());
                     List<VideoTag> videoTags = new ArrayList<>();
