@@ -1,5 +1,9 @@
 package co.yishun.onemoment.app.ui;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -10,9 +14,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
@@ -70,15 +71,23 @@ import co.yishun.onemoment.app.video.VideoConcat;
 public class ShareExportActivity extends BaseActivity implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
 
     private static final String TAG = "ShareExportActivity";
-    @ViewById Toolbar toolbar;
-    @ViewById MomentCalendar momentCalendar;
-    @ViewById TextView shareText;
-    @ViewById TextView exportText;
-    @ViewById TextView selectAllText;
-    @ViewById TextView clearText;
-    @ViewById TextView selectedText;
+    @ViewById
+    Toolbar toolbar;
+    @ViewById
+    MomentCalendar momentCalendar;
+    @ViewById
+    TextView shareText;
+    @ViewById
+    TextView exportText;
+    @ViewById
+    TextView selectAllText;
+    @ViewById
+    TextView clearText;
+    @ViewById
+    TextView selectedText;
 
-    @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
+    @OrmLiteDao(helper = MomentDatabaseHelper.class)
+    Dao<Moment, Integer> momentDao;
 
     private List<Moment> allMoments;
     private List<Moment> selectedMoments;
@@ -88,7 +97,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
     private int totalTask = 1;
     private int completeTask = 0;
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         momentCalendar.setAdapter(this);
         DayView.setOnMomentSelectedListener(this);
         DayView.setMultiSelection(true);
@@ -107,7 +117,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         updateSelectedText();
     }
 
-    @AfterViews void setAppbar() {
+    @AfterViews
+    void setAppbar() {
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
@@ -116,23 +127,28 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         ab.setHomeAsUpIndicator(R.drawable.ic_action_back_close);
     }
 
-    @UiThread void showConcatProgress() {
+    @UiThread
+    void showConcatProgress() {
         hideProgress();
         concatProgress = new MaterialDialog.Builder(this).progress(false, 100, false).theme(Theme.LIGHT).cancelable(false).content(getString(R.string.activity_share_export_progress_concatenating)).build();
         concatProgress.show();
     }
 
-    @UiThread void updateConcatProgress() {
+    @UiThread
+    void updateConcatProgress() {
         concatProgress.setProgress((int) (completeTask * 100.0f / totalTask));
     }
 
-    @UiThread void hideConcatProgress() {
+    @UiThread
+    void hideConcatProgress() {
         if (concatProgress != null) {
             concatProgress.hide();
         }
     }
 
-    @Click(R.id.shareText) @Background void shareTextClicked() {
+    @Click(R.id.shareText)
+    @Background
+    void shareTextClicked() {
         if (selectedMoments.size() == 0) {
             showSnackMsg(R.string.activity_share_export_no_moment_select);
             return;
@@ -142,7 +158,9 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         concatSelectedVideos();
     }
 
-    @Click(R.id.exportText) @Background void exportTextClicked() {
+    @Click(R.id.exportText)
+    @Background
+    void exportTextClicked() {
         if (selectedMoments.size() == 0) {
             showSnackMsg(R.string.activity_share_export_no_moment_select);
             return;
@@ -152,14 +170,16 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         concatSelectedVideos();
     }
 
-    @Click(R.id.selectAllText) void selectAllTextClicked() {
+    @Click(R.id.selectAllText)
+    void selectAllTextClicked() {
         selectedMoments.clear();
         selectedMoments.addAll(allMoments);
         setAllSelect(true);
         updateSelectedText();
     }
 
-    @Click(R.id.clearText) void clearTextClicked() {
+    @Click(R.id.clearText)
+    void clearTextClicked() {
         selectedMoments.clear();
         momentCalendar.getAdapter().notifyDataSetChanged();
         setAllSelect(false);
@@ -191,7 +211,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         selectedText.setText(ss);
     }
 
-    @Override public void onBindView(Calendar calendar, DayView dayView) {
+    @Override
+    public void onBindView(Calendar calendar, DayView dayView) {
         String time = new SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault()).format(calendar.getTime());
 
         Moment moment = null;
@@ -215,7 +236,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         }
     }
 
-    @Override public void onSelected(DayView dayView) {
+    @Override
+    public void onSelected(DayView dayView) {
         Moment moment = (Moment) dayView.getTag();
         if (moment != null) {
             if (selectedMoments.contains(moment)) {
@@ -260,7 +282,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         showConcatProgress();
 
         new VideoConcat(this).setTransFile(filesNeedTrans).setConcatFile(files, videoCacheFile).setListener(new VideoCommand.VideoCommandListener() {
-            @Override public void onSuccess(VideoCommand.VideoCommandType type) {
+            @Override
+            public void onSuccess(VideoCommand.VideoCommandType type) {
                 switch (type) {
                     case COMMAND_TRANSPOSE:
                         LogUtil.d(TAG, "onTransSuccess: ");
@@ -279,13 +302,15 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 updateConcatProgress();
             }
 
-            @Override public void onFail(VideoCommand.VideoCommandType type) {
+            @Override
+            public void onFail(VideoCommand.VideoCommandType type) {
                 LogUtil.d(TAG, "onFail: ");
             }
         }).start();
     }
 
-    @Background void afterConcat() {
+    @Background
+    void afterConcat() {
         hideConcatProgress();
         try {
             for (Moment moment : selectedMoments) {
@@ -310,7 +335,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
             uploadAndShare();
     }
 
-    @SupposeBackground void uploadAndShare() {
+    @SupposeBackground
+    void uploadAndShare() {
         showProgress(R.string.activity_share_export_progress_uploading);
         UploadManager uploadManager = new UploadManager();
         LogUtil.d(TAG, "upload " + videoCacheFile.getName());
@@ -362,7 +388,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_MOMENT).start();
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mIsPage = true;
         mPageName = "ShareExportActivity";
     }

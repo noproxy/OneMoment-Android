@@ -28,8 +28,7 @@ import co.yishun.onemoment.app.ui.adapter.WorldAdapter;
 
 /**
  * Not extend {@link RecyclerController} because this need to load banner as well as World Tag list.
- * <p>
- * Created by Carlos on 2015/8/16.
+ * <p> Created by Carlos on 2015/8/16.
  */
 @EBean
 @Deprecated
@@ -79,7 +78,8 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
         return mRecyclerView;
     }
 
-    @Background void loadBanners() {
+    @Background
+    void loadBanners() {
         ListWithError<Banner> banners = mWorldAPI.getBanners(null);
         if (banners.isSuccess()) {
             onLoadBanners(banners);
@@ -88,11 +88,13 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
         }
     }
 
-    @UiThread void onLoadBanners(List<Banner> banners) {
+    @UiThread
+    void onLoadBanners(List<Banner> banners) {
         mBannerHeaderProvider.setupBanners(banners);
     }
 
-    @Background void loadTags() {
+    @Background
+    void loadTags() {
         synchronizedLoadTags();
     }
 
@@ -106,14 +108,16 @@ public class WorldPagerController implements SwipeRefreshLayout.OnRefreshListene
         }
     }
 
-    @UiThread void onLoadError() {
+    @UiThread
+    void onLoadError() {
         Snackbar.make(mRecyclerView, R.string.text_load_error, Snackbar.LENGTH_LONG).show();
         mRecyclerView.loadEnd();
         mRecyclerView.getSwipeToRefresh().setRefreshing(false);
     }
 
 
-    @UiThread void onLoadTags(List<WorldTag> list) {
+    @UiThread
+    void onLoadTags(List<WorldTag> list) {
         mAdapter.addAll(list);
         mRecyclerView.loadEnd();
         mRecyclerView.getSwipeToRefresh().setRefreshing(false);

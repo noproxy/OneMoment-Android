@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.sina.weibo.sdk.api.ImageObject;
 import com.sina.weibo.sdk.api.TextObject;
@@ -229,9 +228,11 @@ public class ShareController implements IWXAPIEventHandler {
         }
     }
 
-    @Override public void onReq(BaseReq baseReq) { /*ignore*/ }
+    @Override
+    public void onReq(BaseReq baseReq) { /*ignore*/ }
 
-    @Override public void onResp(BaseResp baseResp) {
+    @Override
+    public void onResp(BaseResp baseResp) {
         switch (baseResp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 shareListener.onSuccess();
@@ -255,19 +256,22 @@ public class ShareController implements IWXAPIEventHandler {
 
     class QQShareListener implements IUiListener {
 
-        @Override public void onComplete(Object o) {
+        @Override
+        public void onComplete(Object o) {
             if (shareListener != null) {
                 shareListener.onSuccess();
             }
         }
 
-        @Override public void onError(UiError uiError) {
+        @Override
+        public void onError(UiError uiError) {
             if (shareListener != null) {
                 shareListener.onFail();
             }
         }
 
-        @Override public void onCancel() {
+        @Override
+        public void onCancel() {
             if (shareListener != null) {
                 shareListener.onCancel();
             }

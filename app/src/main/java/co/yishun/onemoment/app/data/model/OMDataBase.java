@@ -7,8 +7,10 @@ import io.realm.annotations.Required;
  * Created on 2015/10/27.
  */
 public class OMDataBase extends RealmObject {
-    @Required private String createTime;
-    @Required private String updateTime;
+    @Required
+    private String createTime;
+    @Required
+    private String updateTime;
 
     public String getCreateTime() {
         return createTime;

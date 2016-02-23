@@ -26,28 +26,34 @@ import co.yishun.onemoment.app.ui.controller.DiscoveryController_;
 public class DiscoveryFragment extends ToolbarFragment implements AbstractRecyclerViewAdapter.OnItemClickListener<World> {
 
     private static final String TAG = "DiscoveryFragment";
-    @ViewById HeaderCompatibleSuperRecyclerView recyclerView;
+    @ViewById
+    HeaderCompatibleSuperRecyclerView recyclerView;
 
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
         BannerHeaderProvider.startSliderAutoCycle();
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         BannerHeaderProvider.stopSliderAutoCycle();
     }
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         DiscoveryController_.getInstance_(getContext()).setUp(getContext(), recyclerView, this);
     }
 
-    @Override protected int getTitleDrawableRes() {
+    @Override
+    protected int getTitleDrawableRes() {
         return R.drawable.pic_explore_title;
     }
 
-    @Override public void onClick(View view, World item) {
+    @Override
+    public void onClick(View view, World item) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         Rect rect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());

@@ -5,7 +5,6 @@ import android.content.Context;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 
-
 import java.io.File;
 
 import co.yishun.onemoment.app.LogUtil;
@@ -44,7 +43,8 @@ public class VideoConvert extends VideoCommand {
         return this;
     }
 
-    @Override public void start() {
+    @Override
+    public void start() {
         try {
             String cmd = mCommand.toString();
             LogUtil.i(TAG, "convert cmd : " + cmd);
@@ -56,22 +56,29 @@ public class VideoConvert extends VideoCommand {
 
     private void createHandler() {
         mHandler = new FFmpegExecuteResponseHandler() {
-            @Override public void onSuccess(String message) {
+            @Override
+            public void onSuccess(String message) {
                 if (mListener != null) mListener.onSuccess(VideoCommandType.COMMAND_CONVERT);
             }
 
-            @Override public void onProgress(String message) {
+            @Override
+            public void onProgress(String message) {
                 LogUtil.e(TAG, message);
             }
 
-            @Override public void onFailure(String message) {
+            @Override
+            public void onFailure(String message) {
                 LogUtil.e(TAG, message);
                 if (mListener != null) mListener.onFail(VideoCommandType.COMMAND_CONVERT);
             }
 
-            @Override public void onStart() { }
+            @Override
+            public void onStart() {
+            }
 
-            @Override public void onFinish() { }
+            @Override
+            public void onFinish() {
+            }
         };
     }
 }

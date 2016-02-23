@@ -12,8 +12,7 @@ import co.yishun.onemoment.app.config.Constants;
 import retrofit.mime.TypedOutput;
 
 /**
- * The first token in Double Token Verification.
- * Created by Carlos on 2015/8/5.
+ * The first token in Double Token Verification. Created by Carlos on 2015/8/5.
  */
 public class OmToken2 implements Token {
     private static final String TAG = "OmToken2";
@@ -49,15 +48,18 @@ public class OmToken2 implements Token {
     }
 
 
-    @Override public String value() {
+    @Override
+    public String value() {
         return mValue;
     }
 
-    @Override public String origin() {
+    @Override
+    public String origin() {
         return mOrigin;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "OmToken2{" +
                 "mToken1=" + mToken1 +
                 ", mValue='" + mValue + '\'' +

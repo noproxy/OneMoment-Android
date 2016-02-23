@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SyncResult;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.SystemService;
@@ -20,16 +19,15 @@ import co.yishun.onemoment.app.account.sync.moment.MomentSync;
 
 
 /**
- * Handle the transfer of data between a server and an
- * app, using the Android sync adapter framework.
- * <p>
- * Created by Carlos on 3/10/15.
+ * Handle the transfer of data between a server and an app, using the Android sync adapter
+ * framework. <p> Created by Carlos on 3/10/15.
  */
 @EBean
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SyncAdapter";
 
-    @SystemService ConnectivityManager connectivityManager;
+    @SystemService
+    ConnectivityManager connectivityManager;
 
 
     public SyncAdapter(Context context) {
@@ -38,10 +36,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
     /**
-     * To execute sync. When sync end, it will call {@link #onSyncEnd()}
-     * to send broadcast notify sync process ending.
-     * <p>
-     * Sub sync module may provide other intent to broadcast their progress.
+     * To execute sync. When sync end, it will call {@link #onSyncEnd()} to send broadcast notify
+     * sync process ending. <p> Sub sync module may provide other intent to broadcast their
+     * progress.
      */
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {

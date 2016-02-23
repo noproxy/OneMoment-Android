@@ -41,11 +41,14 @@ import retrofit.RestAdapter;
 public class AccountActivity extends PickCropActivity {
     private static final String TAG = "AccountActivity";
     protected FragmentManager fragmentManager;
-    @ViewById CoordinatorLayout coordinatorLayout;
+    @ViewById
+    CoordinatorLayout coordinatorLayout;
     @ViewById(R.id.fab)
     FloatingActionButton floatingActionButton;
-    @Extra UserInfo userInfo;
-    @Extra AccessTokenKeeper.KeeperType type;
+    @Extra
+    UserInfo userInfo;
+    @Extra
+    AccessTokenKeeper.KeeperType type;
     private Account mAccount;
     private RestAdapter mAdapter;
     private AccountFragment mCurrentFragment;
@@ -113,11 +116,13 @@ public class AccountActivity extends PickCropActivity {
         openFragment(PhoneSignUpFragment_.builder().build());
     }
 
-    @Click void getPasswordClicked(View view) {
+    @Click
+    void getPasswordClicked(View view) {
         openFragment(GetPasswordFragment_.builder().build());
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return super.getSnackbarAnchorWithView(coordinatorLayout);
     }

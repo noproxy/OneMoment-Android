@@ -5,9 +5,7 @@ import co.yishun.onemoment.app.config.Constants;
 import retrofit.RestAdapter;
 
 /**
- * One ApiMoment Server Api version 4.0
- * <p>
- * Created by Jinge on 2016/1/21.
+ * One ApiMoment Server Api version 4.0 <p> Created by Jinge on 2016/1/21.
  */
 public class OneMomentV4 {
     public static final String API_BASE_URL = Constants.API_V4_URL_TEST;

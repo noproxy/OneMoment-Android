@@ -30,15 +30,20 @@ import co.yishun.onemoment.app.data.FileUtil;
  */
 @EFragment(R.layout.fragment_play_tag_video)
 public class PlayTagVideoFragment extends PlayFragment {
-    @FragmentArg VideoProvider video;
+    @FragmentArg
+    VideoProvider video;
 
-    @ViewById ImageView avatar;
-    @ViewById TextView usernameTextView;
-    @ViewById TextView voteCountTextView;
+    @ViewById
+    ImageView avatar;
+    @ViewById
+    TextView usernameTextView;
+    @ViewById
+    TextView voteCountTextView;
 
     private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
 
-    @AfterViews void setup() {
+    @AfterViews
+    void setup() {
         Picasso.with(mContext).load(video.getAvatarUrl()).into(avatar);
 
         usernameTextView.setText(video.getNickname());
@@ -51,7 +56,8 @@ public class PlayTagVideoFragment extends PlayFragment {
 //        refreshUserInfo();
     }
 
-    @UiThread void addVideo(VideoProvider video) {
+    @UiThread
+    void addVideo(VideoProvider video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         List<VideoTag> tags = new LinkedList<>();
         for (int i = 0; i < this.video.getTags().size(); i++) {

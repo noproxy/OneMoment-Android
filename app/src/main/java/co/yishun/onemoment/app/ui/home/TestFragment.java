@@ -25,7 +25,8 @@ public class TestFragment extends ToolbarFragment {
         return rootView;
     }
 
-    @Override protected int getTitleDrawableRes() {
+    @Override
+    protected int getTitleDrawableRes() {
         return R.drawable.pic_fab_menu_world;
     }
 

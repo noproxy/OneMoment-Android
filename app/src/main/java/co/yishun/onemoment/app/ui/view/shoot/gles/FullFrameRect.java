@@ -39,8 +39,8 @@ import co.yishun.onemoment.app.ui.view.shoot.filter.IFilter;
 
 
 /**
- * This class essentially represents a viewport-sized sprite that will be rendered with
- * a texture, usually from an external source like the camera or video decoder.
+ * This class essentially represents a viewport-sized sprite that will be rendered with a texture,
+ * usually from an external source like the camera or video decoder.
  */
 public class FullFrameRect {
     public final float[] IDENTITY_MATRIX = new float[16];
@@ -50,8 +50,8 @@ public class FullFrameRect {
     /**
      * Prepares the object.
      *
-     * @param program The program to use.  FullFrameRect takes ownership, and will release
-     *                the program when no longer needed.
+     * @param program The program to use.  FullFrameRect takes ownership, and will release the
+     *                program when no longer needed.
      */
     public FullFrameRect(IFilter program) {
         mFilter = program;
@@ -59,12 +59,10 @@ public class FullFrameRect {
     }
 
     /**
-     * Releases resources.
-     * <p>
-     * This must be called with the appropriate EGL context current (i.e. the one that was
-     * current when the constructor was called).  If we're about to destroy the EGL context,
-     * there's no value in having the caller make it current just to do this cleanup, so you
-     * can pass a flag that will tell this function to skip any EGL-context-specific cleanup.
+     * Releases resources. <p> This must be called with the appropriate EGL context current (i.e.
+     * the one that was current when the constructor was called).  If we're about to destroy the EGL
+     * context, there's no value in having the caller make it current just to do this cleanup, so
+     * you can pass a flag that will tell this function to skip any EGL-context-specific cleanup.
      */
     public void release(boolean doEglCleanup) {
         if (mFilter != null) {
@@ -83,9 +81,8 @@ public class FullFrameRect {
     }
 
     /**
-     * Changes the program.  The previous program will be released.
-     * <p>
-     * The appropriate EGL context must be current.
+     * Changes the program.  The previous program will be released. <p> The appropriate EGL context
+     * must be current.
      */
     public void changeProgram(IFilter newFilter) {
         mFilter.releaseProgram();

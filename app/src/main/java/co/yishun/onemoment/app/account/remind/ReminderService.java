@@ -44,7 +44,8 @@ public class ReminderService extends Service {
     };
     private StartAppReceiver startAppReceiver;
 
-    @Override public void onCreate() {
+    @Override
+    public void onCreate() {
         super.onCreate();
         startAppReceiver = new StartAppReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -58,7 +59,8 @@ public class ReminderService extends Service {
         return null;
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         this.unregisterReceiver(startAppReceiver);
     }
@@ -134,7 +136,8 @@ public class ReminderService extends Service {
     class StartAppReceiver extends BroadcastReceiver {
         public static final String ACTION = "co.yishun.onemoment.app.remind.startApp";
 
-        @Override public void onReceive(Context context, Intent intent) {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             final List<ActivityManager.RunningTaskInfo> recentTasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
             boolean needStart = true;

@@ -53,7 +53,8 @@ public class VideoVotedUpActivity extends BaseActivity
         super.onResume();
     }
 
-    @AfterViews void setupToolbar() {
+    @AfterViews
+    void setupToolbar() {
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
@@ -74,7 +75,8 @@ public class VideoVotedUpActivity extends BaseActivity
         VideoTaskManager.getInstance().quit();
     }
 
-    @AfterViews void setView() {
+    @AfterViews
+    void setView() {
         //TODO solve sliding conflict
         int spanCount = 3;
         int spacing = (int) getResources().getDimension(R.dimen.video_grid_divider);

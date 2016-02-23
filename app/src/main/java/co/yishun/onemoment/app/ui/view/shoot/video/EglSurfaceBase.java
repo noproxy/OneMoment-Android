@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.opengl.EGL14;
 import android.opengl.EGLSurface;
 import android.opengl.GLES20;
-import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -35,9 +34,8 @@ import co.yishun.onemoment.app.ui.view.shoot.gles.GlUtil;
 
 
 /**
- * Common base class for EGL surfaces.
- * <p>
- * There can be multiple surfaces associated with a single context.
+ * Common base class for EGL surfaces. <p> There can be multiple surfaces associated with a single
+ * context.
  */
 @TargetApi(17)
 public class EglSurfaceBase {
@@ -55,8 +53,7 @@ public class EglSurfaceBase {
     }
 
     /**
-     * Creates a window surface.
-     * <p>
+     * Creates a window surface. <p>
      *
      * @param surface May be a Surface or SurfaceTexture.
      */
@@ -85,11 +82,9 @@ public class EglSurfaceBase {
     }
 
     /**
-     * Returns the surface's width, in pixels.
-     * <p>
-     * If this is called on a window surface, and the underlying surface is in the process
-     * of changing size, we may not see the new size right away (e.g. in the "surfaceChanged"
-     * callback).  The size should match after the next buffer swap.
+     * Returns the surface's width, in pixels. <p> If this is called on a window surface, and the
+     * underlying surface is in the process of changing size, we may not see the new size right away
+     * (e.g. in the "surfaceChanged" callback).  The size should match after the next buffer swap.
      */
     public int getWidth() {
         if (mWidth < 0) {
@@ -127,8 +122,8 @@ public class EglSurfaceBase {
     }
 
     /**
-     * Makes our EGL context and surface current for drawing, using the supplied surface
-     * for reading.
+     * Makes our EGL context and surface current for drawing, using the supplied surface for
+     * reading.
      */
     public void makeCurrentReadFrom(EglSurfaceBase readSurface) {
         mEglCore.makeCurrent(mEGLSurface, readSurface.mEGLSurface);
@@ -157,9 +152,7 @@ public class EglSurfaceBase {
     }
 
     /**
-     * Saves the EGL surface to a file.
-     * <p>
-     * Expects that this object's EGL surface is current.
+     * Saves the EGL surface to a file. <p> Expects that this object's EGL surface is current.
      */
     public void saveFrame(File file) throws IOException {
         if (!mEglCore.isCurrent(mEGLSurface)) {

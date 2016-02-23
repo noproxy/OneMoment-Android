@@ -110,7 +110,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         }
     }
 
-    @Override public boolean onTouchEvent(MotionEvent event) {
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             float x = event.getX();
             float y = event.getY();
@@ -127,7 +128,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         mBackgroundHandler = new RecordHandler(mHandlerThread.getLooper());
     }
 
-    @Override public boolean isBackCamera() {
+    @Override
+    public boolean isBackCamera() {
         return mIsBackCamera;
     }
 
@@ -136,7 +138,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         this.setTransform(mat);
     }
 
-    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int size = Math.min(getMeasuredWidth(), getMeasuredHeight());
@@ -153,7 +156,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         }
     }
 
-    @Override public void setFlashlightOn(boolean isOn) {
+    @Override
+    public void setFlashlightOn(boolean isOn) {
         if (isFlashlightAvailable()) {
             try {
                 Camera.Parameters p = camera.getParameters();
@@ -165,7 +169,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         }
     }
 
-    @Override public void switchCamera(boolean isBack) {
+    @Override
+    public void switchCamera(boolean isBack) {
         mBackgroundHandler.sendMessage(mBackgroundHandler.obtainMessage(RecordHandler.PREPARE, isBack));
     }
 
@@ -195,11 +200,13 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         }
     }
 
-    @Override public boolean isFlashlightAvailable() {
+    @Override
+    public boolean isFlashlightAvailable() {
         return mIsBackCamera && mHasFlash;
     }
 
-    @Override public boolean isFrontCameraAvailable() {
+    @Override
+    public boolean isFrontCameraAvailable() {
         return mHasFrontCamera;
     }
 
@@ -247,11 +254,13 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
 
             }
 
-            @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
                 return false;
             }
 
-            @Override public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
             }
         });
@@ -297,13 +306,15 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
         }
     }
 
-    @Override public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
+    @Override
+    public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
         mRecordStartCallback = recordStartCallback;
         mRecordEndConsumer = recordEndConsumer;
         mBackgroundHandler.sendEmptyMessage(RecordHandler.START);
     }
 
-    @Override public void setSecurityExceptionHandler(SecurityExceptionHandler exceptionHandler) {
+    @Override
+    public void setSecurityExceptionHandler(SecurityExceptionHandler exceptionHandler) {
         mExceptionHandler = exceptionHandler;
     }
 
@@ -316,7 +327,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
     }
 
 
-    @Override public void onInfo(MediaRecorder mr, int what, int extra) {
+    @Override
+    public void onInfo(MediaRecorder mr, int what, int extra) {
         switch (what) {
             case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
                 mBackgroundHandler.sendEmptyMessage(RecordHandler.STOP);
@@ -354,7 +366,8 @@ public class ShootView extends TextureView implements IShootView, MediaRecorder.
             super(looper);
         }
 
-        @Override public void handleMessage(final Message msg) {
+        @Override
+        public void handleMessage(final Message msg) {
             switch (msg.what) {
                 case RecordHandler.PREPARE:
                     boolean isBack = (boolean) msg.obj;

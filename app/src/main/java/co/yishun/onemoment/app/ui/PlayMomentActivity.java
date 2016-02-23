@@ -30,18 +30,24 @@ import co.yishun.onemoment.app.ui.play.PlayMomentFragment_;
 public class PlayMomentActivity extends BaseActivity {
 
     private static final String TAG = "PlayMomentActivity";
-    @Extra String startDate;
-    @Extra String endDate;
+    @Extra
+    String startDate;
+    @Extra
+    String endDate;
 
-    @ViewById Toolbar toolbar;
-    @ViewById FrameLayout containerFrameLayout;
+    @ViewById
+    Toolbar toolbar;
+    @ViewById
+    FrameLayout containerFrameLayout;
 
-    @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
+    @OrmLiteDao(helper = MomentDatabaseHelper.class)
+    Dao<Moment, Integer> momentDao;
 
     private PlayMomentFragment playMomentFragment;
     private List<Moment> playingMoments;
 
-    @AfterViews void setUpViews() {
+    @AfterViews
+    void setUpViews() {
         try {
             playingMoments = new ArrayList<>();
             List<Moment> momentInDatabase = momentDao.queryBuilder().where().eq("owner", AccountManager.getAccountId(this)).and()
@@ -61,7 +67,8 @@ public class PlayMomentActivity extends BaseActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, playMomentFragment).commit();
     }
 
-    @AfterViews void setupToolbar() {
+    @AfterViews
+    void setupToolbar() {
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
@@ -69,7 +76,8 @@ public class PlayMomentActivity extends BaseActivity {
         LogUtil.i("setupToolbar", "set home as up true");
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         try {
             for (Moment m : playingMoments) {
@@ -80,7 +88,8 @@ public class PlayMomentActivity extends BaseActivity {
         }
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "PlayMomentActivity";
     }
 }

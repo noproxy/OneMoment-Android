@@ -42,7 +42,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private MaterialDialog mProgressDialog;
     private String statusTag = "status";
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         PushAgent.getInstance(this).onAppStart();
@@ -65,14 +66,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         content.addView(status, 0);
     }
 
-    @Override public void onContentChanged() {
+    @Override
+    public void onContentChanged() {
         super.onContentChanged();
         if (!(this instanceof SplashActivity || this instanceof EntryActivity || this instanceof AccountActivity)) {
             setStatusBarOnKitKat();
         }
     }
 
-    @CallSuper @NonNull public View getSnackbarAnchorWithView(@Nullable View view) {
+    @CallSuper
+    @NonNull
+    public View getSnackbarAnchorWithView(@Nullable View view) {
         return view != null ? view : findViewById(android.R.id.content);
     }
 
@@ -134,7 +138,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    @Override public void onBackPressed() {
+    @Override
+    public void onBackPressed() {
         BaseWebFragment webFragment = (BaseWebFragment) getSupportFragmentManager()
                 .findFragmentByTag(BaseWebFragment.TAG_WEB);
         if (webFragment != null && webFragment.canGoBack()) {

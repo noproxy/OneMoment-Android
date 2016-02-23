@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui.view;
 /**
  * Created by Jinge on 2015/11/5.
  */
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;

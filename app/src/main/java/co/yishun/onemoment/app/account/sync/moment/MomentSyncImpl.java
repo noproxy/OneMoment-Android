@@ -45,8 +45,9 @@ public class MomentSyncImpl extends MomentSync {
      */
     private final List<Moment> toUpload = new ArrayList<>();
     /**
-     * ApiMoment that only exists on server, which need to create in local database. The corresponded Moment is
-     * the local old moment in the database which need to replace, it can be null if there is no corresponded Moment locally.
+     * ApiMoment that only exists on server, which need to create in local database. The
+     * corresponded Moment is the local old moment in the database which need to replace, it can be
+     * null if there is no corresponded Moment locally.
      */
     private final List<Pair<ApiMoment, Moment>> toAdd = new ArrayList<>();
     /**
@@ -57,7 +58,8 @@ public class MomentSyncImpl extends MomentSync {
      * Out of date ApiMoment on server which need to delete.
      */
     private final List<ApiMoment> toDelete = new ArrayList<>();
-    @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> dao;
+    @OrmLiteDao(helper = MomentDatabaseHelper.class)
+    Dao<Moment, Integer> dao;
     private ExecutorService executor;
     private volatile int allTask = 0;
     private volatile int successTask = 0;
@@ -68,9 +70,9 @@ public class MomentSyncImpl extends MomentSync {
     }
 
     /**
-     * convert array to HashMap
-     * <p>
-     * No generics is from Apache ArrayUtils, and generics version is from <a href="http://stackoverflow.com/questions/6416346/adding-generics-to-arrayutils-tomap">Stack Overflow</a>
+     * convert array to HashMap <p> No generics is from Apache ArrayUtils, and generics version is
+     * from <a href="http://stackoverflow.com/questions/6416346/adding-generics-to-arrayutils-tomap">Stack
+     * Overflow</a>
      */
     public static <K, V> Map<K, V> toMap(Object[] array) {
         if (array == null) {
@@ -239,12 +241,9 @@ public class MomentSyncImpl extends MomentSync {
     }
 
     /**
-     * send broadcast to notify syncing progress update.
-     * <p>
-     * progress is from 0 to 100.
-     * <p>
-     * {@link SyncManager#PROGRESS_NOT_AVAILABLE} means no progress data available.
-     * {@link SyncManager#PROGRESS_ERROR} means error occurred.
+     * send broadcast to notify syncing progress update. <p> progress is from 0 to 100. <p> {@link
+     * SyncManager#PROGRESS_NOT_AVAILABLE} means no progress data available. {@link
+     * SyncManager#PROGRESS_ERROR} means error occurred.
      */
     private void onSyncUpdate() {
         Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_PROGRESS);
@@ -255,10 +254,8 @@ public class MomentSyncImpl extends MomentSync {
     }
 
     /**
-     * send broadcast to notify local moment changed at some date. If sync task create
-     * a new moment or update existed moment, it will be called. Upload task won't cause
-     * local moment changes.
-     *
+     * send broadcast to notify local moment changed at some date. If sync task create a new moment
+     * or update existed moment, it will be called. Upload task won't cause local moment changes.
      */
     private void onSyncMomentUpdate(Moment moment) {
         String timestamp = moment.getUnixTimeStamp();

@@ -7,9 +7,8 @@ import android.content.SyncResult;
 import android.os.Bundle;
 
 /**
- * Abstract MomentSync module. Call {@link #sync(Context, Account, Bundle, String, ContentProviderClient, SyncResult)} to sync.
- * <p>
- * Created by Carlos on 2015/12/20.
+ * Abstract MomentSync module. Call {@link #sync(Context, Account, Bundle, String,
+ * ContentProviderClient, SyncResult)} to sync. <p> Created by Carlos on 2015/12/20.
  */
 public abstract class MomentSync {
 

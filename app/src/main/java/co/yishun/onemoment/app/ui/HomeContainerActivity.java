@@ -26,11 +26,14 @@ import co.yishun.onemoment.app.ui.home.WorldFragment_;
 @EActivity(R.layout.activity_tool_fragment)
 public class HomeContainerActivity extends BaseActivity {
     private static final String TAG = "HomeContainerActivity";
-    @ViewById protected Toolbar toolbar;
-    @Extra String type;
+    @ViewById
+    protected Toolbar toolbar;
+    @Extra
+    String type;
     private BaseFragment fragment;
 
-    @AfterInject void setDefault() {
+    @AfterInject
+    void setDefault() {
         if (TextUtils.equals(type, "world")) {
             fragment = WorldFragment_.builder().build();
         } else if (TextUtils.equals(type, "diary")) {
@@ -44,7 +47,8 @@ public class HomeContainerActivity extends BaseActivity {
         }
     }
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         setupToolbar();
         getSupportFragmentManager().beginTransaction().replace(R.id.containerFrameLayout, fragment).commit();
     }
@@ -57,7 +61,8 @@ public class HomeContainerActivity extends BaseActivity {
         ab.setDisplayShowTitleEnabled(true);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
@@ -65,7 +70,8 @@ public class HomeContainerActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mIsPage = false;
     }
 }

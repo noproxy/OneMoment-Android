@@ -107,7 +107,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
     }
 
-    @Override public boolean onTouchEvent(MotionEvent event) {
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mPressedX = event.getX();
@@ -169,7 +170,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         e(TAG, "front camera enable: " + mHasFrontCamera);
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         mBackgroundHandler.removeCallbacksAndMessages(null);
         releaseCamera();
         queueEvent(() -> {
@@ -197,16 +199,19 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
     }
 
-    @Override public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+    @Override
+    public void onFrameAvailable(SurfaceTexture surfaceTexture) {
         requestRender();
     }
 
-    @Override public void releaseCamera() {
+    @Override
+    public void releaseCamera() {
         i(TAG, "send msg: STOP");
         this.mBackgroundHandler.sendEmptyMessage(CameraHandler.STOP);
     }
 
-    @Override public void setFlashlightOn(boolean isOn) {
+    @Override
+    public void setFlashlightOn(boolean isOn) {
         if (isFlashlightAvailable()) {
             try {
                 Camera.Parameters p = camera.getParameters();
@@ -218,7 +223,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
     }
 
-    @Override public void switchCamera(boolean isBack) {
+    @Override
+    public void switchCamera(boolean isBack) {
         mIsBackCamera = isBack;
         mBackgroundHandler.sendEmptyMessage(CameraHandler.RESUME);
     }
@@ -252,20 +258,24 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         }
     }
 
-    @Override public boolean isFlashlightAvailable() {
+    @Override
+    public boolean isFlashlightAvailable() {
         i(TAG, "mIsBackCamera: " + mIsBackCamera + ", mHasFlash " + mHasFlash);
         return mIsBackCamera && mHasFlash;
     }
 
-    @Override public boolean isFrontCameraAvailable() {
+    @Override
+    public boolean isFrontCameraAvailable() {
         return mHasFrontCamera;
     }
 
-    @Override public boolean isBackCamera() {
+    @Override
+    public boolean isBackCamera() {
         return mIsBackCamera;
     }
 
-    @Override public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
+    @Override
+    public void record(Callback recordStartCallback, Consumer<File> recordEndConsumer) {
         Handler uiHandler = new Handler(Looper.getMainLooper());
         //        file = new File(getCacheDirectory(getContext(), true), "video-" + System.currentTimeMillis() + ".mp4");
         i(TAG, file.toString());
@@ -280,7 +290,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         });
     }
 
-    @Override public void setSecurityExceptionHandler(SecurityExceptionHandler exceptionHandler) {
+    @Override
+    public void setSecurityExceptionHandler(SecurityExceptionHandler exceptionHandler) {
         mExceptionHandler = exceptionHandler;
     }
 
@@ -316,7 +327,8 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
             super(looper);
         }
 
-        @Override public void handleMessage(final Message msg) {
+        @Override
+        public void handleMessage(final Message msg) {
             try {
                 switch (msg.what) {
                     case CameraHandler.START:

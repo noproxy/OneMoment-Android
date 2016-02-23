@@ -18,14 +18,12 @@ import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.data.compat.Contract;
+import co.yishun.onemoment.app.data.realm.RealmHelper;
 
 
 /**
- * This bean is used in Ormlite and OrmliteProvider.
- * <p>
- * Created by Carlos on 2/13/15.
+ * This bean is used in Ormlite and OrmliteProvider. <p> Created by Carlos on 2/13/15.
  */
 @DatabaseTable(tableName = Contract.Moment.TABLE_NAME)
 public class Moment implements Serializable, QiniuKeyProvider, Comparable {
@@ -34,16 +32,23 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
 
     //    public final static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private static FileLock lock;
-    @DatabaseField String path;
-    @DatabaseField String thumbPath;
-    @DatabaseField String largeThumbPath;
-    @DatabaseField(columnName = Contract.Moment._ID, generatedId = true) private int id;
+    @DatabaseField
+    String path;
+    @DatabaseField
+    String thumbPath;
+    @DatabaseField
+    String largeThumbPath;
+    @DatabaseField(columnName = Contract.Moment._ID, generatedId = true)
+    private int id;
     /**
      * add at database version 2.0
      */
-    @DatabaseField private String owner;
-    @DatabaseField private String time;
-    @DatabaseField private String timeStamp;
+    @DatabaseField
+    private String owner;
+    @DatabaseField
+    private String time;
+    @DatabaseField
+    private String timeStamp;
 
     public Moment() {
     /*keep for ormlite*/
@@ -81,7 +86,8 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
         return timeStamp;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Moment{" +
                 "path='" + path + '\'' +
                 ", thumbPath='" + thumbPath + '\'' +
@@ -93,7 +99,8 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
                 '}';
     }
 
-    @Override public String getKey() {
+    @Override
+    public String getKey() {
         return this.getOwnerID() + Constants.URL_HYPHEN + this.getTime() + Constants.URL_HYPHEN + this.getUnixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
     }
 
@@ -130,15 +137,15 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
     }
 
     /**
-     * Compare time of the Moment, use {@link java.util.Collections#sort(List)}
-     * to make a list of moment in time order.
+     * Compare time of the Moment, use {@link java.util.Collections#sort(List)} to make a list of
+     * moment in time order.
      *
-     * @return a negative integer if this instance is less than {@code another};
-     * a positive integer if this instance is greater than
-     * {@code another}; 0 if this instance has the same order as
+     * @return a negative integer if this instance is less than {@code another}; a positive integer
+     * if this instance is greater than {@code another}; 0 if this instance has the same order as
      * {@code another}.
      */
-    @Override public int compareTo(@NonNull Object another) {
+    @Override
+    public int compareTo(@NonNull Object another) {
         if (!(another instanceof Moment)) {
             return 1;
         }

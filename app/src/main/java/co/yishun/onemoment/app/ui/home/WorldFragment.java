@@ -26,9 +26,11 @@ import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment_;
 @EFragment(R.layout.fragment_world)
 public class WorldFragment extends ToolbarFragment {
     CommonWebFragment worldWebFragment;
-    @ViewById FrameLayout containerFrameLayout;
+    @ViewById
+    FrameLayout containerFrameLayout;
 
-    @AfterViews void setUpViews() {
+    @AfterViews
+    void setUpViews() {
         File hybrdFile = FileUtil.getInternalFile(getActivity(), Constants.HYBRD_UNZIP_DIR);
         String url = Constants.FILE_URL_PREFIX + new File(hybrdFile, "build/pages/world/world.html").getPath();
         worldWebFragment = CommonWebFragment_.builder().mUrl(url).build();
@@ -38,16 +40,19 @@ public class WorldFragment extends ToolbarFragment {
         worldWebFragment.setRefreshable(true);
     }
 
-    @Override protected int getTitleDrawableRes() {
+    @Override
+    protected int getTitleDrawableRes() {
         return R.drawable.pic_world_title;
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_world, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.fragment_world_action_add) {
             CreateWorldActivity_.intent(getContext()).start();//TODO may ask for result, and remove refresh every time MainActivity onResume
             return true;

@@ -1,5 +1,9 @@
 package co.yishun.onemoment.app.ui.hybrd;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,9 +21,6 @@ import android.webkit.WebViewClient;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
@@ -57,8 +58,10 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     private static final String TAG = "BaseWebFragment";
 
-    @ViewById protected SwipeRefreshLayout swipeRefreshLayout;
-    @ViewById protected WebView webView;
+    @ViewById
+    protected SwipeRefreshLayout swipeRefreshLayout;
+    @ViewById
+    protected WebView webView;
 
     protected BaseActivity mActivity;
     protected MaterialDialog dialog;
@@ -69,30 +72,37 @@ public abstract class BaseWebFragment extends BaseFragment {
     protected float touchY;
     protected boolean mRefreshable;
 
-    @FragmentArg protected String mUrl;
-    @FragmentArg protected String mArg;
+    @FragmentArg
+    protected String mUrl;
+    @FragmentArg
+    protected String mArg;
 
-    @Override public void onAttach(Context context) {
+    @Override
+    public void onAttach(Context context) {
         super.onAttach(context);
         mActivity = (BaseActivity) getActivity();
     }
 
-    @Override public void onDetach() {
+    @Override
+    public void onDetach() {
         super.onDetach();
         mActivity = null;
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         webView.clearCache(false);
     }
 
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
         if (mRefreshable) reload();
     }
 
-    @AfterInject void setDefault() {
+    @AfterInject
+    void setDefault() {
         mHybrdDir = FileUtil.getInternalFile(mActivity, Constants.HYBRD_UNZIP_DIR);
         if (TextUtils.isEmpty(mUrl)) {
             mUrl = Constants.FILE_URL_PREFIX + new File(mHybrdDir, "build/pages/world/world.html").getPath();
@@ -104,7 +114,9 @@ public abstract class BaseWebFragment extends BaseFragment {
         if (mUrl.startsWith(Constants.FILE_URL_PREFIX)) mUrl += "?time=" + lastUpdateTime;
     }
 
-    @SuppressLint("SetJavaScriptEnabled") @CallSuper protected void setUpWebView() {
+    @SuppressLint("SetJavaScriptEnabled")
+    @CallSuper
+    protected void setUpWebView() {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setAllowContentAccess(true);
@@ -305,7 +317,8 @@ public abstract class BaseWebFragment extends BaseFragment {
     private class BaseWebClient extends WebViewClient {
 
         private HybrdUrlHandler urlHandler = new HybrdUrlHandler() {
-            @Override protected boolean handleInnerUrl(UrlModel urlModel) {
+            @Override
+            protected boolean handleInnerUrl(UrlModel urlModel) {
                 if (TextUtils.equals(urlModel.call, FUNC_GET_ENV)) {
                     webGetEnv(urlModel.args);
                 } else if (TextUtils.equals(urlModel.call, FUNC_GET_ACCOUNT)) {
@@ -333,19 +346,22 @@ public abstract class BaseWebFragment extends BaseFragment {
             }
         };
 
-        @Override public void onPageFinished(WebView view, String url) {
+        @Override
+        public void onPageFinished(WebView view, String url) {
             loadOver();
             super.onPageFinished(view, url);
         }
 
-        @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
             url = HybrdUrlHandler.urlDecode(url);
             LogUtil.d(TAG, url);
             return urlHandler.handleUrl(mActivity, url, (int) (touchX + posX), (int) (touchY + posY))
                     || super.shouldOverrideUrlLoading(view, url);
         }
 
-        @SuppressWarnings("deprecation") @Override
+        @SuppressWarnings("deprecation")
+        @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             LogUtil.d(TAG, description + "  " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
@@ -358,7 +374,8 @@ public abstract class BaseWebFragment extends BaseFragment {
             super.onReceivedError(view, request, error);
         }
 
-        @Override public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
+        @Override
+        public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
             LogUtil.d(TAG, event.getKeyCode() + " " + event.getAction());
             if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                 if (webView.canGoBack()) {

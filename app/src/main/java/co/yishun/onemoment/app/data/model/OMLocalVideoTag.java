@@ -8,9 +8,12 @@ import io.realm.annotations.Required;
  */
 public class OMLocalVideoTag extends RealmObject {
 
-    @Required private String tagDate;
-    @Required private String tagText;
-    @Required private String tagPosition;
+    @Required
+    private String tagDate;
+    @Required
+    private String tagText;
+    @Required
+    private String tagPosition;
 
     public String getTagDate() {
         return tagDate;

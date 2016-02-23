@@ -17,9 +17,7 @@ import android.widget.ImageButton;
 import co.yishun.onemoment.app.R;
 
 /**
- * An ImageButton
- * <p>
- * Created by Carlos on 2015/4/13.
+ * An ImageButton <p> Created by Carlos on 2015/4/13.
  */
 public class TintableImageButton extends ImageButton {
     private int mTintUpdateDelay;

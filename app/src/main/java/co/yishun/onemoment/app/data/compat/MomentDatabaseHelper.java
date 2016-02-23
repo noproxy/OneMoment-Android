@@ -2,7 +2,6 @@ package co.yishun.onemoment.app.data.compat;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -15,9 +14,7 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.data.model.Moment;
 
 /**
- * SQLite opener helper for CompatMoment.
- * <p>
- * Created by Carlos on 3/9/15.
+ * SQLite opener helper for CompatMoment. <p> Created by Carlos on 3/9/15.
  */
 public class MomentDatabaseHelper extends OrmLiteSqliteOpenHelper {
 

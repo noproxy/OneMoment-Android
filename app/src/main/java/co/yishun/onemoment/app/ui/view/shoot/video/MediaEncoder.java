@@ -24,7 +24,6 @@ package co.yishun.onemoment.app.ui.view.shoot.video;
 
 import android.media.MediaCodec;
 import android.media.MediaFormat;
-import android.util.Log;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -206,9 +205,7 @@ public abstract class MediaEncoder implements Runnable {
     /**
      * Method to set byte array to the MediaCodec encoder
      *
-     * @param buffer
-     * @param length             　length of byte array, zero means EOS.
-     * @param presentationTimeUs
+     * @param length 　length of byte array, zero means EOS.
      */
     protected void encode(final ByteBuffer buffer, final int length, final long presentationTimeUs) {
         if (!mIsCapturing) return;
@@ -338,8 +335,6 @@ public abstract class MediaEncoder implements Runnable {
 
     /**
      * get next encoding presentationTimeUs
-     *
-     * @return
      */
     protected long getPTSUs() {
         long result = System.nanoTime() / 1000L;

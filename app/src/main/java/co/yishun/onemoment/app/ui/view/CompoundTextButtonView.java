@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import co.yishun.onemoment.app.R;
 
@@ -40,7 +39,8 @@ public class CompoundTextButtonView extends LinearLayout implements View.OnClick
         init(attrs, defStyleAttr, 0);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP) public CompoundTextButtonView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public CompoundTextButtonView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs, defStyleAttr, defStyleRes);
     }
@@ -70,14 +70,16 @@ public class CompoundTextButtonView extends LinearLayout implements View.OnClick
         mImageView.setOnClickListener(this);
     }
 
-    @Override public void setOnClickListener(OnClickListener l) {
+    @Override
+    public void setOnClickListener(OnClickListener l) {
         if (!isClickable()) {
             setClickable(true);
         }
         mListener = l;
     }
 
-    @Override public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         if (mListener != null) {
             mListener.onClick(v);
         }

@@ -38,11 +38,8 @@ import co.yishun.onemoment.app.ui.common.WXRespActivity;
 import static java.lang.String.valueOf;
 
 /**
- * Created by yyz on 7/24/15.
- * <p>
- * Rename from WXEntryActivity to EntryActivity by jiangjin.
- * WXEntryActivity is also used for share, so create a transparent WXEntryActivity.
- * </p>
+ * Created by yyz on 7/24/15. <p> Rename from WXEntryActivity to EntryActivity by jiangjin.
+ * WXEntryActivity is also used for share, so create a transparent WXEntryActivity. </p>
  */
 @EActivity(R.layout.activity_login)
 public class EntryActivity extends WXRespActivity implements LoginListener {
@@ -51,7 +48,8 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
     private Account mAccountService;
     private Snackbar snackbar;
 
-    @AfterViews void setUp() {
+    @AfterViews
+    void setUp() {
         mAccountService = OneMomentV3.createAdapter().create(Account.class);
         if (mAuthHelper != null && mAuthHelper instanceof WeChatHelper)
             ((WeChatHelper) mAuthHelper).handleIntent(getIntent());
@@ -105,7 +103,8 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
         showSnackProgress();
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public View getSnackbarAnchorWithView(@Nullable View view) {
         return super.getSnackbarAnchorWithView(null);
     }
@@ -127,12 +126,14 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
         mIsPage = false;
     }
 
-    @Override protected void onWXRespIntent(Intent intent) {
+    @Override
+    protected void onWXRespIntent(Intent intent) {
         if (mAuthHelper != null && mAuthHelper instanceof WeChatHelper)
             ((WeChatHelper) mAuthHelper).handleIntent(intent);
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (mAuthHelper instanceof QQHelper)
             ((QQHelper) mAuthHelper).handleIntent(requestCode, resultCode, data);
@@ -144,10 +145,9 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
 
     /**
      * try to login use token.
-     *
-     * @param token
      */
-    @Background void handleToken(OAuthToken token) {
+    @Background
+    void handleToken(OAuthToken token) {
         switch (getType(mAuthHelper)) {
             case WeChat:
                 handleUser(mAccountService.getUserInfoByWeChatUid(token.getId()), token);
@@ -163,11 +163,9 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
 
     /**
      * handle login result, if success, exit; if not exist, get user info.
-     *
-     * @param user
-     * @param token
      */
-    @SupposeBackground void handleUser(User user, OAuthToken token) {
+    @SupposeBackground
+    void handleUser(User user, OAuthToken token) {
         if (user.code == 1) {
             AccountManager.saveAccount(this, user);
             showSnackMsg(R.string.activity_entry_login_success);
@@ -184,10 +182,9 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
 
     /**
      * to get user info.
-     *
-     * @param token
      */
-    @SupposeBackground void getUserInfo(OAuthToken token) {
+    @SupposeBackground
+    void getUserInfo(OAuthToken token) {
         UserInfo info = mAuthHelper.getUserInfo(token);
         showSnackMsg(R.string.activity_entry_auth_success);
         startActivity(AccountActivity_.intent(this).userInfo(info).type(getType(mAuthHelper)).get().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -206,7 +203,8 @@ public class EntryActivity extends WXRespActivity implements LoginListener {
         }
     }
 
-    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS) void exitWithStartMain() {
+    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
+    void exitWithStartMain() {
         MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
                 .checkLOC(DataMigration.hasLOCMoments(this)).start();
         finish();

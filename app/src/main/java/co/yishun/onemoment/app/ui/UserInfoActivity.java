@@ -83,7 +83,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         mPageName = "UserInfoActivity";
     }
 
-    @AfterViews void setupToolbar() {
+    @AfterViews
+    void setupToolbar() {
         if (toolbar == null)
             throw new UnsupportedOperationException("You need bind Toolbar instance to" +
                     " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
@@ -108,7 +109,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         AccountManager.removeOnUserInfoChangedListener(this);
     }
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         avatarLayout.setOnClickListener(this::pickAvatar);
 
         nicknameFragment.setTitle(getString(R.string.activity_user_info_username));
@@ -210,10 +212,12 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
     }
 
 
-    @Click(R.id.signOutBtn) void signOut() {
+    @Click(R.id.signOutBtn)
+    void signOut() {
         new MaterialDialog.Builder(this).theme(Theme.LIGHT).title(R.string.activity_user_info_sign_out_dialog_title).content(R.string.activity_user_info_sign_out_dialog_content).positiveText(R.string.activity_user_info_sign_out_dialog_cancel).negativeText(R.string.activity_user_info_sign_out_dialog_ok).
                 callback(new MaterialDialog.ButtonCallback() {
-                    @Override public void onNegative(MaterialDialog dialog) {
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
                         super.onNegative(dialog);
                         AccountManager.deleteAccount(UserInfoActivity.this);
                         dialog.dismiss();
@@ -225,7 +229,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
                 show();
     }
 
-    @UiThread void invalidateUserInfo(User user) {
+    @UiThread
+    void invalidateUserInfo(User user) {
         if (user == null) {
             return;
         }
@@ -258,7 +263,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         locationFragment.setContent(user.location);
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (mAuthHelper instanceof QQHelper)
             ((QQHelper) mAuthHelper).handleIntent(requestCode, resultCode, data);
@@ -280,7 +286,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         Picasso.with(this).load(uri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(avatarImage);
     }
 
-    @Background void updateAvatar(@NonNull String userId) {
+    @Background
+    void updateAvatar(@NonNull String userId) {
         if (croppedProfileUri == null) return;
         String uriString = croppedProfileUri.toString();
         String path = uriString.substring(uriString.indexOf(":") + 1);
@@ -341,7 +348,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         AccountManager.updateOrCreateUserInfo(this, user);
     }
 
-    @Background void bindWeibo(OAuthToken token) {
+    @Background
+    void bindWeibo(OAuthToken token) {
         UserInfo userInfo = new WeiboHelper(this).getUserInfo(token);
 
         Account account = OneMomentV3.createAdapter().create(Account.class);
@@ -356,7 +364,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         AccountManager.updateOrCreateUserInfo(this, user);
     }
 
-    @Background void unbindWeibo(String weiboUid) {
+    @Background
+    void unbindWeibo(String weiboUid) {
         Account account = OneMomentV3.createAdapter().create(Account.class);
         User user = account.unbindWeibo(AccountManager.getUserInfo(this)._id, weiboUid);
         if (user.code <= 0) {

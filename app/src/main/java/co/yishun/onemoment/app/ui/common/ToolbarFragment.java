@@ -18,7 +18,8 @@ import co.yishun.onemoment.app.ui.MainActivity;
  */
 @EFragment
 public abstract class ToolbarFragment extends BaseFragment {
-    @ViewById protected Toolbar toolbar;
+    @ViewById
+    protected Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,12 @@ public abstract class ToolbarFragment extends BaseFragment {
         setHasOptionsMenu(true);
     }
 
-    protected abstract @DrawableRes int getTitleDrawableRes();
+    protected abstract
+    @DrawableRes
+    int getTitleDrawableRes();
 
-    @CallSuper protected ActionBar setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
+    @CallSuper
+    protected ActionBar setupToolbar(AppCompatActivity activity, Toolbar toolbar) {
         if (toolbar == null)
             throw new UnsupportedOperationException("You need bind Toolbar instance to" +
                     " toolbar in onCreateView(LayoutInflater, ViewGroup, Bundle");
@@ -43,7 +47,9 @@ public abstract class ToolbarFragment extends BaseFragment {
         return ab;
     }
 
-    @CallSuper @Override public void onResume() {
+    @CallSuper
+    @Override
+    public void onResume() {
         super.onResume();
         MainActivity activity = (MainActivity) getActivity();
         setupToolbar(activity, toolbar);

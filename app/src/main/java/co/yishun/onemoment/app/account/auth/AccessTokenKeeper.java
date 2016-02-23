@@ -5,10 +5,9 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 /**
- * Util to save Token data. Call {@link #which(KeeperType)} get instance for certain token.
- * Every time you call {@link #writeAccessToken(Context, OAuthToken)} will override the previous saved data for certain {@link KeeperType} token.
- * <p>
- * Created by yyz on 5/30/15.
+ * Util to save Token data. Call {@link #which(KeeperType)} get instance for certain token. Every
+ * time you call {@link #writeAccessToken(Context, OAuthToken)} will override the previous saved
+ * data for certain {@link KeeperType} token. <p> Created by yyz on 5/30/15.
  */
 public class AccessTokenKeeper {
     private static final String KEY_UID = "uid";

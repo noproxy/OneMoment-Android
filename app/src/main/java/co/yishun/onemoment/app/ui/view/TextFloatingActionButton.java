@@ -84,7 +84,8 @@ public class TextFloatingActionButton extends FloatingActionButton {
         }
     }
 
-    @Override protected void onDraw(Canvas canvas) {
+    @Override
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawText(mText, 0, mText.length(), getMeasuredWidth() / 2, getMeasuredHeight() / 2, mPaint);
         //TODO why this fuck text always not center!

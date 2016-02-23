@@ -18,7 +18,8 @@ public class WorldBannerHeaderProvider extends BannerHeaderProvider {
         super(context);
     }
 
-    @Override public View getHeaderView(ViewGroup viewGroup) {
+    @Override
+    public View getHeaderView(ViewGroup viewGroup) {
         SliderLayout sliderLayout = (SliderLayout) super.getHeaderView(viewGroup);
         viewGroup.removeView(sliderLayout);
 

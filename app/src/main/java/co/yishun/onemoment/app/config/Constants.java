@@ -1,15 +1,13 @@
 package co.yishun.onemoment.app.config;
 
 /**
- * Constants configures.
- * <p>
- * Created by Carlos on 2015/8/5.
+ * Constants configures. <p> Created by Carlos on 2015/8/5.
  */
 public class Constants {
     public static final String API_KEY = "";
     public static final String API_V3_URL = "http://api.yishun.co/v3";
-//    public static final String API_V3_URL = "http://sandbox.api.yishun.co:53470/v3";//for test
-public static final String API_V4_URL = "http://api.yishun.co/v4";
+    //    public static final String API_V3_URL = "http://sandbox.api.yishun.co:53470/v3";//for test
+    public static final String API_V4_URL = "http://api.yishun.co/v4";
     public static final String API_V4_URL_TEST = "http://sandbox.api.yishun.co:53470/v4";
     public static final String AES_KEY = "QJBBNfrwp2oN4ZBwT9qZ4MGObN8y56bEydJj48L8xVs=";
     public static final String MIME_TYPE = "video/mp4";
@@ -159,7 +157,7 @@ public static final String API_V4_URL = "http://api.yishun.co/v4";
         public static final int QQ_NUMBER_NOT_MATCH = -104;
     }
 
-    public static class UmengData{
+    public static class UmengData {
         public static final String FAB_WORLD_CLICK = "fab_world_click";
         public static final String FAB_DIARY_CLICK = "fab_diary_click";
 

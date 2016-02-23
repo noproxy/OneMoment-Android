@@ -14,6 +14,8 @@ import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -42,7 +44,6 @@ import co.yishun.onemoment.app.ui.AccountActivity;
 import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.view.GenderSpinner;
 import co.yishun.onemoment.app.ui.view.LocationSpinner;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 import static co.yishun.onemoment.app.LogUtil.e;
 import static co.yishun.onemoment.app.LogUtil.i;
@@ -55,15 +56,22 @@ public class IntegrateInfoFragment extends AccountFragment
         implements AccountActivity.PictureCroppedHandler {
 
     private static final String TAG = "IntegrateInfoFragment";
-    @FragmentArg String phoneNum;
-    @FragmentArg String password;
-    @FragmentArg UserInfo userInfo;
-    @FragmentArg AccessTokenKeeper.KeeperType type;
-    @ViewById GenderSpinner genderSpinner;
-    @ViewById LocationSpinner locationSpinner;
+    @FragmentArg
+    String phoneNum;
+    @FragmentArg
+    String password;
+    @FragmentArg
+    UserInfo userInfo;
+    @FragmentArg
+    AccessTokenKeeper.KeeperType type;
+    @ViewById
+    GenderSpinner genderSpinner;
+    @ViewById
+    LocationSpinner locationSpinner;
     @ViewById
     CircleImageView profileImageView;
-    @ViewById EditText nickNameEditText;
+    @ViewById
+    EditText nickNameEditText;
     private Uri croppedProfileUri;
     private boolean avatarUploadOk = false;
 
@@ -72,11 +80,13 @@ public class IntegrateInfoFragment extends AccountFragment
         userInfo.name = text.toString().trim();
     }
 
-    @Override int getFABBackgroundColorRes() {
+    @Override
+    int getFABBackgroundColorRes() {
         return R.color.colorSecondary;
     }
 
-    @Override int getFABImageResource() {
+    @Override
+    int getFABImageResource() {
         return R.drawable.ic_login_done;
     }
 
@@ -109,7 +119,8 @@ public class IntegrateInfoFragment extends AccountFragment
         return true;
     }
 
-    @Background void checkNicknameAndSignUp() {
+    @Background
+    void checkNicknameAndSignUp() {
         signUp();
     }
 
@@ -118,7 +129,8 @@ public class IntegrateInfoFragment extends AccountFragment
      *
      * @return true if no need update or update success
      */
-    @SupposeBackground boolean updateAvatar(@NonNull String userId) {
+    @SupposeBackground
+    boolean updateAvatar(@NonNull String userId) {
         if (croppedProfileUri == null) return true;
         String uriString = croppedProfileUri.toString();
         String path = uriString.substring(uriString.indexOf(":") + 1);
@@ -170,7 +182,8 @@ public class IntegrateInfoFragment extends AccountFragment
         return true;
     }
 
-    @SupposeBackground void signUp() {
+    @SupposeBackground
+    void signUp() {
         mActivity.showProgress(R.string.fragment_integrate_info_sign_up_progress);
         User user;
         if (type != null)
@@ -208,17 +221,20 @@ public class IntegrateInfoFragment extends AccountFragment
         mActivity.hideProgress();
     }
 
-    @SupposeBackground void checkAvatarAndExit(@NonNull String userId) {
+    @SupposeBackground
+    void checkAvatarAndExit(@NonNull String userId) {
         boolean success = updateAvatar(userId);
         mActivity.showSnackMsg(success ? R.string.fragment_integrate_info_sign_up_success : R.string.fragment_integrate_info_sign_up_success_but_avatar_upload_failed);
         exitWithStartMain();
     }
 
-    @Click void profileImageViewClicked(View view) {
+    @Click
+    void profileImageViewClicked(View view) {
         Crop.pickImage(mActivity);
     }
 
-    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS) void exitWithStartMain() {
+    @UiThread(delay = Constants.INT_EXIT_DELAY_MILLIS)
+    void exitWithStartMain() {
         MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
         //TODO bug not stop the WXEntryAct
     }
@@ -235,7 +251,8 @@ public class IntegrateInfoFragment extends AccountFragment
         Picasso.with(mActivity).load(croppedProfileUri).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
     }
 
-    @AfterViews void setViews() {
+    @AfterViews
+    void setViews() {
         if (userInfo == null) {
             userInfo = new UserInfo();
         }

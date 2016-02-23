@@ -32,19 +32,23 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
 public class PlayMomentFragment extends PlayFragment
         implements VideoPlayerView.OnVideoChangeListener {
 
-    @FragmentArg String startDate;
-    @FragmentArg String endDate;
+    @FragmentArg
+    String startDate;
+    @FragmentArg
+    String endDate;
 
-    @OrmLiteDao(helper = MomentDatabaseHelper.class) Dao<Moment, Integer> momentDao;
+    @OrmLiteDao(helper = MomentDatabaseHelper.class)
+    Dao<Moment, Integer> momentDao;
 
-    @AfterViews void setUpViews() {
+    @AfterViews
+    void setUpViews() {
         videoPlayView.setWithAvatar(false);
         videoPlayView.setVideoChangeListener(this);
         try {
             List<Moment> momentList = momentDao.queryBuilder().where()
                     .eq("owner", AccountManager.getAccountId(getContext())).and()
                     .between("time", startDate, endDate).query();
-            if (momentList.size()> 0){
+            if (momentList.size() > 0) {
                 Collections.sort(momentList);
                 for (Moment moment : momentList) {
                     if (moment.getFile().length() == 0) continue;
@@ -72,11 +76,13 @@ public class PlayMomentFragment extends PlayFragment
         videoPlayView.pause();
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mIsPage = false;
     }
 
-    @Override public void videoChangeTo(int index) {
+    @Override
+    public void videoChangeTo(int index) {
 
     }
 }

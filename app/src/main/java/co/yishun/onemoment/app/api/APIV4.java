@@ -19,50 +19,66 @@ import retrofit.http.Query;
  * Created by Jinge on 2016/1/21.
  */
 public interface APIV4 {
-    @GET("/hybrd/update") HybrdData getHybrdData(@Query("name") String name);
+    @GET("/hybrd/update")
+    HybrdData getHybrdData(@Query("name") String name);
 
-    @POST("/world") @FormUrlEncoded co.yishun.onemoment.app.api.modelv4.World createWorld(
+    @POST("/world")
+    @FormUrlEncoded
+    co.yishun.onemoment.app.api.modelv4.World createWorld(
             @Field("name") String worldName,
             @Field("account_id") String userId);
 
-    @POST("/world/video") @FormUrlEncoded WorldVideo createWorldVideo(
+    @POST("/world/video")
+    @FormUrlEncoded
+    WorldVideo createWorldVideo(
             @Field("world_id") String worldId,
             @Field("filename") String filename,
             @Field("account_id") String userId,
             @Field("tags") String tags);
 
-    @GET("/world/videos") WorldVideoListWithErrorV4<WorldVideo> getWorldVideos(
+    @GET("/world/videos")
+    WorldVideoListWithErrorV4<WorldVideo> getWorldVideos(
             @Query("world_id") String worldId,
             @Query("account_id") String userId,
             @Query("order") int order,
             @Query("limit") int limit);
 
-    @POST("/world/today") @FormUrlEncoded WorldVideo createTodayVideo(
+    @POST("/world/today")
+    @FormUrlEncoded
+    WorldVideo createTodayVideo(
             @Field("filename") String filename,
             @Field("account_id") String userId,
             @Field("tags") String tags);
 
-    @GET("/world/todays") ListWithErrorV4<World> getTodayWorlds(
+    @GET("/world/todays")
+    ListWithErrorV4<World> getTodayWorlds(
             @Query("ranking") int ranking,
             @Query("limit") int limit);
 
-    @GET("/world/today") WorldVideoListWithErrorV4<WorldVideo> getTodayVideos(
+    @GET("/world/today")
+    WorldVideoListWithErrorV4<WorldVideo> getTodayVideos(
             @Query("name") String name,
             @Query("offset") int offset,
             @Query("limit") int limit);
 
-    @POST("/world/share_today") @FormUrlEncoded ShareInfo shareToday(
+    @POST("/world/share_today")
+    @FormUrlEncoded
+    ShareInfo shareToday(
             @Field("name") String name,
             @Field("account_id") String userId);
 
-    @POST("world/share") @FormUrlEncoded ShareInfo shareWorld(
+    @POST("world/share")
+    @FormUrlEncoded
+    ShareInfo shareWorld(
             @Field("world_id") String worldId,
             @Field("account_id") String userId);
 
-    @GET("/misc/upload_token") UploadToken getUploadToken(
+    @GET("/misc/upload_token")
+    UploadToken getUploadToken(
             @Query("filename") @Nullable String filename);
 
-    @GET("/misc/upload_token") UploadToken getUploadToken(
+    @GET("/misc/upload_token")
+    UploadToken getUploadToken(
             @Query("filename") @Nullable String filename,
             @Query("type") String type);
 }

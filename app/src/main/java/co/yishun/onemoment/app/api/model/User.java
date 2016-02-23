@@ -7,9 +7,7 @@ import java.util.Arrays;
 import co.yishun.onemoment.app.api.Account;
 
 /**
- * Bean contains user info.
- * <p>
- * Created by Carlos on 2015/8/4.
+ * Bean contains user info. <p> Created by Carlos on 2015/8/4.
  */
 public class User extends ApiModel {
     /*

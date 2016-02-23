@@ -3,9 +3,7 @@ package co.yishun.onemoment.app.account.auth;
 import android.support.annotation.NonNull;
 
 /**
- * A proxy to login and get user's info by three-party open api.
- * <p>
- * Created by yyz on 6/3/15.
+ * A proxy to login and get user's info by three-party open api. <p> Created by yyz on 6/3/15.
  */
 public interface AuthHelper {
 

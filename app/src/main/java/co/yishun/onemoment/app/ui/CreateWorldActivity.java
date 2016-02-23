@@ -24,20 +24,24 @@ import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
 @EActivity(R.layout.activity_create_world)
 public class CreateWorldActivity extends BaseWebActivity {
 
-    @ViewById Button finishButton;
+    @ViewById
+    Button finishButton;
 
-    @AfterInject void setDefault() {
+    @AfterInject
+    void setDefault() {
         title = getString(R.string.activity_create_world_title);
         File hybrdDir = FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR);
         url = Constants.FILE_URL_PREFIX + new File(hybrdDir, "build/pages/create_world/create_world.html").getPath();
     }
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         setupToolbar();
         setupFragment();
     }
 
-    @Click(R.id.finishButton) void finishClick(View view) {
+    @Click(R.id.finishButton)
+    void finishClick(View view) {
         hideKeyboard();
         mWebFragment.sendFinish();
     }
@@ -52,7 +56,8 @@ public class CreateWorldActivity extends BaseWebActivity {
         imm.hideSoftInputFromWindow(finishButton.getWindowToken(), 0);
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "CreateWorldActivity";
     }
 }

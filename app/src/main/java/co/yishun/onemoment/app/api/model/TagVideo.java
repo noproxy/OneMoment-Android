@@ -17,11 +17,13 @@ public class TagVideo extends Video {
 
     public Seed seed;
 
-    @Override public String getAvatarUrl() {
+    @Override
+    public String getAvatarUrl() {
         return avatar;
     }
 
-    @Override public String getNickname() {
+    @Override
+    public String getNickname() {
         return nickname;
     }
 }

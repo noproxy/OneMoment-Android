@@ -37,7 +37,8 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
     private TextView mItemTextView;
     private ImageView mRightImageView;
     private
-    @ColorInt int mTextColor = getResources().getColor(android.R.color.darker_gray);
+    @ColorInt
+    int mTextColor = getResources().getColor(android.R.color.darker_gray);
     private Drawable mRightDrawable = getResources().getDrawable(R.drawable.ic_right);
     private float mTextSize = 16;
     private OnLocationSelectedListener mListener;
@@ -91,7 +92,8 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
         this.setOnClickListener(this);
     }
 
-    @Override public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         MaterialDialog dialog = new MaterialDialog.Builder(getContext()).theme(Theme.LIGHT).title(R.string.view_location_spinner_title).positiveText(R.string.view_location_spinner_positive_btn).customView(R.layout.layout_dialog_area_pick, false).build();
         View dialogView = dialog.getCustomView();
         assert dialogView != null;
@@ -110,7 +112,8 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
                 districtSpinner.setSelection(select == -1 ? 0 : select);
             }
 
-            @Override public void onNothingSelected(AdapterView<?> parent) {
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
                 districtSpinner.setEnabled(false);
             }
         });
@@ -133,7 +136,8 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
         mItemTextView.setText(pro + " " + dis);
     }
 
-    @Nullable public String getSelectedLocation() {
+    @Nullable
+    public String getSelectedLocation() {
         if (TextUtils.isEmpty(mProvince) || TextUtils.isEmpty(mDistrict))
             return null;
         return mProvince + " " + mDistrict;
@@ -146,7 +150,8 @@ public class LocationSpinner extends LinearLayout implements View.OnClickListene
         }
     }
 
-    @Nullable public Pair<String, String> getSelectedProvinceAndDistrict() {
+    @Nullable
+    public Pair<String, String> getSelectedProvinceAndDistrict() {
         if (TextUtils.isEmpty(mProvince) || TextUtils.isEmpty(mDistrict))
             return null;
         return new Pair<>(mProvince, mDistrict);

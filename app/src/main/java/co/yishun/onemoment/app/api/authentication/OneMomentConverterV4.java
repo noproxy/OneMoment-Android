@@ -1,11 +1,11 @@
 package co.yishun.onemoment.app.api.authentication;
 
-import android.text.TextUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import android.text.TextUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -44,7 +44,8 @@ public class OneMomentConverterV4 implements Converter {
         mGson = GsonFactory.newNamingGson();
     }
 
-    @Override public Object fromBody(TypedInput body, Type type) throws ConversionException {
+    @Override
+    public Object fromBody(TypedInput body, Type type) throws ConversionException {
         String json = null;
         try {
             json = Util.toString(body.in(), "UTF-8");
@@ -127,7 +128,8 @@ public class OneMomentConverterV4 implements Converter {
         return model;
     }
 
-    @Override public TypedOutput toBody(Object object) {
+    @Override
+    public TypedOutput toBody(Object object) {
         String json = mGson.toJson(object);
         LogUtil.i(TAG, object + ", " + json);
         return new JsonTypedOutput(json.getBytes(Charset.forName("UTF-8")), "UTF-8");

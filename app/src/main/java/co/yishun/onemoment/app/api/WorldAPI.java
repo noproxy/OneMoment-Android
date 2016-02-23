@@ -24,12 +24,11 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
- * Created by Carlos on 2015/8/8.
- * <p>
- * Rename from World.
+ * Created by Carlos on 2015/8/8. <p> Rename from World.
  */
 public interface WorldAPI {
-    @GET("/world/banners") ListWithError<Banner> getBanners(@Query("limit") Integer bannerNumLimit);
+    @GET("/world/banners")
+    ListWithError<Banner> getBanners(@Query("limit") Integer bannerNumLimit);
 
     @FormUrlEncoded
     @POST("/world/like/video/{video_id}")
@@ -67,7 +66,8 @@ public interface WorldAPI {
     );
 
     @POST("/world/share")
-    @FormUrlEncoded ShareInfo shareWorld(@Field("tag_name") String tagName);
+    @FormUrlEncoded
+    ShareInfo shareWorld(@Field("tag_name") String tagName);
 
     @StringDef({"recommend", "time"})
     @interface Sort {

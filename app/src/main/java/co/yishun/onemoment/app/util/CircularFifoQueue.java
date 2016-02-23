@@ -29,18 +29,13 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 /**
- * CircularFifoQueue is a first-in first-out queue with a fixed size that
- * replaces its oldest element if full.
- * <p>
- * The removal order of a {@link CircularFifoQueue} is based on the
- * insertion order; elements are removed in the same order in which they
- * were added.  The iteration order is the same as the removal order.
- * <p>
- * The {@link #add(Object)}, {@link #remove()}, {@link #peek()}, {@link #poll},
- * {@link #offer(Object)} operations all perform in constant time.
- * All other operations perform in linear time or worse.
- * <p>
- * This queue prevents null objects from being added.
+ * CircularFifoQueue is a first-in first-out queue with a fixed size that replaces its oldest
+ * element if full. <p> The removal order of a {@link CircularFifoQueue} is based on the insertion
+ * order; elements are removed in the same order in which they were added.  The iteration order is
+ * the same as the removal order. <p> The {@link #add(Object)}, {@link #remove()}, {@link #peek()},
+ * {@link #poll}, {@link #offer(Object)} operations all perform in constant time. All other
+ * operations perform in linear time or worse. <p> This queue prevents null objects from being
+ * added.
  *
  * @version $Id: CircularFifoQueue.java 1648957 2015-01-01 22:01:31Z tn $
  * @since 4.0
@@ -64,11 +59,10 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
      */
     private transient int start = 0;
     /**
-     * Index mod maxElements of the array position following the last queue
-     * element.  Queue elements start at elements[start] and "wrap around"
-     * elements[maxElements-1], ending at elements[decrement(end)].
-     * For example, elements = {c,a,b}, start=1, end=1 corresponds to
-     * the queue [a,b,c].
+     * Index mod maxElements of the array position following the last queue element.  Queue elements
+     * start at elements[start] and "wrap around" elements[maxElements-1], ending at
+     * elements[decrement(end)]. For example, elements = {c,a,b}, start=1, end=1 corresponds to the
+     * queue [a,b,c].
      */
     private transient int end = 0;
     /**
@@ -89,7 +83,8 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
      * @param size the size of the queue (cannot be changed)
      * @throws IllegalArgumentException if the size is &lt; 1
      */
-    @SuppressWarnings("unchecked") public CircularFifoQueue(final int size) {
+    @SuppressWarnings("unchecked")
+    public CircularFifoQueue(final int size) {
         if (size <= 0) {
             throw new IllegalArgumentException("The size must be greater than 0");
         }
@@ -98,8 +93,8 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
     }
 
     /**
-     * Constructor that creates a queue from the specified collection.
-     * The collection size also sets the queue size.
+     * Constructor that creates a queue from the specified collection. The collection size also sets
+     * the queue size.
      *
      * @param coll the collection to copy into the queue, may not be null
      * @throws NullPointerException if the collection is null
@@ -156,7 +151,8 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
      *
      * @return this queue's size
      */
-    @Override public int size() {
+    @Override
+    public int size() {
         int size = 0;
 
         if (end < start) {
@@ -175,14 +171,13 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
      *
      * @return true if this queue is empty
      */
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
         return size() == 0;
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * A {@code CircularFifoQueue} can never be full, thus this returns always
+     * {@inheritDoc} <p> A {@code CircularFifoQueue} can never be full, thus this returns always
      * {@code false}.
      *
      * @return always returns {@code false}
@@ -192,8 +187,8 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
     }
 
     /**
-     * Returns {@code true} if the capacity limit of this queue has been reached,
-     * i.e. the number of elements stored in the queue equals its maximum size.
+     * Returns {@code true} if the capacity limit of this queue has been reached, i.e. the number of
+     * elements stored in the queue equals its maximum size.
      *
      * @return {@code true} if the capacity limit has been reached, {@code false} otherwise
      * @since 4.1
@@ -214,7 +209,8 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
     /**
      * Clears this queue.
      */
-    @Override public void clear() {
+    @Override
+    public void clear() {
         full = false;
         start = 0;
         end = 0;
@@ -222,14 +218,15 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
     }
 
     /**
-     * Adds the given element to this queue. If the queue is full, the least recently added
-     * element is discarded so that a new element can be inserted.
+     * Adds the given element to this queue. If the queue is full, the least recently added element
+     * is discarded so that a new element can be inserted.
      *
      * @param element the element to add
      * @return true, always
      * @throws NullPointerException if the given element is null
      */
-    @Override public boolean add(final E element) {
+    @Override
+    public boolean add(final E element) {
         if (null == element) {
             throw new NullPointerException("Attempted to add null object to queue");
         }
@@ -271,8 +268,8 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
     //-----------------------------------------------------------------------
 
     /**
-     * Adds the given element to this queue. If the queue is full, the least recently added
-     * element is discarded so that a new element can be inserted.
+     * Adds the given element to this queue. If the queue is full, the least recently added element
+     * is discarded so that a new element can be inserted.
      *
      * @param element the element to add
      * @return true, always
@@ -355,7 +352,8 @@ public class CircularFifoQueue<E> extends AbstractCollection<E> implements Queue
      *
      * @return an iterator over this queue's elements
      */
-    @Override public Iterator<E> iterator() {
+    @Override
+    public Iterator<E> iterator() {
         return new Iterator<E>() {
 
             private int index = start;

@@ -5,13 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 
-import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.data.model.Moment;
 
 /**
@@ -42,10 +40,10 @@ public class MomentLock {
     }
 
     /**
-     * Lock moments by their {@link Moment#getTime()}. Any moment having the same time will be locked.
+     * Lock moments by their {@link Moment#getTime()}. Any moment having the same time will be
+     * locked.
      *
      * @param moment to provide time to lock.
-     * @throws Exception
      */
     public static void lockMoment(Context context, @NonNull Moment moment) throws Exception {
         lock(context, moment.getTime());
@@ -55,7 +53,6 @@ public class MomentLock {
      * Unlock the time of the moment.
      *
      * @param moment to provide time to lock. Do nothing if null.
-     * @throws Exception
      */
     public static void unlockMomentIfLocked(Context context, @Nullable Moment moment) throws Exception {
         if (moment != null) {

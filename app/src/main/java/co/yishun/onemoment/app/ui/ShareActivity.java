@@ -33,14 +33,18 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     public static final int TYPE_SHARE_WORLD = 1;
     public static final int TYPE_SHARE_BADGE = 2;
 
-    @Extra ShareInfoProvider shareInfo;
-    @Extra int shareType;
+    @Extra
+    ShareInfoProvider shareInfo;
+    @Extra
+    int shareType;
 
-    @ViewById TextView shareText;
+    @ViewById
+    TextView shareText;
 
     private ShareController shareController;
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shareController = new ShareController(this, shareInfo.getImageUrl(), shareInfo.getLink(), shareInfo.getTitle(), this);
         LogUtil.d(TAG, shareInfo.getImageUrl() + shareInfo.getTitle() + shareInfo.getLink());
@@ -48,24 +52,28 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
             shareController.onNewIntent(getIntent());
     }
 
-    @Override protected void onWXRespIntent(Intent intent) {
+    @Override
+    protected void onWXRespIntent(Intent intent) {
         LogUtil.i(TAG, "onWxresp intent");
         shareController.onNewIntent(intent);
     }
 
-    @Override protected void onNewIntent(Intent intent) {
+    @Override
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         LogUtil.d(TAG, "onNewIntent");
         shareController.onNewIntent(intent);
     }
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
         if (mReceiver == null) LogUtil.d(TAG, "receiver is null");
         LogUtil.d(TAG, "onResume");
     }
 
-    @AfterViews void setUp() {
+    @AfterViews
+    void setUp() {
         if (shareType == TYPE_SHARE_MOMENT)
             shareText.setText(getString(R.string.activity_share_share_moment));
         else if (shareType == TYPE_SHARE_WORLD)
@@ -74,36 +82,43 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
             shareText.setText(getString(R.string.activity_share_share_badge));
     }
 
-    @Click(R.id.relativeLayout) void linearLayoutClick() {
+    @Click(R.id.relativeLayout)
+    void linearLayoutClick() {
         finish();
     }
 
-    @Click(R.id.shareWeChat) void shareWeChatClick() {
+    @Click(R.id.shareWeChat)
+    void shareWeChatClick() {
         shareController.setType(ShareController.TYPE_WE_CHAT);
         getBitmap();
     }
 
-    @Click(R.id.shareWXCircle) void shareWXCircleClick() {
+    @Click(R.id.shareWXCircle)
+    void shareWXCircleClick() {
         shareController.setType(ShareController.TYPE_WX_CIRCLE);
         getBitmap();
     }
 
-    @Click(R.id.shareWeibo) void shareWeiboClick() {
+    @Click(R.id.shareWeibo)
+    void shareWeiboClick() {
         shareController.setType(ShareController.TYPE_WEIBO);
         getBitmap();
     }
 
-    @Click(R.id.shareQQ) void shareQQClick() {
+    @Click(R.id.shareQQ)
+    void shareQQClick() {
         shareController.setType(ShareController.TYPE_QQ);
         shareController.share();
     }
 
-    @Click(R.id.shareQzone) void shareQzoneClick() {
+    @Click(R.id.shareQzone)
+    void shareQzoneClick() {
         shareController.setType(ShareController.TYPE_QZONE);
         shareController.share();
     }
 
-    @Background void getBitmap() {
+    @Background
+    void getBitmap() {
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(new URL(shareInfo.getImageUrl()).openStream());
             shareController.setBitmap(bitmap);
@@ -113,25 +128,30 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
         }
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mIsPage = true;
         mPageName = "ShareActivity";
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         shareController.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override public void onSuccess() {
+    @Override
+    public void onSuccess() {
         showSnackMsg(R.string.activity_share_share_success);
     }
 
-    @Override public void onFail() {
+    @Override
+    public void onFail() {
         showSnackMsg(R.string.activity_share_share_fail);
     }
 
-    @Override public void onCancel() {
+    @Override
+    public void onCancel() {
         showSnackMsg(R.string.activity_share_share_cancel);
     }
 }

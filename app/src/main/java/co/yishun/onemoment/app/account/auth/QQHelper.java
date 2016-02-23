@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.account.auth;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tencent.connect.auth.QQToken;
 import com.tencent.tauth.IUiListener;
@@ -21,9 +20,7 @@ import co.yishun.onemoment.app.config.Constants;
 import static java.lang.String.valueOf;
 
 /**
- * A proxy implement to auth by Tencent open api.
- * <p>
- * Created by yyz on 5/30/15.
+ * A proxy implement to auth by Tencent open api. <p> Created by yyz on 5/30/15.
  */
 public class QQHelper implements AuthHelper {
     public static final String APP_ID = Constants.QQ_APP_ID;

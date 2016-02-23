@@ -8,7 +8,9 @@ import android.support.annotation.StringDef;
 public class VideoTag extends ApiModel implements co.yishun.library.tag.VideoTag {
     public String name;
     @Deprecated// remove in new version
-    public @Type String type;
+    public
+    @Type
+    String type;
     public float x;
     public float y;
 

@@ -42,7 +42,8 @@ public class VotedUpController extends IntOffsetRefreshableRecyclerController<Su
     }
 
     @Override
-    @UiThread void onLoadEnd(ListErrorProvider<TagVideo> list) {
+    @UiThread
+    void onLoadEnd(ListErrorProvider<TagVideo> list) {
         if (list == null || !list.isSuccess()) {
             onLoadError();
             getRecyclerView().hideMoreProgress();

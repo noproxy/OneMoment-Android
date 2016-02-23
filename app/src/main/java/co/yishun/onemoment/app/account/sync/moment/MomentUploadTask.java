@@ -15,8 +15,7 @@ import co.yishun.onemoment.app.data.model.Moment;
 import co.yishun.onemoment.app.function.Consumer;
 
 /**
- * Task to upload a moment to server.
- * Created by Carlos on 2015/12/20.
+ * Task to upload a moment to server. Created by Carlos on 2015/12/20.
  */
 public class MomentUploadTask implements Runnable {
     private final static Misc mMiscService = OneMomentV3.createAdapter().create(Misc.class);

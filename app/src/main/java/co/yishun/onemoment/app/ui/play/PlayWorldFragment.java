@@ -37,11 +37,15 @@ import co.yishun.onemoment.app.data.FileUtil;
 public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.OnVideoChangeListener,
         VideoTask.OnVideoListener {
     private static final String TAG = "platworld";
-    @FragmentArg WorldProvider world;
-    @FragmentArg boolean forWorld;
+    @FragmentArg
+    WorldProvider world;
+    @FragmentArg
+    boolean forWorld;
 
-    @ViewById TextView voteCountTextView;
-    @ViewById TextView usernameTextView;
+    @ViewById
+    TextView voteCountTextView;
+    @ViewById
+    TextView usernameTextView;
 
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private List<VideoProvider> tagVideos = new ArrayList<>();
@@ -49,7 +53,8 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
     private int offset = 0;
     private boolean mReady = false;
 
-    @Background void getData() {
+    @Background
+    void getData() {
         WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
                 mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, order, 6) :
                 mApiV4.getTodayVideos(world.getName(), offset, 6);
@@ -71,7 +76,8 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
         getData();
     }
 
-    @AfterViews void setupView() {
+    @AfterViews
+    void setupView() {
         videoPlayView.setWithAvatar(true);
         videoPlayView.setVideoChangeListener(this);
         getData();
@@ -87,7 +93,8 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
         }
     }
 
-    @UiThread void addVideo(VideoProvider video) {
+    @UiThread
+    void addVideo(VideoProvider video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
         List<VideoTag> tags = new LinkedList<>();
         for (int i = 0; i < video.getTags().size(); i++) {
@@ -123,7 +130,8 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
 //        }
 //    }
 
-    @UiThread void refreshUserInfo(int index) {
+    @UiThread
+    void refreshUserInfo(int index) {
 //        if (tagVideos.get(index).liked) {
 //            voteCountTextView.setTextAppearance(mContext, R.style.TextAppearance_PlaySmall_Inverse);
 //            voteCountTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_world_play_like_orange, 0, 0, 0);

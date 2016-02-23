@@ -6,9 +6,7 @@ import co.yishun.onemoment.app.api.authentication.OneMomentV3;
 import co.yishun.onemoment.app.api.model.ApiMoment;
 
 /**
- * Task to delete a apiMoment on server.
- * <p>
- * Created by Carlos on 2015/12/20.
+ * Task to delete a apiMoment on server. <p> Created by Carlos on 2015/12/20.
  */
 public class VideoDeleteTask implements Runnable {
     private final static Misc mMiscService = OneMomentV3.createAdapter().create(Misc.class);

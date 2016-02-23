@@ -29,7 +29,6 @@ import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.media.MediaRecorder;
-import android.util.Log;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -63,9 +62,6 @@ public class MediaAudioEncoder extends MediaEncoder {
 
     /**
      * select the first codec that match a specific MIME type
-     *
-     * @param mimeType
-     * @return
      */
     private static MediaCodecInfo selectAudioCodec(final String mimeType) {
         if (DEBUG) v(TAG, "selectAudioCodec:");
@@ -135,8 +131,8 @@ public class MediaAudioEncoder extends MediaEncoder {
     }
 
     /**
-     * Thread to capture audio data from internal mic as uncompressed 16bit PCM data
-     * and write them to the MediaCodec encoder
+     * Thread to capture audio data from internal mic as uncompressed 16bit PCM data and write them
+     * to the MediaCodec encoder
      */
     private class AudioThread extends Thread {
         @Override

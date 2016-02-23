@@ -21,31 +21,38 @@ public class World extends ApiModel implements WorldProvider {
     public String type;
     public List<InvitedUser> invited;
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return name;
     }
 
-    @Override public void setName(String name) {
+    @Override
+    public void setName(String name) {
         this.name = name;
     }
 
-    @Override public String getId() {
+    @Override
+    public String getId() {
         return _id;
     }
 
-    @Override public void setId(String id) {
+    @Override
+    public void setId(String id) {
         this._id = id;
     }
 
-    @Override public int getVideosNum() {
+    @Override
+    public int getVideosNum() {
         return videosNum;
     }
 
-    @Override public String getThumb() {
+    @Override
+    public String getThumb() {
         return thumbnail;
     }
 
-    @Override public void setThumb(String url) {
+    @Override
+    public void setThumb(String url) {
         thumbnail = url;
     }
 

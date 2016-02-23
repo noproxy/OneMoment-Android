@@ -4,20 +4,11 @@ import android.animation.Animator;
 import android.animation.FloatEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionValues;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-
-import co.yishun.onemoment.app.R;
 
 /**
  * Created by Jinge on 2015/11/27.

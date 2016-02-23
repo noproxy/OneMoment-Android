@@ -23,25 +23,29 @@ public class PersonalWorldActivity extends BaseWebActivity {
     public static final String KEY_ID = "world_id";
     public static final String KEY_NAME = "world_name";
 
-    @AfterInject void setDefault() {
+    @AfterInject
+    void setDefault() {
         title = getString(R.string.activity_personal_world_title);
         File hybrdDir = FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR);
         url = Constants.FILE_URL_PREFIX + new File(hybrdDir, "build/pages/add_to_world/add_to_world.html").getPath();
     }
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         setupToolbar();
         setupFragment();
 
         mWebFragment.setRefreshable(true);
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_personal_world, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.activity_personal_world_add) {
             CreateWorldActivity_.intent(this).start();
             return true;
@@ -49,7 +53,8 @@ public class PersonalWorldActivity extends BaseWebActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "PersonalWorldActivity";
     }
 }

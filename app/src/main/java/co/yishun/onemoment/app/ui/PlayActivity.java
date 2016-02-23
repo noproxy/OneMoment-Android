@@ -46,12 +46,17 @@ public class PlayActivity extends BaseActivity {
     public static final int TYPE_WORLD = 2;
     private static final String TAG = "PlayActivity";
 
-    @Extra int type;
-    @Extra VideoProvider video;
-    @Extra WorldProvider world;
-    @Extra boolean forWorld;
+    @Extra
+    int type;
+    @Extra
+    VideoProvider video;
+    @Extra
+    WorldProvider world;
+    @Extra
+    boolean forWorld;
 
-    @ViewById Toolbar toolbar;
+    @ViewById
+    Toolbar toolbar;
 
     private FragmentManager fragmentManager;
 
@@ -60,7 +65,8 @@ public class PlayActivity extends BaseActivity {
         mPageName = "PlayActivity";
     }
 
-    @AfterViews void setupView() {
+    @AfterViews
+    void setupView() {
         fragmentManager = getSupportFragmentManager();
         setupToolbar(this, toolbar);
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -98,14 +104,17 @@ public class PlayActivity extends BaseActivity {
         return ab;
     }
 
-    @Click(R.id.worldAdd) void addVideo(View view) {
+    @Click(R.id.worldAdd)
+    void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
                 .transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).forToday(!forWorld).world(world).start();
     }
 
-    @Click(R.id.worldShare) @Background void shareWorld(View view) {
+    @Click(R.id.worldShare)
+    @Background
+    void shareWorld(View view) {
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
         ShareInfo shareInfo = forWorld ? apiv4.shareWorld(world.getName(), AccountManager.getUserInfo(this)._id) :
                 apiv4.shareToday(world.getName(), AccountManager.getUserInfo(this)._id);

@@ -42,7 +42,8 @@ public interface Misc {
     @POST("misc/delete_tag/{account_id}")
     void deleteTag(@Path("account_id") @NonNull String userId);
 
-    @GET("/misc/app/cover/default") SplashCover getSplashCover();
+    @GET("/misc/app/cover/default")
+    SplashCover getSplashCover();
 
     @StringDef({"friends", "long_video", "world"})
     @interface ShareType {

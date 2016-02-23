@@ -56,7 +56,8 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     }
 
 
-    @Background void load() {
+    @Background
+    void load() {
         onLoadEnd(synchronizedLoad());
     }
 
@@ -75,9 +76,9 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     protected abstract ListErrorProvider<I> onLoad();
 
     /**
-     * Respond to error occurs in loading. You should make a reflection to user now. But you don't need to care about the load progress view.
-     * <p>
-     * By default, this method make a snackbar to tell user error in loading.
+     * Respond to error occurs in loading. You should make a reflection to user now. But you don't
+     * need to care about the load progress view. <p> By default, this method make a snackbar to
+     * tell user error in loading.
      */
     @UiThread
     protected void onLoadError() {
@@ -85,11 +86,12 @@ public abstract class RecyclerController<Offset, V extends ViewGroup, I, VH exte
     }
 
     /**
-     * Add loaded result to adapter, call {@link #onLoadError()} if error occur and remove refresh and loading view.
-     * <p>
-     * Don't forget to call {@link #onLoadError()} and to remove refresh and loading view if you override.
+     * Add loaded result to adapter, call {@link #onLoadError()} if error occur and remove refresh
+     * and loading view. <p> Don't forget to call {@link #onLoadError()} and to remove refresh and
+     * loading view if you override.
      */
-    @UiThread void onLoadEnd(ListErrorProvider<I> list) {
+    @UiThread
+    void onLoadEnd(ListErrorProvider<I> list) {
         if (list == null || !list.isSuccess()) {
             onLoadError();
         } else {

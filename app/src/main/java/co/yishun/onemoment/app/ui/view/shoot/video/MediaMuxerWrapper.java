@@ -26,7 +26,6 @@ import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
-import android.util.Log;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -49,7 +48,6 @@ public class MediaMuxerWrapper {
      * Constructor
      *
      * @param path extension of output file
-     * @throws IOException
      */
     public MediaMuxerWrapper(String path) throws IOException {
         mMediaMuxer = new MediaMuxer(path, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
@@ -130,7 +128,6 @@ public class MediaMuxerWrapper {
     /**
      * assign encoder to muxer
      *
-     * @param format
      * @return minus value indicate error
      */
     /*package*/
@@ -145,12 +142,8 @@ public class MediaMuxerWrapper {
 
     /**
      * write encoded data to muxer
-     *
-     * @param trackIndex
-     * @param byteBuf
-     * @param bufferInfo
      */
-	/*package*/
+    /*package*/
     synchronized void writeSampleData(final int trackIndex, final ByteBuffer byteBuf, final MediaCodec.BufferInfo bufferInfo) {
         if (mStatredCount > 0)
             mMediaMuxer.writeSampleData(trackIndex, byteBuf, bufferInfo);

@@ -23,7 +23,6 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -106,9 +105,8 @@ public class GlUtil {
     }
 
     /**
-     * @param textureTarget Texture类型。
-     *                      1. 相机用 GLES11Ext.GL_TEXTURE_EXTERNAL_OES
-     *                      2. 图片用GLES20.GL_TEXTURE_2D
+     * @param textureTarget Texture类型。 1. 相机用 GLES11Ext.GL_TEXTURE_EXTERNAL_OES 2.
+     *                      图片用GLES20.GL_TEXTURE_2D
      * @param minFilter     缩小过滤类型 (1.GL_NEAREST ; 2.GL_LINEAR)
      * @param magFilter     放大过滤类型
      * @param wrapS         X方向边缘环绕
@@ -159,10 +157,9 @@ public class GlUtil {
     }
 
     /**
-     * Checks to see if the location we obtained is valid.  GLES returns -1 if a label
-     * could not be found, but does not set the GL error.
-     * <p>
-     * Throws a RuntimeException if the location is invalid.
+     * Checks to see if the location we obtained is valid.  GLES returns -1 if a label could not be
+     * found, but does not set the GL error. <p> Throws a RuntimeException if the location is
+     * invalid.
      */
     public static void checkLocation(int location, String label) {
         if (location < 0) {

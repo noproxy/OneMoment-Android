@@ -18,103 +18,133 @@ public class ListWithErrorV4<E> extends ApiModel implements ListErrorProvider<E>
         this.mList = mList;
     }
 
-    @Override public void add(int location, E object) {
+    @Override
+    public void add(int location, E object) {
         mList.add(location, object);
     }
 
-    @Override public boolean add(E object) {
+    @Override
+    public boolean add(E object) {
         return mList.add(object);
     }
 
-    @Override public boolean addAll(int location, Collection<? extends E> collection) {
+    @Override
+    public boolean addAll(int location, Collection<? extends E> collection) {
         return mList.addAll(location, collection);
     }
 
-    @Override public boolean addAll(Collection<? extends E> collection) {
+    @Override
+    public boolean addAll(Collection<? extends E> collection) {
         return mList.addAll(collection);
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         mList.clear();
     }
 
-    @Override public boolean contains(Object object) {
+    @Override
+    public boolean contains(Object object) {
         return mList.contains(object);
     }
 
-    @Override public boolean containsAll(Collection<?> collection) {
+    @Override
+    public boolean containsAll(Collection<?> collection) {
         return mList.containsAll(collection);
     }
 
-    @Override public boolean equals(Object object) {
+    @Override
+    public boolean equals(Object object) {
         return mList.equals(object);
     }
 
-    @Override public E get(int location) {
+    @Override
+    public E get(int location) {
         return mList.get(location);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return mList.hashCode();
     }
 
-    @Override public int indexOf(Object object) {
+    @Override
+    public int indexOf(Object object) {
         return mList.indexOf(object);
     }
 
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
         return mList.isEmpty();
     }
 
-    @NonNull @Override public Iterator<E> iterator() {
+    @NonNull
+    @Override
+    public Iterator<E> iterator() {
         return mList.iterator();
     }
 
-    @Override public int lastIndexOf(Object object) {
+    @Override
+    public int lastIndexOf(Object object) {
         return mList.lastIndexOf(object);
     }
 
-    @Override public ListIterator<E> listIterator() {
+    @Override
+    public ListIterator<E> listIterator() {
         return mList.listIterator();
     }
 
-    @NonNull @Override public ListIterator<E> listIterator(int location) {
+    @NonNull
+    @Override
+    public ListIterator<E> listIterator(int location) {
         return mList.listIterator(location);
     }
 
-    @Override public E remove(int location) {
+    @Override
+    public E remove(int location) {
         return mList.remove(location);
     }
 
-    @Override public boolean remove(Object object) {
+    @Override
+    public boolean remove(Object object) {
         return mList.remove(object);
     }
 
-    @Override public boolean removeAll(Collection<?> collection) {
+    @Override
+    public boolean removeAll(Collection<?> collection) {
         return mList.removeAll(collection);
     }
 
-    @Override public boolean retainAll(Collection<?> collection) {
+    @Override
+    public boolean retainAll(Collection<?> collection) {
         return mList.retainAll(collection);
     }
 
-    @Override public E set(int location, E object) {
+    @Override
+    public E set(int location, E object) {
         return mList.set(location, object);
     }
 
-    @Override public int size() {
+    @Override
+    public int size() {
         return mList.size();
     }
 
-    @NonNull @Override public List<E> subList(int start, int end) {
+    @NonNull
+    @Override
+    public List<E> subList(int start, int end) {
         return mList.subList(start, end);
     }
 
-    @NonNull @Override public Object[] toArray() {
+    @NonNull
+    @Override
+    public Object[] toArray() {
         return mList.toArray();
     }
 
-    @NonNull @Override public <T> T[] toArray(T[] array) {
+    @NonNull
+    @Override
+    public <T> T[] toArray(T[] array) {
         return mList.toArray(array);
     }
 }

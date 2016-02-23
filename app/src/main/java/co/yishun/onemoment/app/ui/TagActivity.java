@@ -60,14 +60,22 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     public static final int FROM_WORLD_FRAGMENT = 0;
     public static final int FROM_SEARCH_ACTIVITY = 1;
     private static final String TAG = "TagActivity";
-    @Extra int top;
-    @Extra int from;
-    @Extra WorldTag tag;
-    @Extra String worldName;
-    @Extra int videoNum;
-    @Extra String worldId;
-    @Extra boolean isPrivate = false;
-    @ViewById CoordinatorLayout coordinatorLayout;
+    @Extra
+    int top;
+    @Extra
+    int from;
+    @Extra
+    WorldTag tag;
+    @Extra
+    String worldName;
+    @Extra
+    int videoNum;
+    @Extra
+    String worldId;
+    @Extra
+    boolean isPrivate = false;
+    @ViewById
+    CoordinatorLayout coordinatorLayout;
 
     Toolbar toolbar;
     SuperRecyclerView recyclerView;
@@ -251,7 +259,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 //        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).worldTag(tag).forWorld(true).start();
     }
 
-    @Background void shareWorld(View view) {
+    @Background
+    void shareWorld(View view) {
         WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
         ShareInfo shareInfo = worldAPI.shareWorld(tag.name);
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
@@ -261,7 +270,8 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
 //        PlayActivity_.intent(this).worldTag(tag).type(PlayActivity.TYPE_WORLD).start();
     }
 
-    @Override public void onClick(View view, TagVideo item) {
+    @Override
+    public void onClick(View view, TagVideo item) {
 //        PlayActivity_.intent(this).oneVideo(item).worldTag(tag).type(PlayActivity.TYPE_VIDEO).start();
     }
 

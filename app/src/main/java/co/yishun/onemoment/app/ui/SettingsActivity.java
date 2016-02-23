@@ -3,8 +3,6 @@ package co.yishun.onemoment.app.ui;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -22,8 +20,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.umeng.update.UmengUpdateAgent;
-import com.umeng.update.UmengUpdateListener;
-import com.umeng.update.UpdateResponse;
 import com.umeng.update.UpdateStatus;
 
 import org.androidannotations.annotations.AfterViews;
@@ -38,27 +34,26 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
 
 
 /**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
+ * A {@link PreferenceActivity} that presents a set of application settings. On handset devices,
+ * settings are presented as a single list. On tablets, settings are split by category, with
+ * category headers shown to the left of the list of settings. <p> See <a
+ * href="http://developer.android.com/design/patterns/settings.html"> Android Design: Settings</a>
+ * for design guidelines and the <a href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
 @EActivity(R.layout.activity_settings)
 public class SettingsActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "SettingsActivity";
     /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
+     * A preference value change listener that updates the preference's summary to reflect its new
+     * value.
      */
 
-    @ViewById Toolbar toolbar;
+    @ViewById
+    Toolbar toolbar;
 
-    @AfterViews void setupToolBar() {
+    @AfterViews
+    void setupToolBar() {
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         assert ab != null;
@@ -67,17 +62,20 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
         LogUtil.i("setupToolbar", "set home as up true");
     }
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @AfterViews void setPreference() {
+    @AfterViews
+    void setPreference() {
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
     }
 
@@ -150,7 +148,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
 
             Preference versionPreference = findPreference(getString(R.string.pref_key_version));
             versionPreference.setOnPreferenceClickListener(preference -> {
-                ((BaseActivity)this.getActivity()).showSnackMsg(R.string.activity_settings_check_update);
+                ((BaseActivity) this.getActivity()).showSnackMsg(R.string.activity_settings_check_update);
                 UmengUpdateAgent.update(this.getActivity());
                 UmengUpdateAgent.setUpdateAutoPopup(false);
                 UmengUpdateAgent.setUpdateListener((updateStatus, updateResponse) -> {
@@ -159,7 +157,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
                             UmengUpdateAgent.showUpdateDialog(this.getActivity(), updateResponse);
                             break;
                         case UpdateStatus.No:
-                            ((BaseActivity)this.getActivity()).showSnackMsg(R.string.activity_settings_no_new_version);
+                            ((BaseActivity) this.getActivity()).showSnackMsg(R.string.activity_settings_no_new_version);
                             break;
                     }
                 });
@@ -169,19 +167,18 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
                 Intent intent = preference.getIntent();
                 try {
                     startActivity(intent);
-                } catch (ActivityNotFoundException e){
-                    ((BaseActivity)this.getActivity()).showSnackMsg(R.string.activity_settings_no_email_app);
+                } catch (ActivityNotFoundException e) {
+                    ((BaseActivity) this.getActivity()).showSnackMsg(R.string.activity_settings_no_email_app);
                 }
                 return true;
             });
         }
 
         /**
-         * Binds a preference's summary to its value. More specifically, when the
-         * preference's value is changed, its summary (line of text below the
-         * preference title) is updated to reflect the value. The summary is also
-         * immediately updated upon calling this method. The exact display format is
-         * dependent on the type of preference.
+         * Binds a preference's summary to its value. More specifically, when the preference's value
+         * is changed, its summary (line of text below the preference title) is updated to reflect
+         * the value. The summary is also immediately updated upon calling this method. The exact
+         * display format is dependent on the type of preference.
          *
          * @see #sBindPreferenceSummaryToValueListener
          */

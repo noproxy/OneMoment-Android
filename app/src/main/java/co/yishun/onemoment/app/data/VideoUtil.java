@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,9 +17,7 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.api.model.QiniuKeyProvider;
 
 /**
- * Util to create thumbnail of a video.
- * <p>
- * Created by Carlos on 2015/8/22.
+ * Util to create thumbnail of a video. <p> Created by Carlos on 2015/8/22.
  */
 public class VideoUtil {
     public static final int OPTIONS_RECYCLE_INPUT = 0x2;
@@ -32,7 +29,6 @@ public class VideoUtil {
      * Create full screen thumb of a video file. If thumb exists, it will be deleted.
      *
      * @return path to the thumb
-     * @throws IOException
      */
     public static String createLargeThumbImage(Context context, QiniuKeyProvider provider, String videoPath) throws IOException {
         return createThumbImage(context, videoPath, provider, MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
@@ -42,7 +38,6 @@ public class VideoUtil {
      * Create micro thumb of a video file. If thumb exists, it will be deleted.
      *
      * @return path to the thumb
-     * @throws IOException
      */
     public static String createThumbImage(Context context, QiniuKeyProvider provider, String videoPath) throws IOException {
         return createThumbImage(context, videoPath, provider, MediaStore.Images.Thumbnails.MICRO_KIND);
@@ -52,7 +47,6 @@ public class VideoUtil {
      * Create target kind thumb of a video file. If thumb exists, it will be deleted.
      *
      * @return path to the thumb
-     * @throws IOException
      */
     private static String createThumbImage(Context context, String videoPath, QiniuKeyProvider provider, int kind) throws IOException {
         File thumbFile = FileUtil.getThumbnailStoreFile(context, provider, kind == MediaStore.Images.Thumbnails.FULL_SCREEN_KIND ? FileUtil.Type.LARGE_THUMB : FileUtil.Type.MICRO_THUMB);

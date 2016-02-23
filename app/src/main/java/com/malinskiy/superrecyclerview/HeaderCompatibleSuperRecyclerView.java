@@ -21,7 +21,8 @@ public class HeaderCompatibleSuperRecyclerView extends SuperRecyclerView {
     }
 
     /**
-     * To make super recycler view work properly after loading more, you must call it after you update adapter data set if you use HeaderRecyclerAdapter.
+     * To make super recycler view work properly after loading more, you must call it after you
+     * update adapter data set if you use HeaderRecyclerAdapter.
      */
     public void loadEnd() {
         mProgress.setVisibility(View.GONE);

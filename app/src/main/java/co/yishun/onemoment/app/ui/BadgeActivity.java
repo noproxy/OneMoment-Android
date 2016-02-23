@@ -20,24 +20,29 @@ import co.yishun.onemoment.app.ui.hybrd.CommonWebFragment_;
 @EActivity(R.layout.activity_empty_web)
 public class BadgeActivity extends BaseWebActivity {
 
-    @Extra String badgeDetail;
+    @Extra
+    String badgeDetail;
 
-    @AfterInject void setDefault() {
+    @AfterInject
+    void setDefault() {
         File hybrdDir = FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR);
         url = Constants.FILE_URL_PREFIX + new File(hybrdDir, "build/pages/badge/badge.html").getPath();
     }
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         setupFragment();
     }
 
-    @Override protected void setupFragment() {
+    @Override
+    protected void setupFragment() {
         mWebFragment = CommonWebFragment_.builder().mUrl(url).mArg(badgeDetail).build();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, mWebFragment, BaseWebFragment.TAG_WEB).commit();
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "BadgeActivity";
     }
 }

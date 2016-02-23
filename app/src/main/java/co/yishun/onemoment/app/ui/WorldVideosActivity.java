@@ -62,24 +62,35 @@ import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 @EActivity(R.layout.activity_world_videos)
 public class WorldVideosActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldVideo> {
     private static final String TAG = "WorldVideosActivity";
-    @Extra WorldProvider world;
-    @Extra boolean forWorld;
+    @Extra
+    WorldProvider world;
+    @Extra
+    boolean forWorld;
     /**
-     * imageRect contains the original position of the {@link #transImage}.
-     * And {@link #imageCorner} is the original corner of the {@link #transImage}.
-     * Set imageRect and add flag {@link android.content.Intent#FLAG_ACTIVITY_NO_ANIMATION} to apply an transition.
-     * If no transition needed when start this activity, set imageRect to null.
+     * imageRect contains the original position of the {@link #transImage}. And {@link #imageCorner}
+     * is the original corner of the {@link #transImage}. Set imageRect and add flag {@link
+     * android.content.Intent#FLAG_ACTIVITY_NO_ANIMATION} to apply an transition. If no transition
+     * needed when start this activity, set imageRect to null.
      */
-    @Extra Rect imageRect;
-    @Extra int imageCorner;
+    @Extra
+    Rect imageRect;
+    @Extra
+    int imageCorner;
 
-    @ViewById AppBarLayout appBar;
-    @ViewById Toolbar toolbar;
-    @ViewById SuperRecyclerView recyclerView;
-    @ViewById CollapsingToolbarLayout collapsingToolbarLayout;
-    @ViewById ImageView videoImageView;
-    @ViewById FrameLayout transitionFrameLayout;
-    @ViewById RadioCornerImageView transImage;
+    @ViewById
+    AppBarLayout appBar;
+    @ViewById
+    Toolbar toolbar;
+    @ViewById
+    SuperRecyclerView recyclerView;
+    @ViewById
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @ViewById
+    ImageView videoImageView;
+    @ViewById
+    FrameLayout transitionFrameLayout;
+    @ViewById
+    RadioCornerImageView transImage;
 
     private int statusBarHeight;
     private int collapsedTitleColor;
@@ -91,13 +102,15 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     private boolean showAdd;
 
 
-    @AfterInject void checkExtra() {
+    @AfterInject
+    void checkExtra() {
         needTransition = imageRect != null;
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         showAdd = forWorld || TextUtils.equals(today, world.getName());
     }
 
-    @UiThread(delay = 100) void setupTransition() {
+    @UiThread(delay = 100)
+    void setupTransition() {
         ViewGroup sceneRoot = transitionFrameLayout;
         LogUtil.d(TAG, imageRect.toString());
         Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_world_videos_end, this);
@@ -117,7 +130,8 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         recyclerView.animate().alpha(1).setDuration(200).setStartDelay(400).start();
     }
 
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         if (needTransition) {
             appBar.setAlpha(0);
             recyclerView.setAlpha(0);
@@ -179,18 +193,21 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
         WorldVideosController_.getInstance_(this).setup(adapter, recyclerView, world, forWorld, videoImageView);
     }
 
-    @Override protected void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         VideoTaskManager.getInstance().quit();
     }
 
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
             return true;
@@ -198,7 +215,8 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         return super.onOptionsItemSelected(item);
     }
 
-    @Click(R.id.worldAdd) void addVideo(View view) {
+    @Click(R.id.worldAdd)
+    void addVideo(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
@@ -206,22 +224,27 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
                 .forWorld(forWorld).forToday(!forWorld).world(world).start();
     }
 
-    @Click(R.id.worldShare) @Background void shareWorld(View view) {
+    @Click(R.id.worldShare)
+    @Background
+    void shareWorld(View view) {
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
         ShareInfo shareInfo = forWorld ? apiv4.shareWorld(world.getName(), AccountManager.getUserInfo(this)._id) :
                 apiv4.shareToday(world.getName(), AccountManager.getUserInfo(this)._id);
         ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
     }
 
-    @Click(R.id.videoImageView) void videoImageClick(View v) {
+    @Click(R.id.videoImageView)
+    void videoImageClick(View v) {
         PlayActivity_.intent(this).world(world).forWorld(forWorld).type(PlayActivity.TYPE_WORLD).start();
     }
 
-    @Override public void onClick(View view, WorldVideo item) {
+    @Override
+    public void onClick(View view, WorldVideo item) {
         PlayActivity_.intent(this).world(world).video(item).type(PlayActivity.TYPE_VIDEO).start();
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "WorldVideosActivity";
     }
 
@@ -264,7 +287,8 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 
     private class OffsetChangeListener implements AppBarLayout.OnOffsetChangedListener {
 
-        @Override public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             int insetTop = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ? 0 : statusBarHeight;
             float fraction = Math.abs(verticalOffset) / (float) (appBarLayout.getHeight() -
                     ViewCompat.getMinimumHeight(collapsingToolbarLayout) - insetTop);

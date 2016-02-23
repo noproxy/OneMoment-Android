@@ -30,7 +30,8 @@ public class GetPasswordFragment extends PhonePasswordFragment {
         mActivity.openFragment(VerifyFragment_.builder().phoneNum(getPhoneNum()).password(getPassword()).type(VerifyFragment.EXTRA_TYPE_FIND_PASSWORD).build());
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "GetPasswordFragment";
     }
 }

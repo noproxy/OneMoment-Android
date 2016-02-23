@@ -30,10 +30,10 @@ import co.yishun.onemoment.app.api.model.Link;
 import co.yishun.onemoment.app.api.model.UploadToken;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
-import co.yishun.onemoment.app.data.realm.LocalRealmMigration;
-import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.data.model.OMDataBase;
 import co.yishun.onemoment.app.data.model.OMLocalVideoTag;
+import co.yishun.onemoment.app.data.realm.LocalRealmMigration;
+import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.function.Callback;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -45,8 +45,8 @@ public class TagsUpdateTask implements Runnable {
     public static final int MSG_REALM_TAG_LOCAL = 0x1;
     public static final int MSG_REALM_TAG_REMOTE = 0x2;
     public static final int MSG_QUIT = 0x4;
-    public static LocalRealmMigration remoteRealmMigration = new LocalRealmMigration();
     private static final String TAG = "TagsUpdateTask";
+    public static LocalRealmMigration remoteRealmMigration = new LocalRealmMigration();
     private final Object mReadyFence = new Object();
     private final Context mContext;
     private final Callback mOnFail;
@@ -72,7 +72,8 @@ public class TagsUpdateTask implements Runnable {
         LogUtil.d(TAG, "ready");
     }
 
-    @Override public void run() {
+    @Override
+    public void run() {
         Looper.prepare();
         synchronized (mReadyFence) {
             mHandler = new TagsUpdateHandler(this);
@@ -285,7 +286,8 @@ public class TagsUpdateTask implements Runnable {
             this.mWeakTask = new WeakReference<>(tagsUpdateTask);
         }
 
-        @Override public void handleMessage(Message msg) {
+        @Override
+        public void handleMessage(Message msg) {
             int what = msg.what;
             Object obj = msg.obj;
             switch (what) {

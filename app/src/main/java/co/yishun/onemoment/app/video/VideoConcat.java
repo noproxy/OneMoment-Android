@@ -124,7 +124,8 @@ public class VideoConcat extends VideoCommand {
         return this;
     }
 
-    @Override public void start() {
+    @Override
+    public void start() {
         try {
             for (StringBuilder sb : mTransCommands) {
                 String cmd = sb.toString();
@@ -153,43 +154,58 @@ public class VideoConcat extends VideoCommand {
 
     private void createHandler() {
         mTransHandler = new FFmpegExecuteResponseHandler() {
-            @Override public void onSuccess(String message) {
+            @Override
+            public void onSuccess(String message) {
                 if (mListener != null) mListener.onSuccess(VideoCommandType.COMMAND_TRANSPOSE);
             }
 
-            @Override public void onProgress(String message) {
+            @Override
+            public void onProgress(String message) {
                 LogUtil.i(TAG, "onProgress: Trans " + message);
             }
 
-            @Override public void onFailure(String message) {
+            @Override
+            public void onFailure(String message) {
                 if (mListener != null) mListener.onFail(VideoCommandType.COMMAND_TRANSPOSE);
             }
 
-            @Override public void onStart() {}
+            @Override
+            public void onStart() {
+            }
 
-            @Override public void onFinish() {}
+            @Override
+            public void onFinish() {
+            }
         };
 
         mFormatHandler = new FFmpegExecuteResponseHandler() {
-            @Override public void onSuccess(String message) {
+            @Override
+            public void onSuccess(String message) {
                 if (mListener != null) mListener.onSuccess(VideoCommandType.COMMAND_FORMAT);
             }
 
-            @Override public void onProgress(String message) {
+            @Override
+            public void onProgress(String message) {
                 LogUtil.i(TAG, "onProgress: Format " + message);
             }
 
-            @Override public void onFailure(String message) {
+            @Override
+            public void onFailure(String message) {
                 if (mListener != null) mListener.onFail(VideoCommandType.COMMAND_FORMAT);
             }
 
-            @Override public void onStart() {}
+            @Override
+            public void onStart() {
+            }
 
-            @Override public void onFinish() {}
+            @Override
+            public void onFinish() {
+            }
         };
 
         mConcatHandler = new FFmpegExecuteResponseHandler() {
-            @Override public void onSuccess(String message) {
+            @Override
+            public void onSuccess(String message) {
                 //delete format files,
                 File formatDir = FileUtil.getCacheFile(mContext, "format");
                 File children[] = formatDir.listFiles();
@@ -199,16 +215,23 @@ public class VideoConcat extends VideoCommand {
                 if (mListener != null) mListener.onSuccess(VideoCommandType.COMMAND_CONCAT);
             }
 
-            @Override public void onProgress(String message) {}
+            @Override
+            public void onProgress(String message) {
+            }
 
-            @Override public void onFailure(String message) {
+            @Override
+            public void onFailure(String message) {
                 LogUtil.i(TAG, "concat onFailure: " + message);
                 if (mListener != null) mListener.onFail(VideoCommandType.COMMAND_CONCAT);
             }
 
-            @Override public void onStart() {}
+            @Override
+            public void onStart() {
+            }
 
-            @Override public void onFinish() {}
+            @Override
+            public void onFinish() {
+            }
         };
     }
 }

@@ -11,15 +11,15 @@ import android.view.ViewGroup;
  */
 public class WrapContentLayoutManager extends LinearLayoutManager {
 
-    public WrapContentLayoutManager(Context context, int orientation, boolean reverseLayout)    {
+    private int[] mMeasuredDimension = new int[2];
+
+    public WrapContentLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
     }
 
     public WrapContentLayoutManager(Context context) {
         super(context);
     }
-
-    private int[] mMeasuredDimension = new int[2];
 
     @Override
     public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state,

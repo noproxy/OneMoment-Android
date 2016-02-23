@@ -37,7 +37,8 @@ public abstract class PickCropActivity extends BaseActivity {
         }
     }
 
-    @OnActivityResult(Crop.REQUEST_CROP) public void onPictureCropped(int resultCode, Intent data) {
+    @OnActivityResult(Crop.REQUEST_CROP)
+    public void onPictureCropped(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             onPictureCropped(mCroppedPictureUri);
         } else {

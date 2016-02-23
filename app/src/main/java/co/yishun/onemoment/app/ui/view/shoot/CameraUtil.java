@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.ui.view.shoot;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.TextureView;
 
 import java.util.List;
@@ -18,9 +17,9 @@ public class CameraUtil {
     private static final String TAG = "CameraUtil";
 
     /**
-     * Iterate over supported camera preview sizes to see which one best fits the
-     * dimensions of the given view while maintaining the aspect ratio. If none can,
-     * be lenient with the aspect ratio.
+     * Iterate over supported camera preview sizes to see which one best fits the dimensions of the
+     * given view while maintaining the aspect ratio. If none can, be lenient with the aspect
+     * ratio.
      *
      * @param sizes        Supported camera preview sizes.
      * @param targetWidth  The width of the view.

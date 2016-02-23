@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.view.View;
 
 import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 
@@ -66,8 +65,6 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
         MainActivity_.intent(mActivity).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
         mActivity.finish();
     }
-
-
 
 
     @Override

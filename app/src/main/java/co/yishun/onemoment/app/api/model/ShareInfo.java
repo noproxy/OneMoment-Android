@@ -10,15 +10,18 @@ public class ShareInfo extends ApiModel implements ShareInfoProvider {
     public String link;
     public String title;
 
-    @Override public String getImageUrl() {
+    @Override
+    public String getImageUrl() {
         return imageUrl;
     }
 
-    @Override public String getLink() {
+    @Override
+    public String getLink() {
         return link;
     }
 
-    @Override public String getTitle() {
+    @Override
+    public String getTitle() {
         return title;
     }
 }

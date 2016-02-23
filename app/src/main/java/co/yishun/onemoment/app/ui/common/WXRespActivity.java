@@ -17,7 +17,8 @@ public abstract class WXRespActivity extends BaseActivity {
     private static final String TAG = "WXRespActivity";
     protected WXRespReceiver mReceiver;
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mReceiver = new WXRespReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -25,7 +26,8 @@ public abstract class WXRespActivity extends BaseActivity {
         registerReceiver(mReceiver, intentFilter);
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         LogUtil.d(TAG, "onDestroy");
         unregisterReceiver(mReceiver);
@@ -35,7 +37,8 @@ public abstract class WXRespActivity extends BaseActivity {
 
     public class WXRespReceiver extends BroadcastReceiver {
 
-        @Override public void onReceive(Context context, Intent intent) {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             LogUtil.d(TAG, "receiver the broadcast");
             onWXRespIntent(intent);
         }

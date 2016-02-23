@@ -28,14 +28,19 @@ public class VerifyFragment extends AccountFragment {
     public static final String EXTRA_TYPE_SIGN_UP = "signup";
     public static final String EXTRA_TYPE_FIND_PASSWORD = "reset_pw";
     private static final String TAG = "VerifyFragment";
-    @ViewById CountDownResentView countDownResentView;
-    @FragmentArg String type = EXTRA_TYPE_SIGN_UP;
-    @FragmentArg String phoneNum;
-    @FragmentArg String password;
+    @ViewById
+    CountDownResentView countDownResentView;
+    @FragmentArg
+    String type = EXTRA_TYPE_SIGN_UP;
+    @FragmentArg
+    String phoneNum;
+    @FragmentArg
+    String password;
     boolean isSending = false;
     private String mVerificationCode;
 
-    @Override public void onFABClick(View view) {
+    @Override
+    public void onFABClick(View view) {
         if (checkVerifyCode())
             verify();
     }
@@ -45,11 +50,13 @@ public class VerifyFragment extends AccountFragment {
         mVerificationCode = text.toString();
     }
 
-    @Override public void onAttach(Activity activity) {
+    @Override
+    public void onAttach(Activity activity) {
         super.onAttach(activity);
     }
 
-    @AfterViews void setViews() {
+    @AfterViews
+    void setViews() {
         sendSms();
         countDownResentView.setOnClickListenerWhenEnd(view -> {
             LogUtil.d(TAG, "" + isSending);
@@ -59,7 +66,8 @@ public class VerifyFragment extends AccountFragment {
         });
     }
 
-    @Background void sendSms() {
+    @Background
+    void sendSms() {
         isSending = true;
         LogUtil.d(TAG, phoneNum + " " + type);
         ApiModel model = mActivity.getAccountService().sendVerifySms(phoneNum, type);
@@ -81,11 +89,13 @@ public class VerifyFragment extends AccountFragment {
         isSending = false;
     }
 
-    @Override int getFABBackgroundColorRes() {
+    @Override
+    int getFABBackgroundColorRes() {
         return type.equals(EXTRA_TYPE_SIGN_UP) ? R.color.colorAccent : R.color.colorSecondary;
     }
 
-    @Override int getFABImageResource() {
+    @Override
+    int getFABImageResource() {
         return type.equals(EXTRA_TYPE_SIGN_UP) ? R.drawable.ic_login_next : R.drawable.ic_login_done;
     }
 
@@ -93,7 +103,8 @@ public class VerifyFragment extends AccountFragment {
         return !TextUtils.isEmpty(mVerificationCode) && mVerificationCode.length() < 8 && mVerificationCode.length() > 2;
     }
 
-    @Background void verify() {
+    @Background
+    void verify() {
         mActivity.showProgress(R.string.fragment_phone_verify_verify_progress);
         ApiModel result = mActivity.getAccountService().verifyPhone(phoneNum, mVerificationCode);
 
@@ -130,7 +141,8 @@ public class VerifyFragment extends AccountFragment {
         mActivity.hideProgress();
     }
 
-    @UiThread(delay = 300) void next() {
+    @UiThread(delay = 300)
+    void next() {
         if (TextUtils.equals(type, EXTRA_TYPE_FIND_PASSWORD)) {
             mActivity.openFragment(PhoneLoginFragment_.builder().build());
         } else {
@@ -138,7 +150,8 @@ public class VerifyFragment extends AccountFragment {
         }
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "VerifyFragment";
     }
 }

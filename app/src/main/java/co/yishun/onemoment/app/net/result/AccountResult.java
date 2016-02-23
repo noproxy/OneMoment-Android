@@ -5,8 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Carlos on 2/15/15.
  *
- * User data of version 1.x
- * User for migration.
+ * User data of version 1.x User for migration.
  */
 public class AccountResult implements Serializable {
 

@@ -124,7 +124,8 @@ public class VideoTypeView extends RelativeLayout {
         }
     }
 
-    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         LogUtil.d("size R", getWidth() + "  " + getHeight());
 
@@ -207,7 +208,8 @@ public class VideoTypeView extends RelativeLayout {
             }
         }
 
-        @Override public void draw(Canvas canvas) {
+        @Override
+        public void draw(Canvas canvas) {
             canvas.drawRoundRect(mRect, mRadius, mRadius, mStrokePaint);
             canvas.drawCircle(mHeight / 2, mHeight / 2, mRadius / 2, mSolidPaint);
             canvas.drawCircle(mHeight / 2, mHeight / 2, mRadius / 2, mStrokePaint);
@@ -215,15 +217,18 @@ public class VideoTypeView extends RelativeLayout {
                 canvas.drawPath(mPath, mStrokePaint);
         }
 
-        @Override public void setAlpha(int alpha) {
+        @Override
+        public void setAlpha(int alpha) {
             mStrokePaint.setAlpha(alpha);
         }
 
-        @Override public void setColorFilter(ColorFilter colorFilter) {
+        @Override
+        public void setColorFilter(ColorFilter colorFilter) {
             mStrokePaint.setColorFilter(colorFilter);
         }
 
-        @Override public int getOpacity() {
+        @Override
+        public int getOpacity() {
             return PixelFormat.TRANSLUCENT;
         }
     }
@@ -248,7 +253,8 @@ public class VideoTypeView extends RelativeLayout {
             mHeight = height;
         }
 
-        @Override public void draw(Canvas canvas) {
+        @Override
+        public void draw(Canvas canvas) {
             float dSize = 0.5f - 1.414f / 8;
             canvas.drawLine(dSize * mWidth, dSize * mHeight,
                     (1 - dSize) * mWidth, (1 - dSize) * mHeight, mPaint);
@@ -256,15 +262,18 @@ public class VideoTypeView extends RelativeLayout {
                     dSize * mWidth, (1 - dSize) * mHeight, mPaint);
         }
 
-        @Override public void setAlpha(int alpha) {
+        @Override
+        public void setAlpha(int alpha) {
 
         }
 
-        @Override public void setColorFilter(ColorFilter colorFilter) {
+        @Override
+        public void setColorFilter(ColorFilter colorFilter) {
 
         }
 
-        @Override public int getOpacity() {
+        @Override
+        public int getOpacity() {
             return 0;
         }
     }

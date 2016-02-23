@@ -72,13 +72,13 @@ public abstract class HybrdUrlHandler {
     }
 
     /**
-     * This can be used in hybrd Activities and fragment, and also can be used with other kind of url,
-     * such as when click a banner, jump to a certain world.
+     * This can be used in hybrd Activities and fragment, and also can be used with other kind of
+     * url, such as when click a banner, jump to a certain world.
      *
      * @param url  : use the same format as hybrd.
-     * @param posX : the X position for transition. For example, when you want start {@link ShootActivity_},
-     *             you need to specify {@param posX} and {@param posY}, or the {@link ShootActivity_} with start
-     *             from the center of the screen.
+     * @param posX : the X position for transition. For example, when you want start {@link
+     *             ShootActivity_}, you need to specify {@param posX} and {@param posY}, or the
+     *             {@link ShootActivity_} with start from the center of the screen.
      * @return True, if we handle the url.
      */
     public boolean handleUrl(Context context, String url, int posX, int posY) {
@@ -161,7 +161,8 @@ public abstract class HybrdUrlHandler {
 
     public static class JumpUrlHandler extends HybrdUrlHandler {
 
-        @Override protected boolean handleInnerUrl(UrlModel urlModel) {
+        @Override
+        protected boolean handleInnerUrl(UrlModel urlModel) {
             LogUtil.i(TAG, "unknown call type");
             return false;
         }

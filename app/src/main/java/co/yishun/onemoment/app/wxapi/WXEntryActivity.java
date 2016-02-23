@@ -19,7 +19,8 @@ public class WXEntryActivity extends BaseActivity {
         finish();
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mIsPage = false;
     }
 }

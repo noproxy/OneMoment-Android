@@ -20,6 +20,7 @@ import io.realm.RealmResults;
  */
 public class RealmHelper {
     public static LocalRealmMigration localRealmMigration = new LocalRealmMigration();
+
     public static void setup(Context context) {
         String userId = AccountManager.getUserInfo(context)._id;
         RealmConfiguration config = new RealmConfiguration.Builder(context)

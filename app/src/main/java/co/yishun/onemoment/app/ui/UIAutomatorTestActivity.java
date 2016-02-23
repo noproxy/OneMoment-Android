@@ -18,7 +18,8 @@ public class UIAutomatorTestActivity extends AppCompatActivity {
     public final static String KEY_EXTRA_MESSAGE = "co.yishun.onemoment.app.ui.MESSAGE";
 
     /**
-     * Creates an {@link Intent} for {@link UIAutomatorTestActivity} with the message to be displayed.
+     * Creates an {@link Intent} for {@link UIAutomatorTestActivity} with the message to be
+     * displayed.
      *
      * @param context the {@link Context} where the {@link Intent} will be used
      * @param message a {@link String} with text to be displayed

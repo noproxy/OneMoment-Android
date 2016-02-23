@@ -53,18 +53,16 @@ public class Drawable2d {
     }
 
     /**
-     * Returns the array of vertices.
-     * <p>
-     * To avoid allocations, this returns internal state.  The caller must not modify it.
+     * Returns the array of vertices. <p> To avoid allocations, this returns internal state.  The
+     * caller must not modify it.
      */
     public FloatBuffer getVertexArray() {
         return mVertexArray;
     }
 
     /**
-     * Returns the array of texture coordinates.
-     * <p>
-     * To avoid allocations, this returns internal state.  The caller must not modify it.
+     * Returns the array of texture coordinates. <p> To avoid allocations, this returns internal
+     * state.  The caller must not modify it.
      */
     public FloatBuffer getTexCoordArray() {
         return mTexCoordArray;

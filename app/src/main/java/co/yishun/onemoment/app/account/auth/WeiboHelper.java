@@ -26,9 +26,7 @@ import static co.yishun.onemoment.app.account.auth.AccessTokenKeeper.KeeperType.
 
 
 /**
- * A proxy implement to auth by Sina weibo open api.
- * <p>
- * Created by Carlos on 2015/4/1.
+ * A proxy implement to auth by Sina weibo open api. <p> Created by Carlos on 2015/4/1.
  */
 public class WeiboHelper implements AuthHelper {
     public static final String APP_KEY = Constants.WEIBO_APP_ID;

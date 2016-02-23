@@ -31,14 +31,18 @@ public class GuideActivity extends AppCompatActivity {
             R.drawable.pic_guide_003txt,
             R.drawable.pic_guide_004txt};
 
-    @Extra boolean isFirstLaunch;
+    @Extra
+    boolean isFirstLaunch;
 
-    @ViewById ViewPager viewPager;
-    @ViewById PageIndicatorDot pageIndicator;
+    @ViewById
+    ViewPager viewPager;
+    @ViewById
+    PageIndicatorDot pageIndicator;
 
     private int pageNum = 5;
 
-    @AfterViews void setUpViews() {
+    @AfterViews
+    void setUpViews() {
         viewPager.setAdapter(getViewPager(LayoutInflater.from(this)));
         viewPager.setOffscreenPageLimit(2);
         pageIndicator.setViewPager(viewPager);

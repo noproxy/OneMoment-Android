@@ -1,9 +1,7 @@
 package co.yishun.onemoment.app.api.authentication;
 
 /**
- * Authentication Token
- * <p>
- * Created by Carlos on 2015/8/5.
+ * Authentication Token <p> Created by Carlos on 2015/8/5.
  */
 interface Token {
     /**

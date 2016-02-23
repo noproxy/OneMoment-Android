@@ -26,7 +26,9 @@ public class GenderSpinner extends LinearLayout implements View.OnClickListener 
     private static final int[] GENDER_TEXT = {R.string.view_gender_spinner_female, R.string.view_gender_spinner_male, R.string.view_gender_spinner_other};
     private TextView mItemTextView;
     private ImageView mRightImageView;
-    private @ColorInt int mTextColor = getResources().getColor(android.R.color.darker_gray);
+    private
+    @ColorInt
+    int mTextColor = getResources().getColor(android.R.color.darker_gray);
     private Drawable mRightDrawable = getResources().getDrawable(R.drawable.ic_right);
     private float mTextSize = 16;
     private Account.Gender mSelectGender = Account.Gender.OTHER;

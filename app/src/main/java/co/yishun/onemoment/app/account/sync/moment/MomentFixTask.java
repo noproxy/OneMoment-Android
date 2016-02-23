@@ -27,9 +27,7 @@ import static co.yishun.onemoment.app.LogUtil.i;
 import static co.yishun.onemoment.app.LogUtil.v;
 
 /**
- * Task to fix moment's video and thumbnail.
- * <p>
- * Created by Carlos on 2015/12/20.
+ * Task to fix moment's video and thumbnail. <p> Created by Carlos on 2015/12/20.
  */
 public class MomentFixTask implements Runnable {
 

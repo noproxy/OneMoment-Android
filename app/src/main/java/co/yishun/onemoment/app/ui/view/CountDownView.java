@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +27,8 @@ public class CountDownView extends TextView {
     private Handler handler = new Handler();
     private OnCountDownEndListener listener;
     private Runnable runnable = new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
             int text = startNumber.decrementAndGet();
             CountDownView.this.setText(String.valueOf(startNumber.get()));
             if (text <= 0) {
@@ -56,7 +56,8 @@ public class CountDownView extends TextView {
         init(attrs, defStyleAttr);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP) public CountDownView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public CountDownView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs, 0);
     }

@@ -10,11 +10,13 @@ import co.yishun.onemoment.app.R;
  */
 @EActivity(R.layout.activity_empty_web)
 public class EmptyWebActivity extends BaseWebActivity {
-    @AfterViews void setupViews() {
+    @AfterViews
+    void setupViews() {
         setupFragment();
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mPageName = "EmptyWebActivity";
     }
 }

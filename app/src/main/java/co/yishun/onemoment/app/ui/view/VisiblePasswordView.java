@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -50,7 +49,9 @@ public class VisiblePasswordView extends EditText {
         super(context, attrs, defStyleAttr);
         init(attrs, defStyleAttr);
     }
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP) public VisiblePasswordView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public VisiblePasswordView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs, defStyleAttr);
     }
@@ -88,7 +89,8 @@ public class VisiblePasswordView extends EditText {
         a.recycle();
     }
 
-    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         LogUtil.i("onMeasure", "left: " + getLeft() + " right: " + getRight() + " top: " + getTop() + " bottom: " + getBottom()
@@ -116,7 +118,8 @@ public class VisiblePasswordView extends EditText {
         }
     }
 
-    @Override protected void onDraw(Canvas canvas) {
+    @Override
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         final Drawable toDraw;
         if (visible)
@@ -127,7 +130,8 @@ public class VisiblePasswordView extends EditText {
         toDraw.draw(canvas);
     }
 
-    @Override public boolean onTouchEvent(MotionEvent event) {
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
         float touchedX = event.getX();
         float touchedY = event.getY();
         if (!isInVisibleIcon(touchedX, touchedY))

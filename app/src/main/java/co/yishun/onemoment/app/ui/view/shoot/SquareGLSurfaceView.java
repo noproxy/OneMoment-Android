@@ -3,7 +3,6 @@ package co.yishun.onemoment.app.ui.view.shoot;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import co.yishun.onemoment.app.LogUtil;
 

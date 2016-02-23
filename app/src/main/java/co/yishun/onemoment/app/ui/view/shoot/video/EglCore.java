@@ -24,27 +24,24 @@ import android.opengl.EGLContext;
 import android.opengl.EGLDisplay;
 import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
-import android.util.Log;
 import android.view.Surface;
 
 import co.yishun.onemoment.app.LogUtil;
 
 /**
- * Core EGL state (display, context, config).
- * <p>
- * The EGLContext must only be attached to one thread at a time.  This class is not thread-safe.
+ * Core EGL state (display, context, config). <p> The EGLContext must only be attached to one thread
+ * at a time.  This class is not thread-safe.
  */
 @TargetApi(18)
 public final class EglCore {
     /**
-     * Constructor flag: surface must be recordable.  This discourages EGL from using a
-     * pixel format that cannot be converted efficiently to something usable by the video
-     * encoder.
+     * Constructor flag: surface must be recordable.  This discourages EGL from using a pixel format
+     * that cannot be converted efficiently to something usable by the video encoder.
      */
     public static final int FLAG_RECORDABLE = 0x01;
     /**
-     * Constructor flag: ask for GLES3, fall back to GLES2 if not available.  Without this
-     * flag, GLES2 is used.
+     * Constructor flag: ask for GLES3, fall back to GLES2 if not available.  Without this flag,
+     * GLES2 is used.
      */
     public static final int FLAG_TRY_GLES3 = 0x02;
     private static final String TAG = "EglCore";
@@ -57,17 +54,14 @@ public final class EglCore {
     private int mGlVersion = -1;
 
     /**
-     * Prepares EGL display and context.
-     * <p>
-     * Equivalent to EglCore(null, 0).
+     * Prepares EGL display and context. <p> Equivalent to EglCore(null, 0).
      */
     public EglCore() {
         this(null, 0);
     }
 
     /**
-     * Prepares EGL display and context.
-     * <p>
+     * Prepares EGL display and context. <p>
      *
      * @param sharedContext The context to share, or null if sharing is not desired.
      * @param flags         Configuration bit flags, e.g. FLAG_RECORDABLE.
@@ -188,10 +182,8 @@ public final class EglCore {
     }
 
     /**
-     * Discards all resources held by this class, notably the EGL context.  This must be
-     * called from the thread where the context was created.
-     * <p>
-     * On completion, no context will be current.
+     * Discards all resources held by this class, notably the EGL context.  This must be called from
+     * the thread where the context was created. <p> On completion, no context will be current.
      */
     public void release() {
         if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
@@ -234,9 +226,8 @@ public final class EglCore {
     }
 
     /**
-     * Creates an EGL surface associated with a Surface.
-     * <p>
-     * If this is destined for MediaCodec, the EGLConfig should have the "recordable" attribute.
+     * Creates an EGL surface associated with a Surface. <p> If this is destined for MediaCodec, the
+     * EGLConfig should have the "recordable" attribute.
      */
     public EGLSurface createWindowSurface(Object surface) {
         if (!(surface instanceof Surface) && !(surface instanceof SurfaceTexture)) {

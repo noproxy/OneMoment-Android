@@ -57,7 +57,8 @@ public class TagController extends RecyclerController<Integer, SuperRecyclerView
     }
 
     @Override
-    @UiThread void onLoadEnd(ListErrorProvider<TagVideo> list) {
+    @UiThread
+    void onLoadEnd(ListErrorProvider<TagVideo> list) {
 
         if (list == null || !list.isSuccess()) {
             onLoadError();

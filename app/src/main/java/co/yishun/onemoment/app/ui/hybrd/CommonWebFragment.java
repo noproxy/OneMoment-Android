@@ -11,11 +11,13 @@ import co.yishun.onemoment.app.R;
 @EFragment(R.layout.fragment_web_view)
 public class CommonWebFragment extends BaseWebFragment {
 
-    @AfterViews void setUpViews() {
+    @AfterViews
+    void setUpViews() {
         setUpWebView();
     }
 
-    @Override public void setPageInfo() {
+    @Override
+    public void setPageInfo() {
         mIsPage = false;
     }
 }

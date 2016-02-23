@@ -20,27 +20,33 @@ public class WorldVideo extends ApiModel implements VideoProvider {
     public String avatarUrl;
     public String nickname;
 
-    @Override public String getFilename() {
+    @Override
+    public String getFilename() {
         return filename;
     }
 
-    @Override public String getDownloadUrl() {
+    @Override
+    public String getDownloadUrl() {
         return downloadUrl;
     }
 
-    @Override public List<VideoTag> getTags() {
+    @Override
+    public List<VideoTag> getTags() {
         return tags;
     }
 
-    @Override public String getAvatarUrl() {
+    @Override
+    public String getAvatarUrl() {
         return avatarUrl;
     }
 
-    @Override public String getNickname() {
+    @Override
+    public String getNickname() {
         return nickname;
     }
 
-    @Override public String getKey() {
+    @Override
+    public String getKey() {
         return filename.substring(0, filename.lastIndexOf("."));
     }
 }

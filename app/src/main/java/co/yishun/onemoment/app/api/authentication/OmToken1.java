@@ -6,9 +6,7 @@ import java.nio.charset.Charset;
 import co.yishun.onemoment.app.Util;
 
 /**
- * The first token in Double Token Verification.
- * <p>
- * Created by Carlos on 2015/8/5.
+ * The first token in Double Token Verification. <p> Created by Carlos on 2015/8/5.
  */
 class OmToken1 implements Token {
     private static final RandomString mStringGenerator = new RandomString(33);
@@ -27,7 +25,8 @@ class OmToken1 implements Token {
     }
 
 
-    @Override public String value() {
+    @Override
+    public String value() {
         return mValue;
     }
 
@@ -35,7 +34,8 @@ class OmToken1 implements Token {
         return mOrigin;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "OmToken1{" +
                 "mOrigin='" + mOrigin + '\'' +
                 ", mValue='" + mValue + '\'' +
