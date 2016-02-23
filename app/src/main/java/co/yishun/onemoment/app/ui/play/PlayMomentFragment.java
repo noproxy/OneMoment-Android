@@ -49,6 +49,7 @@ public class PlayMomentFragment extends PlayFragment
                     .eq("owner", AccountManager.getAccountId(getContext())).and()
                     .between("time", startDate, endDate).query();
             if (momentList.size() > 0) {
+                //noinspection unchecked
                 Collections.sort(momentList);
                 for (Moment moment : momentList) {
                     if (moment.getFile().length() == 0) continue;
