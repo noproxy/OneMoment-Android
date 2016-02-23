@@ -180,15 +180,15 @@ public class TagCreateActivity extends BaseActivity
         LogUtil.i(TAG, "set video: " + videoPath);
         if (videoPath == null) return;
         videoView.setVideoPath(videoPath);
+        videoView.seekTo(0);
         playVideo();
     }
 
-    @UiThread(delay = 1000) void playVideo() {
+    @UiThread(delay = 2000) void playVideo() {
         LogUtil.i(TAG, "play video");
-        videoView.seekTo(0);
         // set invisible will make it not clickable
-        momentPreviewImageView.setImageDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         videoView.start();
+        momentPreviewImageView.setImageDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         played = true;
     }
 
