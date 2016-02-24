@@ -93,7 +93,7 @@ public class OneMomentClientV3 extends OneMomentClient {
                 break;
             case NORMAL:
                 // one minute
-                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale"));
+                headers.add(new Header("Cache-Control", "max-age=" + 60 + ",max-stale=" + 50 * 60));// token expired in 60 minutes
                 break;
             default:
                 break;
