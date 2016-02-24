@@ -36,8 +36,8 @@ android {
         applicationId "co.yishun.onemoment.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 15
-        versionName "2.3-dev"
+        versionCode 16
+        versionName "2.3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
