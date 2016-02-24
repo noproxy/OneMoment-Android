@@ -105,12 +105,13 @@ public abstract class BaseWebFragment extends BaseFragment {
     void setDefault() {
         mHybrdDir = FileUtil.getInternalFile(mActivity, Constants.HYBRD_UNZIP_DIR);
         if (TextUtils.isEmpty(mUrl)) {
-            mUrl = Constants.FILE_URL_PREFIX + new File(mHybrdDir, "build/pages/world/world.html").getPath();
+            mUrl = Constants.FILE_URL_PREFIX +
+                    new File(mHybrdDir, "build/pages/world/world.html").getPath();
             LogUtil.i(TAG, "url is null, load default");
         }
 
-        int lastUpdateTime = mActivity.getSharedPreferences(SplashActivity.RUNTIME_PREFERENCE, Context.MODE_PRIVATE)
-                .getInt(SplashActivity.PREFERENCE_HYBRID_UPDATE_TIME, 0);
+        int lastUpdateTime = mActivity.getSharedPreferences(SplashActivity.RUNTIME_PREFERENCE,
+                Context.MODE_PRIVATE).getInt(SplashActivity.PREFERENCE_HYBRID_UPDATE_TIME, 0);
         if (mUrl.startsWith(Constants.FILE_URL_PREFIX)) mUrl += "?time=" + lastUpdateTime;
     }
 
@@ -171,11 +172,13 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webGetAccount(List<String> args) {
-        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity), true, true), HybrdUrlHandler.FUNC_GET_ACCOUNT));
+        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity), true, true),
+                HybrdUrlHandler.FUNC_GET_ACCOUNT));
     }
 
     private void webGetAccountId(List<String> args) {
-        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity)._id), HybrdUrlHandler.FUNC_GET_ACCOUNT_ID));
+        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity)._id),
+                HybrdUrlHandler.FUNC_GET_ACCOUNT_ID));
     }
 
     private void webLog(List<String> args) {
@@ -220,16 +223,23 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webAuth(List<String> args) {
-        webView.loadUrl(String.format(toJs(OneMomentClientV4.getAuthStr()), HybrdUrlHandler.FUNC_GET_BASIC_AUTH_HEADER));
+        webView.loadUrl(String.format(toJs(OneMomentClientV4.getAuthStr()),
+                HybrdUrlHandler.FUNC_GET_BASIC_AUTH_HEADER));
     }
 
     private void webGetDiary(List<String> args) {
         String startDate = args.get(0);
         long numRequest = Long.parseLong(args.get(1));
         try {
-            Dao<Moment, Integer> momentDao = OpenHelperManager.getHelper(mActivity, MomentDatabaseHelper.class).getDao(Moment.class);
+            Dao<Moment, Integer> momentDao = OpenHelperManager.getHelper(mActivity,
+                    MomentDatabaseHelper.class).getDao(Moment.class);
+            //TODO cache this value but observe its changes
+            long countAll = momentDao.queryBuilder().limit(numRequest).where()
+                    .eq("owner", AccountManager.getUserInfo(mActivity)._id).countOf();
+
             // use gt instead of ge according document required, By Carlos
-            Where<Moment, Integer> where = momentDao.queryBuilder().limit(numRequest).where().eq("owner", AccountManager.getUserInfo(mActivity)._id);
+            Where<Moment, Integer> where = momentDao.queryBuilder().limit(numRequest).where()
+                    .eq("owner", AccountManager.getUserInfo(mActivity)._id);
             // start date can be empty for getting all videos started at any day.
             if (!TextUtils.isEmpty(startDate))
                 where.and().gt("time", startDate);
@@ -242,11 +252,15 @@ public abstract class BaseWebFragment extends BaseFragment {
                 filename.addProperty("filename", m.getPath());
                 jsonArray.add(filename);
             }
+
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("videos_num", moments.size());
+            // alert: this is the numbers of all the moments in database,
+            // not the numbers of the videos
+            jsonObject.addProperty("videos_num", countAll);
             jsonObject.add("videos", jsonArray);
             // here set encode false By Carlos
-            webView.loadUrl(String.format(toJs(gson.toJson(jsonObject), false), HybrdUrlHandler.FUNC_GET_DIARY));
+            webView.loadUrl(String.format(toJs(gson.toJson(jsonObject), false),
+                    HybrdUrlHandler.FUNC_GET_DIARY));
         } catch (SQLException e) {
             e.printStackTrace();
         }
