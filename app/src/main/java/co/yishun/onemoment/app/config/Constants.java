@@ -4,11 +4,10 @@ package co.yishun.onemoment.app.config;
  * Constants configures. <p> Created by Carlos on 2015/8/5.
  */
 public class Constants {
+    public static final boolean SANDBOX = true;
     public static final String API_KEY = "";
-    public static final String API_V3_URL = "http://api.yishun.co/v3";
-    //    public static final String API_V3_URL = "http://sandbox.api.yishun.co:53470/v3";//for test
-    public static final String API_V4_URL = "http://api.yishun.co/v4";
-    public static final String API_V4_URL_TEST = "http://sandbox.api.yishun.co:53470/v4";
+    public static final String API_V3_URL;
+    public static final String API_V4_URL;
     public static final String AES_KEY = "QJBBNfrwp2oN4ZBwT9qZ4MGObN8y56bEydJj48L8xVs=";
     public static final String MIME_TYPE = "video/mp4";
     public static final String VIDEO_FILE_SUFFIX = ".mp4";
@@ -19,34 +18,34 @@ public class Constants {
     public static final String PROFILE_SUFFIX = ".png";
     public static final String WORLD_VIDEO_PREFIX = "videoworld-world2-";
     public static final String EXPORT_VIDEO_PREFIX = "yishunExport-";
-
     public static final String HYBRD_UNZIP_DIR = "hybrd";
     public static final String FILE_URL_PREFIX = "file://";
     public static final String APP_URL_PREFIX = "ysjs://";
-
     public static final String IDENTITY_DIR = "identity";
     public static final String IDENTITY_INFO_FILE_NAME = "info";
     public static final String TIME_FORMAT = "yyyyMMdd";
     public static final String TIEM_FORMAT_EXPORT = "yyyyMMdd_HHmmss";
-
     public static final String VIDEO_THUMB_STORE_DIR = "thumbs";
-
     public static final int VIDEO_HEIGHT = 480;
     public static final int VIDEO_WIDTH = 480;
     public static final int VIDEO_FPS = 30;
-
     public static final int CODE_SUCCESS = 1;
     public static final int CODE_Fail = 0;
     public static final int CODE_PARAMETER_ABSENT = -1;
     public static final int CODE_PARAMETER_INVALID = -2;
     public static final int CODE_SERVER_ERROR = -3;
     public static final int CODE_TOO_FEQUENT = -5;
-
     public static final int INT_EXIT_DELAY_MILLIS = 500;
-
     public static final String QQ_APP_ID = "1104574591";
     public static final String WE_CHAT_APP_ID = "wx669ce174488102f4";
     public static final String WEIBO_APP_ID = "4070980764";
+
+    static {
+        //noinspection ConstantConditions
+        API_V3_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/v3" : "http://api.yishun.co/v3";
+        //noinspection ConstantConditions
+        API_V4_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/v4" : "http://api.yishun.co/v4";
+    }
 
     public static class ErrorStr {
         public static final String SUCCESS = "Ok";
