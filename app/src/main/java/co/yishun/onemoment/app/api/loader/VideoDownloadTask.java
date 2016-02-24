@@ -99,7 +99,7 @@ public class VideoDownloadTask extends LoaderTask {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
-            LogUtil.e(TAG, "stop video" + " " + this.toString());
+            LogUtil.i(TAG, "stop video" + " " + this.toString());
             if (videoTaskReference.get() != null) {
                 videoTaskReference.get().getVideo(video);
             }
