@@ -219,7 +219,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webLoad(List<String> args) {
-        webView.loadUrl(toJs(mArg, false));
+        webView.loadUrl(String.format(toJs(mArg, false), HybrdUrlHandler.FUNC_LOAD));
     }
 
     private void webAuth(List<String> args) {
