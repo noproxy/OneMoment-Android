@@ -47,6 +47,6 @@ public class WorldVideo extends ApiModel implements VideoProvider {
 
     @Override
     public String getKey() {
-        return filename.substring(0, filename.lastIndexOf("."));
+        return filename;
     }
 }

@@ -402,8 +402,7 @@ public class TagCreateActivity extends BaseActivity
         video.filename = Constants.WORLD_VIDEO_PREFIX + AccountManager.getUserInfo(this)._id +
                 Constants.URL_HYPHEN + Util.unixTimeStamp() + Constants.VIDEO_FILE_SUFFIX;
         File tmp = new File(videoPath);
-        File videoFile = new File(
-                FileUtil.getWorldVideoStoreFile(this, video).getPath() + Constants.VIDEO_FILE_SUFFIX);
+        File videoFile = FileUtil.getWorldVideoStoreFile(this, video);
         FileUtil.copyFile(tmp, videoFile);//TODO this video may be used by diary, but also a cache, need to delete when it is cache.
         videoPath = videoFile.getPath();
 
