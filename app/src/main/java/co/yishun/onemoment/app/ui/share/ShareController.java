@@ -48,6 +48,8 @@ public class ShareController implements IWXAPIEventHandler {
 
     private static final String TAG = "ShareController";
     private static final int THUMB_SIZE = 150;
+    private static final int BYTE_LENGTH_32K = 32768;
+    private static final int BYTE_LENGTH_2M = 2097152;
     private Activity activity;
     private Tencent mQQShareAPI;
     private IWXAPI mWeChatShareAPI;
@@ -136,7 +138,7 @@ public class ShareController implements IWXAPIEventHandler {
         WXMediaMessage msg = new WXMediaMessage(webObj);
         msg.title = shareContent;
         msg.description = shareContent;
-        msg.thumbData = bmpToByteArray();
+        msg.thumbData = bmpToByteArray(BYTE_LENGTH_32K);
 
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = System.currentTimeMillis() + "";
@@ -151,7 +153,7 @@ public class ShareController implements IWXAPIEventHandler {
         WXMediaMessage msg = new WXMediaMessage(webObj);
         msg.title = shareContent;
         msg.description = shareContent;
-        msg.thumbData = bmpToByteArray();
+        msg.thumbData = bmpToByteArray(BYTE_LENGTH_32K);
 
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = System.currentTimeMillis() + "";
@@ -165,13 +167,13 @@ public class ShareController implements IWXAPIEventHandler {
         textObject.text = shareContent;
 
         ImageObject imageObject = new ImageObject();
-        imageObject.setImageObject(bitmap);
+        imageObject.imageData = bmpToByteArray(BYTE_LENGTH_2M);
 
         WebpageObject mediaObject = new WebpageObject();
         mediaObject.identify = Utility.generateGUID();
         mediaObject.title = shareContent;
         mediaObject.description = shareContent;
-        mediaObject.setThumbImage(bitmap);
+        mediaObject.thumbData = bmpToByteArray(BYTE_LENGTH_32K);
         mediaObject.actionUrl = shareUrl;
         mediaObject.defaultText = shareContent;
 
@@ -182,13 +184,25 @@ public class ShareController implements IWXAPIEventHandler {
         SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
         request.transaction = String.valueOf(System.currentTimeMillis());
         request.multiMessage = weiboMessage;
+        weiboMessage.checkArgs();
         mWeiboShareAPI.sendRequest(activity, request);
     }
 
-    private byte[] bmpToByteArray() {
+    /**
+     * decode bitmap to byte array with compression.
+     * {@param length} Max length of the output byte array.
+     */
+    private byte[] bmpToByteArray(int length) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+        int quality = 100;
+        byte[] output;
+        do {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+            output = stream.toByteArray();
+            quality *= 0.8f;
+            stream.reset();
+        } while (output.length > length);
+        return output;
     }
 
     public void onNewIntent(Intent intent) {
