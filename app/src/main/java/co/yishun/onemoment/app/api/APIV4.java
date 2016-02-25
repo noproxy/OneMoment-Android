@@ -67,7 +67,7 @@ public interface APIV4 {
             @Field("name") String name,
             @Field("account_id") String userId);
 
-    @POST("world/share")
+    @POST("/world/share")
     @FormUrlEncoded
     ShareInfo shareWorld(
             @Field("world_id") String worldId,
