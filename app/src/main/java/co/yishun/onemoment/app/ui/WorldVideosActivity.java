@@ -14,12 +14,15 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.squareup.picasso.Picasso;
 import com.transitionseverywhere.Scene;
@@ -46,6 +49,7 @@ import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
 import co.yishun.onemoment.app.api.loader.VideoTaskManager;
+import co.yishun.onemoment.app.api.modelv4.ApiModel;
 import co.yishun.onemoment.app.api.modelv4.ShareInfo;
 import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
@@ -205,14 +209,48 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         VideoTaskManager.getInstance().quit();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_world_videos, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            case R.id.activity_world_videos_action_delete:
+                new MaterialDialog.Builder(this).cancelable(true).canceledOnTouchOutside(true)
+                        .content(R.string.activity_world_videos_dialog_delete_content).positiveText(R
+                        .string.activity_world_videos_dialog_delete_positive).negativeText(R
+                        .string.activity_world_videos_dialog_delete_negative).onPositive(
+                        (dialog, which) -> dialog.dismiss()).onNegative((dialog1, which1) -> {
+                    deleteWorld();
+                }).show();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Background
+    void deleteWorld() {
+        showProgress(R.string.activity_world_videos_progress_delete_content);
+        APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
+        ApiModel result = apiv4.deleteWorld(world.getId(), AccountManager.getUserInfo(this)._id);
+        if (result.isSuccess()) {
+            hideProgress();
+            runOnUiThread(() -> {
+                        Toast.makeText(this, R.string.activity_world_videos_progress_delete_success,
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+            );
+        } else {
+            showSnackMsg(R.string.activity_world_videos_progress_delete_fail);
+            LogUtil.i(TAG, "delete world fail:" + result.toString());
+        }
     }
 
     @Click(R.id.worldAdd)
