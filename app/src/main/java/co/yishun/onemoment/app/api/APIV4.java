@@ -24,9 +24,14 @@ public interface APIV4 {
 
     @POST("/world")
     @FormUrlEncoded
-    co.yishun.onemoment.app.api.modelv4.World createWorld(
+    World createWorld(
             @Field("name") String worldName,
             @Field("account_id") String userId);
+
+    @POST("/world/delete")
+    @FormUrlEncoded
+    World deleteWorld(@Field("world_id") String worldId,
+                      @Field("account_id") String userId);
 
     @POST("/world/video")
     @FormUrlEncoded
@@ -67,7 +72,7 @@ public interface APIV4 {
             @Field("name") String name,
             @Field("account_id") String userId);
 
-    @POST("world/share")
+    @POST("/world/share")
     @FormUrlEncoded
     ShareInfo shareWorld(
             @Field("world_id") String worldId,

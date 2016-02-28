@@ -101,9 +101,10 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
 
     @Click(R.id.momentPreviewImageView)
     void previewClick() {
-        LogUtil.i(TAG, "click: " + selectMoment.toString());
-        if (selectMoment != null)
+        if (selectMoment != null) {
+            LogUtil.i(TAG, "click: " + selectMoment.toString());
             PlayMomentActivity_.intent(this.getActivity()).startDate(selectMoment.getTime()).endDate(selectMoment.getTime()).start();
+        }
     }
 
     @Click(R.id.startPlayTextView)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">一瞬</string>
-    <string name="app_version">版本:2.0.0 预览版</string>
+    <string name="app_version">版本:2.3.0</string>
 
     <string name="action_settings">设置</string>
 
@@ -110,4 +110,11 @@
     <string name="text_load_nothing">没有更多了…</string>
     <string name="activity_video_edit_action_add_tag">添加标签</string>
     <string name="fragment_integrate_info_nickname_hint">请输入昵称</string>
+    <string name="activity_world_videos_action_delete">删除世界</string>
+    <string name="activity_world_videos_dialog_delete_content">确定删除？这个世界里所有的视频也会被删除。并且无法撤销。</string>
+    <string name="activity_world_videos_dialog_delete_negative">删除</string>
+    <string name="activity_world_videos_dialog_delete_positive">取消</string>
+    <string name="activity_world_videos_progress_delete_content">正在删除…</string>
+    <string name="activity_world_videos_progress_delete_fail">删除失败了，网络似乎有点问题</string>
+    <string name="activity_world_videos_progress_delete_success">删除成功</string>
 </resources>
