@@ -46,12 +46,14 @@ public abstract class PlayFragment extends BaseFragment {
         mActivity = null;
     }
 
+    @UiThread
     protected void onLoad() {
         videoPlayView.hideLoading();
         delayStart();
         isLoading = false;
     }
 
+    @UiThread
     protected void onLoadError(int resId) {
         videoPlayView.hideLoading();
         if (isLoading) {
