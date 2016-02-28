@@ -44,7 +44,8 @@ public class Constants {
         //noinspection ConstantConditions
         API_V3_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/v3" : "http://api.yishun.co/v3";
         //noinspection ConstantConditions
-        API_V4_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/v4" : "http://api.yishun.co:53470/v4";
+        API_V4_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/v4" : "https://api.yishun" +
+                ".co:53471/v4";
     }
 
     public static class ErrorStr {
