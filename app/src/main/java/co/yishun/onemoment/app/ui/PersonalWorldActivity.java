@@ -35,7 +35,7 @@ public class PersonalWorldActivity extends BaseWebActivity {
         setupToolbar();
         setupFragment();
 
-        mWebFragment.setRefreshable(true);
+        mWebFragment.setRefreshable(false);
     }
 
     @Override

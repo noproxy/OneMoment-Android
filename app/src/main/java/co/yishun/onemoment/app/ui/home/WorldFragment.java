@@ -37,7 +37,7 @@ public class WorldFragment extends ToolbarFragment {
         getFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, worldWebFragment, BaseWebFragment.TAG_WEB).commit();
 
-        worldWebFragment.setRefreshable(true);
+        worldWebFragment.setRefreshable(false);
     }
 
     @Override
