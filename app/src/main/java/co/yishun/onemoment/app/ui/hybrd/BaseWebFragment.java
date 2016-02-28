@@ -34,7 +34,6 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
-import co.yishun.onemoment.app.BuildConfig;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.authentication.OneMomentClientV4;
@@ -167,7 +166,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webGetEnv(List<String> args) {
-        String env = BuildConfig.DEBUG ? "development" : "production";
+        @SuppressWarnings("ConstantConditions") String env = Constants.SANDBOX ? "development" : "production";
         webView.loadUrl(String.format(toJs(env), HybrdUrlHandler.FUNC_GET_ENV));
     }
 
