@@ -8,7 +8,6 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
-import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -52,11 +51,12 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private List<VideoProvider> tagVideos = new ArrayList<>();
     private int order;
-    private int offset = 0;
+    private Integer offset = 0;
     private boolean mReady = false;
 
-    @SupposeBackground
-    void getDataIntern() {
+    @Background
+    void getData() {
+//        synchronized (offset) {
         // not background to ensure offset access only by one thread
         WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
                 mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, order, 6) :
@@ -66,7 +66,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
                 onLoadError(R.string.fragment_play_world_video_null);
             }
             return;//TODO will OOM if this world contains so many many videos
-        }
+            }
         offset += videos.size();
         order = videos.world.order;
 
@@ -75,14 +75,11 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
                 return;
             }
             addVideo(oneVideo);
-        }
-        getDataIntern();
+            }
+//        }
+        getData();
     }
 
-    @Background
-    void getData() {
-        getDataIntern();
-    }
 
     @AfterViews
     void setupView() {
