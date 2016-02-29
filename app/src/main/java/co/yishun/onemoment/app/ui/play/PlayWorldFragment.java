@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui.play;
 
+import android.app.Activity;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -159,7 +160,10 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
     @Override
     public void videoChangeTo(int index) {
         if (index == 0) {
-            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            Activity activity = getActivity();
+            if (activity != null) {
+                activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
         }
         refreshUserInfo(index);
     }
