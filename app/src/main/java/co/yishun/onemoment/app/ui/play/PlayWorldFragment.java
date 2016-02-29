@@ -7,6 +7,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -53,8 +54,9 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
     private int offset = 0;
     private boolean mReady = false;
 
-    @Background
-    void getData() {
+    @SupposeBackground
+    void getDataIntern() {
+        // not background to ensure offset access only by one thread
         WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
                 mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, order, 6) :
                 mApiV4.getTodayVideos(world.getName(), offset, 6);
@@ -73,7 +75,12 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
             }
             addVideo(oneVideo);
         }
-        getData();
+        getDataIntern();
+    }
+
+    @Background
+    void getData() {
+        getDataIntern();
     }
 
     @AfterViews
