@@ -114,10 +114,12 @@ public abstract class HybrdUrlHandler {
             CommonWebActivity_.intent(context).title(args.get(1)).url(args.get(2)).start();
         } else if (TextUtils.equals(des, "camera")) {
             //TODO add args for which world
+//   don't do here, do in ShootActivity         BaseWebFragment.invalidateWeb();
             ShootActivity_.intent(context).transitionX(posX).transitionY(posY).start();//TODO handle permission
         } else if (TextUtils.equals(des, "setting")) {
             SettingsActivity_.intent(context).start();
         } else if (TextUtils.equals(des, "create_world")) {
+            BaseWebFragment.invalidateWeb();
             CreateWorldActivity_.intent(context).start();
         } else if (TextUtils.equals(des, "edit")) {
             UserInfoActivity_.intent(context).start();

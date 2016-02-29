@@ -54,14 +54,12 @@ import co.yishun.onemoment.app.util.GsonFactory;
 @EFragment
 public abstract class BaseWebFragment extends BaseFragment {
     public static final String TAG_WEB = "web";
-
     private static final String TAG = "BaseWebFragment";
-
+    private static boolean needGlobalRefresh = false;
     @ViewById
     protected SwipeRefreshLayout swipeRefreshLayout;
     @ViewById
     protected WebView webView;
-
     protected BaseActivity mActivity;
     protected MaterialDialog dialog;
     protected File mHybrdDir;
@@ -70,11 +68,14 @@ public abstract class BaseWebFragment extends BaseFragment {
     protected float touchX;
     protected float touchY;
     protected boolean mRefreshable;
-
     @FragmentArg
     protected String mUrl;
     @FragmentArg
     protected String mArg;
+
+    public static void invalidateWeb() {
+        needGlobalRefresh = true;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -97,7 +98,10 @@ public abstract class BaseWebFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mRefreshable) reload();
+        if (mRefreshable && needGlobalRefresh) {
+            needGlobalRefresh = false;
+            reload();
+        }
     }
 
     @AfterInject

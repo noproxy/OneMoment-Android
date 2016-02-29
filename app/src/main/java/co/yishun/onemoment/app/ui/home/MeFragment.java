@@ -38,7 +38,7 @@ public class MeFragment extends ToolbarFragment {
         getFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, meWebFragment, BaseWebFragment.TAG_WEB).commit();
 
-        meWebFragment.setRefreshable(false);
+        meWebFragment.setRefreshable(true);
     }
 
     @Override

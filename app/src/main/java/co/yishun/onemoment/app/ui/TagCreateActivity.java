@@ -82,6 +82,7 @@ import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.TagSearchAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.TagSearchController_;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 import co.yishun.onemoment.app.ui.view.VideoTypeView;
 import co.yishun.onemoment.app.util.GsonFactory;
 
@@ -336,6 +337,7 @@ public class TagCreateActivity extends BaseActivity
 
     @Click
     void nextBtnClicked(View view) {
+        BaseWebFragment.invalidateWeb();
         if (forDiary) {
             saveToMoment();
         }
