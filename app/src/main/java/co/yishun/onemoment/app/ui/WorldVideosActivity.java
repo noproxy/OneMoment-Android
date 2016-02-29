@@ -211,8 +211,11 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_world_videos, menu);
-        return true;
+        if (forWorld) {
+            getMenuInflater().inflate(R.menu.menu_activity_world_videos, menu);
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
