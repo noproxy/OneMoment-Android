@@ -62,7 +62,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.O
             if (offset == 0) {
                 onLoadError(R.string.fragment_play_world_video_null);
             }
-            return;
+            return;//TODO will OOM if this world contains so many many videos
         }
         offset += videos.size();
         order = videos.world.order;
