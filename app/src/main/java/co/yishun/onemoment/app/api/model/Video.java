@@ -23,7 +23,7 @@ public class Video extends ApiModel implements VideoProvider {
 
     @Override
     public String getKey() {
-        return fileName.substring(0, fileName.lastIndexOf("."));
+        return fileName;
     }
 
     @Override

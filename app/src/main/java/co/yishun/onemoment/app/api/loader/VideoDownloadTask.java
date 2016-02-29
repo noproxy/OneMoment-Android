@@ -53,8 +53,8 @@ public class VideoDownloadTask extends LoaderTask {
             LogUtil.d(TAG, "start net " + video.getFilename() + " " + this.toString());
             if (response.code() == 200) {
                 input = response.body().byteStream();
-                output = new FileOutputStream(videoFile);
                 long fileLength = response.body().contentLength();
+
                 if (fileLength == 0) {
                     LogUtil.e(TAG, "error file length " + this.toString());
                     return false;
@@ -62,6 +62,7 @@ public class VideoDownloadTask extends LoaderTask {
                     return true;
                 }
 
+                output = new FileOutputStream(videoFile);
                 //OkHttp can't read more than 2048 bytes at a time.
                 byte data[] = new byte[2048];
                 long total = 0;
