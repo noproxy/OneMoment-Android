@@ -41,17 +41,22 @@ public class VideoTask {
     }
 
     public VideoTask start() {
-        if ((type & TYPE_IMAGE) == TYPE_IMAGE) {
-            File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
-            File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
-            if (small.length() > 0) {
+        File videoFile = FileUtil.getWorldVideoStoreFile(context, video);
+        File large = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.LARGE_THUMB);
+        File small = FileUtil.getThumbnailStoreFile(context, video, FileUtil.Type.MICRO_THUMB);
+
+        if (videoFile.length() > 0 && small.length() > 0) {
+            if ((type & TYPE_IMAGE) == TYPE_IMAGE) {
                 getImage(large, small);
                 type &= ~TYPE_IMAGE;
             }
+            if ((type & TYPE_VIDEO) == TYPE_VIDEO) {
+                getVideo(video);
+            }
+        } else {
+            downloadTask = new VideoDownloadTask(context, this);
+            VideoTaskManager.getInstance().executeTask(downloadTask, video);
         }
-
-        downloadTask = new VideoDownloadTask(context, this);
-        VideoTaskManager.getInstance().executeTask(downloadTask, video);
 
         return this;
     }
