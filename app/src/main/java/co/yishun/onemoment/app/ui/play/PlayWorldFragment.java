@@ -38,45 +38,44 @@ import co.yishun.onemoment.app.data.FileUtil;
 public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.OnVideoChangeListener,
         VideoTask.OnVideoListener {
     private static final String TAG = "platworld";
+    private final Object OffsetLock = new Object();
     @FragmentArg
     WorldProvider world;
     @FragmentArg
     boolean forWorld;
-
     @ViewById
     TextView voteCountTextView;
     @ViewById
     TextView usernameTextView;
-
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private List<VideoProvider> tagVideos = new ArrayList<>();
-    private int order;
+    //    private int order;
     private Integer offset = 0;
     private boolean mReady = false;
 
     @Background
     void getData() {
-//        synchronized (offset) {
-        // not background to ensure offset access only by one thread
-        WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
-                mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, order, 6) :
-                mApiV4.getTodayVideos(world.getName(), offset, 6);
-        if (videos.size() == 0) {
-            if (offset == 0) {
-                onLoadError(R.string.fragment_play_world_video_null);
+        synchronized (OffsetLock) {
+            // not background to ensure offset access only by one thread
+            WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
+                    mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, offset, 6) :
+                    mApiV4.getTodayVideos(world.getName(), offset, 6);
+            if (videos.size() == 0) {
+                if (offset == 0) {
+                    onLoadError(R.string.fragment_play_world_video_null);
+                }
+                return;//TODO will OOM if this world contains so many many videos
             }
-            return;//TODO will OOM if this world contains so many many videos
-            }
-        offset += videos.size();
-        order = videos.world.order;
+            offset += videos.size();
+//        order = videos.world.order;
 
-        for (VideoProvider oneVideo : videos) {
-            if (mContext == null) {
-                return;
+            for (VideoProvider oneVideo : videos) {
+                if (mContext == null) {
+                    return;
+                }
+                addVideo(oneVideo);
             }
-            addVideo(oneVideo);
-            }
-//        }
+        }
         getData();
     }
 

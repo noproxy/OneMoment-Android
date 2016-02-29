@@ -39,7 +39,7 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private boolean mForWorld;
     private WeakReference<ImageView> mWorldPreview;
-    private int order;
+    //    private int order;
     private boolean mThumbUrlInvalid;
 
     protected WorldVideosController(Context context) {
@@ -60,13 +60,13 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
     protected ListErrorProvider<WorldVideo> onLoad() {
         ListErrorProvider<WorldVideo> list;
         if (mForWorld) {
-            list = mApiV4.getWorldVideos(mWorld.getId(), AccountManager.getUserInfo(mContext)._id, order, 6);
+            list = mApiV4.getWorldVideos(mWorld.getId(), AccountManager.getUserInfo(mContext)._id, getOffset(), 6);
         } else {
             list = mApiV4.getTodayVideos(mWorld.getName(), getOffset(), 6);
         }
-        if (list.isSuccess() && list.size() > 0) {
-            order = list.get(list.size() - 1).order;
-        }
+//        if (list.isSuccess() && list.size() > 0) {
+//            order = list.get(list.size() - 1).order;
+//        }
 
         if (mThumbUrlInvalid) {
             World world = ((WorldVideoListWithErrorV4) list).world;
