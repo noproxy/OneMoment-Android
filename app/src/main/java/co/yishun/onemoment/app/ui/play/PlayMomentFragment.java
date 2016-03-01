@@ -31,7 +31,7 @@ import co.yishun.onemoment.app.ui.common.BaseFragment;
  */
 @EFragment(R.layout.fragment_play_moment)
 public class PlayMomentFragment extends PlayFragment
-        implements VideoPlayerView.OnVideoChangeListener {
+        implements VideoPlayerView.VideoPlayViewListener {
 
     private static final String TAG = "PlayMomentFragment";
     @FragmentArg
@@ -45,7 +45,7 @@ public class PlayMomentFragment extends PlayFragment
     @AfterViews
     void setUpViews() {
         videoPlayView.setWithAvatar(false);
-        videoPlayView.setVideoChangeListener(this);
+        videoPlayView.setVideoPlayListener(this);
         try {
             List<Moment> momentList = momentDao.queryBuilder().where()
                     .eq("owner", AccountManager.getAccountId(getContext())).and()
@@ -88,5 +88,10 @@ public class PlayMomentFragment extends PlayFragment
     @Override
     public void videoChangeTo(int index) {
 
+    }
+
+    @Override
+    public boolean loadMore(int startIndex) {
+        return false;
     }
 }

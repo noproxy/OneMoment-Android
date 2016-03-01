@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <co.yishun.library.OnemomentPlaySurfaceView
+        <co.yishun.library.PlaySurfaceView
             android:id="@+id/om_video_surface"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

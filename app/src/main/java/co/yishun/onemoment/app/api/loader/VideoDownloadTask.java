@@ -23,6 +23,7 @@ import co.yishun.onemoment.app.data.FileUtil;
 public class VideoDownloadTask extends LoaderTask {
     private static final String TAG = "VideoDownloadTask";
     private Context mContext;
+    private File cacheVideoFile;
     private File videoFile;
     private VideoProvider video;
     private WeakReference<VideoTask> videoTaskReference;
@@ -39,7 +40,8 @@ public class VideoDownloadTask extends LoaderTask {
     @Override
     protected Boolean doInBackground(VideoProvider... videos) {
         video = videos[0];
-        LogUtil.d(TAG, "start video " + video.getFilename());
+        LogUtil.d(TAG, "start video " + video.getFilename() + "  " + video.getDownloadUrl());
+        cacheVideoFile = FileUtil.getCacheFile(mContext, video.getFilename());
         videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
 
         OkHttpClient httpClient = VideoTaskManager.httpClient;
@@ -62,7 +64,7 @@ public class VideoDownloadTask extends LoaderTask {
                     return true;
                 }
 
-                output = new FileOutputStream(videoFile);
+                output = new FileOutputStream(cacheVideoFile);
                 //OkHttp can't read more than 2048 bytes at a time.
                 byte data[] = new byte[2048];
                 long total = 0;
@@ -77,14 +79,16 @@ public class VideoDownloadTask extends LoaderTask {
                     total += count;
                     output.write(data, 0, count);
                 }
-                LogUtil.d(TAG, "end while " + video.getFilename() + " " + videoFile.length() + " " + fileLength + " " + this.toString());
+                LogUtil.d(TAG, "end while " + video.getFilename() + " " + cacheVideoFile.length() + " " + fileLength + " " + this.toString());
 
                 return total == fileLength;
             } else {
                 LogUtil.e(TAG, "net error");
                 return false;
             }
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            LogUtil.e(TAG, this.toString() + "  io exception");
+            e.printStackTrace();
             return false;
         } finally {
             try {
@@ -101,14 +105,16 @@ public class VideoDownloadTask extends LoaderTask {
     protected void onPostExecute(Boolean result) {
         if (result) {
             LogUtil.i(TAG, "stop video" + " " + this.toString());
+            if (cacheVideoFile.length() > 0)
+                cacheVideoFile.renameTo(videoFile);
             if (videoTaskReference.get() != null) {
                 videoTaskReference.get().getVideo(video);
             }
         } else {
             LogUtil.e(TAG, "error video " + result + " " + this.toString());
-            if (videoFile != null && videoFile.exists()) {
-                videoFile.delete();
-            }
+        }
+        if (cacheVideoFile != null && cacheVideoFile.exists()) {
+            cacheVideoFile.delete();
         }
         VideoTaskManager.getInstance().removeTask(this);
     }
@@ -117,8 +123,8 @@ public class VideoDownloadTask extends LoaderTask {
     protected void onCancelled(Boolean result) {
         super.onCancelled(result);
         LogUtil.d(TAG, "cancel video " + result + " " + this.toString());
-        if (videoFile != null && videoFile.exists() && (result == null || !result)) {
-            videoFile.delete();
+        if (cacheVideoFile != null && cacheVideoFile.exists() && (result == null || !result)) {
+            cacheVideoFile.delete();
         }
         VideoTaskManager.getInstance().removeTask(this);
     }

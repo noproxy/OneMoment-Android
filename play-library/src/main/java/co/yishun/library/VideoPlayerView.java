@@ -2,7 +2,6 @@ package co.yishun.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +13,11 @@ import android.widget.RelativeLayout;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import co.yishun.library.resource.NetworkVideo;
+import co.yishun.library.resource.VideoResource;
 
 /**
  * OnemomentPlayerView
@@ -25,17 +25,20 @@ import co.yishun.library.resource.NetworkVideo;
  * @author ZhihaoJun
  */
 public class VideoPlayerView extends RelativeLayout
-        implements OnemomentPlaySurfaceView.PlayListener {
-    public final static String TAG = "OnemomentPlayerView";
+        implements OMVideoPlayer.PlayListener {
+    public final static String TAG = "VideoPlayerView";
 
-    private OnemomentPlaySurfaceView mPlaySurface;
+    private PlaySurfaceView mPlaySurface;
     private AvatarRecyclerView mAvatarView;
     private ImageView mVideoPreview;
     private ImageView mPlayBtn;
     private ProgressBar mProgress;
     private TagContainer mTagContainer;
-    private List<NetworkVideo> mVideoResources = new LinkedList<>();
-    private OnVideoChangeListener mVideoChangeListener;
+    private Queue<NetworkVideo> mResQueue = new LinkedBlockingQueue<>();
+    private VideoPlayViewListener mPlayListener;
+
+    private OMVideoPlayer mVideoPlayer;
+
     private int mPreparedIndex = 0;
     private int mCompletionIndex = 0;
     private boolean mShowPlayBtn = true;
@@ -43,6 +46,10 @@ public class VideoPlayerView extends RelativeLayout
     private boolean mShowTags = true;
     private boolean mWithAvatar = false;
     private boolean mLoading = false;
+    private boolean mMoreAsking = true;
+    private int mCachedIndex = 0;
+    private int mPlayingIndex = 0;
+    private boolean mNoMoreVideo = false;
 
     public VideoPlayerView(Context context) {
         super(context);
@@ -77,32 +84,21 @@ public class VideoPlayerView extends RelativeLayout
         }
 
         // get views
-        mPlaySurface = (OnemomentPlaySurfaceView) findViewById(R.id.om_video_surface);
+        mPlaySurface = (PlaySurfaceView) findViewById(R.id.om_video_surface);
         mPlayBtn = (ImageView) findViewById(R.id.om_play_btn);
         mVideoPreview = (ImageView) findViewById(R.id.om_video_preview);
         mTagContainer = (TagContainer) findViewById(R.id.om_tags_container);
         mAvatarView = (AvatarRecyclerView) findViewById(R.id.om_avatar_recycler_view);
         mProgress = (ProgressBar) findViewById(R.id.om_progress);
 
-        mPlaySurface.setOneListener(this);
+        mVideoPlayer = new OMVideoPlayer(getContext());
+        mPlaySurface.setPlayer(mVideoPlayer, this);
 
         mCompletionIndex = -1;
     }
 
     public boolean isPlaying() {
-        return mPlaySurface.isPlaying();
-    }
-
-    public void prepare() {
-        mPlaySurface.setVideoResource(mVideoResources.get(0));
-        if (mVideoResources.size() == 1) {
-            mPlaySurface.setNextVideoResource(mVideoResources.get(0));
-            mPreparedIndex = 0;
-        } else {
-            mPlaySurface.setNextVideoResource(mVideoResources.get(1));
-            mPreparedIndex = 1;
-        }
-        mPlaySurface.prepareFirst();
+        return mVideoPlayer.isPlaying();
     }
 
     public void setPreview(File largeThumb) {
@@ -111,92 +107,70 @@ public class VideoPlayerView extends RelativeLayout
 
     public void showLoading() {
         mProgress.setVisibility(VISIBLE);
-        mPlayBtn.setVisibility(INVISIBLE);
         this.setEnabled(false);
     }
 
     public void hideLoading() {
         mProgress.setVisibility(INVISIBLE);
-        mPlayBtn.setVisibility(VISIBLE);
         this.setEnabled(true);
     }
 
     public void start() {
-        if (mVideoResources.size() >= 1) {
-            Log.d(TAG, "start");
-            mPlaySurface.start();
-            if (mShowPlayBtn) {
-                mPlayBtn.setVisibility(View.INVISIBLE);
-                mVideoPreview.setVisibility(INVISIBLE);
-            }
+        Log.d(TAG, "start");
+        mVideoPlayer.start();
+        if (mShowPlayBtn) {
+            mPlayBtn.setVisibility(View.INVISIBLE);
+            mVideoPreview.setVisibility(INVISIBLE);
         }
     }
 
     public void pause() {
-        mPlaySurface.pause();
+        mVideoPlayer.pause();
         if (mShowPlayBtn) {
             mPlayBtn.setVisibility(View.VISIBLE);
         }
     }
 
     public void stop() {
-        mPlaySurface.release();
+        mVideoPlayer.release();
         if (mShowPlayBtn) {
             mPlayBtn.setVisibility(View.VISIBLE);
         }
     }
 
     public void reset() {
-        stop();
+        if (mShowPlayBtn) {
+            mPlayBtn.setVisibility(View.VISIBLE);
+        }
         mVideoPreview.setVisibility(VISIBLE);
         if (mWithAvatar)
             mAvatarView.scrollToZero();
+        if (mPlayListener != null)
+            mPlayListener.videoChangeTo(0);
 
-        if (mVideoResources.size() >= 1) {
-            if (mVideoChangeListener != null) {
-                mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
-            }
-            mPlaySurface.setVideoResource(mVideoResources.get(0));
-            mPreparedIndex = 0;
-            mPlaySurface.prepareFirst();
-        }
-        if (mVideoResources.size() >= 2) {
-            mPlaySurface.setNextVideoResource(mVideoResources.get(1));
-            mPreparedIndex = 1;
-            mPlaySurface.prepareNext();
+        mCompletionIndex = -1;
+        mMoreAsking = true;
+        mCachedIndex = 0;
+        mVideoPlayer.reset();
+        loadMore();
+    }
+
+    public void addVideoResource(NetworkVideo[] videoResources) {
+        for (NetworkVideo videoRes : videoResources) {
+            addVideoResource(videoRes);
         }
     }
 
     public void addVideoResource(NetworkVideo videoResource) {
-        Log.i("[OPV]", "add resource " + videoResource);
-        mVideoResources.add(videoResource);
-        if (mVideoResources.size() == 1) {
-            if (mVideoChangeListener != null) {
-                mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
-            }
-            mPlaySurface.setVideoResource(mVideoResources.get(0));
-            mPreparedIndex = 0;
-            mTagContainer.setVideoTags(mVideoResources.get(0).getVideoTags());
-            mPlaySurface.prepareFirst();
+        Log.i(TAG, "add resource " + videoResource);
+        if (mMoreAsking) {
+            mVideoPlayer.setVideoRes(videoResource);
+            mMoreAsking = false;
+            hideLoading();
+        } else {
+            mResQueue.offer(videoResource);
         }
-        if (mVideoResources.size() == 2) {
-            mPlaySurface.setNextVideoResource(mVideoResources.get(1));
-            mPreparedIndex = 1;
-            mPlaySurface.prepareNext();
-        }
-    }
-
-    public void setToLocal(String url, String path) {
-        for (int i = 0; i < mVideoResources.size(); i++) {
-            if (TextUtils.equals(mVideoResources.get(i).getUrl(), url)) {
-                mVideoResources.get(i).setPath(path);
-                if (i == mPreparedIndex && mLoading) {
-                    mPlaySurface.setNextVideoResource(mVideoResources.get(mPreparedIndex));
-                    mPlaySurface.prepareNext();
-                }
-                break;
-            }
-        }
+        mCachedIndex++;
     }
 
     public void addAvatarUrl(String url) {
@@ -209,8 +183,8 @@ public class VideoPlayerView extends RelativeLayout
         requestLayout();
     }
 
-    public void setVideoChangeListener(OnVideoChangeListener videoChangeListener) {
-        this.mVideoChangeListener = videoChangeListener;
+    public void setVideoPlayListener(VideoPlayViewListener playListener) {
+        this.mPlayListener = playListener;
     }
 
     public boolean isAutoplay() {
@@ -222,7 +196,7 @@ public class VideoPlayerView extends RelativeLayout
     }
 
     public int getCurrentIndex() {
-        return (mCompletionIndex + 1) % mVideoResources.size();
+        return (mCompletionIndex + 1) % mResQueue.size();
     }
 
     public void setWithAvatar(boolean withAvatar) {
@@ -230,6 +204,19 @@ public class VideoPlayerView extends RelativeLayout
         if (!withAvatar) {
             mAvatarView.setVisibility(GONE);
         }
+    }
+
+    private void loadMore() {
+        if (mPlayListener != null)
+            while (mResQueue.size() < 8) {
+                boolean result = mPlayListener.loadMore(mCachedIndex);
+                if (!result) {
+                    mNoMoreVideo = true;
+                    break;
+                }
+            }
+        else mNoMoreVideo = true;
+        Log.d(TAG, "queue size : " + mResQueue.size() + "  " + mCachedIndex);
     }
 
     @Override
@@ -247,33 +234,39 @@ public class VideoPlayerView extends RelativeLayout
     @Override
     public void onOneCompletion() {
         mCompletionIndex++;
-        mCompletionIndex %= mVideoResources.size();
 
-        if (mVideoResources.size() == 1) {
-            reset();
+        if (mCompletionIndex == mCachedIndex - 1) {
+            if (mNoMoreVideo) {
+                reset();
+            } else {
+                if (mMoreAsking) {
+                    showLoading();
+                }
+            }
         } else {
             if (mWithAvatar)
                 mAvatarView.scrollToNext();
 
-            if (mVideoChangeListener != null) {
-                mVideoChangeListener.videoChangeTo((mCompletionIndex + 1) % mVideoResources.size());
+            if (mPlayListener != null) {
+                mPlayListener.videoChangeTo(mCompletionIndex);
             }
-            mTagContainer.setVideoTags(mVideoResources.get((mCompletionIndex + 1) % mVideoResources.size()).getVideoTags());
-            if (mCompletionIndex == mVideoResources.size() - 2) {
-                mPlaySurface.setNextVideoResource(null);
-                return;
-            }
-            if (mCompletionIndex == mVideoResources.size() - 1) {
-                reset();
-                return;
-            }
-            mPreparedIndex++;
-            mPreparedIndex %= mVideoResources.size();
-            mPlaySurface.setNextVideoResource(mVideoResources.get(mPreparedIndex));
         }
     }
 
-    public interface OnVideoChangeListener {
+    @Override
+    public VideoResource onMoreAsked() {
+        Log.d(TAG, "on more asked, queue size : " + mResQueue.size());
+        VideoResource videoRes = mResQueue.poll();
+        if (videoRes == null) {
+            mMoreAsking = true;
+            loadMore();
+        }
+        return videoRes;
+    }
+
+    public interface VideoPlayViewListener {
         void videoChangeTo(int index);
+
+        boolean loadMore(int startIndex);
     }
 }
