@@ -2,6 +2,7 @@ package co.yishun.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -161,7 +162,7 @@ public class VideoPlayerView extends RelativeLayout
     public void addVideoResource(NetworkVideo videoResource) {
         Log.i(TAG, "add resource " + videoResource);
         if (mMoreAsking) {
-            mVideoPlayer.setVideoRes(videoResource);
+            mVideoPlayer.setVideoRes(videoResource.getVideoUri());
             mMoreAsking = false;
             hideLoading();
         } else {
@@ -251,14 +252,15 @@ public class VideoPlayerView extends RelativeLayout
     }
 
     @Override
-    public VideoResource onMoreAsked() {
+    public Uri onMoreAsked() {
         Log.d(TAG, "on more asked, queue size : " + mResQueue.size());
         VideoResource videoRes = mResQueue.poll();
         if (videoRes == null) {
             mMoreAsking = true;
             loadMore();
+            return null;
         }
-        return videoRes;
+        return videoRes.getVideoUri();
     }
 
     public interface VideoPlayViewListener {

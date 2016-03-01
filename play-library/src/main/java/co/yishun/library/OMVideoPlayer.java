@@ -2,6 +2,7 @@ package co.yishun.library;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -20,10 +21,7 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
 
     private MediaPlayer mMediaPlayer;
     private MediaPlayer mNextPlayer;
-    private VideoResource mVideoResource;
-    private VideoResource mNextVideoResource;
-    private boolean mHolderCreated = false;
-    private boolean mHolderDestroyed = false;
+    private Uri mVideoUri;
     private PlayListener mPlayListener;
 
     private State mMediaState;
@@ -38,14 +36,14 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
     }
 
     public void prepareNew() {
-        if (mVideoResource == null && (mMediaPlayer == null || mNextPlayer == null)) {
-            mVideoResource = mPlayListener.onMoreAsked();
+        if (mVideoUri == null && (mMediaPlayer == null || mNextPlayer == null)) {
+            mVideoUri = mPlayListener.onMoreAsked();
         }
-        if (mVideoResource != null) {
+        if (mVideoUri != null) {
             try {
-                Log.d(TAG, "create new " + mVideoResource.getVideoUri().toString());
+                Log.d(TAG, "create new " + mVideoUri.toString());
                 MediaPlayer newPlayer = new MediaPlayer();
-                newPlayer.setDataSource(mContext, mVideoResource.getVideoUri());
+                newPlayer.setDataSource(mContext, mVideoUri);
                 newPlayer.setOnPreparedListener(this::newPrepared);
                 newPlayer.prepareAsync();
                 newPlayer.setOnCompletionListener(this);
@@ -60,16 +58,16 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
                     mNextState = State.PREPARING;
                     Log.d(TAG, "new is next player " + mNextPlayer);
                 }
-                mVideoResource = null;
+                mVideoUri = null;
             } catch (IOException e) {
-                Log.e(TAG, mVideoResource.getVideoUri().toString());
+                Log.e(TAG, mVideoUri.toString());
                 e.printStackTrace();
             }
         }
     }
 
-    public void setVideoRes(VideoResource videoRes) {
-        mVideoResource = videoRes;
+    public void setVideoRes(Uri videoUri) {
+        mVideoUri = videoUri;
         prepareNew();
     }
 
@@ -117,6 +115,10 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
             mMediaPlayer = mp;
         }
         mMediaPlayer.setDisplay(mHolder);
+        if (mMediaState != State.STARTED) {
+            mMediaPlayer.start();
+            mMediaPlayer.pause();
+        }
         if (mNextPlayer == mp) {
             mNextPlayer = null;
             mNextState = State.IDLE;
@@ -130,6 +132,11 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
     public void setDisplay(SurfaceHolder holder) {
         Log.d(TAG, "set holder");
         mHolder = holder;
+        if (mMediaPlayer != null && mMediaState != State.STARTED) {
+            mMediaPlayer.setDisplay(holder);
+            mMediaPlayer.start();
+            mMediaPlayer.pause();
+        }
     }
 
     void newPrepared(MediaPlayer mp) {
@@ -160,8 +167,8 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
         mMediaState = State.COMPLETED;
 
         if (mNextPlayer != null && mNextState == State.PREPARED) {
-            changeTo(mNextPlayer);
             mMediaState = State.STARTED;
+            changeTo(mNextPlayer);
             prepareNew();
         } else {
             mMediaPlayer.release();
@@ -214,6 +221,6 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
 
         void onOneCompletion();
 
-        VideoResource onMoreAsked();
+        Uri onMoreAsked();
     }
 }
