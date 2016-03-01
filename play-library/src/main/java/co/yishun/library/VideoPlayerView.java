@@ -231,18 +231,6 @@ public class VideoPlayerView extends RelativeLayout
     }
 
     @Override
-    public void onPrepared() {
-        Log.d(TAG, "loaded");
-        mLoading = false;
-    }
-
-    @Override
-    public void onPreparing() {
-        Log.d(TAG, "loading");
-        mLoading = true;
-    }
-
-    @Override
     public void onOneCompletion() {
         mCompletionIndex++;
 

@@ -192,27 +192,6 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
         return true;
     }
 
-//    @Override
-//    public void surfaceCreated(SurfaceHolder holder) {
-//        Log.d(TAG, "surface create");
-//        mHolderCreated = true;
-//        if (mMediaPlayer != null) {
-//            mMediaPlayer.setDisplay(holder);
-//        }
-//    }
-//
-//    @Override
-//    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-//        Log.d(TAG, "surface change");
-//    }
-//
-//    @Override
-//    public void surfaceDestroyed(SurfaceHolder holder) {
-//        Log.d(TAG, "surface destroy");
-//        mHolderCreated = false;
-//        reset();
-//    }
-
     enum State {
         IDLE,
         PREPARING,
@@ -223,12 +202,15 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
     }
 
     public interface PlayListener {
-        void onPrepared();
-
-        void onPreparing();
-
+        /**
+         * Called when one of the video complete.
+         */
         void onOneCompletion();
 
+        /**
+         * Called when need more video uri to play.
+         * @return Uri of the video, null if no more videos to play.
+         */
         Uri onMoreAsked();
     }
 }
