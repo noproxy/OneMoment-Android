@@ -112,6 +112,7 @@ public class VideoPlayerView extends RelativeLayout
 
     public void hideLoading() {
         mProgress.setVisibility(INVISIBLE);
+        mVideoPlayer.start();
         this.setEnabled(true);
     }
 
@@ -143,10 +144,6 @@ public class VideoPlayerView extends RelativeLayout
             mPlayBtn.setVisibility(View.VISIBLE);
         }
         mVideoPreview.setVisibility(VISIBLE);
-        if (mWithAvatar)
-            mAvatarView.scrollToZero();
-        if (mPlayListener != null)
-            mPlayListener.videoChangeTo(0);
 
         mCompletionIndex = -1;
         mMoreAsking = true;
@@ -208,7 +205,7 @@ public class VideoPlayerView extends RelativeLayout
 
     private void loadMore() {
         if (mPlayListener != null)
-            while (mResQueue.size() < 8) {
+            for (int i = 0; i < 8; i++) {
                 boolean result = mPlayListener.loadMore(mCachedIndex);
                 if (!result) {
                     mNoMoreVideo = true;
@@ -235,6 +232,13 @@ public class VideoPlayerView extends RelativeLayout
     public void onOneCompletion() {
         mCompletionIndex++;
 
+        if (mWithAvatar)
+            mAvatarView.scrollToNext();
+
+        if (mPlayListener != null) {
+            mPlayListener.videoChangeTo((mCompletionIndex + 1) % mCachedIndex);
+        }
+
         if (mCompletionIndex == mCachedIndex - 1) {
             if (mNoMoreVideo) {
                 reset();
@@ -242,13 +246,6 @@ public class VideoPlayerView extends RelativeLayout
                 if (mMoreAsking) {
                     showLoading();
                 }
-            }
-        } else {
-            if (mWithAvatar)
-                mAvatarView.scrollToNext();
-
-            if (mPlayListener != null) {
-                mPlayListener.videoChangeTo(mCompletionIndex);
             }
         }
     }

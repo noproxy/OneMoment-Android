@@ -38,7 +38,7 @@ import co.yishun.onemoment.app.data.FileUtil;
 @EFragment(R.layout.fragment_play_world)
 public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.VideoPlayViewListener,
         VideoTask.OnVideoListener {
-    private static final String TAG = "platworld";
+    private static final String TAG = "PlayWorldFragment";
     private final Object OffsetLock = new Object();
     @FragmentArg
     WorldProvider world;
@@ -97,10 +97,9 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
         int index = videoProviders.indexOf(video);
         if (index >= 0 && index == playViewRequestIndex)
             cacheVideoToPlayView(video, videoFile);
-        if (!mReady) {
+        if (index == 0) {
             onLoad();
             refreshUserInfo(0);
-            mReady = true;
         }
     }
 

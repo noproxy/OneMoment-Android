@@ -40,7 +40,7 @@ public class VideoDownloadTask extends LoaderTask {
     @Override
     protected Boolean doInBackground(VideoProvider... videos) {
         video = videos[0];
-        LogUtil.d(TAG, "start video " + video.getFilename() + "  " + video.getDownloadUrl());
+        LogUtil.d(TAG, "start video " + this + "  " + video.getFilename() + "  " + video.getDownloadUrl());
         cacheVideoFile = FileUtil.getCacheFile(mContext, video.getFilename());
         videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
 
