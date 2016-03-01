@@ -8,8 +8,6 @@ import android.view.SurfaceHolder;
 
 import java.io.IOException;
 
-import co.yishun.library.resource.VideoResource;
-
 /**
  * Created by Jinge on 2016/3/1.
  */
@@ -26,6 +24,8 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
 
     private State mMediaState;
     private State mNextState;
+
+    private boolean mStartInFuture = false;
 
     public OMVideoPlayer(Context context) {
         mContext = context;
@@ -79,6 +79,8 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
             changeTo(mMediaPlayer);
             mMediaPlayer.start();
             mMediaState = State.STARTED;
+        } else if (mMediaState == State.PREPARING) {
+            mStartInFuture = true;
         }
     }
 
@@ -145,6 +147,12 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
             mMediaState = State.PREPARED;
             Log.d(TAG, "move to media player");
             changeTo(mp);
+            if (mStartInFuture) {
+                mMediaPlayer.start();
+                mMediaState = State.STARTED;
+                mStartInFuture = false;
+            }
+
             if (mNextPlayer != null && mNextState == State.PREPARED) {
                 mMediaPlayer.setNextMediaPlayer(mNextPlayer);
             } else {

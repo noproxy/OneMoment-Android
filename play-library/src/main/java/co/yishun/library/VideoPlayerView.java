@@ -116,9 +116,11 @@ public class VideoPlayerView extends RelativeLayout
     }
 
     public void hideLoading() {
-        mProgress.setVisibility(INVISIBLE);
-        mVideoPlayer.start();
-        this.setEnabled(true);
+        if (mProgress.getVisibility() == VISIBLE) {
+            mProgress.setVisibility(INVISIBLE);
+            mVideoPlayer.start();
+            this.setEnabled(true);
+        }
     }
 
     public void start() {
