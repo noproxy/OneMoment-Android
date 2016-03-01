@@ -17,6 +17,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 
 /**
  * Created by Jinge on 2016/1/22.
@@ -44,6 +45,7 @@ public class CreateWorldActivity extends BaseWebActivity {
     void finishClick(View view) {
         hideKeyboard();
         mWebFragment.sendFinish();
+        BaseWebFragment.invalidateWeb();
     }
 
     void showKeyboard() {
