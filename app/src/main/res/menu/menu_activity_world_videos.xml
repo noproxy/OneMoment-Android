@@ -5,7 +5,6 @@
     tools:context=".ui.WorldVideosActivity">
     <item
         android:id="@+id/activity_world_videos_action_delete"
-        android:icon="@drawable/ic_action_close"
         android:orderInCategory="100"
         android:title="@string/activity_world_videos_action_delete"
         app:showAsAction="never" />
