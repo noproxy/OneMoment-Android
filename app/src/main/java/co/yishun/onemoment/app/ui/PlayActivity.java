@@ -9,8 +9,12 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -28,9 +32,11 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
 import co.yishun.onemoment.app.api.APIV4;
 import co.yishun.onemoment.app.api.authentication.OneMomentV4;
+import co.yishun.onemoment.app.api.modelv4.ApiModel;
 import co.yishun.onemoment.app.api.modelv4.ShareInfo;
 import co.yishun.onemoment.app.api.modelv4.VideoProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldProvider;
+import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
@@ -127,7 +133,50 @@ public class PlayActivity extends BaseActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.activity_play_world_action_delete:// will only be called when it is
+                // PlayWorldFragment
+                if (video instanceof WorldVideo) {
+                    WorldVideo worldVideo = (WorldVideo) video;
+                    new MaterialDialog.Builder(this).cancelable(true).canceledOnTouchOutside(true)
+                            .content(R.string.activity_play_world_dialog_delete_content).positiveText(R
+                            .string.activity_play_world_dialog_delete_positive).negativeText(R
+                            .string.activity_play_world_dialog_delete_negative).onPositive(
+                            (dialog, which) -> dialog.dismiss()).onNegative((dialog1, which1) -> {
+                        deleteWorldVideo(worldVideo);
+                    }).show();
+                }
+                return true;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (PlayActivity.TYPE_VIDEO == type) {
+            getMenuInflater().inflate(R.menu.menu_activity_play_world, menu);
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Background
+    void deleteWorldVideo(WorldVideo worldVideo) {
+        showProgress(R.string.activity_play_world_progress_delete_content);
+        APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
+        ApiModel result = apiv4.deleteWorldVideo(worldVideo._id, AccountManager.getUserInfo(this)
+                ._id);
+        if (result.isSuccess()) {
+            hideProgress();
+            runOnUiThread(() -> {
+                        Toast.makeText(this, R.string.activity_play_world_progress_delete_success,
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+            );
+        } else {
+            showSnackMsg(R.string.activity_play_world_progress_delete_fail);
+            LogUtil.i(TAG, "delete world fail:" + result.toString());
+        }
     }
 }

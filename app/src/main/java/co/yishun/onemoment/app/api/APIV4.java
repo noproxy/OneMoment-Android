@@ -2,6 +2,7 @@ package co.yishun.onemoment.app.api;
 
 import android.support.annotation.Nullable;
 
+import co.yishun.onemoment.app.api.modelv4.ApiModel;
 import co.yishun.onemoment.app.api.modelv4.HybrdData;
 import co.yishun.onemoment.app.api.modelv4.ListWithErrorV4;
 import co.yishun.onemoment.app.api.modelv4.ShareInfo;
@@ -32,6 +33,11 @@ public interface APIV4 {
     @FormUrlEncoded
     World deleteWorld(@Field("world_id") String worldId,
                       @Field("account_id") String userId);
+
+    @POST("/world/delete_video")
+    @FormUrlEncoded
+    ApiModel deleteWorldVideo(@Field("video_id") String videoId,
+                              @Field("account_id") String userId);
 
     @POST("/world/video")
     @FormUrlEncoded
