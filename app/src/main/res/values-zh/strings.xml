@@ -117,4 +117,10 @@
     <string name="activity_world_videos_progress_delete_content">正在删除…</string>
     <string name="activity_world_videos_progress_delete_fail">删除失败了，网络似乎有点问题</string>
     <string name="activity_world_videos_progress_delete_success">删除成功</string>
+    <string name="activity_play_world_dialog_delete_content">确定删除？删除后无法再恢复</string>
+    <string name="activity_play_world_dialog_delete_negative">删除</string>
+    <string name="activity_play_world_dialog_delete_positive">取消</string>
+    <string name="activity_play_world_progress_delete_content">正在删除…</string>
+    <string name="activity_play_world_progress_delete_fail">删除失败了，网络似乎有点问题</string>
+    <string name="activity_play_world_progress_delete_success">删除成功</string>
 </resources>
