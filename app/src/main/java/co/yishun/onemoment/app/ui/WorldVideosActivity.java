@@ -178,8 +178,8 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         recyclerView.setLayoutManager(manager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
 
-        adapter = new WorldVideoAdapter(this, this);
-        recyclerView.setAdapter(adapter);
+//        adapter = new WorldVideoAdapter(this, this);
+//        recyclerView.setAdapter(adapter);
     }
 
     void setupToolbar() {
@@ -209,6 +209,8 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             toolbar.setSubtitle(ss);
         });
+        adapter = new WorldVideoAdapter(this, this);
+        recyclerView.setAdapter(adapter);
         controller.setup(adapter, recyclerView, world, forWorld, videoImageView);
     }
 
