@@ -119,6 +119,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
         }
         NetworkVideo videoResource = new NetworkVideo(tags, videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);
+        playViewRequestIndex = -1;
     }
 
 //    @Click(R.id.voteCountTextView)
@@ -173,7 +174,6 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
             File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
             if (videoFile.length() > 0) {
                 cacheVideoToPlayView(video, videoFile);
-                playViewRequestIndex = -1;
             } else {
                 playViewRequestIndex = index;
             }

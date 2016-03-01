@@ -97,8 +97,6 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
         mMediaPlayer = null;
         mNextPlayer = null;
         mMediaState = State.IDLE;
-//        prepareNew();
-//        prepareNew();
     }
 
     void release() {
@@ -163,6 +161,7 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
 
         if (mNextPlayer != null && mNextState == State.PREPARED) {
             changeTo(mNextPlayer);
+            mMediaState = State.STARTED;
             prepareNew();
         } else {
             mMediaPlayer.release();

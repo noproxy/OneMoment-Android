@@ -267,6 +267,6 @@ public class VideoPlayerView extends RelativeLayout
     public interface VideoPlayViewListener {
         void videoChangeTo(int index);
 
-        boolean loadMore(int startIndex);
+        boolean loadMore(int index);
     }
 }

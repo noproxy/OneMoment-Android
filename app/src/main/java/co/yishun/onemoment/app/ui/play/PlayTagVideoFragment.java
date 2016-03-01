@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import co.yishun.library.VideoPlayerView;
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.tag.BaseVideoTag;
 import co.yishun.library.tag.VideoTag;
@@ -29,7 +30,7 @@ import co.yishun.onemoment.app.data.FileUtil;
  * Created on 2015/10/28.
  */
 @EFragment(R.layout.fragment_play_tag_video)
-public class PlayTagVideoFragment extends PlayFragment {
+public class PlayTagVideoFragment extends PlayFragment implements VideoPlayerView.VideoPlayViewListener {
     @FragmentArg
     VideoProvider video;
 
@@ -42,6 +43,8 @@ public class PlayTagVideoFragment extends PlayFragment {
 
     private WorldAPI mWorldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
 
+    private int playViewRequestIndex = 0;
+
     @AfterViews
     void setup() {
         Picasso.with(mContext).load(video.getAvatarUrl()).into(avatar);
@@ -49,6 +52,7 @@ public class PlayTagVideoFragment extends PlayFragment {
         usernameTextView.setText(video.getNickname());
 
         videoPlayView.setWithAvatar(false);
+        videoPlayView.setVideoPlayListener(this);
 
         new VideoTask(mContext, video, VideoTask.TYPE_VIDEO)
                 .setVideoListener(this::addVideo).start();
@@ -59,14 +63,20 @@ public class PlayTagVideoFragment extends PlayFragment {
     @UiThread
     void addVideo(VideoProvider video) {
         File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
+        if (playViewRequestIndex == 0)
+            cacheVideoToPlayView(video, videoFile);
+        videoPlayView.addAvatarUrl(video.getAvatarUrl());
+        onLoad();
+    }
+
+    void cacheVideoToPlayView(VideoProvider video, File videoFile) {
         List<VideoTag> tags = new LinkedList<>();
-        for (int i = 0; i < this.video.getTags().size(); i++) {
-            tags.add(new BaseVideoTag(this.video.getTags().get(i).name, this.video.getTags().get(i).x, this.video.getTags().get(i).y));
+        for (int i = 0; i < video.getTags().size(); i++) {
+            tags.add(new BaseVideoTag(video.getTags().get(i).name, video.getTags().get(i).x, video.getTags().get(i).y));
         }
         NetworkVideo videoResource = new NetworkVideo(tags, videoFile.getPath());
         videoPlayView.addVideoResource(videoResource);
-        videoPlayView.addAvatarUrl(video.getAvatarUrl());
-        onLoad();
+        playViewRequestIndex = -1;
     }
 
 //    @Click(R.id.voteCountTextView)
@@ -95,5 +105,25 @@ public class PlayTagVideoFragment extends PlayFragment {
     @Override
     public void setPageInfo() {
         mIsPage = false;
+    }
+
+    @Override
+    public void videoChangeTo(int index) {
+
+    }
+
+    @Override
+    public boolean loadMore(int index) {
+        if (index >= 1) {
+            return false;
+        } else {
+            File videoFile = FileUtil.getWorldVideoStoreFile(mContext, video);
+            if (videoFile.length() > 0) {
+                cacheVideoToPlayView(video, videoFile);
+            } else {
+                playViewRequestIndex = index;
+            }
+            return true;
+        }
     }
 }
