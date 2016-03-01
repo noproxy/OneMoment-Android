@@ -25,6 +25,7 @@ import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.api.modelv4.WorldProvider;
 import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.api.modelv4.WorldVideoListWithErrorV4;
+import co.yishun.onemoment.app.function.Consumer;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
 
@@ -35,6 +36,7 @@ import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
 public class WorldVideosController extends RecyclerController<Integer, SuperRecyclerView, WorldVideo, WorldVideoAdapter.SimpleViewHolder>
         implements OnMoreListener {
     private static final String TAG = "WorldVideoController";
+    private static Consumer<World> mNewWorldListener = null;
     private WorldProvider mWorld;
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private boolean mForWorld;
@@ -56,6 +58,10 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
         getWorldThumb();
     }
 
+    public void setOnNewWorldListener(Consumer<World> consumer) {
+        mNewWorldListener = consumer;
+    }
+
     @Override
     protected ListErrorProvider<WorldVideo> onLoad() {
         ListErrorProvider<WorldVideo> list;
@@ -67,10 +73,16 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
 //        if (list.isSuccess() && list.size() > 0) {
 //            order = list.get(list.size() - 1).order;
 //        }
-
+        World world = ((WorldVideoListWithErrorV4) list).world;
+        if (mNewWorldListener != null) {
+            getRecyclerView().post(() -> {
+                        mNewWorldListener.accept(world);
+                        if (world.getVideosNum() != mWorld.getVideosNum())
+                            getAdapter().notifyDataSetChanged();
+                    }
+            );
+        }
         if (mThumbUrlInvalid) {
-            World world = ((WorldVideoListWithErrorV4) list).world;
-            mWorld.setThumb(world.thumbnail);
             getWorldThumb();
         }
 

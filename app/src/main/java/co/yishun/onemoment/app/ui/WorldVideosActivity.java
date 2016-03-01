@@ -56,6 +56,7 @@ import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
+import co.yishun.onemoment.app.ui.controller.WorldVideosController;
 import co.yishun.onemoment.app.ui.controller.WorldVideosController_;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
@@ -66,6 +67,7 @@ import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 @EActivity(R.layout.activity_world_videos)
 public class WorldVideosActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldVideo> {
     private static final String TAG = "WorldVideosActivity";
+    private static boolean mWorldUpdated = true;
     @Extra
     WorldProvider world;
     @Extra
@@ -80,7 +82,6 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     Rect imageRect;
     @Extra
     int imageCorner;
-
     @ViewById
     AppBarLayout appBar;
     @ViewById
@@ -95,7 +96,6 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     FrameLayout transitionFrameLayout;
     @ViewById
     RadioCornerImageView transImage;
-
     private int statusBarHeight;
     private int collapsedTitleColor;
     private int collapsedSubTitleColor;
@@ -104,7 +104,6 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     private WorldVideoAdapter adapter;
     private boolean needTransition;
     private boolean showAdd;
-
 
     @AfterInject
     void checkExtra() {
@@ -200,12 +199,23 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     @Override
     protected void onResume() {
         super.onResume();
-        WorldVideosController_.getInstance_(this).setup(adapter, recyclerView, world, forWorld, videoImageView);
+        WorldVideosController controller = WorldVideosController_.getInstance_(this);
+        controller.setOnNewWorldListener(world1 -> {
+            if (mWorldUpdated) return;
+            world = world1;
+            mWorldUpdated = true;
+            String num = String.valueOf(world.getVideosNum());
+            SpannableString ss = new SpannableString(String.format(getString(R.string.fragment_world_suffix_people_count), world.getVideosNum()));
+            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            toolbar.setSubtitle(ss);
+        });
+        controller.setup(adapter, recyclerView, world, forWorld, videoImageView);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mWorldUpdated = false;
         VideoTaskManager.getInstance().quit();
     }
 
