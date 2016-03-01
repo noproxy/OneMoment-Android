@@ -14,11 +14,13 @@ import android.widget.RelativeLayout;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import co.yishun.library.resource.NetworkVideo;
 import co.yishun.library.resource.VideoResource;
+import co.yishun.library.tag.VideoTag;
 
 /**
  * OnemomentPlayerView
@@ -36,6 +38,7 @@ public class VideoPlayerView extends RelativeLayout
     private ProgressBar mProgress;
     private TagContainer mTagContainer;
     private Queue<NetworkVideo> mResQueue = new LinkedBlockingQueue<>();
+    private Queue<List<VideoTag>> mTagQueue = new LinkedBlockingQueue<>();
     private VideoPlayViewListener mPlayListener;
 
     private OMVideoPlayer mVideoPlayer;
@@ -87,6 +90,7 @@ public class VideoPlayerView extends RelativeLayout
         // get views
         mPlaySurface = (PlaySurfaceView) findViewById(R.id.om_video_surface);
         mPlayBtn = (ImageView) findViewById(R.id.om_play_btn);
+        mPlayBtn.setVisibility(INVISIBLE);
         mVideoPreview = (ImageView) findViewById(R.id.om_video_preview);
         mTagContainer = (TagContainer) findViewById(R.id.om_tags_container);
         mAvatarView = (AvatarRecyclerView) findViewById(R.id.om_avatar_recycler_view);
@@ -119,11 +123,12 @@ public class VideoPlayerView extends RelativeLayout
 
     public void start() {
         Log.d(TAG, "start");
-        mVideoPlayer.start();
         if (mShowPlayBtn) {
             mPlayBtn.setVisibility(View.INVISIBLE);
             mVideoPreview.setVisibility(INVISIBLE);
         }
+
+        mVideoPlayer.start();
     }
 
     public void pause() {
@@ -146,6 +151,10 @@ public class VideoPlayerView extends RelativeLayout
         }
         mVideoPreview.setVisibility(VISIBLE);
 
+        Log.d(TAG, "tag size : " + mTagQueue.size());
+        List<VideoTag> videoTags = mTagQueue.poll();
+        if (videoTags != null) mTagContainer.setVideoTags(videoTags);
+
         mCompletionIndex = -1;
         mMoreAsking = true;
         mCachedIndex = 0;
@@ -167,6 +176,11 @@ public class VideoPlayerView extends RelativeLayout
             hideLoading();
         } else {
             mResQueue.offer(videoResource);
+        }
+        if (mCachedIndex == 0) {
+            mTagContainer.setVideoTags(videoResource.getVideoTags());
+        } else {
+            mTagQueue.offer(videoResource.getVideoTags());
         }
         mCachedIndex++;
     }
@@ -239,6 +253,9 @@ public class VideoPlayerView extends RelativeLayout
         if (mPlayListener != null) {
             mPlayListener.videoChangeTo((mCompletionIndex + 1) % mCachedIndex);
         }
+
+        List<VideoTag> videoTags = mTagQueue.poll();
+        if (videoTags != null) mTagContainer.setVideoTags(videoTags);
 
         if (mCompletionIndex == mCachedIndex - 1) {
             if (mNoMoreVideo) {
