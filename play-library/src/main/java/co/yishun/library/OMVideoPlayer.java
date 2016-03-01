@@ -99,7 +99,7 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
         mMediaState = State.IDLE;
     }
 
-    void release() {
+    public void release() {
         Log.d(TAG, "release");
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
