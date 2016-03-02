@@ -125,6 +125,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             navigationTo(nextNavigationTo);
             navigationView.setCheckedItem(nextNavigationTo.getItemId());
         }
+        nextNavigationTo = null;// digest
     }
 
     @AfterInject
