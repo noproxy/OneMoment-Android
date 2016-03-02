@@ -127,8 +127,8 @@ public class TagCreateActivity extends BaseActivity
     boolean isPrivate;
     @ViewById
     TagContainer tagContainer;
-    @ViewById
-    ImageView momentPreviewImageView;
+//    @ViewById
+//    ImageView momentPreviewImageView;
     @ViewById
     FrameLayout searchFrame;
     @ViewById
@@ -220,7 +220,7 @@ public class TagCreateActivity extends BaseActivity
         videoView.start();
     }
 
-    @Click(R.id.momentPreviewImageView)
+    @Click(R.id.tagContainer)
     void replay() {
         if (!videoView.isPlaying()) {
             videoView.start();
