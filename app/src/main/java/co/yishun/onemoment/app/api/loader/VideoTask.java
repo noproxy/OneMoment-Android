@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.api.loader;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 
@@ -84,6 +85,7 @@ public class VideoTask {
     }
 
     void getVideo(VideoProvider video) {
+        LogUtil.d(TAG, "get video : " + video.getFilename());
         if (videoListener != null) {
             videoListener.onVideoLoad(video);
         } else {

@@ -49,7 +49,8 @@ public abstract class PlayFragment extends BaseFragment {
     @UiThread
     protected void onLoad() {
         videoPlayView.hideLoading();
-        delayStart();
+        if (mActivity != null)
+            mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         isLoading = false;
     }
 
@@ -61,12 +62,12 @@ public abstract class PlayFragment extends BaseFragment {
         }
     }
 
-    @UiThread(delay = 500)
-    void delayStart() {
-        videoPlayView.start();
-        if (mActivity != null)
-            mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
+//    @UiThread(delay = 500)
+//    void delayStart() {
+//        videoPlayView.start();
+//        if (mActivity != null)
+//            mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//    }
 
     @Click(R.id.videoPlayView)
     void videoClick() {
@@ -83,7 +84,7 @@ public abstract class PlayFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
         if (videoPlayView != null) {
-            videoPlayView.reset();
+            videoPlayView.pause();
         }
     }
 

@@ -23,6 +23,7 @@ import java.util.List;
  * Created on 2015/10/29.
  */
 public class AvatarRecyclerView extends RecyclerView {
+    private static final String TAG = "PlayAvatar";
     private AvatarAdapter adapter;
     private LinearLayoutManager layoutManager;
     private float normalSize;
@@ -95,15 +96,15 @@ public class AvatarRecyclerView extends RecyclerView {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
             layoutParams.width = (int) normalSize;
             view.setLayoutParams(layoutParams);
-            Log.d("view", "not null");
+            Log.d(TAG, "not null");
         }
         index = 0;
         smoothScrollToPosition(0);
     }
 
     public void scrollToNext() {
+        Log.d(TAG, "scroll to next " + index + " " + avatarUrls.size());
         if (index == avatarUrls.size() - 1) {
-            Log.d("[ARV]", index + " " + avatarUrls.size());
             scrollToZero();
             return;
         }
@@ -155,7 +156,7 @@ public class AvatarRecyclerView extends RecyclerView {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Log.d("[ARV]", position + " create");
+            Log.d(TAG, position + " create");
             if (holder instanceof SpaceViewHolder) {
                 return;
             }

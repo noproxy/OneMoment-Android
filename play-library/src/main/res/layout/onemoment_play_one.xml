@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <co.yishun.library.OnemomentPlaySurfaceView
+    <co.yishun.library.OMVideoView
         android:id="@+id/playOne"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
