@@ -15,6 +15,9 @@
         <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity</item>
         <item name="drawerArrowStyle">@style/AppTheme.Widget.DrawerArrowToggle</item>
         <item name="colorControlNormal">?attr/colorAccent</item>
+        <item name="bottomSheetDialogTheme">
+            @style/Theme.Design.Light.BottomSheetDialog.NoDarkBackground
+        </item>
     </style>
 
     <style name="AppTheme.VideoVoteUpActivity">
@@ -84,20 +87,16 @@
         <item name="android:textColorTertiary">#545454</item>
         <item name="android:textColorTertiaryInverse">#b0b0b0</item>
         <item name="android:backgroundDimEnabled">false</item>
-        <item name="bottomSheetDialogTheme">
-            @style/Theme.Design.Light.BottomSheetDialog.NoDarkBackground
-        </item>
     </style>
 
     <style name="Theme.Design.Light.BottomSheetDialog.NoDarkBackground">
         <item name="android:windowBackground">@color/colorWindowTransparent</item>
         <item name="android:backgroundDimEnabled">false</item>
-        <item name="behavior_peekHeight">240dp</item>
         <item name="bottomSheetStyle">@style/Widget.Design.BottomSheet.Modal.HeightCustom</item>
     </style>
 
     <style name="Widget.Design.BottomSheet.Modal.HeightCustom">
-        <item name="behavior_peekHeight">240dp</item>
+
     </style>
 
     <style name="TextAppearance.PlaySmall" parent="TextAppearance.AppCompat.Small" />
