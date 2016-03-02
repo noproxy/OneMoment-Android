@@ -5,14 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.TextView;
+import android.support.design.widget.BottomSheetDialog;
+import android.view.View;
+import android.widget.LinearLayout;
 
-import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.ViewById;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,17 +28,10 @@ import co.yishun.onemoment.app.ui.share.ShareController;
 @EActivity(R.layout.activity_share)
 public class ShareActivity extends WXRespActivity implements ShareController.ShareResultListener {
     public static final String TAG = "ShareActivity";
-    public static final int TYPE_SHARE_MOMENT = 0;
-    public static final int TYPE_SHARE_WORLD = 1;
-    public static final int TYPE_SHARE_BADGE = 2;
+
 
     @Extra
     ShareInfoProvider shareInfo;
-    @Extra
-    int shareType;
-
-    @ViewById
-    TextView shareText;
 
     private ShareController shareController;
 
@@ -50,6 +42,7 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
         LogUtil.d(TAG, shareInfo.getImageUrl() + shareInfo.getTitle() + shareInfo.getLink());
         if (savedInstanceState != null)
             shareController.onNewIntent(getIntent());
+        show();
     }
 
     @Override
@@ -72,49 +65,43 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
         LogUtil.d(TAG, "onResume");
     }
 
-    @AfterViews
-    void setUp() {
-        if (shareType == TYPE_SHARE_MOMENT)
-            shareText.setText(getString(R.string.activity_share_share_moment));
-        else if (shareType == TYPE_SHARE_WORLD)
-            shareText.setText(getString(R.string.activity_share_share_world));
-        else if (shareType == TYPE_SHARE_BADGE)
-            shareText.setText(getString(R.string.activity_share_share_badge));
+    private void show() {
+        final BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(R.layout.layout_dialog_share);
+        LinearLayout root = (LinearLayout) dialog.findViewById(R.id.container);
+
+        View.OnClickListener clickListener = view -> onShare(dialog, view);
+
+        int count = root.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = root.getChildAt(i);
+            v.setOnClickListener(clickListener);
+        }
+
+        dialog.setOnCancelListener(it -> this.finish());
+        dialog.show();
     }
 
-    @Click(R.id.relativeLayout)
-    void linearLayoutClick() {
-        finish();
-    }
-
-    @Click(R.id.shareWeChat)
-    void shareWeChatClick() {
-        shareController.setType(ShareController.TYPE_WE_CHAT);
+    void onShare(BottomSheetDialog dialog, View view) {
+        switch (view.getId()) {
+            case R.id.shareWeChat:
+                shareController.setType(ShareController.TYPE_WE_CHAT);
+                break;
+            case R.id.shareWXCircle:
+                shareController.setType(ShareController.TYPE_WX_CIRCLE);
+                break;
+            case R.id.shareWeibo:
+                shareController.setType(ShareController.TYPE_WEIBO);
+                break;
+            case R.id.shareQQ:
+                shareController.setType(ShareController.TYPE_QQ);
+                break;
+            case R.id.shareQzone:
+                shareController.setType(ShareController.TYPE_QZONE);
+                break;
+        }
+        dialog.dismiss();
         getBitmap();
-    }
-
-    @Click(R.id.shareWXCircle)
-    void shareWXCircleClick() {
-        shareController.setType(ShareController.TYPE_WX_CIRCLE);
-        getBitmap();
-    }
-
-    @Click(R.id.shareWeibo)
-    void shareWeiboClick() {
-        shareController.setType(ShareController.TYPE_WEIBO);
-        getBitmap();
-    }
-
-    @Click(R.id.shareQQ)
-    void shareQQClick() {
-        shareController.setType(ShareController.TYPE_QQ);
-        shareController.share();
-    }
-
-    @Click(R.id.shareQzone)
-    void shareQzoneClick() {
-        shareController.setType(ShareController.TYPE_QZONE);
-        shareController.share();
     }
 
     @Background

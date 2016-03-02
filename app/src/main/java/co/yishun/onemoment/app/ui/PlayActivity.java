@@ -124,7 +124,7 @@ public class PlayActivity extends BaseActivity {
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
         ShareInfo shareInfo = forWorld ? apiv4.shareWorld(world.getName(), AccountManager.getUserInfo(this)._id) :
                 apiv4.shareToday(world.getName(), AccountManager.getUserInfo(this)._id);
-        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
+        ShareActivity_.intent(this).shareInfo(shareInfo).start();
     }
 
     @Override
