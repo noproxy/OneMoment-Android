@@ -34,6 +34,7 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     ShareInfoProvider shareInfo;
 
     private ShareController shareController;
+    private BottomSheetDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     }
 
     private void show() {
-        final BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog = new BottomSheetDialog(this);
         dialog.setContentView(R.layout.layout_dialog_share);
         LinearLayout root = (LinearLayout) dialog.findViewById(R.id.container);
 
@@ -78,7 +79,7 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
             v.setOnClickListener(clickListener);
         }
 
-        dialog.setOnCancelListener(it -> this.finish());
+        dialog.setOnDismissListener(it -> this.finish());
         dialog.show();
     }
 
@@ -100,8 +101,15 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
                 shareController.setType(ShareController.TYPE_QZONE);
                 break;
         }
-        dialog.dismiss();
+        dialog.hide();
         getBitmap();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dialog.setOnDismissListener(null);
+        dialog.dismiss();
     }
 
     @Background
@@ -130,15 +138,18 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     @Override
     public void onSuccess() {
         showSnackMsg(R.string.activity_share_share_success);
+        finish();
     }
 
     @Override
     public void onFail() {
         showSnackMsg(R.string.activity_share_share_fail);
+        finish();
     }
 
     @Override
     public void onCancel() {
         showSnackMsg(R.string.activity_share_share_cancel);
+        finish();
     }
 }
