@@ -89,6 +89,9 @@ import co.yishun.onemoment.app.util.GsonFactory;
 import static co.yishun.onemoment.app.LogUtil.d;
 import static co.yishun.onemoment.app.LogUtil.e;
 import static co.yishun.onemoment.app.LogUtil.i;
+import static co.yishun.onemoment.app.ui.MainActivity.Navigation.Diary;
+import static co.yishun.onemoment.app.ui.MainActivity.Navigation.Discovery;
+import static co.yishun.onemoment.app.ui.MainActivity.Navigation.World;
 
 /**
  * Created by Carlos on 2015/11/2.
@@ -136,10 +139,10 @@ public class TagCreateActivity extends BaseActivity
     TagSearchAdapter adapter;
     @OrmLiteDao(helper = MomentDatabaseHelper.class)
     Dao<Moment, Integer> momentDao;
+    private boolean forDiary;
     private boolean searching = false;
     private LocationClient locationClient;
     private Moment momentToSave;
-    private boolean forDiary;
     /**
      * flag that whether video path has been set.
      */
@@ -344,6 +347,16 @@ public class TagCreateActivity extends BaseActivity
         if (forWorld || forToday) {
             upload();
         }
+
+        // world > diary > today
+        if (forWorld) {
+            MainActivity.setNextNavigationTo(World);
+        } else if (forDiary) {
+            MainActivity.setNextNavigationTo(Diary);
+        } else if (forToday) {
+            MainActivity.setNextNavigationTo(Discovery);
+        }
+
     }
 
     void saveToMoment() {

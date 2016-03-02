@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -42,6 +43,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +71,11 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     public static final String PERMISSION[] = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
     private static final String TAG = "MainActivity";
 
+    /**
+     * Flag to determine what fragment to show when this activity onResume, null to keep origin
+     * fragment
+     */
+    private static Navigation nextNavigationTo = null;
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     @Extra
@@ -77,7 +84,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     NavigationView navigationView;
     private FragmentManager fragmentManager;
     private int currentItemId = 0;
-    private WorldFragment worldFragment;
     private ImageView profileImageView;
     private TextView usernameTextView;
     private TextView locationTextView;
@@ -102,6 +108,11 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private boolean goToShootDiary = false;
     private Pair<View, Boolean> pendingShootRequestByPermission = null;
 
+    public static void setNextNavigationTo(Navigation what) {
+        nextNavigationTo = what;
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -109,6 +120,10 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         if (currentItemId == R.id.navigation_item_1 && goToShootDiary) {
             goToShootDiary = false;
             updateDiary();
+        }
+        if (nextNavigationTo != null && nextNavigationTo.getItemId() != currentItemId) {
+            navigationTo(nextNavigationTo);
+            navigationView.setCheckedItem(nextNavigationTo.getItemId());
         }
     }
 
@@ -325,31 +340,31 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
      * @param itemId id of the targeted fragment
      * @return whether the fragment is checked.
      */
+    @Deprecated
     private boolean navigationTo(int itemId) {
         if (itemId == currentItemId)
             return true;
         //TODO add delay to let drawer close
-        @SuppressLint("CommitTransaction") Fragment targetFragment;
-        switch (itemId) {
-            case R.id.navigation_item_0:
-                if (worldFragment == null) {
-                    worldFragment = WorldFragment_.builder().build();
-                }
-                targetFragment = worldFragment;
-                break;
-            case R.id.navigation_item_1:
-                targetFragment = DiaryFragment_.builder().build();
-                break;
-            case R.id.navigation_item_2:
-                targetFragment = DiscoveryFragment_.builder().build();
-                break;
-            case R.id.navigation_item_3:
-                targetFragment = MeFragment_.builder().build();
-                break;
-            default:
-                return false;
-        }
+        @SuppressLint("CommitTransaction")
+        Fragment targetFragment = Navigation.getFragment(itemId);
         currentItemId = itemId;
+        delayCommit(targetFragment);
+        return true;
+    }
+
+    /**
+     * switch main ui to selected fragment
+     *
+     * @param what to navigation
+     * @return whether the fragment is checked.
+     */
+    private boolean navigationTo(Navigation what) {
+        if (what.getItemId() == currentItemId)
+            return true;
+        //TODO add delay to let drawer close
+        @SuppressLint("CommitTransaction")
+        Fragment targetFragment = what.getFragment();
+        currentItemId = what.getItemId();
         delayCommit(targetFragment);
         return true;
     }
@@ -430,5 +445,49 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     @Override
     public void onUserInfoChange(User info) {
         invalidateUserInfo(info);
+    }
+
+    public enum Navigation {
+        World, Diary, Discovery, Me;
+
+        @IdRes
+        private static final int[] NAVIGATION_ITEM_ID = {
+                R.id.navigation_item_0,
+                R.id.navigation_item_1,
+                R.id.navigation_item_2,
+                R.id.navigation_item_3,
+        };
+
+        private static WeakReference<WorldFragment> mWorldFragment = new
+                WeakReference<>(null);
+
+        public static Fragment getFragment(@IdRes int id) {
+            switch (id) {
+                case R.id.navigation_item_0:
+                    WorldFragment worldFragment = mWorldFragment.get();
+                    if (worldFragment == null) {
+                        worldFragment = WorldFragment_.builder().build();
+                        mWorldFragment = new WeakReference<>(worldFragment);
+                    }
+                    return worldFragment;
+                case R.id.navigation_item_1:
+                    return DiaryFragment_.builder().build();
+                case R.id.navigation_item_2:
+                    return DiscoveryFragment_.builder().build();
+                case R.id.navigation_item_3:
+                    return MeFragment_.builder().build();
+                default:
+                    throw new IllegalArgumentException("No such fragment");
+            }
+        }
+
+        @IdRes
+        public int getItemId() {
+            return NAVIGATION_ITEM_ID[this.ordinal()];
+        }
+
+        public Fragment getFragment() {
+            return getFragment(getItemId());
+        }
     }
 }
