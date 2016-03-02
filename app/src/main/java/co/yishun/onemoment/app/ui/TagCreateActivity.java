@@ -481,6 +481,9 @@ public class TagCreateActivity extends BaseActivity
         this.finish();
     }
 
+    /**
+     * RecyclerView onClick item event for tag expandable edit text
+     */
     @Override
     public void onClick(View view, String item) {
         if (addTag(item)) {
@@ -493,7 +496,7 @@ public class TagCreateActivity extends BaseActivity
         recoverSearch();
     }
 
-    @Click
+    @Click(R.id.addView)
     void addViewClicked(View view) {
         if (searching) {
             addTag(queryText.getText().toString());

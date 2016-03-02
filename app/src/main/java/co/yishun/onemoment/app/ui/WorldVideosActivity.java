@@ -3,6 +3,7 @@ package co.yishun.onemoment.app.ui;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewCompat;
@@ -282,7 +283,14 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     }
 
     @Click(R.id.worldShare)
+    public void share() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(R.layout.layout_dialog_share);
+        dialog.show();
+    }
+
     @Background
+    @Click(R.id.worldShare)
     void shareWorld(View view) {
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
         ShareInfo shareInfo = forWorld ? apiv4.shareWorld(world.getName(), AccountManager.getUserInfo(this)._id) :
