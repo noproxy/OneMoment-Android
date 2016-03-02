@@ -1,5 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,9 @@ import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -28,13 +32,54 @@ import co.yishun.onemoment.app.ui.share.ShareController;
 @EActivity(R.layout.activity_share)
 public class ShareActivity extends WXRespActivity implements ShareController.ShareResultListener {
     public static final String TAG = "ShareActivity";
-
-
+    public static final int RESULT_FAIL = RESULT_FIRST_USER;
     @Extra
     ShareInfoProvider shareInfo;
-
+    @Extra
+    int to = -1;
+    MaterialDialog mProgressDialog;
     private ShareController shareController;
-    private BottomSheetDialog dialog;
+
+    public static void showShareChooseDialog(Context context, ShareInfoProvider shareInfo, int
+            requestCode) {
+        BottomSheetDialog dialog = new BottomSheetDialog(context);
+        dialog.setContentView(R.layout.layout_dialog_share);
+        LinearLayout root = (LinearLayout) dialog.findViewById(R.id.container);
+
+        View.OnClickListener clickListener = view -> {
+            int type;
+            switch (view.getId()) {
+                case R.id.shareWeChat:
+                    type = ShareController.TYPE_WE_CHAT;
+                    break;
+                case R.id.shareWXCircle:
+                    type = ShareController.TYPE_WX_CIRCLE;
+                    break;
+                case R.id.shareWeibo:
+                    type = ShareController.TYPE_WEIBO;
+                    break;
+                case R.id.shareQQ:
+                    type = ShareController.TYPE_QQ;
+                    break;
+                case R.id.shareQzone:
+                    type = ShareController.TYPE_QZONE;
+                    break;
+                default:
+                    type = -1;
+            }
+            dialog.dismiss();
+            if (type >= 0)
+                ShareActivity_.intent(context).shareInfo(shareInfo).to(type).startForResult(requestCode);
+        };
+
+        int count = root.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = root.getChildAt(i);
+            v.setOnClickListener(clickListener);
+        }
+
+        dialog.show();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +88,16 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
         LogUtil.d(TAG, shareInfo.getImageUrl() + shareInfo.getTitle() + shareInfo.getLink());
         if (savedInstanceState != null)
             shareController.onNewIntent(getIntent());
-        show();
+        mProgressDialog = new MaterialDialog.Builder(this).progress(true, 0).content
+                (R.string.activity_share_share_loading).cancelable(false).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
     }
 
     @Override
@@ -66,60 +120,17 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
         LogUtil.d(TAG, "onResume");
     }
 
-    private void show() {
-        dialog = new BottomSheetDialog(this);
-        dialog.setContentView(R.layout.layout_dialog_share);
-        LinearLayout root = (LinearLayout) dialog.findViewById(R.id.container);
-
-        View.OnClickListener clickListener = view -> onShare(dialog, view);
-
-        int count = root.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View v = root.getChildAt(i);
-            v.setOnClickListener(clickListener);
-        }
-
-        dialog.setOnDismissListener(it -> this.finish());
-        dialog.show();
-    }
-
-    void onShare(BottomSheetDialog dialog, View view) {
-        switch (view.getId()) {
-            case R.id.shareWeChat:
-                shareController.setType(ShareController.TYPE_WE_CHAT);
-                break;
-            case R.id.shareWXCircle:
-                shareController.setType(ShareController.TYPE_WX_CIRCLE);
-                break;
-            case R.id.shareWeibo:
-                shareController.setType(ShareController.TYPE_WEIBO);
-                break;
-            case R.id.shareQQ:
-                shareController.setType(ShareController.TYPE_QQ);
-                break;
-            case R.id.shareQzone:
-                shareController.setType(ShareController.TYPE_QZONE);
-                break;
-        }
-        dialog.hide();
-        getBitmap();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        dialog.setOnDismissListener(null);
-        dialog.dismiss();
-    }
-
     @Background
+    @AfterViews
     void getBitmap() {
         try {
+            shareController.setType(to);
             Bitmap bitmap = BitmapFactory.decodeStream(new URL(shareInfo.getImageUrl()).openStream());
             shareController.setBitmap(bitmap);
             shareController.share();
         } catch (IOException e) {
             e.printStackTrace();
+            onFail();
         }
     }
 
@@ -137,19 +148,19 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
 
     @Override
     public void onSuccess() {
-        showSnackMsg(R.string.activity_share_share_success);
+        setResult(RESULT_OK);
         finish();
     }
 
     @Override
     public void onFail() {
-        showSnackMsg(R.string.activity_share_share_fail);
+        setResult(RESULT_FAIL);
         finish();
     }
 
     @Override
     public void onCancel() {
-        showSnackMsg(R.string.activity_share_share_cancel);
+        setResult(RESULT_CANCELED);
         finish();
     }
 }

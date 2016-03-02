@@ -13,4 +13,5 @@
     <string name="activity_share_share_success">Share Success</string>
     <string name="activity_share_share_fail">Share Fail</string>
     <string name="activity_share_share_cancel">Share Cancel</string>
+    <string name="activity_share_share_loading">Loading…</string>
 </resources>

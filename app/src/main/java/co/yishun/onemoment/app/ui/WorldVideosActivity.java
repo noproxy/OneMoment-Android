@@ -287,7 +287,12 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
         ShareInfo shareInfo = forWorld ? apiv4.shareWorld(world.getId(), AccountManager.getUserInfo(this)._id) :
                 apiv4.shareToday(world.getName(), AccountManager.getUserInfo(this)._id);
-        ShareActivity_.intent(this).shareInfo(shareInfo).start();
+        share(shareInfo);
+    }
+
+    @UiThread
+    void share(ShareInfo shareInfo) {
+        ShareActivity.showShareChooseDialog(this, shareInfo, 0);
     }
 
     @Click(R.id.videoImageView)

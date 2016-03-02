@@ -385,7 +385,12 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         videoCacheFile.delete();
         hideProgress();
 
-        ShareActivity_.intent(this).shareInfo(shareInfo).start();
+        share(shareInfo);
+    }
+
+    @UiThread
+    void share(ShareInfo shareInfo) {
+        ShareActivity.showShareChooseDialog(this, shareInfo, 0);
     }
 
     @Override

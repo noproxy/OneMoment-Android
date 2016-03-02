@@ -21,7 +21,7 @@ import co.yishun.onemoment.app.ui.BadgeActivity_;
 import co.yishun.onemoment.app.ui.CreateWorldActivity_;
 import co.yishun.onemoment.app.ui.HomeContainerActivity_;
 import co.yishun.onemoment.app.ui.SettingsActivity_;
-import co.yishun.onemoment.app.ui.ShareActivity_;
+import co.yishun.onemoment.app.ui.ShareActivity;
 import co.yishun.onemoment.app.ui.ShootActivity_;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
 import co.yishun.onemoment.app.ui.WorldVideosActivity_;
@@ -149,7 +149,7 @@ public abstract class HybrdUrlHandler {
             shareInfo.title = args.get(2);
             shareInfo.imageUrl = args.get(3);
             shareInfo.link = args.get(4);
-            ShareActivity_.intent(context).shareInfo(shareInfo).start();
+            ShareActivity.showShareChooseDialog(context, shareInfo, 0);
         } else {
             LogUtil.e(TAG, "unhandled jump type : " + des);
         }
