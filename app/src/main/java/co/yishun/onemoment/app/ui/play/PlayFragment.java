@@ -84,7 +84,7 @@ public abstract class PlayFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
         if (videoPlayView != null) {
-            videoPlayView.reset();
+            videoPlayView.pause();
         }
     }
 
