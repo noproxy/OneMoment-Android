@@ -100,7 +100,7 @@ android {
     }
 }
 
-def SUPPORT_VERSION = '23.1.1'
+def SUPPORT_VERSION = '23.2.0'
 
 dependencies {
     // avoid method number limit
@@ -157,7 +157,7 @@ dependencies {
     compile 'com.daimajia.androidviewhover:library:1.0.4@aar'
     compile 'nl.codesoup.cubicbezier:cubicbezier:1.0.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile('com.github.afollestad.material-dialogs:core:0.8.5.4@aar') { transitive = true }
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.6@aar') { transitive = true }
     compile 'com.malinskiy:superrecyclerview:1.1.1'
     compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
     compile 'me.toxz.circularprogressview:library:1.0.4'
