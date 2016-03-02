@@ -208,6 +208,10 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             SpannableString ss = new SpannableString(String.format(getString(R.string.fragment_world_suffix_people_count), world.getVideosNum()));
             ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             toolbar.setSubtitle(ss);
+
+            if (!TextUtils.isEmpty(world.getThumb())) {
+                Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
+            }
         });
         adapter = new WorldVideoAdapter(this, this);
         recyclerView.setAdapter(adapter);
