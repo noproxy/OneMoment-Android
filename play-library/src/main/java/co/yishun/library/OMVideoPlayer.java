@@ -116,7 +116,8 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
                 mMediaPlayer.release();
             mMediaPlayer = mp;
         }
-        mMediaPlayer.setDisplay(mHolder);
+        if (mHolder != null)
+            mMediaPlayer.setDisplay(mHolder);
         if (mMediaState != State.STARTED) {
             mMediaPlayer.start();
             mMediaPlayer.pause();
@@ -134,7 +135,7 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
     public void setDisplay(SurfaceHolder holder) {
         Log.d(TAG, "set holder");
         mHolder = holder;
-        if (mMediaPlayer != null && mMediaState != State.STARTED) {
+        if (mMediaPlayer != null && mMediaState != State.STARTED && holder != null) {
             mMediaPlayer.setDisplay(holder);
             mMediaPlayer.start();
             mMediaPlayer.pause();
@@ -209,6 +210,7 @@ public class OMVideoPlayer implements MediaPlayer.OnCompletionListener, MediaPla
 
         /**
          * Called when need more video uri to play.
+         *
          * @return Uri of the video, null if no more videos to play.
          */
         Uri onMoreAsked();

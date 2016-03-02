@@ -16,7 +16,7 @@ public class OMVideoView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "PlaySurfaceView";
     private SurfaceHolder mHolder;
     private OMVideoPlayer mVideoPlayer;
-    private boolean surfeceCreate = false;
+    private boolean surfaceCreate = false;
     private boolean holderSet = false;
 
     public OMVideoView(Context context) {
@@ -50,7 +50,7 @@ public class OMVideoView extends SurfaceView implements SurfaceHolder.Callback {
         mVideoPlayer = new OMVideoPlayer(getContext());
         Log.d(TAG, "set player");
         mVideoPlayer.setListener(listener);
-        if (!holderSet && surfeceCreate) {
+        if (!holderSet && surfaceCreate) {
             mVideoPlayer.setDisplay(mHolder);
         }
     }
@@ -82,7 +82,7 @@ public class OMVideoView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.d(TAG, "surface create");
-        surfeceCreate = true;
+        surfaceCreate = true;
         if (mVideoPlayer != null) {
             mVideoPlayer.setDisplay(holder);
             holderSet = true;
@@ -97,6 +97,11 @@ public class OMVideoView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d(TAG, "surface destroy");
+        surfaceCreate = false;
+        if (mVideoPlayer != null) {
+            mVideoPlayer.setDisplay(null);
+            holderSet = false;
+        }
     }
 
     @Override
