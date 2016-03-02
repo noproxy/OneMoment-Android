@@ -89,7 +89,9 @@ public class CameraRecordRender implements GLSurfaceView.Renderer {
     }
 
     public void preFilter() {
-        mNewFilterIndex = (mNewFilterIndex - 1) % types.length;
+        // java % return remainder, so -1 % 4 = -1, not 3. Here needs modulus: -1 % 4 = 3
+        // So get modulus by ((-1 % 4) + 4) % 4
+        mNewFilterIndex = ((mNewFilterIndex - 1) % types.length + types.length) % types.length;
     }
 
     public int getCurrentFilterIndex() {
