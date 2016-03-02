@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:id="@+id/relativeLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -41,7 +41,7 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <co.yishun.onemoment.app.ui.view.SquareVideoView
+    <co.yishun.library.OMVideoView
         android:id="@+id/videoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -80,7 +80,7 @@
         android:minHeight="48dp"
         android:text="@string/activity_moment_create_next_btn_text"
         android:textColor="@color/textColorPrimaryInverse"
-        />
+    />
 
     <FrameLayout
         android:id="@+id/searchFrame"

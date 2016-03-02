@@ -6,14 +6,13 @@ import com.google.gson.JsonElement;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,7 +22,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.VideoView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
@@ -31,7 +29,6 @@ import com.baidu.location.LocationClientOption;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
 import com.qiniu.android.storage.UploadManager;
-import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterTextChange;
@@ -59,6 +56,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
+import co.yishun.library.OMVideoPlayer;
+import co.yishun.library.OMVideoView;
 import co.yishun.library.TagContainer;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -100,7 +99,7 @@ public class TagCreateActivity extends BaseActivity
 
     private static final int REQUEST_SELECT_WORLD = 1;
     @ViewById
-    VideoView videoView;
+    OMVideoView videoView;
     @ViewById
     VideoTypeView videoTypeView;
     @ViewById
@@ -183,7 +182,7 @@ public class TagCreateActivity extends BaseActivity
             VideoUtil.createThumbs(videoPath, largeThumb, smallThumb);
             momentToSave.setLargeThumbPath(largeThumb.getPath());
             momentToSave.setThumbPath(smallThumb.getPath());
-            Picasso.with(this).load(largeThumb).into(momentPreviewImageView);
+//            Picasso.with(this).load(largeThumb).into(momentPreviewImageView);
         } catch (IOException e) {
             e(TAG, "create thumb failed");
             e.printStackTrace();
@@ -202,26 +201,37 @@ public class TagCreateActivity extends BaseActivity
     void setVideo() {
         LogUtil.i(TAG, "set video: " + videoPath);
         if (videoPath == null) return;
-        videoView.setVideoPath(videoPath);
-        videoView.seekTo(0);
-        playVideo();
-    }
+        videoView.setPlayListener(new OMVideoPlayer.PlayListener() {
+            @Override
+            public void onOneCompletion() {
+                videoView.reset();
+                videoView.setVideoRes(Uri.fromFile(new File(videoPath)));
+            }
 
-    @UiThread(delay = 2000)
-    void playVideo() {
-        LogUtil.i(TAG, "play video");
-        // set invisible will make it not clickable
+            @Override
+            public Uri onMoreAsked() {
+                return null;
+            }
+        });
+        videoView.setVideoRes(Uri.fromFile(new File(videoPath)));
         videoView.start();
-        momentPreviewImageView.setImageDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-        played = true;
     }
 
     @Click(R.id.momentPreviewImageView)
     void replay() {
-        Log.i(TAG, "replay");
-        if (!videoView.isPlaying() && played) {
-            videoView.seekTo(0);
+        if (!videoView.isPlaying()) {
             videoView.start();
+        } else {
+            videoView.pause();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (videoView != null) {
+            videoView.reset();
+            videoView.setVideoRes(Uri.fromFile(new File(videoPath)));
         }
     }
 
