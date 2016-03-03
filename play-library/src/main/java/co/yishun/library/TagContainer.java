@@ -161,7 +161,8 @@ public class TagContainer extends FrameLayout {
         }
     }
 
-    @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         for (int i = 0; i < tagViews.size(); i++) {
             View v = tagViews.get(i);
@@ -215,8 +216,22 @@ public class TagContainer extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (mEditable) {
-            mDragHelper.processTouchEvent(ev);
-            return true;
+            float x = ev.getX();
+            float y = ev.getY();
+            boolean insideChild = false;
+            for (int i = 0; i < tagRects.size(); i++) {
+                if (tagRects.get(i).contains((int) x, (int) y)) {
+                    insideChild = true;
+                    break;
+                }
+            }
+
+            if (insideChild) {
+                mDragHelper.processTouchEvent(ev);
+                return true;
+            } else {
+                return super.onTouchEvent(ev);
+            }
         } else return super.onTouchEvent(ev);
     }
 
@@ -235,11 +250,13 @@ public class TagContainer extends FrameLayout {
 
     protected class ContainerCallback extends ViewDragHelper.Callback {
 
-        @Override public boolean tryCaptureView(View child, int pointerId) {
+        @Override
+        public boolean tryCaptureView(View child, int pointerId) {
             return mEditable && child.getTag() != null && child.getTag().equals(VIDEO_TAG_VIEW_TAG);
         }
 
-        @Override public int clampViewPositionHorizontal(View child, int left, int dx) {
+        @Override
+        public int clampViewPositionHorizontal(View child, int left, int dx) {
             int leftBound = getPaddingLeft();
             int rightBound = getWidth() - child.getWidth();
             int newLeft = Math.min(Math.max(left, leftBound), rightBound);
@@ -251,7 +268,8 @@ public class TagContainer extends FrameLayout {
             return rect.left;
         }
 
-        @Override public int clampViewPositionVertical(View child, int top, int dy) {
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
             final int topBound = getPaddingTop();
             final int bottomBound = getHeight() - child.getHeight();
             final int newTop = Math.min(Math.max(top, topBound), bottomBound);
