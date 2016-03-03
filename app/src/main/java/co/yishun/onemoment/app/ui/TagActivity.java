@@ -263,7 +263,12 @@ public class TagActivity extends BaseActivity implements AbstractRecyclerViewAda
     void shareWorld(View view) {
         WorldAPI worldAPI = OneMomentV3.createAdapter().create(WorldAPI.class);
         ShareInfo shareInfo = worldAPI.shareWorld(tag.name);
-        ShareActivity_.intent(this).shareInfo(shareInfo).shareType(ShareActivity.TYPE_SHARE_WORLD).start();
+        share(shareInfo);
+    }
+
+    @UiThread
+    void share(ShareInfo shareInfo) {
+        ShareActivity.showShareChooseDialog(this, shareInfo, 0);
     }
 
     void videoImageClick(View v) {

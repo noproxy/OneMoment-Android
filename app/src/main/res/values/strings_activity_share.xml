@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="activity_share_qq">QQ</string>
-    <string name="activity_share_qzone">QZone</string>
-    <string name="activity_share_weibo">Weibo</string>
-    <string name="activity_share_we_chat">WeChat</string>
-    <string name="activity_share_wx_circle">Moments</string>
+    <string name="activity_share_qq">Send to your QQ friends</string>
+    <string name="activity_share_qzone">Share to QZone</string>
+    <string name="activity_share_weibo">Share to Weibo</string>
+    <string name="activity_share_we_chat">Send to your WeChat friends</string>
+    <string name="activity_share_wx_circle">Share to your WeChat Moments</string>
 
     <string name="activity_share_share_moment">Share Moment</string>
     <string name="activity_share_share_world">Share World</string>
@@ -13,4 +13,5 @@
     <string name="activity_share_share_success">Share Success</string>
     <string name="activity_share_share_fail">Share Fail</string>
     <string name="activity_share_share_cancel">Share Cancel</string>
+    <string name="activity_share_share_loading">Loading…</string>
 </resources>

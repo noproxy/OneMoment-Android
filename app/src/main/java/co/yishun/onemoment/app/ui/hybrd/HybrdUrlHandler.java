@@ -22,7 +22,6 @@ import co.yishun.onemoment.app.ui.CreateWorldActivity_;
 import co.yishun.onemoment.app.ui.HomeContainerActivity_;
 import co.yishun.onemoment.app.ui.SettingsActivity_;
 import co.yishun.onemoment.app.ui.ShareActivity;
-import co.yishun.onemoment.app.ui.ShareActivity_;
 import co.yishun.onemoment.app.ui.ShootActivity_;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
 import co.yishun.onemoment.app.ui.WorldVideosActivity_;
@@ -143,22 +142,14 @@ public abstract class HybrdUrlHandler {
             HomeContainerActivity_.intent(context).type(des).start();
         } else if (TextUtils.equals(des, "share")) {
             String type = args.get(1);
-            int shareType;
-            if (TextUtils.equals(type, "badge")) {
-                shareType = ShareActivity.TYPE_SHARE_BADGE;
-            } else if (TextUtils.equals(type, "world")) {
-                shareType = ShareActivity.TYPE_SHARE_WORLD;
-            } else if (TextUtils.equals(type, "long_video")) {
-                shareType = ShareActivity.TYPE_SHARE_MOMENT;
-            } else {
-                LogUtil.e(TAG, "unhandled share type : " + type);
-                return true;
-            }
+            // ignore type
+            LogUtil.e(TAG, "share type: " + type);
+
             ShareInfo shareInfo = new ShareInfo();
             shareInfo.title = args.get(2);
             shareInfo.imageUrl = args.get(3);
             shareInfo.link = args.get(4);
-            ShareActivity_.intent(context).shareInfo(shareInfo).shareType(shareType).start();
+            ShareActivity.showShareChooseDialog(context, shareInfo, 0);
         } else {
             LogUtil.e(TAG, "unhandled jump type : " + des);
         }

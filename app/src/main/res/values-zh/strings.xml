@@ -123,4 +123,6 @@
     <string name="activity_play_world_progress_delete_content">正在删除…</string>
     <string name="activity_play_world_progress_delete_fail">删除失败了，网络似乎有点问题</string>
     <string name="activity_play_world_progress_delete_success">删除成功</string>
+    <string name="activity_play_world_action_delete">删除视频</string>
+    <string name="activity_share_share_loading">加载信息…</string>
 </resources>

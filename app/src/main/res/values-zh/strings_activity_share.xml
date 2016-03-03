@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="activity_share_qq">QQ</string>
-    <string name="activity_share_qzone">QQ空间</string>
-    <string name="activity_share_weibo">微博</string>
-    <string name="activity_share_we_chat">微信</string>
-    <string name="activity_share_wx_circle">朋友圈</string>
+    <string name="activity_share_qq">发送给QQ好友</string>
+    <string name="activity_share_qzone">分享到QQ空间</string>
+    <string name="activity_share_weibo">分享到微博</string>
+    <string name="activity_share_we_chat">发给微信好友</string>
+    <string name="activity_share_wx_circle">分享到朋友圈</string>
 
     <string name="activity_share_share_moment">分享一瞬</string>
     <string name="activity_share_share_world">分享世界</string>

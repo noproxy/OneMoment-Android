@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Base" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="Base" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <style name="AppTheme" parent="Base">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -15,6 +15,9 @@
         <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity</item>
         <item name="drawerArrowStyle">@style/AppTheme.Widget.DrawerArrowToggle</item>
         <item name="colorControlNormal">?attr/colorAccent</item>
+        <item name="bottomSheetDialogTheme">
+            @style/Theme.Design.Light.BottomSheetDialog.NoDarkBackground
+        </item>
     </style>
 
     <style name="AppTheme.VideoVoteUpActivity">
@@ -22,8 +25,7 @@
         <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
     </style>
 
-    <style name="TwoWayViewBase">
-    </style>
+    <style name="TwoWayViewBase"></style>
 
     <style name="AppTheme.Settings">
         <item name="android:windowBackground">@color/colorPrimary</item>
@@ -39,8 +41,7 @@
     </style>
 
     <!-- for toolbar menu and overflow color -->
-    <style name="AppTheme.MainActivity">
-    </style>
+    <style name="AppTheme.MainActivity"></style>
 
     <style name="AppTheme.SplashActivity">
         <item name="android:windowFullscreen">true</item>
@@ -54,8 +55,7 @@
         <item name="android:windowBackground">@drawable/bg_window_phone</item>
     </style>
 
-    <style name="AppTheme.FitWindowsActivity">
-    </style>
+    <style name="AppTheme.FitWindowsActivity"></style>
 
     <style name="AppTheme.ShootActivity">
         <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
@@ -82,34 +82,40 @@
     </style>
 
     <style name="AppTheme.ShareActivity">
-        <item name="android:windowBackground">@color/colorWindowShareActivity</item>
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:textColorTertiary">#545454</item>
         <item name="android:textColorTertiaryInverse">#b0b0b0</item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="TextAppearance.PlaySmall" parent="TextAppearance.AppCompat.Small"/>
-
-    <style name="TextAppearance.PlaySmall.Inverse" parent="TextAppearance.AppCompat.Small.Inverse"/>
-
-    <style name="AppTheme.MomentCreateActivity">
+    <style name="Theme.Design.Light.BottomSheetDialog.NoDarkBackground">
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="bottomSheetStyle">@style/Widget.Design.BottomSheet.Modal.HeightCustom</item>
     </style>
 
-    <style name="AppTheme.TagCreateActivity">
+    <style name="Widget.Design.BottomSheet.Modal.HeightCustom">
+
     </style>
+
+    <style name="TextAppearance.PlaySmall" parent="TextAppearance.AppCompat.Small" />
+
+    <style name="TextAppearance.PlaySmall.Inverse" parent="TextAppearance.AppCompat.Small.Inverse" />
+
+    <style name="AppTheme.MomentCreateActivity"></style>
+
+    <style name="AppTheme.TagCreateActivity"></style>
 
     <style name="AppTheme.UserInfoActivity">
         <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.PlayMomentActivity">
-    </style>
+    <style name="AppTheme.PlayMomentActivity"></style>
 
-    <style name="AppTheme.ShareOutputActivity">
-    </style>
+    <style name="AppTheme.ShareOutputActivity"></style>
 
-    <style name="AppTheme.GuideActivity">
-    </style>
+    <style name="AppTheme.GuideActivity"></style>
 
     <style name="AppTheme.WorldVideosActivity">
         <item name="android:windowBackground">@color/colorWindowTransparent</item>
