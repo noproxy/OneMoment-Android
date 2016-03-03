@@ -1,5 +1,8 @@
 package co.yishun.onemoment.app.account;
 
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+
 import android.accounts.Account;
 import android.content.Context;
 import android.os.Bundle;
@@ -137,9 +140,20 @@ public class AccountManager {
         try {
             String path = getUserInfoDir(context);
             LogUtil.i(TAG, "load identity info, path: " + path);
-            FileReader fileReader = new FileReader(path);
-            mUser = GsonFactory.newNamingGson().fromJson(fileReader, User.class);
-            fileReader.close();
+            FileReader fileReader = null;
+            try {
+                fileReader = new FileReader(path);
+                mUser = GsonFactory.newNamingGson().fromJson(fileReader, User.class);
+            } catch (JsonSyntaxException | JsonIOException e) {
+                LogUtil.i(TAG, "user info need update");
+            } finally {
+                if (fileReader != null) {
+                    try {
+                        fileReader.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
