@@ -127,7 +127,7 @@ public class TagCreateActivity extends BaseActivity
     boolean isPrivate;
     @ViewById
     TagContainer tagContainer;
-//    @ViewById
+    //    @ViewById
 //    ImageView momentPreviewImageView;
     @ViewById
     FrameLayout searchFrame;
@@ -201,6 +201,15 @@ public class TagCreateActivity extends BaseActivity
         i("setupToolbar", "set home as up true");
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (videoView != null) {
+            setVideo();
+        }
+
+    }
+
     void setVideo() {
         LogUtil.i(TAG, "set video: " + videoPath);
         if (videoPath == null) return;
@@ -234,7 +243,6 @@ public class TagCreateActivity extends BaseActivity
         super.onPause();
         if (videoView != null) {
             videoView.reset();
-            videoView.setVideoRes(Uri.fromFile(new File(videoPath)));
         }
     }
 
