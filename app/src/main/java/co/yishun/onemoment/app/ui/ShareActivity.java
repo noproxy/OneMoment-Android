@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
@@ -33,12 +34,15 @@ import co.yishun.onemoment.app.ui.share.ShareController;
 public class ShareActivity extends WXRespActivity implements ShareController.ShareResultListener {
     public static final String TAG = "ShareActivity";
     public static final int RESULT_FAIL = RESULT_FIRST_USER;
+    private static final int PREVENT_DIALOG_DISSISS_IN_RESUME = 1000;
     @Extra
     ShareInfoProvider shareInfo;
     @Extra
     int to = -1;
     MaterialDialog mProgressDialog;
     private ShareController shareController;
+    private long lastDialogShowTime;
+    private boolean resultGet = false;
 
     public static void showShareChooseDialog(Context context, ShareInfoProvider shareInfo, int
             requestCode) {
@@ -84,12 +88,18 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (shareInfo == null) {
+            this.finish();
+        }
+
         shareController = new ShareController(this, shareInfo.getImageUrl(), shareInfo.getLink(), shareInfo.getTitle(), this);
         LogUtil.d(TAG, shareInfo.getImageUrl() + shareInfo.getTitle() + shareInfo.getLink());
         if (savedInstanceState != null)
             shareController.onNewIntent(getIntent());
         mProgressDialog = new MaterialDialog.Builder(this).progress(true, 0).content
                 (R.string.activity_share_share_loading).cancelable(false).show();
+
+        lastDialogShowTime = SystemClock.elapsedRealtime();
     }
 
     @Override
@@ -117,7 +127,15 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     protected void onResume() {
         super.onResume();
         if (mReceiver == null) LogUtil.d(TAG, "receiver is null");
-        LogUtil.d(TAG, "onResume");
+        long now = SystemClock.elapsedRealtime();
+        // other app may not get response to us( for excample , stay other app after sharing to
+        // WeChat), so when onResume we should finish by myself
+        if (mProgressDialog != null && !resultGet
+                && PREVENT_DIALOG_DISSISS_IN_RESUME < now - lastDialogShowTime
+                ) {
+            // when we got result or we just onCreate, we need not to finish here.
+            this.finish();
+        }
     }
 
     @Background
@@ -149,18 +167,21 @@ public class ShareActivity extends WXRespActivity implements ShareController.Sha
     @Override
     public void onSuccess() {
         setResult(RESULT_OK);
+        resultGet = true;
         finish();
     }
 
     @Override
     public void onFail() {
         setResult(RESULT_FAIL);
+        resultGet = true;
         finish();
     }
 
     @Override
     public void onCancel() {
         setResult(RESULT_CANCELED);
+        resultGet = true;
         finish();
     }
 }
