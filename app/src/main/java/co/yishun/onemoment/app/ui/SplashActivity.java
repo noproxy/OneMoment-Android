@@ -84,6 +84,10 @@ public class SplashActivity extends BaseActivity {
         DataMigration.dataInit(this.getApplicationContext());
         hideProgress();
         delayShowCover();
+
+        String hybrdFileName = preferences.getString(PREFERENCE_HYBRID_NAME, "hybrd_default.zip");
+        File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
+        new HybridUpdateTask(this).execute(hybrdFile);
     }
 
     @Override
@@ -110,10 +114,6 @@ public class SplashActivity extends BaseActivity {
         }
         // use static AsyncTask to ensure not keeping this activity's reference
         new CoverUpdateTask(this).execute(coverFile);
-
-        String hybrdFileName = preferences.getString(PREFERENCE_HYBRID_NAME, "hybrd_default.zip");
-        File hybrdFile = FileUtil.getInternalFile(this, hybrdFileName);
-        new HybridUpdateTask(this).execute(hybrdFile);
     }
 
     void endWithStartMain() {
@@ -216,7 +216,7 @@ public class SplashActivity extends BaseActivity {
             File hybridFile = params[0];
             int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRID_UPDATE_TIME, 0);
             int lastUnzipTime = preferences.getInt(PREFERENCE_HYBRID_UNZIP_TIME, 0);
-            if (lastUnzipTime < lastUpdateTime) {
+            if (lastUnzipTime < lastUpdateTime || lastUnzipTime == 0) {
                 if (hybridFile.length() == 0 || !TextUtils.equals(FileUtil.calculateMD5(hybridFile), preferences.getString(PREFERENCE_HYBRID_MD5, ""))) {
                     FileUtil.copyResToFile(context, R.raw.hybrd_default, hybridFile.getPath());
                 }
