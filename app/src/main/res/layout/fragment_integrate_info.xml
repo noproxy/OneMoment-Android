@@ -30,8 +30,9 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
-            android:maxLines="1"
             android:hint="@string/fragment_integrate_info_nickname_hint"
+        android:inputType="text"
+        android:maxLines="1"
             android:padding="16dp"
     />
 
