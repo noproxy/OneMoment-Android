@@ -8,6 +8,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.util.Queue;
 
+import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.util.CircularFifoQueue;
 
 
@@ -64,7 +65,8 @@ public class LogUtil {
     }
 
     private static int log(int priority, String tag, String msg, Throwable tr) {
-        if (BuildConfig.DEBUG) {
+        //noinspection PointlessBooleanExpression
+        if (BuildConfig.DEBUG || Constants.LOG_ENABLE) {
             return systemLog(priority, tag, msg, tr);
         } else
             switch (priority) {
