@@ -1,9 +1,5 @@
 package co.yishun.onemoment.app.ui;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,6 +22,9 @@ import android.widget.ImageView;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
 import com.qiniu.android.storage.UploadManager;
@@ -112,6 +111,8 @@ public class TagCreateActivity extends BaseActivity
     @ViewById
     ImageView addView;
     @Extra
+    boolean forDiary;
+    @Extra
     boolean forToday = false;
     @Extra
     boolean forWorld = false;
@@ -138,7 +139,6 @@ public class TagCreateActivity extends BaseActivity
     TagSearchAdapter adapter;
     @OrmLiteDao(helper = MomentDatabaseHelper.class)
     Dao<Moment, Integer> momentDao;
-    private boolean forDiary;
     private boolean searching = false;
     private LocationClient locationClient;
     private Moment momentToSave;
@@ -169,6 +169,7 @@ public class TagCreateActivity extends BaseActivity
 
         videoTypeView.setWorldCheck(forWorld, world.getName());
         videoTypeView.setTodayCheck(forToday);
+        videoTypeView.setDiaryCheck(forDiary);
 
         nextBtn.setEnabled(forDiary || forWorld || forToday);
     }

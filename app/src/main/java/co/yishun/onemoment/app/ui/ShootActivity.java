@@ -61,6 +61,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @Extra
     boolean forWorld = false;
     @Extra
+    boolean forDiary = false;
+    @Extra
     boolean forToday = false;
     @Extra
     WorldProvider world;
@@ -233,7 +235,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
 
     @UiThread(delay = 200)
     void delayStart(File file) {
-        TagCreateActivity_.intent(this).forWorld(forWorld).forToday(forToday).world(world).videoPath(file.getPath()).start();
+        TagCreateActivity_.intent(this).forDiary(forDiary).forWorld(forWorld).forToday(forToday).world(world).videoPath(file.getPath()).start();
         this.finish();
     }
 

@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
         }
     };
-    private Pair<View, Boolean> pendingShootRequestByPermission = null;
+    private Pair<View, Navigation> pendingShootRequestByPermission = null;
 
     public static void setNextNavigationTo(Navigation what) {
         nextNavigationTo = what;
@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
 
-    private void startShoot(View view, boolean forWorld) {
+    private void startShoot(View view) {
 
         List<String> request = new ArrayList<>(PERMISSION.length);
         for (String permission : PERMISSION) {
@@ -148,18 +148,31 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         }
 
         if (request.size() > 0) {
-            pendingShootRequestByPermission = new Pair<>(view, forWorld);
+            pendingShootRequestByPermission = new Pair<>(view, mCurrentNavigation);
             // we don't need show an explanation
             ActivityCompat.requestPermissions(this, request.toArray(new String[request.size()]), PERMISSIONS_REQUEST_RECORD_MOMENT);
         } else {
-            shootWithPermission(view, forWorld);
+            shootWithPermission(view, mCurrentNavigation);
         }
     }
 
-    private void shootWithPermission(View view, boolean forWorld) {
+    private void shootWithPermission(View view, Navigation navigation) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).start();
+
+        ShootActivity_.IntentBuilder_ builder_ = ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2);
+        switch (navigation) {
+            case Diary:
+                builder_.forDiary(true);
+                break;
+            case World:
+                // not set forWorld
+                break;
+            case Discovery:
+                builder_.forToday(true);
+                break;
+        }
+        builder_.start();
     }
 
     @Override
@@ -251,7 +264,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(v -> startShoot(v, true));
+        fab.setOnClickListener(this::startShoot);
     }
 
     private void setupNavigationView() {
