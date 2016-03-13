@@ -1,13 +1,12 @@
 package co.yishun.onemoment.app.account.auth;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.GsonBuilder;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -53,7 +52,9 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
 
         try {
             Response response = client.newCall(new Request.Builder().url(url).build()).execute();
-            UserInfoResponse infoResponse = GsonFactory.newNamingGson().fromJson(response.body().string(), UserInfoResponse.class);
+            String re = response.body().string();
+            LogUtil.i(TAG, "info response: " + re);
+            UserInfoResponse infoResponse = GsonFactory.newNamingGson().fromJson(re, UserInfoResponse.class);
             return from(infoResponse);
         } catch (Exception e) {
             LogUtil.i(TAG, "Exception when get wechat user info");
@@ -130,6 +131,7 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
     }
 
     private UserInfo from(UserInfoResponse response) {
+        LogUtil.i(TAG, "get UserInfo from: " + response.toString());
         UserInfo info = new UserInfo();
         info.id = response.openid;
         info.name = response.nickname;
@@ -164,5 +166,18 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
         String city;
         String headimgurl;
         String unionid;
+
+        @Override
+        public String toString() {
+            return "UserInfoResponse{" +
+                    "openid='" + openid + '\'' +
+                    ", nickname='" + nickname + '\'' +
+                    ", sex=" + sex +
+                    ", province='" + province + '\'' +
+                    ", city='" + city + '\'' +
+                    ", headimgurl='" + headimgurl + '\'' +
+                    ", unionid='" + unionid + '\'' +
+                    '}';
+        }
     }
 }

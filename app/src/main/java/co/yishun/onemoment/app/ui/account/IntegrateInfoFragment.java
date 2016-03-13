@@ -14,8 +14,6 @@ import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -44,6 +42,7 @@ import co.yishun.onemoment.app.ui.AccountActivity;
 import co.yishun.onemoment.app.ui.MainActivity_;
 import co.yishun.onemoment.app.ui.view.GenderSpinner;
 import co.yishun.onemoment.app.ui.view.LocationSpinner;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static co.yishun.onemoment.app.LogUtil.e;
 import static co.yishun.onemoment.app.LogUtil.i;
@@ -256,7 +255,9 @@ public class IntegrateInfoFragment extends AccountFragment
         if (userInfo == null) {
             userInfo = new UserInfo();
         }
-        nickNameEditText.setText(userInfo.name);
+        if (userInfo.name != null) {
+            nickNameEditText.setText(userInfo.name);
+        }
         if (userInfo.gender == null)
             userInfo.gender = Account.Gender.MALE.toString();
         genderSpinner.setSelectedGender(Account.Gender.format(userInfo.gender));
@@ -264,7 +265,19 @@ public class IntegrateInfoFragment extends AccountFragment
             locationSpinner.setSelectedLocation(userInfo.location);
         // not set uri, because three party image don't need upload
         // if uri not null( user set avatar replace image from three-party), it will update after sign up
-        Picasso.with(mActivity).load(userInfo.avatar_large).memoryPolicy(MemoryPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
+        if (TextUtils.isEmpty(userInfo.avatar_large)) {
+            Picasso.with(mActivity).load(R.drawable.pic_profile_default).into(profileImageView);
+            userInfo.avatar_large = null;
+        } else {
+            try {
+                Picasso.with(mActivity).load(userInfo.avatar_large).memoryPolicy(MemoryPolicy.NO_STORE)
+                        .error(R.drawable.pic_profile_default).memoryPolicy(MemoryPolicy.NO_CACHE).into(profileImageView);
+            } catch (Exception e) {
+                LogUtil.e(TAG, "load profile image failed: " + userInfo.avatar_large);
+                userInfo.avatar_large = null;
+                Picasso.with(mActivity).load(R.drawable.pic_profile_default).into(profileImageView);
+            }
+        }
     }
 
     @Override
