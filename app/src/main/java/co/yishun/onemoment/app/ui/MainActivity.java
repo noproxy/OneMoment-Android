@@ -76,7 +76,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
      * Flag to determine what fragment to show when this activity onResume, null to keep origin
      * fragment
      */
-    private static Navigation nextNavigationTo = World;
+    private static Navigation nextNavigationTo;
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     @Extra
@@ -261,6 +261,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         LogUtil.d(TAG, "token " + getRegistrationId(this));
         mPushAgent.enable();
 
+        setNextNavigationTo(World);
+
         fragmentManager = getSupportFragmentManager();
         setupNavigationView();
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -351,13 +353,13 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         }
 
         mCurrentNavigation = what;
-        delayCommit(targetFragment);
+        delayCommit(targetFragment, what);
         return true;
     }
 
     @UiThread(delay = 300)
-    void delayCommit(Fragment targetFragment) {
-        fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment).commitAllowingStateLoss();
+    void delayCommit(Fragment targetFragment, Navigation what) {
+        fragmentManager.beginTransaction().setCustomAnimations(R.anim.fragment_fade_in, R.anim.fragment_fade_out).replace(R.id.fragment_container, targetFragment, what.toString()).commitAllowingStateLoss();
     }
 
     @Override
