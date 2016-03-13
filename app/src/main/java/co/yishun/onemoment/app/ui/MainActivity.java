@@ -43,7 +43,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,9 +59,11 @@ import co.yishun.onemoment.app.ui.home.DiaryFragment;
 import co.yishun.onemoment.app.ui.home.DiaryFragment_;
 import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
-import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
 
+import static co.yishun.onemoment.app.ui.MainActivity.Navigation.Diary;
+import static co.yishun.onemoment.app.ui.MainActivity.Navigation.World;
+import static co.yishun.onemoment.app.ui.MainActivity.Navigation.from;
 import static org.android.agoo.client.BaseRegistrar.getRegistrationId;
 
 @EActivity
@@ -75,7 +76,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
      * Flag to determine what fragment to show when this activity onResume, null to keep origin
      * fragment
      */
-    private static Navigation nextNavigationTo = null;
+    private static Navigation nextNavigationTo = World;
     private static boolean pendingUserInfoUpdate = false;
     public ActionBarDrawerToggle mDrawerToggle;
     @Extra
@@ -83,7 +84,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     private FragmentManager fragmentManager;
-    private int currentItemId = 0;
+    private Navigation mCurrentNavigation = null;
     private ImageView profileImageView;
     private TextView usernameTextView;
     private TextView locationTextView;
@@ -91,7 +92,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     private BroadcastReceiver mSyncChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (currentItemId == R.id.navigation_item_1) {
+            if (mCurrentNavigation == Diary) {
                 Bundle extra = intent.getExtras();
                 long unixTimeStamp = Long.parseLong(extra.getString(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP));
 
@@ -102,10 +103,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
         }
     };
-    /**
-     * Flag means just going to shoot diary ui.
-     */
-    private boolean goToShootDiary = false;
     private Pair<View, Boolean> pendingShootRequestByPermission = null;
 
     public static void setNextNavigationTo(Navigation what) {
@@ -116,16 +113,15 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     @Override
     protected void onResume() {
         super.onResume();
-        // refresh diary in case moment update
-        if (currentItemId == R.id.navigation_item_1 && goToShootDiary) {
-            goToShootDiary = false;
-            updateDiary();
-        }
-        if (nextNavigationTo != null && nextNavigationTo.getItemId() != currentItemId) {
+        if (nextNavigationTo != null && nextNavigationTo != mCurrentNavigation) {
             navigationTo(nextNavigationTo);
             navigationView.setCheckedItem(nextNavigationTo.getItemId());
         }
         nextNavigationTo = null;// digest
+    }
+
+    private void updateDiary() {
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, DiaryFragment_.builder().build()).commitAllowingStateLoss();
     }
 
     @AfterInject
@@ -140,9 +136,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             }).build().show();
     }
 
-    private void updateDiary() {
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, DiaryFragment_.builder().build()).commitAllowingStateLoss();
-    }
 
     private void startShoot(View view, boolean forWorld) {
 
@@ -167,12 +160,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2).transitionY(location[1] + view.getHeight() / 2).start();
-
-        if (!forWorld) {
-            goToShootDiary = true;
-            navigationTo(R.id.navigation_item_1);
-            navigationView.setCheckedItem(R.id.navigation_item_1);
-        }
     }
 
     @Override
@@ -265,7 +252,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         setupNavigationView();
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(v -> startShoot(v, true));
-        navigationTo(R.id.navigation_item_0);
     }
 
     private void setupNavigationView() {
@@ -290,7 +276,7 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
                 delayStartSettingsActivity();
                 return false;
             } else
-                return navigationTo(menuItem.getItemId());
+                return navigationTo(from(menuItem.getItemId()));
         });
 
         invalidateUserInfo(AccountManager.getUserInfo(this));
@@ -338,34 +324,20 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     /**
      * switch main ui to selected fragment
      *
-     * @param itemId id of the targeted fragment
-     * @return whether the fragment is checked.
-     */
-    @Deprecated
-    private boolean navigationTo(int itemId) {
-        if (itemId == currentItemId)
-            return true;
-        //TODO add delay to let drawer close
-        @SuppressLint("CommitTransaction")
-        Fragment targetFragment = Navigation.getFragment(itemId);
-        currentItemId = itemId;
-        delayCommit(targetFragment);
-        return true;
-    }
-
-    /**
-     * switch main ui to selected fragment
-     *
      * @param what to navigation
      * @return whether the fragment is checked.
      */
     private boolean navigationTo(Navigation what) {
-        if (what.getItemId() == currentItemId)
+        if (what == mCurrentNavigation)
             return true;
         //TODO add delay to let drawer close
         @SuppressLint("CommitTransaction")
-        Fragment targetFragment = what.getFragment();
-        currentItemId = what.getItemId();
+        Fragment targetFragment = fragmentManager.findFragmentByTag(what.toString());
+        if (targetFragment == null) {
+            targetFragment = what.newFragment();
+        }
+
+        mCurrentNavigation = what;
         delayCommit(targetFragment);
         return true;
     }
@@ -380,8 +352,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
-            if (currentItemId != R.id.navigation_item_0) {
-                navigationTo(R.id.navigation_item_0);
+            if (mCurrentNavigation != World) {
+                navigationTo(World);
                 ((NavigationView) findViewById(R.id.navigationView)).setCheckedItem(R.id.navigation_item_0);
             } else
                 super.onBackPressed();
@@ -459,24 +431,31 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
                 R.id.navigation_item_3,
         };
 
-        private static WeakReference<WorldFragment> mWorldFragment = new
-                WeakReference<>(null);
+        public static Fragment newFragment(Navigation what) {
+            switch (what) {
+                case World:
+                    return WorldFragment_.builder().build();
+                case Diary:
+                    return DiaryFragment_.builder().build();
+                case Discovery:
+                    return DiscoveryFragment_.builder().build();
+                case Me:
+                    return MeFragment_.builder().build();
+                default:
+                    throw new IllegalArgumentException("No such fragment");
+            }
+        }
 
-        public static Fragment getFragment(@IdRes int id) {
+        public static Navigation from(@IdRes int id) {
             switch (id) {
                 case R.id.navigation_item_0:
-                    WorldFragment worldFragment = mWorldFragment.get();
-                    if (worldFragment == null) {
-                        worldFragment = WorldFragment_.builder().build();
-                        mWorldFragment = new WeakReference<>(worldFragment);
-                    }
-                    return worldFragment;
+                    return World;
                 case R.id.navigation_item_1:
-                    return DiaryFragment_.builder().build();
+                    return Diary;
                 case R.id.navigation_item_2:
-                    return DiscoveryFragment_.builder().build();
+                    return Discovery;
                 case R.id.navigation_item_3:
-                    return MeFragment_.builder().build();
+                    return Me;
                 default:
                     throw new IllegalArgumentException("No such fragment");
             }
@@ -487,8 +466,8 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
             return NAVIGATION_ITEM_ID[this.ordinal()];
         }
 
-        public Fragment getFragment() {
-            return getFragment(getItemId());
+        public Fragment newFragment() {
+            return newFragment(this);
         }
     }
 }
