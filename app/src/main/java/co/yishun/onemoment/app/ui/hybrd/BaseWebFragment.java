@@ -1,9 +1,5 @@
 package co.yishun.onemoment.app.ui.hybrd;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -21,6 +17,9 @@ import android.webkit.WebViewClient;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
@@ -72,15 +71,24 @@ public abstract class BaseWebFragment extends BaseFragment {
     protected String mUrl;
     @FragmentArg
     protected String mArg;
+    private Context mApplicationContext;
 
     public static void invalidateWeb() {
         needGlobalRefresh = true;
     }
 
     @Override
+    public Context getContext() {
+        return super.getContext() == null ? mApplicationContext : super.getContext();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mActivity = (BaseActivity) getActivity();
+        if (mApplicationContext == null) {
+            mApplicationContext = mActivity.getApplicationContext();
+        }
     }
 
     @Override
@@ -106,14 +114,14 @@ public abstract class BaseWebFragment extends BaseFragment {
 
     @AfterInject
     void setDefault() {
-        mHybrdDir = FileUtil.getInternalFile(mActivity, Constants.HYBRD_UNZIP_DIR);
+        mHybrdDir = FileUtil.getInternalFile(getContext(), Constants.HYBRD_UNZIP_DIR);
         if (TextUtils.isEmpty(mUrl)) {
             mUrl = Constants.FILE_URL_PREFIX +
                     new File(mHybrdDir, "build/pages/world/world.html").getPath();
             LogUtil.i(TAG, "url is null, load default");
         }
 
-        int lastUpdateTime = mActivity.getSharedPreferences(SplashActivity.RUNTIME_PREFERENCE,
+        int lastUpdateTime = getContext().getSharedPreferences(SplashActivity.RUNTIME_PREFERENCE,
                 Context.MODE_PRIVATE).getInt(SplashActivity.PREFERENCE_HYBRID_UPDATE_TIME, 0);
         if (mUrl.startsWith(Constants.FILE_URL_PREFIX)) mUrl += "?time=" + lastUpdateTime;
     }
@@ -134,7 +142,7 @@ public abstract class BaseWebFragment extends BaseFragment {
 
         webView.setWebViewClient(new BaseWebClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (0 != (mActivity.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE)) {
+            if (0 != (getContext().getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE)) {
                 WebView.setWebContentsDebuggingEnabled(true);
             }
         }
@@ -175,12 +183,12 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webGetAccount(List<String> args) {
-        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity), true, true),
+        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(getContext()), true, true),
                 HybrdUrlHandler.FUNC_GET_ACCOUNT));
     }
 
     private void webGetAccountId(List<String> args) {
-        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(mActivity)._id),
+        webView.loadUrl(String.format(toJs(AccountManager.getUserInfo(getContext())._id),
                 HybrdUrlHandler.FUNC_GET_ACCOUNT_ID));
     }
 
@@ -192,10 +200,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         String type = args.get(0);
         if (dialog != null && dialog.isShowing()) dialog.hide();
         if (TextUtils.equals(type, "alert")) {
-            dialog = new MaterialDialog.Builder(mActivity).theme(Theme.LIGHT)
+            dialog = new MaterialDialog.Builder(getContext()).theme(Theme.LIGHT)
                     .content(args.get(1)).progress(true, 0).build();
             dialog.show();
-        } else if (TextUtils.equals(type, "message")) {
+        } else if (TextUtils.equals(type, "message") && mActivity != null) {
             mActivity.showSnackMsg(args.get(1));
         } else {
             LogUtil.e(TAG, "unhandled alert type");
@@ -214,11 +222,13 @@ public abstract class BaseWebFragment extends BaseFragment {
             Intent intent = new Intent();
             intent.putExtra(PersonalWorldActivity.KEY_NAME, args.get(1));
             intent.putExtra(PersonalWorldActivity.KEY_ID, args.get(2));
-            mActivity.setResult(PersonalWorldActivity.RESULT_OK, intent);
+            if (mActivity != null)
+                mActivity.setResult(PersonalWorldActivity.RESULT_OK, intent);
         } else {
             LogUtil.e(TAG, "unhandled finish type");
         }
-        mActivity.finish();
+        if (mActivity != null)
+            mActivity.finish();
     }
 
     private void webLoad(List<String> args) {
@@ -234,15 +244,15 @@ public abstract class BaseWebFragment extends BaseFragment {
         String startDate = args.get(0);
         long numRequest = Long.parseLong(args.get(1));
         try {
-            Dao<Moment, Integer> momentDao = OpenHelperManager.getHelper(mActivity,
+            Dao<Moment, Integer> momentDao = OpenHelperManager.getHelper(getContext(),
                     MomentDatabaseHelper.class).getDao(Moment.class);
             //TODO cache this value but observe its changes
             long countAll = momentDao.queryBuilder().limit(numRequest).where()
-                    .eq("owner", AccountManager.getUserInfo(mActivity)._id).countOf();
+                    .eq("owner", AccountManager.getUserInfo(getContext())._id).countOf();
 
             // use gt instead of ge according document required, By Carlos
             Where<Moment, Integer> where = momentDao.queryBuilder().limit(numRequest).where()
-                    .eq("owner", AccountManager.getUserInfo(mActivity)._id);
+                    .eq("owner", AccountManager.getUserInfo(getContext())._id);
             // start date can be empty for getting all videos started at any day.
             if (!TextUtils.isEmpty(startDate))
                 where.and().gt("time", startDate);
@@ -373,7 +383,7 @@ public abstract class BaseWebFragment extends BaseFragment {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             url = HybrdUrlHandler.urlDecode(url);
             LogUtil.d(TAG, url);
-            return urlHandler.handleUrl(mActivity, url, (int) (touchX + posX), (int) (touchY + posY))
+            return urlHandler.handleUrl(getContext(), url, (int) (touchX + posX), (int) (touchY + posY))
                     || super.shouldOverrideUrlLoading(view, url);
         }
 
