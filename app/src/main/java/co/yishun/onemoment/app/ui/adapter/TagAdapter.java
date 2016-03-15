@@ -71,12 +71,12 @@ public class TagAdapter extends AbstractRecyclerViewAdapter<TagVideo, TagAdapter
         }
 
         void setImage(File large, File small) {
-            LogUtil.d("Video", "get " + small.getName());
+            LogUtil.d(TAG, "get " + small.getName());
             Picasso.with(mContext).load(small).error(R.drawable.pic_world_default).into(itemImageView);
         }
 
         void setVideo(VideoProvider video) {
-            LogUtil.d("Video", "get a video " + video.getFilename());
+            LogUtil.d(TAG, "get a video " + video.getFilename());
         }
 
     }
