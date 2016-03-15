@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.modelv4.World;
 
@@ -19,6 +20,7 @@ import co.yishun.onemoment.app.api.modelv4.World;
  * Created by Jinge on 2016/1/20.
  */
 public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<World, DiscoveryAdapter.SimpleViewHolder> {
+    private static final String TAG = "DiscoveryAdapter";
     private final String peopleSuffix;
 
     public DiscoveryAdapter(Context context, OnItemClickListener<World> listener) {
@@ -33,6 +35,7 @@ public class DiscoveryAdapter extends AbstractRecyclerViewAdapter<World, Discove
 
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, World item, int position) {
+        LogUtil.i(TAG, "on bind: " + item.toString() + ", at " + position);
         holder.numTextView.setVisibility(View.INVISIBLE);
         holder.tagTextView.setVisibility(View.INVISIBLE);
 

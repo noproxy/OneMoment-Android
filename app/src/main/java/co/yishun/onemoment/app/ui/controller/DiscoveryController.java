@@ -134,6 +134,7 @@ public class DiscoveryController implements SwipeRefreshLayout.OnRefreshListener
 
     @UiThread
     void onLoadTags(List<World> list) {
+        LogUtil.i(TAG, "add " + list.size() + " items to adapter.");
         mAdapter.addAll(list);
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }

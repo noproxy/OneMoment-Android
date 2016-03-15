@@ -56,6 +56,24 @@ public class World extends ApiModel implements WorldProvider {
         thumbnail = url;
     }
 
+    @Override
+    public String toString() {
+        return "World{" +
+                "_id='" + _id + '\'' +
+                ", createTime=" + createTime +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", available=" + available +
+                ", name='" + name + '\'' +
+                ", videosNum=" + videosNum +
+                ", ranking=" + ranking +
+                ", accountId='" + accountId + '\'' +
+                ", updateTime=" + updateTime +
+                ", order=" + order +
+                ", type='" + type + '\'' +
+                ", invited=" + invited +
+                '}';
+    }
+
     public static class InvitedUser {
         public String _id;
         public boolean add;
