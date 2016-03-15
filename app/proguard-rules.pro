@@ -272,7 +272,7 @@
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 
--keep class co.yishun.onemoment.app.api.* { *; }
+-keep class co.yishun.onemoment.app.api.** { *; }
 
 -keep class co.yishun.onemoment.app.net.result.** { *; }
 
