@@ -280,3 +280,5 @@
         public <fields>;
         public <methods>;
 }
+
+-keep class co.yishun.onemoment.app.account.auth.** { *;}
