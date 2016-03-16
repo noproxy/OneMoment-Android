@@ -116,8 +116,16 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
 
             try {
                 Response response = client.newCall(new Request.Builder().url(url).build()).execute();
-                TokenResponse tokenResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(response.body().string(), TokenResponse.class);
-                handler.post(() -> mListener.onSuccess(from(tokenResponse)));
+                LogUtil.i(TAG, "response: " + response.toString());
+                String body = response.body().string();
+                LogUtil.i(TAG, "response body: " + body);
+
+                if (response.isSuccessful()) {
+                    TokenResponse tokenResponse = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create().fromJson(body, TokenResponse.class);
+                    handler.post(() -> mListener.onSuccess(from(tokenResponse)));
+                } else {
+                    handler.post(mListener::onFail);
+                }
             } catch (Exception e) {
                 LogUtil.i(TAG, "Exception when request wechat login");
                 e.printStackTrace();
@@ -156,6 +164,17 @@ public class WeChatHelper implements AuthHelper, IWXAPIEventHandler {
         String refreshToken;
         String openid;
         String scope;
+
+        @Override
+        public String toString() {
+            return "TokenResponse{" +
+                    "accessToken='" + accessToken + '\'' +
+                    ", expiresIn=" + expiresIn +
+                    ", refreshToken='" + refreshToken + '\'' +
+                    ", openid='" + openid + '\'' +
+                    ", scope='" + scope + '\'' +
+                    '}';
+        }
     }
 
     private static class UserInfoResponse {
