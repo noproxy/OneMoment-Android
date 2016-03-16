@@ -272,7 +272,6 @@
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 
--keep class co.yishun.onemoment.app.api.** { *; }
 
 -keep class co.yishun.onemoment.app.net.result.** { *; }
 
@@ -281,4 +280,6 @@
         public <methods>;
 }
 
+# class used by Gson should be kept
+-keep class co.yishun.onemoment.app.api.** { *; }
 -keep class co.yishun.onemoment.app.account.auth.** { *;}
