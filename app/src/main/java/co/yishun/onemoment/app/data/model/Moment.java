@@ -192,6 +192,12 @@ public class Moment implements Serializable, QiniuKeyProvider, Comparable {
             return this;
         }
 
+        @Deprecated
+        public MomentBuilder fromCompatFile(File file) {
+            mPath = file.getPath();
+            return this;
+        }
+
         public MomentBuilder setPath(String path) {
             mPath = path;
             return this;
