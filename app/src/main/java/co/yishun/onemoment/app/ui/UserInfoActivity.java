@@ -171,7 +171,8 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
             new MaterialDialog.Builder(this)
                     .theme(Theme.LIGHT)
                     .content(String.format(getString(R.string.activity_user_info_weibo_id_unbind_msg), AccountManager.getUserInfo(this).weiboNickname))
-                    .positiveText(R.string.view_location_spinner_positive_btn)
+                    .positiveText(R.string.activity_user_info_weibo_id_unbind_ok)
+                    .negativeText(R.string.activity_user_info_weibo_id_unbind_cancel)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
