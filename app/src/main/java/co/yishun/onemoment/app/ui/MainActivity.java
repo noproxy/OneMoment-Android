@@ -39,6 +39,7 @@ import com.squareup.picasso.Picasso;
 import com.umeng.message.PushAgent;
 
 import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -126,14 +127,27 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
 
     @AfterInject
     void showMoveLOCDialog() {
-        if (checkLOC)
+        if (DataMigration.hasLOCMoments(this))
             new MaterialDialog.Builder(this).theme(Theme.LIGHT).content(R.string.activity_main_move_LOC_moments).positiveText(R.string.activity_main_move_LOC_moments_positive).negativeText(R.string.activity_main_move_LOC_moments_negative).callback(new MaterialDialog.ButtonCallback() {
                 @Override
                 public void onPositive(MaterialDialog dialog) {
                     super.onPositive(dialog);
-                    DataMigration.moveLOCMomentsToUser(MainActivity.this);
+                    MaterialDialog progress = new MaterialDialog.Builder(MainActivity.this).progress(true, 0).content(R.string.activity_main_move_LOC_moments_progress).show();
+                    moveLOCMoments(progress);
                 }
-            }).build().show();
+            }).show();
+    }
+
+    @Background
+    void moveLOCMoments(MaterialDialog dialog) {
+        DataMigration.moveLOCMomentsToUser(MainActivity.this);
+        moveLOCMomentsOK(dialog);
+    }
+
+    @UiThread
+    void moveLOCMomentsOK(MaterialDialog dialog) {
+        dialog.dismiss();
+        showSnackMsg(R.string.activity_main_move_LOC_moments_progress_success);
     }
 
 

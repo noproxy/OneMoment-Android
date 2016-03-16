@@ -125,4 +125,6 @@
     <string name="activity_play_world_progress_delete_success">删除成功</string>
     <string name="activity_play_world_action_delete">删除视频</string>
     <string name="activity_share_share_loading">加载信息…</string>
+    <string name="activity_main_move_LOC_moments_progress">正在处理…</string>
+    <string name="activity_main_move_LOC_moments_progress_success">视频已导入成功</string>
 </resources>

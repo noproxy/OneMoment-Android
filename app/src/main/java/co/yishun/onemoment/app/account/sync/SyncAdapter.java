@@ -15,7 +15,6 @@ import org.androidannotations.annotations.SystemService;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.account.SyncManager;
-import co.yishun.onemoment.app.account.sync.compat.OldMomentPickUpSync;
 import co.yishun.onemoment.app.account.sync.moment.MomentSync;
 
 
@@ -47,7 +46,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (!checkSyncOption(extras))
             return;
         onSyncStart();
-        OldMomentPickUpSync.sync(getContext(), account, extras, authority, provider, syncResult);
+        // disable because DataMigration handle it
+//        OldMomentPickUpSync.sync(getContext(), account, extras, authority, provider, syncResult);
         MomentSync.sync(getContext(), account, extras, authority, provider, syncResult);
         onSyncEnd();
     }

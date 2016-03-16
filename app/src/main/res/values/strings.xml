@@ -76,6 +76,8 @@
     <string name="activity_main_move_LOC_moments">Move moments shot when you logout to current account?</string>
     <string name="activity_main_move_LOC_moments_positive">OK</string>
     <string name="activity_main_move_LOC_moments_negative">Not Now</string>
+    <string name="activity_main_move_LOC_moments_progress">We are working on it…</string>
+    <string name="activity_main_move_LOC_moments_progress_success">Done! Enjoy yourself</string>
     <string name="activity_main_msg_shoot_forbid">Permission forbade!</string>
     <string name="tb_munion_tip_download_prefix">Downloading：</string>
 </resources>
