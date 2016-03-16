@@ -234,6 +234,7 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         if (user == null) {
             return;
         }
+        LogUtil.i(TAG, "user info: " + user);
         Picasso.with(this).load(user.avatarUrl).into(avatarImage);
 
         nicknameFragment.setContent(user.nickname);
@@ -359,9 +360,9 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
             if (user.errorCode == Constants.ErrorCode.ACCOUNT_EXISTS) {
                 showSnackMsg(getString(R.string.activity_user_info_weibo_id_bind_forbid));
             }
-            return;
+        } else {
+            AccountManager.updateOrCreateUserInfo(this, user);
         }
-        AccountManager.updateOrCreateUserInfo(this, user);
     }
 
     @Background
@@ -370,9 +371,9 @@ public class UserInfoActivity extends PickCropActivity implements AccountManager
         User user = account.unbindWeibo(AccountManager.getUserInfo(this)._id, weiboUid);
         if (user.code <= 0) {
             LogUtil.i(TAG, "unbind weibo failed: " + user.msg);
-            return;
+        } else {
+            AccountManager.updateOrCreateUserInfo(this, user);
         }
-        AccountManager.updateOrCreateUserInfo(this, user);
     }
 
     @Override
