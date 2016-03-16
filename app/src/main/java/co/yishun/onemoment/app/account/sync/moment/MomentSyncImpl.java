@@ -172,16 +172,23 @@ public class MomentSyncImpl extends MomentSync {
                 e.printStackTrace();
             }
         }
+        boolean needFix;
 
         // check moment on devices
         for (Moment moment : momentsOnDevice) {
-            if (!moment.getFile().exists()
-                    || moment.getFile().length() == 0
-                    || !moment.getThumbPathFile().exists()
-                    || moment.getThumbPathFile().length() == 0
-                    || !moment.getLargeThumbPathFile().exists()
-                    || moment.getLargeThumbPathFile().length() == 0
-                    ) {
+
+            try {
+                needFix = !moment.getFile().exists()
+                        || moment.getFile().length() == 0
+                        || !moment.getThumbPathFile().exists()
+                        || moment.getThumbPathFile().length() == 0
+                        || !moment.getLargeThumbPathFile().exists()
+                        || moment.getLargeThumbPathFile().length() == 0;
+            } catch (NullPointerException ignored) {
+                needFix = true;
+            }
+
+            if (needFix) {
                 toFix.add(moment);
             }
         }
