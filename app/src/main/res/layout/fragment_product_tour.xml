@@ -14,6 +14,8 @@
         android:layout_alignParentBottom="true"
         android:fitsSystemWindows="true"
         android:paddingBottom="24dp"
+        app:pid_background="@color/colorPrimaryDark"
+        app:pid_dotRadius="4dp"
         app:pid_interval="16dp"
         app:pid_isStroke="true" />
 
@@ -21,6 +23,5 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/pageIndicator"
         android:background="@null" />
 </RelativeLayout>

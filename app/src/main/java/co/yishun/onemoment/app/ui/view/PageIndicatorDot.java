@@ -83,11 +83,12 @@ public class PageIndicatorDot extends View {
     }
 
     private void resetPaint() {
-        selectPaint.setStyle(Paint.Style.FILL);
+        selectPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         selectPaint.setColor(foreground);
+        selectPaint.setStrokeWidth(stokeWidth);
         if (isStroke) {
             normalPaint.setStyle(Paint.Style.STROKE);
-            normalPaint.setColor(foreground);
+            normalPaint.setColor(background);
             normalPaint.setStrokeWidth(stokeWidth);
         } else {
             normalPaint.setStyle(Paint.Style.FILL);
@@ -143,9 +144,10 @@ public class PageIndicatorDot extends View {
         float topMargin = height / 2;
 
         for (int i = 0; i < num; i++) {
-            canvas.drawCircle(leftMargin + interval * i, topMargin, radius, normalPaint);
             if (i == current)
                 canvas.drawCircle(leftMargin + interval * current, topMargin, radius, selectPaint);
+            else
+                canvas.drawCircle(leftMargin + interval * i, topMargin, radius, normalPaint);
         }
     }
 }
