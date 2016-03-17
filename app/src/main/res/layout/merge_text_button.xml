@@ -9,9 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_btn_circular_white"
-        android:minHeight="48dp"
-        android:minWidth="48dp"
-        android:padding="12dp"
         android:stateListAnimator="@anim/btn_elevation"
         tools:src="@drawable/pic_login_qq"
         />
@@ -21,7 +18,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingTop="8dp"
         android:stateListAnimator="@anim/btn_elevation"
         tools:text="Test"
         />

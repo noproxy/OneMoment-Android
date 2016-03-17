@@ -115,7 +115,9 @@
 
     <style name="AppTheme.ShareOutputActivity"></style>
 
-    <style name="AppTheme.GuideActivity"></style>
+    <style name="AppTheme.GuideActivity">
+        <item name="android:windowBackground">@drawable/bg_window_login</item>
+    </style>
 
     <style name="AppTheme.WorldVideosActivity">
         <item name="android:windowBackground">@color/colorWindowTransparent</item>

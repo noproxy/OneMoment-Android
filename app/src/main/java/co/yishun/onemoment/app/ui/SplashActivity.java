@@ -120,10 +120,11 @@ public class SplashActivity extends BaseActivity {
         this.finish();
         if (isFirstLaunch()) {
             sendBroadcast(new Intent(ReminderReceiver.ACTION_UPDATE_REMIND));
-            GuideActivity_.intent(this).isFirstLaunch(true).start();
+            // keep this preferences even if we don't use it now
             getSharedPreferences(RUNTIME_PREFERENCE, MODE_PRIVATE).edit()
                     .putBoolean(PREFERENCE_IS_FIRST_LAUNCH, false).apply();
-        } else if (AccountManager.isLogin(this))
+        }
+        if (AccountManager.isLogin(this))
             MainActivity_.intent(this).start();
         else
             EntryActivity_.intent(this).start();
