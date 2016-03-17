@@ -11,7 +11,6 @@
         android:background="@drawable/bg_btn_circular_white"
         android:minHeight="48dp"
         android:minWidth="48dp"
-        android:padding="12dp"
         android:stateListAnimator="@anim/btn_elevation"
         tools:src="@drawable/pic_login_qq"
         />
