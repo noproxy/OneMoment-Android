@@ -20,5 +20,6 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/pageIndicator" />
+        android:layout_above="@+id/pageIndicator"
+        android:background="@null" />
 </RelativeLayout>

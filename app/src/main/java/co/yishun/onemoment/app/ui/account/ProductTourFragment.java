@@ -21,20 +21,15 @@ import co.yishun.onemoment.app.ui.view.PageIndicatorDot;
 @EFragment(R.layout.fragment_product_tour)
 public class ProductTourFragment extends BaseFragment {
     private final int pagePicRes[] = new int[]{
-            R.drawable.pic_guide_001,
-            R.drawable.pic_guide_002,
-            R.drawable.pic_guide_003,
-            R.drawable.pic_guide_004};
-    private final int pageTextRes[] = new int[]{
-            R.drawable.pic_guide_001txt,
-            R.drawable.pic_guide_002txt,
-            R.drawable.pic_guide_003txt,
-            R.drawable.pic_guide_004txt};
+            R.drawable.pic_guide_01,
+            R.drawable.pic_guide_02,
+            R.drawable.pic_guide_03};
+
     @ViewById
     ViewPager viewPager;
     @ViewById
     PageIndicatorDot pageIndicator;
-    private int pageNum = 4;
+    private int pageNum = 3;
 
     @Override
     public void setPageInfo() {
@@ -53,7 +48,6 @@ public class ProductTourFragment extends BaseFragment {
         View rootView;
         rootView = inflater.inflate(R.layout.page_guide, container, false);
         ((ImageView) rootView.findViewById(R.id.picImage)).setImageResource(pagePicRes[position]);
-        ((ImageView) rootView.findViewById(R.id.textImage)).setImageResource(pageTextRes[position]);
 
         return rootView;
     }
