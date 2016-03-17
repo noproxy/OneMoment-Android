@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="24dp"
         android:fitsSystemWindows="true"
+        android:paddingBottom="24dp"
         app:pid_interval="16dp"
         app:pid_isStroke="true" />
 
