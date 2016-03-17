@@ -13,7 +13,7 @@ import co.yishun.onemoment.app.R;
 
 
 /**
- * Created by 进 on 2015/2/4.
+ * Pager indicator for ViewPager. The dot style is defined by color and size.
  */
 public class PageIndicatorDot extends View {
 
