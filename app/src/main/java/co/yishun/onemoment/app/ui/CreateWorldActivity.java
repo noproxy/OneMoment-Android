@@ -47,6 +47,7 @@ public class CreateWorldActivity extends BaseWebActivity implements OMWebView.On
     void finishClick(View view) {
         hideKeyboard();
         mWebFragment.sendFinish();
+        BaseWebFragment.invalidateWeb();
     }
 
     @Override
