@@ -18,12 +18,14 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
+import co.yishun.onemoment.app.ui.hybrd.BlockNextWebFragment_;
+import co.yishun.onemoment.app.ui.view.OMWebView;
 
 /**
  * Created by Jinge on 2016/1/22.
  */
 @EActivity(R.layout.activity_create_world)
-public class CreateWorldActivity extends BaseWebActivity {
+public class CreateWorldActivity extends BaseWebActivity implements OMWebView.OnBlockKeyListener {
 
     @ViewById
     Button finishButton;
@@ -45,7 +47,14 @@ public class CreateWorldActivity extends BaseWebActivity {
     void finishClick(View view) {
         hideKeyboard();
         mWebFragment.sendFinish();
-        BaseWebFragment.invalidateWeb();
+    }
+
+    @Override
+    protected void setupFragment() {
+        mWebFragment = BlockNextWebFragment_.builder().mUrl(url).build();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerFrameLayout, mWebFragment, BaseWebFragment.TAG_WEB).commit();
+        OMWebView.setListener(this);
     }
 
     void showKeyboard() {
@@ -61,5 +70,10 @@ public class CreateWorldActivity extends BaseWebActivity {
     @Override
     public void setPageInfo() {
         mPageName = "CreateWorldActivity";
+    }
+
+    @Override
+    public void onBlockKey() {
+        finishButton.performClick();
     }
 }
