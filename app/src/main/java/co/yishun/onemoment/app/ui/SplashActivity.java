@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import co.yishun.onemoment.app.LogUtil;
+import co.yishun.onemoment.app.OMApplication;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.Util;
 import co.yishun.onemoment.app.account.AccountManager;
@@ -154,7 +155,15 @@ public class SplashActivity extends BaseActivity {
 
             if (splashCover.updateTime > lastUpdateTime) {
                 OkHttpClient client = new OkHttpClient();
-                Call call = client.newCall(new Request.Builder().url(splashCover.url).build());
+
+
+                Request.Builder builder = new Request.Builder().url(splashCover.url);
+                String c = OMApplication.getChannel();
+                if (c != null) {
+                    builder.addHeader(Constants.MARKER_HEADER, c);
+                }
+                Call call = client.newCall(builder.build());
+
                 InputStream input = null;
                 FileOutputStream output = null;
                 try {

@@ -41,6 +41,7 @@ public class Constants {
     public static final String QQ_APP_ID = "1104574591";
     public static final String WE_CHAT_APP_ID = "wx669ce174488102f4";
     public static final String WEIBO_APP_ID = "4070980764";
+    public static final String MARKER_HEADER = "Om-Android-Market";
 
     static {
         //noinspection ConstantConditions

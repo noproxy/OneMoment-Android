@@ -20,7 +20,7 @@ public class OneMomentV3 {
         request.addHeader("Om-encrypted", "1");
         String c = OMApplication.getChannel();
         if (c != null) {
-            request.addHeader("Om-Android-Market", c);
+            request.addHeader(Constants.MARKER_HEADER, c);
         }
     };
 
