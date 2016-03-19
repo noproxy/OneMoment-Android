@@ -27,6 +27,7 @@ public class Constants {
     public static final String TIME_FORMAT = "yyyyMMdd";
     public static final String TIEM_FORMAT_EXPORT = "yyyyMMdd_HHmmss";
     public static final String VIDEO_THUMB_STORE_DIR = "thumbs";
+    public static final String HYBRID_ZIP_DOWNLOAD_URL;
     public static final int VIDEO_HEIGHT = 480;
     public static final int VIDEO_WIDTH = 480;
     public static final int VIDEO_FPS = 30;
@@ -47,6 +48,7 @@ public class Constants {
         //noinspection ConstantConditions
         API_V4_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/v4" : "https://api.yishun" +
                 ".co:53471/v4";
+        HYBRID_ZIP_DOWNLOAD_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip" : "http://api.yishun.co:53470/hybrdstatic/zip/default.zip";
     }
 
     public static class ErrorStr {
