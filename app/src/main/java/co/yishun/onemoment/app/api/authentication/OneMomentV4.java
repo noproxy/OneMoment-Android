@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.api.authentication;
 
 import co.yishun.onemoment.app.BuildConfig;
+import co.yishun.onemoment.app.OMApplication;
 import co.yishun.onemoment.app.config.Constants;
 import retrofit.RestAdapter;
 
@@ -16,7 +17,13 @@ public class OneMomentV4 {
                 .setEndpoint(API_BASE_URL)
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .setClient(OneMomentClientV4.getCacheClient())
-                .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
+                .setRequestInterceptor(request -> {
+                    request.addHeader("Om-encrypted", "1");
+                    String c = OMApplication.getChannel();
+                    if (c != null) {
+                        request.addHeader("Om-Android-Market", c);
+                    }
+                })
                 .setConverter(new OneMomentConverterV4())
                 .build();
     }

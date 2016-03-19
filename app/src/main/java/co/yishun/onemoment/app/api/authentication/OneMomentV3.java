@@ -1,8 +1,10 @@
 package co.yishun.onemoment.app.api.authentication;
 
 import co.yishun.onemoment.app.BuildConfig;
+import co.yishun.onemoment.app.OMApplication;
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.config.Constants;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
 /**
@@ -14,13 +16,20 @@ public class OneMomentV3 {
     private static final RestAdapter mNonCacheRetrofit;
     private static final RestAdapter mCacheOnlyRetrofit;
     private static final RestAdapter mCacheRetrofit;
+    private static final RequestInterceptor mRequestInterceptor = request -> {
+        request.addHeader("Om-encrypted", "1");
+        String c = OMApplication.getChannel();
+        if (c != null) {
+            request.addHeader("Om-Android-Market", c);
+        }
+    };
 
     static {
         mNonCacheRetrofit = new RestAdapter.Builder()
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .setClient(OneMomentClientV3.newNoCacheClient())
-                .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
+                .setRequestInterceptor(mRequestInterceptor)
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.NO_CACHE))
                 .build();
 
@@ -28,7 +37,7 @@ public class OneMomentV3 {
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .setClient(OneMomentClientV3.getCacheOnlyClient())
-                .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
+                .setRequestInterceptor(mRequestInterceptor)
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.CACHE_ONLY))
                 .build();
 
@@ -36,7 +45,7 @@ public class OneMomentV3 {
                 .setEndpoint(API_BASE_URL).setLogLevel(BuildConfig.DEBUG
                         ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .setClient(OMCYyzBackup.getCacheClient())
-                .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
+                .setRequestInterceptor(mRequestInterceptor)
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.NORMAL))
                 .build();
     }
@@ -50,7 +59,7 @@ public class OneMomentV3 {
                 .setEndpoint(API_BASE_URL)
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .setClient(OneMomentClientV3.getCacheClient())
-                .setRequestInterceptor(request -> request.addHeader("Om-encrypted", "1"))
+                .setRequestInterceptor(mRequestInterceptor)
                 .setConverter(new OneMomentConverter(ApiModel.CacheType.NORMAL))
                 //TODO CacheType not work yet. New Cache mechanism is under construction. By Carlos
                 .build();
