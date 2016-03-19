@@ -236,7 +236,7 @@ public class SplashActivity extends BaseActivity {
                     if (response.code() == 200) {
                         input = response.body().byteStream();
                         long inputLength = response.body().contentLength();
-                        LogUtil.d(TAG, "get image " + url + " length " + inputLength);
+                        LogUtil.d(TAG, "get zip " + url + " length " + inputLength);
                         if (inputLength == 0) {
                             return null;
                         }
@@ -259,7 +259,7 @@ public class SplashActivity extends BaseActivity {
                                 .putLong(PREFERENCE_HYBRID_LENGTH, hybrdData.length)
                                 .apply();
                         hybridFile.delete();
-                        LogUtil.i(TAG, "finish image download");
+                        LogUtil.i(TAG, "finish zip download");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
