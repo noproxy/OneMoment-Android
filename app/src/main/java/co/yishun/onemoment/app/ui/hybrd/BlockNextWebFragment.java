@@ -6,8 +6,9 @@ import org.androidannotations.annotations.EFragment;
 import co.yishun.onemoment.app.R;
 
 /**
- * Created by Jinge on 2016/1/21.
+ * Deprecated because of no use
  */
+@Deprecated
 @EFragment(R.layout.fragment_web_view_block_next)
 public class BlockNextWebFragment extends BaseWebFragment {
 

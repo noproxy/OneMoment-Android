@@ -18,7 +18,6 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
-import co.yishun.onemoment.app.ui.hybrd.BlockNextWebFragment_;
 import co.yishun.onemoment.app.ui.view.OMWebView;
 
 /**
@@ -49,14 +48,14 @@ public class CreateWorldActivity extends BaseWebActivity implements OMWebView.On
         mWebFragment.sendFinish();
         BaseWebFragment.invalidateWeb();
     }
-
-    @Override
-    protected void setupFragment() {
-        mWebFragment = BlockNextWebFragment_.builder().mUrl(url).build();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerFrameLayout, mWebFragment, BaseWebFragment.TAG_WEB).commit();
-        OMWebView.setListener(this);
-    }
+// This is fixed by Web, so we don't need it.
+//    @Override
+//    protected void setupFragment() {
+//        mWebFragment = BlockNextWebFragment_.builder().mUrl(url).build();
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.containerFrameLayout, mWebFragment, BaseWebFragment.TAG_WEB).commit();
+//        OMWebView.setListener(this);
+//    }
 
     void showKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
