@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -100,8 +101,10 @@ public class TagCreateActivity extends BaseActivity
     private static final String TAG = "TagCreateActivity";
 
     private static final int REQUEST_SELECT_WORLD = 1;
+    //    @ViewById
+//    OMVideoView videoView;
     @ViewById
-    OMVideoView videoView;
+    FrameLayout videoViewContainer;
     @ViewById
     VideoTypeView videoTypeView;
     @ViewById
@@ -146,6 +149,7 @@ public class TagCreateActivity extends BaseActivity
      * flag that whether video path has been set.
      */
     private boolean played = false;
+    private OMVideoView mVideoView;
 
     @AfterInject
     void checkExtra() {
@@ -158,7 +162,6 @@ public class TagCreateActivity extends BaseActivity
     void setupViews() {
         setupToolbar();
         setPreviewImage();
-        setVideo();
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -172,6 +175,9 @@ public class TagCreateActivity extends BaseActivity
         videoTypeView.setDiaryCheck(forDiary);
 
         nextBtn.setEnabled(forDiary || forWorld || forToday);
+
+        mVideoView = new OMVideoView(this);
+        videoViewContainer.addView(mVideoView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void setPreviewImage() {
@@ -205,20 +211,23 @@ public class TagCreateActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (videoView != null) {
-            setVideo();
-        }
 
+        // we create video view every time onResume, because on some devices video view is unable to be reused.
+        if (mVideoView == null) {
+            mVideoView = new OMVideoView(this);
+            videoViewContainer.addView(mVideoView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+        setVideo();
     }
 
     void setVideo() {
         LogUtil.i(TAG, "set video: " + videoPath);
         if (videoPath == null) return;
-        videoView.setPlayListener(new OMVideoPlayer.PlayListener() {
+        mVideoView.setPlayListener(new OMVideoPlayer.PlayListener() {
             @Override
             public void onOneCompletion() {
-                videoView.reset();
-                videoView.setVideoRes(Uri.fromFile(new File(videoPath)));
+                mVideoView.reset();
+                mVideoView.setVideoRes(Uri.fromFile(new File(videoPath)));
             }
 
             @Override
@@ -226,24 +235,26 @@ public class TagCreateActivity extends BaseActivity
                 return null;
             }
         });
-        videoView.setVideoRes(Uri.fromFile(new File(videoPath)));
-        videoView.start();
+        mVideoView.setVideoRes(Uri.fromFile(new File(videoPath)));
+        mVideoView.start();
     }
 
     @Click(R.id.tagContainer)
     void replay() {
-        if (!videoView.isPlaying()) {
-            videoView.start();
+        if (!mVideoView.isPlaying()) {
+            mVideoView.start();
         } else {
-            videoView.pause();
+            mVideoView.pause();
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (videoView != null) {
-            videoView.reset();
+        if (mVideoView != null) {
+            mVideoView.reset();
+            mVideoView.release();
+            mVideoView = null;
         }
     }
 
