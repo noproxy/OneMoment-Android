@@ -226,7 +226,7 @@ public class SplashActivity extends BaseActivity {
             }
             HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
             if (hybrdData.updateTime > lastUpdateTime) {
-                String url = "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip";
+                String url = Constants.HYBRID_ZIP_DOWNLOAD_URL;
                 OkHttpClient client = new OkHttpClient();
                 Call call = client.newCall(new Request.Builder().url(url).build());
                 InputStream input = null;
