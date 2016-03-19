@@ -48,7 +48,8 @@ public class Constants {
         //noinspection ConstantConditions
         API_V4_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/v4" : "https://api.yishun" +
                 ".co:53471/v4";
-        HYBRID_ZIP_DOWNLOAD_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip" : "http://api.yishun.co:53470/hybrdstatic/zip/default.zip";
+        //noinspection ConstantConditions
+        HYBRID_ZIP_DOWNLOAD_URL = SANDBOX ? "http://sandbox.api.yishun.co:53470/hybrdstatic/zip/default.zip" : "https://api.yishun.co:53471/hybrdstatic/zip/default.zip";
     }
 
     public static class ErrorStr {
