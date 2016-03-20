@@ -28,12 +28,22 @@ public class LogUtil {
         return log(Log.VERBOSE, tag, msg, null);
     }
 
+    public static int v(String tag, final String... msg) {
+        String m = Util.joinString("null", "", msg);
+        return LogUtil.v(tag, m);
+    }
+
     public static int v(String tag, String msg, Throwable tr) {
         return log(Log.VERBOSE, tag, msg, tr);
     }
 
     public static int d(String tag, String msg) {
         return log(Log.DEBUG, tag, msg, null);
+    }
+
+    public static int d(String tag, String... msg) {
+        String m = Util.joinString("null", "", msg);
+        return LogUtil.d(tag, m);
     }
 
     public static int d(String tag, String msg, Throwable tr) {
@@ -44,6 +54,11 @@ public class LogUtil {
         return log(Log.INFO, tag, msg, null);
     }
 
+    public static int i(String tag, String... msg) {
+        String m = Util.joinString("null", "", msg);
+        return LogUtil.i(tag, m);
+    }
+
     public static int i(String tag, String msg, Throwable tr) {
         return log(Log.INFO, tag, msg, tr);
     }
@@ -52,12 +67,22 @@ public class LogUtil {
         return log(Log.WARN, tag, msg, null);
     }
 
+    public static int w(String tag, String... msg) {
+        String m = Util.joinString("null", "", msg);
+        return LogUtil.w(tag, m);
+    }
+
     public static int w(String tag, String msg, Throwable tr) {
         return log(Log.WARN, tag, msg, tr);
     }
 
     public static int e(String tag, String msg) {
         return log(Log.ERROR, tag, msg, null);
+    }
+
+    public static int e(String tag, String... msg) {
+        String m = Util.joinString("null", "", msg);
+        return LogUtil.e(tag, m);
     }
 
     public static int e(String tag, String msg, Throwable tr) {
