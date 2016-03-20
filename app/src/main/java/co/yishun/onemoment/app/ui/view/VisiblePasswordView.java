@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -18,6 +19,7 @@ import co.yishun.onemoment.app.R;
  * Created by yyz on 7/25/15.
  */
 public class VisiblePasswordView extends EditText {
+    private static final String TAG = "VisiblePasswordView";
     boolean touched = false;
     private Drawable mDrawableVisible;
     private Drawable mDrawableInvisible;
@@ -34,6 +36,9 @@ public class VisiblePasswordView extends EditText {
     private int mInputTypeInvisible;
     private float mMinTouchHeight;
     private float mMinTouchWidth;
+    private int drawableWidth;
+    private int drawableHeight;
+    private Rect canvasClip;
 
     public VisiblePasswordView(Context context) {
         super(context);
@@ -87,17 +92,19 @@ public class VisiblePasswordView extends EditText {
         mInputTypeInvisible = a.getInt(R.styleable.VisiblePasswordView_inputTypeInvisible, EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         this.setInputType(mInputTypeInvisible);
         a.recycle();
+
+        canvasClip = new Rect();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        LogUtil.i("onMeasure", "left: " + getLeft() + " right: " + getRight() + " top: " + getTop() + " bottom: " + getBottom()
+        LogUtil.i(TAG, "onMeasure" + "left: " + getLeft() + " right: " + getRight() + " top: " + getTop() + " bottom: " + getBottom()
                 + " width: " + getWidth() + " height: " + getHeight() +
                 " measuredWidth: " + getMeasuredWidth() + " measuredHeight: " + getMeasuredHeight());
-        final int drawableWidth = Math.max(mDrawableInvisible.getIntrinsicWidth(), mDrawableVisible.getIntrinsicWidth());
-        final int drawableHeight = Math.max(mDrawableInvisible.getIntrinsicHeight(), mDrawableVisible.getIntrinsicHeight());
+        drawableWidth = Math.max(mDrawableInvisible.getIntrinsicWidth(), mDrawableVisible.getIntrinsicWidth());
+        drawableHeight = Math.max(mDrawableInvisible.getIntrinsicHeight(), mDrawableVisible.getIntrinsicHeight());
 
 
         mTouchRight = right = getMeasuredWidth() - getPaddingRight();
@@ -120,14 +127,23 @@ public class VisiblePasswordView extends EditText {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         final Drawable toDraw;
         if (visible)
             toDraw = mDrawableVisible;
         else
             toDraw = mDrawableInvisible;
-        toDraw.setBounds(left, top, right, bottom);
+        LogUtil.v(TAG, "left, top, right, bottom: " + left + ", " + top + ", " + right + ", " + bottom);
+
+        canvas.getClipBounds(canvasClip);
+
+        int mid = (canvasClip.top + canvasClip.bottom) / 2;
+        int start = canvasClip.right - drawableWidth;
+
+        toDraw.setBounds(start, mid - drawableHeight / 2, canvasClip.right, mid + drawableHeight / 2);
+
         toDraw.draw(canvas);
+
+        super.onDraw(canvas);
     }
 
     @Override

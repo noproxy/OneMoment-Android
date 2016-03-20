@@ -19,12 +19,12 @@
 
 
     <LinearLayout
+        style="@style/PhoneLoginLinearLayout"
         android:layout_width="match_parent"
-        android:orientation="vertical"
         android:gravity="top"
+        android:orientation="vertical"
         android:paddingLeft="32dp"
-        android:paddingRight="32dp"
-        style="@style/PhoneLoginLinearLayout">
+        android:paddingRight="32dp">
 
         <EditText
             android:id="@+id/phoneEditText"
@@ -43,7 +43,6 @@
             android:layout_height="0.3dp"
             android:background="@android:color/black" />
 
-        <!--TODO visible password view -->
         <!--TODO auto count down view -->
         <co.yishun.onemoment.app.ui.view.VisiblePasswordView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -56,7 +55,7 @@
             android:padding="8dp"
             app:inVisibleDrawable="@drawable/ic_login_eye_off"
             app:inputTypeInvisible="textPassword"
-            app:inputTypeVisible="text"
+            app:inputTypeVisible="textVisiblePassword"
             app:visibleDrawable="@drawable/ic_login_eye_open" />
 
     </LinearLayout>
