@@ -121,9 +121,8 @@ public class Util {
         return count;
     }
 
-    public static
     @NonNull
-    String getUserAgent() {
+    public static String getUserAgent() {
         String userAgent = System.getProperty("http.agent");
         if (TextUtils.isEmpty(userAgent)) {
             String release = Build.VERSION.RELEASE;
