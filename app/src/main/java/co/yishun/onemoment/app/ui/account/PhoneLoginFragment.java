@@ -1,10 +1,14 @@
 package co.yishun.onemoment.app.ui.account;
 
 import android.content.Intent;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.UiThread;
 
 import co.yishun.onemoment.app.R;
@@ -33,6 +37,12 @@ public class PhoneLoginFragment extends PhonePasswordFragment {
     @Override
     public void onFABClick(View view) {
         if (checkPhoneNum() && checkPassword()) login();
+    }
+
+    @EditorAction(R.id.passwordEditText)
+    void onSubmit(TextView view, int actionId, KeyEvent keyEvent) {
+        if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)
+            onFABClick(view);
     }
 
     @Background

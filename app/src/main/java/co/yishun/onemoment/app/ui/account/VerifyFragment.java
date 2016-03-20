@@ -3,13 +3,16 @@ package co.yishun.onemoment.app.ui.account;
 import android.app.Activity;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -43,6 +46,12 @@ public class VerifyFragment extends AccountFragment {
     public void onFABClick(View view) {
         if (checkVerifyCode())
             verify();
+    }
+
+    @EditorAction(R.id.verificationCodeEditText)
+    void onSubmit(TextView view, int actionId, KeyEvent keyEvent) {
+        if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)
+            onFABClick(view);
     }
 
     @AfterTextChange(R.id.verificationCodeEditText)
