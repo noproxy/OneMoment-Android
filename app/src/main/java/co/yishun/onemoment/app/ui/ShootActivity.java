@@ -68,9 +68,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     WorldProvider world;
 
     private ViewGroup sceneRoot;
-    private
     @Nullable
-    CameraGLSurfaceView mCameraGLSurfaceView;
+    private CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
 
     @Override
@@ -207,9 +206,9 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     @Override
     public void accept(File file) {
         LogUtil.i(TAG, "accept: " + file);
-        if (shootView instanceof CameraGLSurfaceView)
+        if (shootView instanceof CameraGLSurfaceView) {
             delayStart(file);
-        else {
+        } else {
             showProgress();
             delayAccept(file);
         }
@@ -233,7 +232,7 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
         }).start();
     }
 
-    @UiThread(delay = 200)
+    @UiThread(delay = 800)
     void delayStart(File file) {
         TagCreateActivity_.intent(this).forDiary(forDiary).forWorld(forWorld).forToday(forToday).world(world).videoPath(file.getPath()).start();
         this.finish();

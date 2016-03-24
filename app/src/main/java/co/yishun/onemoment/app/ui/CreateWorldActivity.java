@@ -27,6 +27,7 @@ public class CreateWorldActivity extends BaseWebActivity {
 
     @ViewById
     Button finishButton;
+    private boolean canceled = false;
 
     @AfterInject
     void setDefault() {
@@ -40,13 +41,6 @@ public class CreateWorldActivity extends BaseWebActivity {
         setupToolbar();
         setupFragment();
     }
-
-    @Click(R.id.finishButton)
-    void finishClick(View view) {
-        hideKeyboard();
-        mWebFragment.sendFinish();
-        BaseWebFragment.invalidateWeb();
-    }
 // This is fixed by Web, so we don't need it.
 //    @Override
 //    protected void setupFragment() {
@@ -55,6 +49,12 @@ public class CreateWorldActivity extends BaseWebActivity {
 //                .replace(R.id.containerFrameLayout, mWebFragment, BaseWebFragment.TAG_WEB).commit();
 //        OMWebView.setListener(this);
 //    }
+
+    @Click(R.id.finishButton)
+    void finishClick(View view) {
+        hideKeyboard();
+        mWebFragment.sendFinish();
+    }
 
     void showKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -75,4 +75,18 @@ public class CreateWorldActivity extends BaseWebActivity {
 //    public void onBlockKey() {
 //        finishButton.performClick();
 //    }
+
+    @Override
+    public void onBackPressed() {
+        canceled = true;
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!canceled)
+            BaseWebFragment.invalidateWeb();
+        // we cannot do it in finishClick, because the web may finish this activity, too.
+    }
 }
