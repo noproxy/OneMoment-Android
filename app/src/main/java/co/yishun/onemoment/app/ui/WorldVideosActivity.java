@@ -72,6 +72,9 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     WorldProvider world;
     @Extra
     boolean forWorld;
+
+    @Extra
+    boolean today = false;
     /**
      * imageRect contains the original position of the {@link #transImage}. And {@link #imageCorner}
      * is the original corner of the {@link #transImage}. Set imageRect and add flag {@link
@@ -297,12 +300,12 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 
     @Click(R.id.videoImageView)
     void videoImageClick(View v) {
-        PlayActivity_.intent(this).world(world).forWorld(forWorld).type(PlayActivity.TYPE_WORLD).start();
+        PlayActivity_.intent(this).world(world).forWorld(forWorld).today(today).type(PlayActivity.TYPE_WORLD).start();
     }
 
     @Override
     public void onClick(View view, WorldVideo item) {
-        PlayActivity_.intent(this).world(world).video(item).type(PlayActivity.TYPE_VIDEO).start();
+        PlayActivity_.intent(this).world(world).video(item).today(today).type(PlayActivity.TYPE_VIDEO).start();
     }
 
     @Override

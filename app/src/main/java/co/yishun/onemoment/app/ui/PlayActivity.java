@@ -61,6 +61,8 @@ public class PlayActivity extends BaseActivity {
     WorldProvider world;
     @Extra
     boolean forWorld;
+    @Extra
+    boolean today = false;
 
     @ViewById
     Toolbar toolbar;
@@ -159,7 +161,7 @@ public class PlayActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (PlayActivity.TYPE_VIDEO == type) {
+        if (PlayActivity.TYPE_VIDEO == type && !today) {
             getMenuInflater().inflate(R.menu.menu_activity_play_world, menu);
             return true;
         }
