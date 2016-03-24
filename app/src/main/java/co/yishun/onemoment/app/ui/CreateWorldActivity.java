@@ -18,13 +18,12 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
-import co.yishun.onemoment.app.ui.view.OMWebView;
 
 /**
  * Created by Jinge on 2016/1/22.
  */
 @EActivity(R.layout.activity_create_world)
-public class CreateWorldActivity extends BaseWebActivity implements OMWebView.OnBlockKeyListener {
+public class CreateWorldActivity extends BaseWebActivity {
 
     @ViewById
     Button finishButton;
@@ -72,8 +71,8 @@ public class CreateWorldActivity extends BaseWebActivity implements OMWebView.On
         mPageName = "CreateWorldActivity";
     }
 
-    @Override
-    public void onBlockKey() {
-        finishButton.performClick();
-    }
+//    @Override
+//    public void onBlockKey() {
+//        finishButton.performClick();
+//    }
 }
