@@ -226,6 +226,7 @@ public class SplashActivity extends BaseActivity {
             File hybridFile = params[0];
             int lastUpdateTime = preferences.getInt(PREFERENCE_HYBRID_UPDATE_TIME, 0);
             int lastUnzipTime = preferences.getInt(PREFERENCE_HYBRID_UNZIP_TIME, 0);
+            LogUtil.d(TAG, "lastUpdate: " + lastUnzipTime + ", lastUnzip: " + lastUnzipTime);
             if (lastUnzipTime < lastUpdateTime || lastUnzipTime == 0) {
                 if (hybridFile.length() == 0 || !TextUtils.equals(FileUtil.calculateMD5(hybridFile), preferences.getString(PREFERENCE_HYBRID_MD5, ""))) {
                     FileUtil.copyResToFile(context, R.raw.hybrd_default, hybridFile.getPath());
@@ -234,6 +235,8 @@ public class SplashActivity extends BaseActivity {
                 preferences.edit().putInt(PREFERENCE_HYBRID_UNZIP_TIME, (int) Util.unixTimeStamp()).apply();
             }
             HybrdData hybrdData = OneMomentV4.createAdapter().create(APIV4.class).getHybrdData("default.zip");
+
+            LogUtil.d(TAG, "new data update time: " + hybrdData.updateTime);
             if (hybrdData.updateTime > lastUpdateTime) {
                 String url = Constants.HYBRID_ZIP_DOWNLOAD_URL;
                 OkHttpClient client = new OkHttpClient();
