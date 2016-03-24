@@ -68,9 +68,8 @@ public class ShootActivity extends BaseActivity implements Callback, Consumer<Fi
     WorldProvider world;
 
     private ViewGroup sceneRoot;
-    private
     @Nullable
-    CameraGLSurfaceView mCameraGLSurfaceView;
+    private CameraGLSurfaceView mCameraGLSurfaceView;
     private boolean flashOn = false;
 
     @Override
