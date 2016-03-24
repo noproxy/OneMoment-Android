@@ -58,6 +58,7 @@ import co.yishun.onemoment.app.ui.adapter.WorldVideoAdapter;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.controller.WorldVideosController;
 import co.yishun.onemoment.app.ui.controller.WorldVideosController_;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 
@@ -264,6 +265,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
                         Toast.makeText(this, R.string.activity_world_videos_progress_delete_success,
                                 Toast.LENGTH_SHORT).show();
                         finish();
+                BaseWebFragment.invalidateWeb();
                     }
             );
         } else {
