@@ -14,4 +14,12 @@ public class ApiModel implements Serializable {
     public boolean isSuccess() {
         return TextUtils.equals(error, "Ok");
     }
+
+    @Override
+    public String toString() {
+        return "ApiModel{" +
+                "error='" + error + '\'' +
+                ", msg='" + msg + '\'' +
+                '}';
+    }
 }

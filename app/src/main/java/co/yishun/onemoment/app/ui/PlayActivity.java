@@ -154,6 +154,18 @@ public class PlayActivity extends BaseActivity {
                     }).show();
                 }
                 return true;
+            case R.id.activity_play_today_action_delete:
+                if (video instanceof WorldVideo) {
+                    WorldVideo worldVideo = (WorldVideo) video;
+                    new MaterialDialog.Builder(this).cancelable(true).canceledOnTouchOutside(true)
+                            .content(R.string.activity_play_today_dialog_delete_content).positiveText(R
+                            .string.activity_play_today_dialog_delete_positive).negativeText(R
+                            .string.activity_play_today_dialog_delete_negative).onPositive(
+                            (dialog, which) -> dialog.dismiss()).onNegative((dialog1, which1) -> {
+                        deleteTodayVideo(worldVideo);
+                    }).show();
+                }
+                return true;
 
         }
         return super.onOptionsItemSelected(item);
@@ -165,6 +177,11 @@ public class PlayActivity extends BaseActivity {
             getMenuInflater().inflate(R.menu.menu_activity_play_world, menu);
             return true;
         }
+
+        if (today && video instanceof WorldVideo && ((WorldVideo) video).accountId.equals(AccountManager.getAccountId(this))) {
+            getMenuInflater().inflate(R.menu.menu_activity_play_today, menu);
+            return true;
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -174,8 +191,8 @@ public class PlayActivity extends BaseActivity {
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
         ApiModel result = apiv4.deleteWorldVideo(worldVideo._id, AccountManager.getUserInfo(this)
                 ._id);
+        hideProgress();
         if (result.isSuccess()) {
-            hideProgress();
             runOnUiThread(() -> {
                         Toast.makeText(this, R.string.activity_play_world_progress_delete_success,
                                 Toast.LENGTH_SHORT).show();
@@ -184,6 +201,27 @@ public class PlayActivity extends BaseActivity {
             );
         } else {
             showSnackMsg(R.string.activity_play_world_progress_delete_fail);
+            LogUtil.i(TAG, "delete world fail:" + result.toString());
+        }
+    }
+
+    @Background
+    void deleteTodayVideo(WorldVideo worldVideo) {
+        showProgress(R.string.activity_play_today_progress_delete_content);
+        APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
+        ApiModel result = apiv4.deleteTodayVideo(worldVideo._id, AccountManager.getUserInfo(this)
+                ._id);
+        hideProgress();
+        if (result.isSuccess()) {
+            runOnUiThread(() -> {
+                        Toast.makeText(this, R.string.activity_play_today_progress_delete_success,
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+            );
+
+        } else {
+            showSnackMsg(R.string.activity_play_today_progress_delete_fail);
             LogUtil.i(TAG, "delete world fail:" + result.toString());
         }
     }

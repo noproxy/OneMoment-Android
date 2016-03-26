@@ -39,6 +39,11 @@ public interface APIV4 {
     ApiModel deleteWorldVideo(@Field("video_id") String videoId,
                               @Field("account_id") String userId);
 
+    @POST("/world/delete_today")
+    @FormUrlEncoded
+    ApiModel deleteTodayVideo(@Field("video_id") String videoId,
+                              @Field("account_id") String userId);
+
     @POST("/world/video")
     @FormUrlEncoded
     WorldVideo createWorldVideo(
