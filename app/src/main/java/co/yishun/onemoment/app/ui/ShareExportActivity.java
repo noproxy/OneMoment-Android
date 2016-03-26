@@ -20,6 +20,7 @@ import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.util.Matrix;
 import com.j256.ormlite.dao.Dao;
 import com.qiniu.android.storage.UploadManager;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
@@ -311,7 +312,17 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         if (moment != null) {
             dayView.setEnabled(true);
             dayView.setTag(moment);
-            Picasso.with(this).load(new File(moment.getThumbPath())).into(dayView);
+            Picasso.with(this).load(new File(moment.getThumbPath())).into(dayView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    dayView.overrideTextColorResource(R.color.colorPrimary);
+                }
+
+                @Override
+                public void onError() {
+                    dayView.removeOverrideTextColor();
+                }
+            });
             if (selectedMoments.contains(moment))
                 dayView.setSelected(true);
             else

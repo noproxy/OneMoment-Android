@@ -166,7 +166,7 @@ public class DiaryFragment extends ToolbarFragment implements MomentMonthView.Mo
 
                     @Override
                     public void onError() {
-
+                        dayView.removeOverrideTextColor();
                     }
                 });
                 LogUtil.i(TAG, "moment found: " + moment.getTime());
