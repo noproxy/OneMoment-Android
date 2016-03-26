@@ -1,9 +1,6 @@
 package co.yishun.onemoment.app.ui;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
+import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -14,6 +11,9 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
@@ -30,6 +30,7 @@ import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.api.BackgroundExecutor;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,7 @@ import co.yishun.onemoment.app.video.VideoConcat;
 @EActivity(R.layout.activity_share_export)
 public class ShareExportActivity extends BaseActivity implements MomentMonthView.MonthAdapter, DayView.OnMomentSelectedListener {
 
+    public static final String ID_CANCEL = "wocao233";
     private static final String TAG = "ShareExportActivity";
     @ViewById
     Toolbar toolbar;
@@ -85,17 +87,27 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
     TextView clearText;
     @ViewById
     TextView selectedText;
-
     @OrmLiteDao(helper = MomentDatabaseHelper.class)
     Dao<Moment, Integer> momentDao;
-
     private List<Moment> allMoments;
     private List<Moment> selectedMoments;
     private File videoCacheFile;
-    private boolean concatExport = true;
+    private volatile boolean concatExport = true;
     private MaterialDialog concatProgress;
     private int totalTask = 1;
     private int completeTask = 0;
+    /**
+     * flag to show whether the export or share is in progress.
+     */
+    private boolean isWorking = false;
+    /**
+     * flag to show whether the task should be canceled.
+     */
+    private boolean canceled = false;
+    private MaterialDialog mUploadProgressDialog;
+    private MaterialDialog mCancelDialog;
+    private volatile CountDownLatch mCancelDialogLatch;
+    private volatile boolean uploading = false;
 
     @AfterViews
     void setupViews() {
@@ -130,7 +142,10 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
     @UiThread
     void showConcatProgress() {
         hideProgress();
-        concatProgress = new MaterialDialog.Builder(this).progress(false, 100, false).theme(Theme.LIGHT).cancelable(false).content(getString(R.string.activity_share_export_progress_concatenating)).build();
+        concatProgress = new MaterialDialog.Builder(this).progress(false, 100, false).theme(Theme.LIGHT)
+                .cancelListener(dialog -> {
+                    showCancelDialog();
+                }).content(getString(R.string.activity_share_export_progress_concatenating)).build();
         concatProgress.show();
     }
 
@@ -147,8 +162,9 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
     }
 
     @Click(R.id.shareText)
-    @Background
+    @Background(id = ID_CANCEL)
     void shareTextClicked() {
+        canceled = false;
         if (selectedMoments.size() == 0) {
             showSnackMsg(R.string.activity_share_export_no_moment_select);
             return;
@@ -158,9 +174,44 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         concatSelectedVideos();
     }
 
+    @UiThread
+    void showCancelDialog() {
+        if (mCancelDialog == null) {
+            mCancelDialog = new MaterialDialog.Builder(this).theme(Theme.LIGHT).content(R.string.activity_share_export_abort)
+                    .positiveText(R.string.activity_share_export_positive).negativeText(R.string.activity_share_export_negative)
+                    .cancelable(true).onPositive((dialog, which) ->
+                    {
+                        BackgroundExecutor.cancelAll(ID_CANCEL, true);
+                        canceled = true;
+                        mCancelDialogLatch.countDown();
+                    }).onNegative((dialog1, which1) -> {
+                        if (concatProgress != null && concatProgress.getCurrentProgress() < 100) {
+                            concatProgress.show();
+                        } else if (uploading) {
+                            showUploadProgress(R.string.activity_share_export_progress_uploading);
+                        }
+                        mCancelDialogLatch.countDown();
+                    }).build();
+        }
+        mCancelDialog.show();
+        mCancelDialogLatch = new CountDownLatch(1);
+    }
+
+    @UiThread
+    void hideCancelDialog() {
+        if (mCancelDialog != null) {
+            mCancelDialog.hide();
+            if (mCancelDialogLatch != null) {
+                mCancelDialogLatch.countDown();
+                mCancelDialogLatch = null;
+            }
+        }
+    }
+
     @Click(R.id.exportText)
-    @Background
+    @Background(id = ID_CANCEL)
     void exportTextClicked() {
+        canceled = false;
         if (selectedMoments.size() == 0) {
             showSnackMsg(R.string.activity_share_export_no_moment_select);
             return;
@@ -176,6 +227,41 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         selectedMoments.addAll(allMoments);
         setAllSelect(true);
         updateSelectedText();
+    }
+
+    @UiThread
+    void showUploadProgress(@StringRes int msgRes) {
+        uploading = true;
+        if (mUploadProgressDialog == null)
+            mUploadProgressDialog = new MaterialDialog.Builder(this).theme(Theme.LIGHT).
+                    content(getString(msgRes))
+                    .cancelListener(dialog -> {
+                        showCancelDialog();
+                    })
+                    .progress(true, 0).build();
+        mUploadProgressDialog.setContent(getString(msgRes));
+        mUploadProgressDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mUploadProgressDialog != null) {
+            mUploadProgressDialog.dismiss();
+        }
+
+        if (concatProgress != null) {
+            concatProgress.dismiss();
+        }
+
+    }
+
+    @UiThread
+    void hideUploadProgress() {
+        uploading = false;
+        if (mUploadProgressDialog != null) {
+            mUploadProgressDialog.hide();
+        }
     }
 
     @Click(R.id.clearText)
@@ -250,6 +336,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
     }
 
     void concatSelectedVideos() {
+        if (canceled) return;
         List<File> files = new ArrayList<>();
         Collections.sort(selectedMoments);
         try {
@@ -284,6 +371,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         new VideoConcat(this).setTransFile(filesNeedTrans).setConcatFile(files, videoCacheFile).setListener(new VideoCommand.VideoCommandListener() {
             @Override
             public void onSuccess(VideoCommand.VideoCommandType type) {
+                if (canceled) return;
                 switch (type) {
                     case COMMAND_TRANSPOSE:
                         LogUtil.d(TAG, "onTransSuccess: ");
@@ -309,9 +397,10 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         }).start();
     }
 
-    @Background
+    @Background(id = ID_CANCEL)
     void afterConcat() {
         hideConcatProgress();
+        if (canceled) return;
         try {
             for (Moment moment : selectedMoments) {
                 MomentLock.unlockMomentIfLocked(this, moment);
@@ -330,6 +419,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
             FileUtil.copyFile(videoCacheFile, outFile);
             videoCacheFile.delete();
             hideProgress();
+            hideCancelDialog();
             showSnackMsg(R.string.activity_share_export_export_success);
         } else
             uploadAndShare();
@@ -337,7 +427,15 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
 
     @SupposeBackground
     void uploadAndShare() {
-        showProgress(R.string.activity_share_export_progress_uploading);
+        if (canceled) return;
+        if (mCancelDialogLatch != null)
+            try {
+                mCancelDialogLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return;
+            }
+        showUploadProgress(R.string.activity_share_export_progress_uploading);
         UploadManager uploadManager = new UploadManager();
         LogUtil.d(TAG, "upload " + videoCacheFile.getName());
         UploadToken token = OneMomentV3.createAdapter().create(Misc.class).getUploadToken(videoCacheFile.getName());
@@ -383,13 +481,14 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         ShareInfo shareInfo = account.share(videoCacheFile.getName(), AccountManager.getUserInfo(this)._id, tags);
 
         videoCacheFile.delete();
-        hideProgress();
+        hideUploadProgress();
 
         share(shareInfo);
     }
 
     @UiThread
     void share(ShareInfo shareInfo) {
+        if (canceled) return;
         ShareActivity.showShareChooseDialog(this, shareInfo, 0);
     }
 

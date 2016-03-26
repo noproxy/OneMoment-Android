@@ -11,4 +11,8 @@
     <string name="activity_share_export_progress_uploading">Uploading…</string>
     <string name="activity_share_export_no_moment_select">Select at least one to share</string>
     <string name="activity_share_export_export_success">Export Success</string>
+
+    <string name="activity_share_export_abort">Abort operation?</string>
+    <string name="activity_share_export_positive">Abort</string>
+    <string name="activity_share_export_negative">Continue</string>
 </resources>
