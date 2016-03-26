@@ -13,6 +13,7 @@ import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
+import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 
 /**
  * Created by Jinge on 2016/1/22.
@@ -48,6 +49,7 @@ public class PersonalWorldActivity extends BaseWebActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.activity_personal_world_add) {
             CreateWorldActivity_.intent(this).start();
+            BaseWebFragment.invalidateWeb();
             return true;
         }
         return super.onOptionsItemSelected(item);
