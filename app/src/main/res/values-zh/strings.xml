@@ -129,4 +129,15 @@
     <string name="activity_main_move_LOC_moments_progress_success">视频已导入成功</string>
     <string name="activity_user_info_weibo_id_unbind_cancel">取消</string>
     <string name="activity_user_info_weibo_id_unbind_ok">解除绑定</string>
+    <string name="activity_play_today_action_delete">删除此视频</string>
+    <string name="activity_play_today_dialog_delete_content">确认删除?删除后将无法恢复</string>
+    <string name="activity_play_today_dialog_delete_negative">删除</string>
+    <string name="activity_play_today_dialog_delete_positive">取消</string>
+    <string name="activity_play_today_progress_delete_content">正在删除…</string>
+    <string name="activity_play_today_progress_delete_fail">删除出错, 可能是网络不太好</string>
+    <string name="activity_play_today_progress_delete_no_permission">删除失败了, 只能删除自己创建的视频</string>
+    <string name="activity_play_today_progress_delete_success">删除成功</string>
+    <string name="activity_share_export_abort">确认中止操作?</string>
+    <string name="activity_share_export_negative">继续</string>
+    <string name="activity_share_export_positive">中止</string>
 </resources>
