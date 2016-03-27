@@ -56,6 +56,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
 
     private boolean moreAsking = true;
     private int playViewRequestIndex = 0;
+    private boolean avatarAdded = false;
 
     @Background
     void getData() {
@@ -108,7 +109,10 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
         videoProviders.add(video);
         new VideoTask(mContext, video, VideoTask.TYPE_VIDEO)
                 .setVideoListener(this).start();
-        videoPlayView.addAvatarUrl(video.getAvatarUrl());
+        if (!forWorld || !avatarAdded) {
+            videoPlayView.addAvatarUrl(video.getAvatarUrl());
+            avatarAdded = true;
+        }
     }
 
     void cacheVideoToPlayView(VideoProvider video, File videoFile) {
