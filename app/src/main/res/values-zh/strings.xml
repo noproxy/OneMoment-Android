@@ -139,18 +139,7 @@
     <string name="activity_play_today_progress_delete_success">删除成功</string>
     <string name="activity_share_export_abort">确认中止操作?</string>
     <string name="activity_share_export_negative">继续</string>
-    <string name="activity_share_export_positive">中止</string>
-    <string name="activity_play_today_action_delete">删除视频</string>
-    <string name="activity_play_today_dialog_delete_content">确定删除</string>
-    <string name="activity_play_today_dialog_delete_negative">确定删除？删除后无法再恢复</string>
-    <string name="activity_play_today_dialog_delete_positive">取消</string>
-    <string name="activity_play_today_progress_delete_content">正在删除…</string>
-    <string name="activity_play_today_progress_delete_fail">删除失败了，网络似乎有点问题</string>
-    <string name="activity_play_today_progress_delete_no_permission">删除失败，只能删除自己的视频</string>
-    <string name="activity_play_today_progress_delete_success">删除成功</string>
-    <string name="activity_share_export_abort">确认中止操作？</string>
     <string name="activity_share_export_export_action_open">查看</string>
     <string name="activity_share_export_export_action_open_error">没有能播放视频的应用</string>
-    <string name="activity_share_export_negative">继续</string>
     <string name="activity_share_export_positive">中止</string>
 </resources>
