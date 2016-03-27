@@ -1,6 +1,11 @@
 package co.yishun.onemoment.app.ui;
 
+import android.content.ContentValues;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -431,9 +436,33 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
             videoCacheFile.delete();
             hideProgress();
             hideCancelDialog();
-            showSnackMsg(R.string.activity_share_export_export_success);
+
+            Uri uri = addImageGallery(outFile);
+            exportOKMsg(uri);
         } else
             uploadAndShare();
+    }
+
+    @UiThread
+    void exportOKMsg(Uri uri) {
+        Snackbar.make(getSnackbarAnchorWithView(null),
+                R.string.activity_share_export_export_success, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.activity_share_export_export_action_open, v -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(uri);
+                    try {
+                        startActivity(intent);
+                    } catch (Exception ignored) {
+                        showSnackMsg(R.string.activity_share_export_export_action_open_error);
+                    }
+                }).show();
+    }
+
+    Uri addImageGallery(File file) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "video/mp4");
+        return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 
     @SupposeBackground

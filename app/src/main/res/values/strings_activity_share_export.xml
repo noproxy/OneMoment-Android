@@ -11,6 +11,8 @@
     <string name="activity_share_export_progress_uploading">Uploading…</string>
     <string name="activity_share_export_no_moment_select">Select at least one to share</string>
     <string name="activity_share_export_export_success">Export Success</string>
+    <string name="activity_share_export_export_action_open">View</string>
+    <string name="activity_share_export_export_action_open_error">No app to view the video. You can explore it in Gallery.</string>
 
     <string name="activity_share_export_abort">Abort operation?</string>
     <string name="activity_share_export_positive">Abort</string>
