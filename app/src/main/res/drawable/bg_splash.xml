@@ -3,13 +3,18 @@
     <item>
         <bitmap
             android:gravity="bottom|center_horizontal"
-            android:src="@drawable/pic_splash_copyright"
-            />
+            android:src="@drawable/pic_splash_copyright" />
+    </item>
+    <item
+        android:left="24dp"
+        android:top="24dp">
+        <bitmap
+            android:gravity="top|left"
+            android:src="@drawable/pic_splash_logo" />
     </item>
     <item android:bottom="64dp">
         <bitmap
             android:gravity="center"
-            android:src="@drawable/pic_splash_foreground"
-            />
+            android:src="@drawable/pic_splash_foreground" />
     </item>
 </layer-list>
