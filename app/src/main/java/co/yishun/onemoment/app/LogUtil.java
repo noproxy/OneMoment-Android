@@ -97,8 +97,9 @@ public class LogUtil {
             switch (priority) {
                 case Log.VERBOSE:
                 case Log.DEBUG:
-                    return 0;
                 case Log.ERROR:
+                    return 0;
+                case Log.ASSERT:
                     StringBuilder builder = new StringBuilder();
                     String line;
                     while ((line = logQueue.poll()) != null) {
