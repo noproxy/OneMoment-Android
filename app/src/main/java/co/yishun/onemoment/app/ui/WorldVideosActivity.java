@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
-import com.squareup.picasso.Picasso;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.TransitionInflater;
 import com.transitionseverywhere.TransitionManager;
@@ -64,6 +63,7 @@ import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 
 /**
  * Created by Jinge on 2016/1/25.
+ * TODO fix the status bar and animation
  */
 @EActivity(R.layout.activity_world_videos)
 public class WorldVideosActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldVideo> {
@@ -128,10 +128,11 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 
         transImage = (RadioCornerImageView) findViewById(R.id.transImage);
         if (TextUtils.isEmpty(world.getThumb())) {
-            Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
+//            Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
         } else {
-            Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
+//            Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
         }
+        transImage.setVisibility(View.INVISIBLE);
 
         appBar.animate().alpha(1).setDuration(200).setStartDelay(400).start();
         recyclerView.animate().alpha(1).setDuration(200).setStartDelay(400).start();
@@ -144,9 +145,9 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             recyclerView.setAlpha(0);
 
             if (TextUtils.isEmpty(world.getThumb())) {
-                Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
+//                Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
             } else {
-                Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
+//                Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
             }
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) transImage.getLayoutParams();
             params.topMargin = imageRect.top;
@@ -212,10 +213,12 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
             SpannableString ss = new SpannableString(String.format(getString(R.string.fragment_world_suffix_people_count), world.getVideosNum()));
             ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             toolbar.setSubtitle(ss);
-
-            if (!TextUtils.isEmpty(world.getThumb())) {
-                Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
-            }
+//
+//            if (TextUtils.isEmpty(world.getThumb())) {
+//                Picasso.with(this).load(R.drawable.pic_banner_default).into(transImage);
+//            } else {
+//                Picasso.with(this).load(world.getThumb()).placeholder(R.drawable.pic_banner_default).error(R.drawable.pic_banner_default).into(transImage);
+//            }
         });
         adapter = new WorldVideoAdapter(this, this);
         recyclerView.setAdapter(adapter);
