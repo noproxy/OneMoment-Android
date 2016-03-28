@@ -15,7 +15,7 @@
             android:id="@+id/transImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/pic_more_discovery" />
+            tools:src="@drawable/pic_more_discovery" />
 
     </FrameLayout>
 
