@@ -283,3 +283,5 @@
 # class used by Gson should be kept
 -keep class co.yishun.onemoment.app.api.** { *; }
 -keep class co.yishun.onemoment.app.account.auth.** { *;}
+
+-keep class com.github.hiteshsondhi88.libffmpeg.** { *;}
