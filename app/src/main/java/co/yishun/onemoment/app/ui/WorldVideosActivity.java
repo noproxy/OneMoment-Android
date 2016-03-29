@@ -249,10 +249,11 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
                 return true;
             case R.id.activity_world_videos_action_delete:
                 new MaterialDialog.Builder(this).cancelable(true).canceledOnTouchOutside(true)
-                        .content(R.string.activity_world_videos_dialog_delete_content).positiveText(R
-                        .string.activity_world_videos_dialog_delete_positive).negativeText(R
-                        .string.activity_world_videos_dialog_delete_negative).onPositive(
-                        (dialog, which) -> dialog.dismiss()).onNegative((dialog1, which1) -> {
+                        .content(R.string.activity_world_videos_dialog_delete_content)
+                        .negativeText(R
+                                .string.activity_world_videos_dialog_delete_positive).positiveText(R
+                        .string.activity_world_videos_dialog_delete_negative).onNegative(
+                        (dialog, which) -> dialog.dismiss()).onPositive((dialog1, which1) -> {
                     deleteWorld();
                 }).show();
                 return true;
@@ -271,7 +272,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
                         Toast.makeText(this, R.string.activity_world_videos_progress_delete_success,
                                 Toast.LENGTH_SHORT).show();
                         finish();
-                BaseWebFragment.invalidateWeb();
+                        BaseWebFragment.invalidateWeb();
                     }
             );
         } else {

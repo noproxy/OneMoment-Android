@@ -146,10 +146,11 @@ public class PlayActivity extends BaseActivity {
                 if (video instanceof WorldVideo) {
                     WorldVideo worldVideo = (WorldVideo) video;
                     new MaterialDialog.Builder(this).cancelable(true).canceledOnTouchOutside(true)
-                            .content(R.string.activity_play_world_dialog_delete_content).positiveText(R
-                            .string.activity_play_world_dialog_delete_positive).negativeText(R
-                            .string.activity_play_world_dialog_delete_negative).onPositive(
-                            (dialog, which) -> dialog.dismiss()).onNegative((dialog1, which1) -> {
+                            .content(R.string.activity_play_world_dialog_delete_content).negativeText(R
+                            .string.activity_play_world_dialog_delete_positive)
+                            .positiveText(R
+                                    .string.activity_play_world_dialog_delete_negative).onNegative((dialog, which) -> dialog.dismiss())
+                            .onPositive((dialog1, which1) -> {
                         deleteWorldVideo(worldVideo);
                     }).show();
                 }
@@ -158,10 +159,11 @@ public class PlayActivity extends BaseActivity {
                 if (video instanceof WorldVideo) {
                     WorldVideo worldVideo = (WorldVideo) video;
                     new MaterialDialog.Builder(this).cancelable(true).canceledOnTouchOutside(true)
-                            .content(R.string.activity_play_today_dialog_delete_content).positiveText(R
-                            .string.activity_play_today_dialog_delete_positive).negativeText(R
-                            .string.activity_play_today_dialog_delete_negative).onPositive(
-                            (dialog, which) -> dialog.dismiss()).onNegative((dialog1, which1) -> {
+                            .content(R.string.activity_play_today_dialog_delete_content).negativeText(R
+                            .string.activity_play_today_dialog_delete_positive)
+                            .positiveText(R
+                                    .string.activity_play_today_dialog_delete_negative).onNegative(
+                            (dialog, which) -> dialog.dismiss()).onPositive((dialog1, which1) -> {
                         deleteTodayVideo(worldVideo);
                     }).show();
                 }
