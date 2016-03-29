@@ -142,4 +142,7 @@
     <string name="activity_share_export_export_action_open">查看</string>
     <string name="activity_share_export_export_action_open_error">没有能播放视频的应用</string>
     <string name="activity_share_export_positive">中止</string>
+    <string name="activity_play_moment_action_delete">删除这个一瞬</string>
+    <string name="activity_play_moment_msg_delete_fail">删除失败了,请稍后再试</string>
+    <string name="activity_play_moment_msg_delete_ok">删除成功.</string>
 </resources>

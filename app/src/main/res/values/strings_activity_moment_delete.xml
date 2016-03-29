@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_play_moment_action_delete">Delete This Moment</string>
+    <string name="activity_play_moment_msg_delete_ok">Delete OK.</string>
+    <string name="activity_play_moment_msg_delete_fail">Delete failed, try later.</string>
+</resources>
