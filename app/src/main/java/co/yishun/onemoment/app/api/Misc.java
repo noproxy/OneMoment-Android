@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
+import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.Domain;
 import co.yishun.onemoment.app.api.model.SplashCover;
 import co.yishun.onemoment.app.api.model.UploadToken;
@@ -36,7 +37,7 @@ public interface Misc {
 
     @FormUrlEncoded
     @POST("/misc/delete_video")
-    void deleteVideo(@Field("filename") @Nullable String filename);
+    ApiModel deleteVideo(@Field("filename") @Nullable String filename);
 
     @FormUrlEncoded
     @POST("misc/delete_tag/{account_id}")
