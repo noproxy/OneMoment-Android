@@ -83,8 +83,8 @@ public class CreateWorldActivity extends BaseWebActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish() {
+        super.finish();
         if (!canceled)
             BaseWebFragment.invalidateWeb();
         // we cannot do it in finishClick, because the web may finish this activity, too.
