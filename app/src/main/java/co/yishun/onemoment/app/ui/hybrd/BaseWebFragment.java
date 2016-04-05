@@ -107,6 +107,7 @@ public abstract class BaseWebFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         if (mRefreshable && needGlobalRefresh) {
+            LogUtil.i(TAG, "consume refresh: " + mUrl);
             needGlobalRefresh = false;
             reload();
         }
