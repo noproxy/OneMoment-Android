@@ -2,13 +2,16 @@ package co.yishun.onemoment.app.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +87,7 @@ import co.yishun.onemoment.app.ui.controller.TagSearchController_;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 import co.yishun.onemoment.app.ui.view.VideoTypeView;
 import co.yishun.onemoment.app.util.GsonFactory;
+import co.yishun.onemoment.app.util.GuideUtil_;
 
 import static co.yishun.onemoment.app.LogUtil.d;
 import static co.yishun.onemoment.app.LogUtil.e;
@@ -218,7 +222,34 @@ public class TagCreateActivity extends BaseActivity
             videoViewContainer.addView(mVideoView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
         setVideo();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // if the showed guide version is less than current version, show it
+        //noinspection PointlessBooleanExpression
+        if (Constants.FORCE_SHOW_GUIDE
+                || preferences.getInt(Constants.PrefKey.PREF_KEY_GUIDE_TAG_CREATE, -1) <
+                Constants.PrefKey.PREF_KEY_GUIDE_TAG_CREATE_CURRENT_VALUE) {
+            showGuide();
+            preferences.edit().putInt(Constants.PrefKey.PREF_KEY_GUIDE_TAG_CREATE,
+                    Constants.PrefKey.PREF_KEY_GUIDE_TAG_CREATE_CURRENT_VALUE).apply();
+        }
     }
+
+
+    @UiThread(delay = 1000)
+    void showGuide() {
+        View viewWorld = videoTypeView.findViewById(R.id.worldTextView);
+        View viewToday = videoTypeView.findViewById(R.id.todayTextView);
+
+        GuideUtil_.getInstance_(this).showGuide(this, viewWorld,
+                R.layout.layout_tooltip_tag_create_1, R.drawable.pic_mask_capture1, Gravity.TOP
+        );
+
+        GuideUtil_.getInstance_(this).showGuide(this, viewToday,
+                R.layout.layout_tooltip_tag_create_2, R.drawable.pic_mask_capture2, Gravity.BOTTOM);
+
+    }
+
 
     void setVideo() {
         LogUtil.i(TAG, "set video: " + videoPath);

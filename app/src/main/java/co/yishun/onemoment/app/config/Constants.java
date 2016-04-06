@@ -6,6 +6,7 @@ package co.yishun.onemoment.app.config;
 public class Constants {
     public static final boolean LOG_ENABLE = false;
     public static final boolean SANDBOX = false;
+    public static final boolean FORCE_SHOW_GUIDE = true;
     public static final String API_KEY = "";
     public static final String API_V3_URL;
     public static final String API_V4_URL;
@@ -165,6 +166,16 @@ public class Constants {
     public static class UmengData {
         public static final String FAB_WORLD_CLICK = "fab_world_click";
         public static final String FAB_DIARY_CLICK = "fab_diary_click";
+
+    }
+
+    public static class PrefKey {
+        public static final String PREF_KEY_GUIDE_WORLD = "guide_world_show";
+        public static final String PREF_KEY_GUIDE_TAG_CREATE = "guide_tag_create_show";
+        public static final String PREF_KEY_GUIDE_EXPLORE = "guide_explore_show";
+        public static final int PREF_KEY_GUIDE_WORLD_CURRENT_VALUE = 0;
+        public static final int PREF_KEY_GUIDE_TAG_CREATE_CURRENT_VALUE = 0;
+        public static final int PREF_KEY_GUIDE_EXPLORE_CURRENT_VALUE = 0;
 
     }
 }
