@@ -1,13 +1,13 @@
 package co.yishun.onemoment.app.account;
 
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-
 import android.accounts.Account;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
 import java.io.FileReader;
