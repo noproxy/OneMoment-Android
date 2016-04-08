@@ -191,7 +191,7 @@ repositories {
 }
 
 dependencies {
-    compile 'co.yishun.library:momentcalendar:0.1.5'
+//    compile 'co.yishun.library:momentcalendar:0.1.5'
     compile 'co.yishun.library:datacenter:0.0.1'
 }
 
@@ -218,6 +218,7 @@ dependencies {
 dependencies {
     compile project(':play-library')
     compile project(':transition-library')
+    compile project(':momentcalendar')
 }
 
 
