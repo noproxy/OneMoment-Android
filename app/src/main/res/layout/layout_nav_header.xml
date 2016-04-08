@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_header_height"
+                android:background="@drawable/bg_nav_header"
+                android:gravity="bottom"
+                android:padding="16dp"
+                tools:showIn="@layout/layout_navigation"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImageView"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/content_des_profile_image"
+        android:minHeight="56dp"
+        android:minWidth="56dp"
+        android:src="@drawable/pic_profile_default"
+        app:civ_border_color="@color/colorProfileImageBorder"
+        app:civ_border_width="2dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/profileImageView"
+        android:layout_toRightOf="@+id/profileImageView"
+        android:orientation="vertical"
+        android:paddingEnd="0dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="0dp"
+        android:paddingStart="16dp"
+        >
+
+        <TextView
+            android:id="@+id/usernameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_header_user_name_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
+            />
+
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_header_location_text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@color/colorPrimary"
+                  android:orientation="vertical">
+
+        <include layout="@layout/layout_toolbar"/>
+
+        <!-- placeholder-->
+        <co.yishun.library.momentcalendar.MomentCalendar
+            android:id="@+id/momentCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/white"
+            android:paddingBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="4dp"
+            />
+
+        <co.yishun.onemoment.app.ui.view.TodayMomentView
+            android:id="@+id/todayMomentView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="56dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="32dp"
+            />
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

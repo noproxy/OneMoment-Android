@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TagContainer">
+        <attr name="tc_editable" format="boolean"/>
+        <attr name="tc_square" format="boolean"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AvatarRecyclerView">
+        <attr name="arv_normalSize" format="dimension"/>
+        <attr name="arv_selectSize" format="dimension"/>
+        <attr name="arv_dividerSize" format="dimension"/>
+    </declare-styleable>
+</resources>

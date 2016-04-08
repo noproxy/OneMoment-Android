@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">MomentCalendar</string>
+
+    <string-array name="day_of_week">
+        <item>SUN</item>
+        <item>MON</item>
+        <item>TUE</item>
+        <item>WED</item>
+        <item>THU</item>
+        <item>FRI</item>
+        <item>SAT</item>
+    </string-array>
+</resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <LinearLayout
+        android:id="@+id/notEndViewGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        >
+
+
+        <TextView
+            android:id="@+id/prefixTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <co.yishun.onemoment.app.ui.view.CountDownView
+            android:id="@+id/countDownView"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="8dp"
+            android:textColor="@color/colorSecondary"
+            app:startNumber="60"
+            />
+
+        <TextView
+            android:id="@+id/suffixTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="second later, send verification code again"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/endTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="8dp"
+        android:visibility="visible"
+        tools:text="Click to seed SMS"
+        />
+</merge>

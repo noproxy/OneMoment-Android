@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">一瞬</string>
+    <string name="app_version">版本:2.3.1</string>
+
+    <string name="action_settings">设置</string>
+
+    <string name="navigation_item_text_0">世界</string>
+    <string name="navigation_item_text_1">日记</string>
+    <string name="navigation_item_text_2">浮生一日</string>
+    <string name="navigation_item_text_3">我</string>
+    <string name="navigation_item_text_4">设置</string>
+
+    <string name="nav_header_user_name_text">用户名</string>
+    <string name="nav_header_location_text">湖北 武汉</string>
+    <string name="content_des_profile_image">头像</string>
+
+    <string name="world_title">世界</string>
+    <string-array name="world_page_title">
+        <item>推荐</item>
+        <item>最新</item>
+    </string-array>
+
+    <string-array name="discovery_page_title">
+        <item>推荐</item>
+        <item>最新</item>
+    </string-array>
+
+    <string name="discovery_video_voted_up">喜欢的视频</string>
+    <string name="video_vote_up_title">喜欢的视频</string>
+    <string name="discovery_alarm">每日提醒</string>
+    <string name="discovery_title">发现</string>
+
+    <string name="me_title">我</string>
+    <string name="me_tab_title_0">公开</string>
+    <string name="me_tab_title_1">私密</string>
+    <string name="me_header_vote">赞</string>
+    <string name="me_header_voted">收到的赞</string>
+    <string-array name="me_page_title">
+        <item>公开</item>
+        <item>私密</item>
+    </string-array>
+
+    <string name="login_by_wechat">微信</string>
+    <string name="login_by_qq">QQ</string>
+    <string name="login_by_weibo">微博</string>
+    <string name="login_by_phone">手机号登陆 >></string>
+
+    <string name="phone_login_title">登陆</string>
+    <string name="phone_verify_title">验证</string>
+    <string name="phone_integrate_info_title">补充信息</string>
+
+    <string name="progress_loading_msg">请稍后…</string>
+    <string name="unknown_error">未知错误</string>
+    <string name="activity_phone_account_fail_select_pic">选择图片出错</string>
+    <string name="activity_tag_create_moment_fail">保存失败</string>
+    <string name="activity_tag_create_moment_success">保存成功</string>
+    <string name="activity_tag_create_no_tag_error">至少添加一个标签</string>
+    <string name="activity_tag_create_tag_empty_error">请输入标签内容！</string>
+    <string name="activity_tag_create_tag_hint">点击任何位置创建标签\n拖动到这里删除</string>
+    <string name="activity_tag_create_tag_number_error">最多只能添加3个标签</string>
+    <string name="activity_entry_auth_success">授权成功</string>
+    <string name="activity_entry_login_fail">登陆失败</string>
+    <string name="activity_entry_login_progress">正在登录…</string>
+    <string name="activity_entry_login_success">登陆成功</string>
+    <string name="fragment_diary_action_all_play">全部播放</string>
+    <string name="fragment_diary_action_share">分享</string>
+    <string name="fragment_integrate_info_error_avatar_upload_failed">上传头像失败，请重试。</string>
+    <string name="fragment_integrate_info_error_gender_empty">请选择性别！</string>
+    <string name="fragment_integrate_info_error_location_empty">请填写位置！</string>
+    <string name="fragment_integrate_info_error_nickname_empty">请输入您的昵称！</string>
+    <string name="fragment_integrate_info_error_nickname_exist">这个用户名已被使用，请尝试其他的吧。</string>
+    <string name="fragment_integrate_info_error_nickname_invalid">这个用户名不能使用，请尝试其他的吧。</string>
+    <string name="fragment_integrate_info_error_nickname_long">这个用户名太长啦，请尝试其他的吧。</string>
+    <string name="fragment_integrate_info_sign_up_progress">正在注册…</string>
+    <string name="fragment_integrate_info_sign_up_success">注册成功</string>
+    <string name="fragment_integrate_info_sign_up_success_but_avatar_upload_failed">注册成功,但上传头像好像出了点问题。您可以去修改资料里更新头像。</string>
+    <string name="fragment_me_action_modify_info">修改资料</string>
+    <string name="fragment_me_vote_format_text">点赞的视频 %s</string>
+    <string name="fragment_me_voted_format_text">收到的赞 %s</string>
+    <string name="fragment_phone_verify_verify_error_expire">验证码过期，请重新发送。</string>
+    <string name="fragment_phone_verify_verify_progress">正在验证，请稍后…</string>
+    <string name="view_today_moment_no_moment">今天还没有一瞬</string>
+    <string name="view_today_moment_no_tag">没有添加标签</string>
+    <string name="view_today_moment_play_from_this_day">从这天播放</string>
+    <string name="activity_guide_enter">进入一瞬</string>
+    <string name="text_load_error">加载失败，请检查网络状态！</string>
+    <string name="activity_splash_data_migration">更新中…</string>
+    <string name="activity_main_move_LOC_moments">是否将退出登录状态下拍摄的视频移动到当前账号？</string>
+    <string name="activity_main_move_LOC_moments_positive">确定</string>
+    <string name="activity_main_move_LOC_moments_negative">下次再说</string>
+    <string name="activity_entry_we_chat_not_install">未安装微信</string>
+    <string name="activity_share_export_export_success">导出成功</string>
+    <string name="activity_share_export_no_moment_select">请至少选择一个视频</string>
+    <string name="fragment_diary_no_moment">没有可供播放的一瞬</string>
+    <string name="umeng_common_icon">图标</string>
+    <string name="tb_munion_tip_download_prefix">正在下载:</string>
+    <string name="fragment_get_password_new_password">请输入新密码</string>
+    <string name="video_type_add_to_diary">添加到日记</string>
+    <string name="video_type_add_to_world">添加到世界</string>
+    <string name="video_type_life_in_a_day">浮生一日</string>
+    <string name="activity_personal_world_title">我的世界</string>
+    <string name="activity_create_world_title">创建世界</string>
+    <string name="fragment_phone_verify_sign_up_error_account_not_exist">账号不存在！</string>
+    <string name="activity_shoot_permission_error_ok">确定</string>
+    <string name="activity_shoot_permission_error_msg">糟糕，没有足够的权限录制一瞬。我们需要使用照相机，录音和读写储存的权限才能正常工作。</string>
+    <string name="activity_shoot_permission_error_title">无法打开相机</string>
+    <string name="activity_main_msg_shoot_forbid">没有权限拍摄，请确认权限设置。</string>
+    <string name="activity_shoot_permission_error_settings">设置</string>
+    <string name="text_load_nothing">没有更多了…</string>
+    <string name="activity_video_edit_action_add_tag">添加标签</string>
+    <string name="fragment_integrate_info_nickname_hint">请输入昵称</string>
+    <string name="activity_world_videos_action_delete">删除世界</string>
+    <string name="activity_world_videos_dialog_delete_content">确定删除？这个世界里所有的视频也会被删除。并且无法撤销。</string>
+    <string name="activity_world_videos_dialog_delete_negative">删除</string>
+    <string name="activity_world_videos_dialog_delete_positive">取消</string>
+    <string name="activity_world_videos_progress_delete_content">正在删除…</string>
+    <string name="activity_world_videos_progress_delete_fail">删除失败了，网络似乎有点问题</string>
+    <string name="activity_world_videos_progress_delete_success">删除成功</string>
+    <string name="activity_play_world_dialog_delete_content">确定删除？删除后无法再恢复</string>
+    <string name="activity_play_world_dialog_delete_negative">删除</string>
+    <string name="activity_play_world_dialog_delete_positive">取消</string>
+    <string name="activity_play_world_progress_delete_content">正在删除…</string>
+    <string name="activity_play_world_progress_delete_fail">删除失败了，网络似乎有点问题</string>
+    <string name="activity_play_world_progress_delete_success">删除成功</string>
+    <string name="activity_play_world_action_delete">删除视频</string>
+    <string name="activity_share_share_loading">加载信息…</string>
+    <string name="activity_main_move_LOC_moments_progress">正在处理…</string>
+    <string name="activity_main_move_LOC_moments_progress_success">视频已导入成功</string>
+    <string name="activity_user_info_weibo_id_unbind_cancel">取消</string>
+    <string name="activity_user_info_weibo_id_unbind_ok">解除绑定</string>
+    <string name="activity_play_today_action_delete">删除此视频</string>
+    <string name="activity_play_today_dialog_delete_content">确认删除?删除后将无法恢复</string>
+    <string name="activity_play_today_dialog_delete_negative">删除</string>
+    <string name="activity_play_today_dialog_delete_positive">取消</string>
+    <string name="activity_play_today_progress_delete_content">正在删除…</string>
+    <string name="activity_play_today_progress_delete_fail">删除出错, 可能是网络不太好</string>
+    <string name="activity_play_today_progress_delete_no_permission">删除失败了, 只能删除自己创建的视频</string>
+    <string name="activity_play_today_progress_delete_success">删除成功</string>
+    <string name="activity_share_export_abort">确认中止操作?</string>
+    <string name="activity_share_export_negative">继续</string>
+    <string name="activity_share_export_export_action_open">查看</string>
+    <string name="activity_share_export_export_action_open_error">没有能播放视频的应用</string>
+    <string name="activity_share_export_positive">中止</string>
+    <string name="activity_play_moment_action_delete">删除这个一瞬</string>
+    <string name="activity_play_moment_msg_delete_fail">删除失败了,请稍后再试</string>
+    <string name="activity_play_moment_msg_delete_ok">删除成功.</string>
+</resources>

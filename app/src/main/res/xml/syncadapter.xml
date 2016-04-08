@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sync-adapter
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountType="co.yishun.onemoment.app"
+    android:allowParallelSyncs="false"
+    android:contentAuthority="co.yishun.onemoment.app"
+    android:isAlwaysSyncable="true"
+    android:supportsUploading="true"
+    android:userVisible="false"/>
+    <!--set userVisible to avoid crash when user turn sync off-->

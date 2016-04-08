@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+    <!-- above Android 4.3 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <co.yishun.onemoment.app.ui.view.shoot.CameraGLSurfaceView
+            android:id="@+id/shootView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <co.yishun.onemoment.app.ui.view.RadioCornerImageView
+            android:id="@+id/maskImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            app:rc_cornerRadio="0"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <co.yishun.onemoment.app.ui.view.PageIndicatorDot
+                android:id="@+id/pageIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="bottom"
+                android:fitsSystemWindows="true"
+                app:pid_dotRadius="3dp"
+                app:pid_interval="10dp"
+                app:pid_isStroke="true"/>
+        </LinearLayout>
+    </FrameLayout>
+
+
+    <include layout="@layout/layout_record_btn"/>
+</merge>

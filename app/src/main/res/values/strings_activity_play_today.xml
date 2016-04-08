@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_play_today_action_delete">Delete This Video</string>
+    <string name="activity_play_today_dialog_delete_content">Delete Anyway? This cannot be
+        undo.</string>
+    <string name="activity_play_today_dialog_delete_positive">Cancel</string>
+    <string name="activity_play_today_dialog_delete_negative">Delete!</string>
+    <string name="activity_play_today_progress_delete_content">Deleting…</string>
+    <string name="activity_play_today_progress_delete_success">OK, deleted.</string>
+    <string name="activity_play_today_progress_delete_fail">Sorry, unable to do that.
+        Try it later.</string>
+    <string name="activity_play_today_progress_delete_no_permission">Sorry, unable to do that.
+        You can only delete video created by yourself.</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CountDownResentView">
+        <attr name="prefixText" format="string"/>
+        <attr name="suffixText" format="string"/>
+        <attr name="endText" format="string"/>
+        <attr name="startNum" format="integer"/>
+        <attr name="prefixTextColor" format="color|reference"/>
+        <attr name="suffixTextColor" format="color|reference"/>
+        <attr name="endTextColor" format="color|reference"/>
+        <attr name="countDownNumColor" format="color|reference"/>
+    </declare-styleable>
+</resources>

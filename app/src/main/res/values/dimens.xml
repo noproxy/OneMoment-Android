@@ -1,0 +1,32 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="nav_header_height">180dp</dimen>
+
+    <dimen name="app_bar_elevation">4dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+
+    <dimen name="button_elevation">2dp</dimen>
+    <dimen name="button_elevation_pressed">8dp</dimen>
+
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="fab_elevation_pressed">12dp</dimen>
+
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="card_elevation_pressed">8dp</dimen>
+
+    <dimen name="drawer_elevation">16dp</dimen>
+    <dimen name="snack_bar_elevation">6dp</dimen>
+
+    <dimen name="me_header_height">160dp</dimen>
+
+    <dimen name="navigation_elevation">12dp</dimen>
+
+    <dimen name="video_grid_divider">6dp</dimen>
+
+    <dimen name="page_indicator_dot_radius">5dp</dimen>
+    <dimen name="page_indicator_dot_interval">12dp</dimen>
+    <dimen name="page_indicator_dot_stroke_width">1dp</dimen>
+</resources>

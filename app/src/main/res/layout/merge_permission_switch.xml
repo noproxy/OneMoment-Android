@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto"
+       xmlns:tools="http://schemas.android.com/tools"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:gravity="center"
+       android:orientation="vertical"
+       tools:showIn="@layout/activity_moment_create"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="188dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_switch"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/permissionSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bg_switch_track_null"
+            android:textOff=""
+            android:textOn=""
+            android:thumb="@drawable/ic_permission_switch"
+            app:showText="true"
+            app:thumbTextPadding="48dp"
+            app:track="@drawable/bg_switch_track_null"
+            />
+
+        <LinearLayout
+            android:layout_width="188dp"
+            android:layout_height="32dp"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/permissionPublicText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/activity_moment_create_public_text"/>
+
+            <TextView
+                android:id="@+id/permissionPrivateText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/activity_moment_create_private_text"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/hintText"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_moment_create_private_hint"
+        />
+</merge>

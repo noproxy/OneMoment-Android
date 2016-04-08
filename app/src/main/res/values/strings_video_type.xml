@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="video_type_add_to_world">Add To World</string>
+    <string name="video_type_life_in_a_day">Life In a Day</string>
+    <string name="video_type_add_to_diary">Add To Diary</string>
+</resources>

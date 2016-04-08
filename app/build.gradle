@@ -1,0 +1,242 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
+    // Note: due to a limitation in retrolamba, this will set incremental to false. The default is false.
+    defaultMethods false
+    incremental true
+}
+
+android {
+    useLibrary 'org.apache.http.legacy'
+    signingConfigs() {
+        debugSignature {
+            keyAlias = properties.getProperty("KEY_ALIAS_DEBUG")
+            keyPassword properties.getProperty("KEY_PASSWORD")
+            storeFile file(properties.getProperty("KEYSTORE_PATH"))
+            storePassword properties.getProperty("STORE_PASSWORD")
+        }
+        releaseSignature {
+            keyAlias properties.getProperty("KEY_ALIAS_RELEASE")
+            keyPassword properties.getProperty("KEY_PASSWORD")
+            storeFile file(properties.getProperty("KEYSTORE_PATH"))
+            storePassword properties.getProperty("STORE_PASSWORD")
+        }
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a'
+            universalApk true
+        }
+    }
+
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "co.yishun.onemoment.app"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 17
+        versionName "2.3.1"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+
+    aaptOptions {
+        ignoreAssetsPattern 'x86:fonts:armeabi-v7a-neon'
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    buildTypes() {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseSignature
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debugSignature
+        }
+    }
+
+    productFlavors {
+        dev {
+            // http://developer.android.com/intl/es/tools/building/multidex.html#dev-build
+            minSdkVersion 21
+            targetSdkVersion 23
+        }
+        uiAutomator { // for UIAutomation test, api > 18
+            minSdkVersion 18
+            targetSdkVersion 23
+        }
+        noFFmpeg {
+            aaptOptions.ignoreAssetsPattern 'x86:fonts:armeabi-v7a-neon:armeabi:armeabi-v7a'
+        }
+        preview {} // for universal and test volunteers preview
+        // for release
+        market360 {}
+        marketWandoujia {}
+        marketBaidu {}
+        marketCoolapk {}
+        marketGooglePlay {}
+        marketHuawei {}
+        marketXiaomi {}
+        marketYingyongbao {}
+        marketUniversal {}// for other market
+    }
+
+    // https://code.google.com/p/android/issues/detail?id=197231
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+
+    aaptOptions {
+        ignoreAssetsPattern 'x86:fonts:armeabi-v7a-neon'
+    }
+}
+
+def SUPPORT_VERSION = '23.2.0'
+
+dependencies {
+    // avoid method number limit
+    compile 'com.android.support:multidex:1.0.1'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+//    compile fileTree(includes: ['*.jar'],dir: 'libs'){
+//        transitive false
+//    }
+    compile 'net.sourceforge.streamsupport:streamsupport:1.4.1'
+    compile "com.android.support:support-annotations:$SUPPORT_VERSION"
+    compile "com.android.support:support-v4:$SUPPORT_VERSION"
+    compile "com.android.support:appcompat-v7:$SUPPORT_VERSION"
+    compile "com.android.support:cardview-v7:$SUPPORT_VERSION"
+    compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
+    compile "com.android.support:palette-v7:$SUPPORT_VERSION"
+    compile "com.android.support:design:$SUPPORT_VERSION"
+//TODO bug https://code.google.com/p/android/issues/detail?id=180462
+
+
+    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // keep for compatible
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.4'
+    compile 'com.squareup.okhttp:okhttp:2.7.4'
+
+    //TODO add for upgrade later, by Carlos
+//    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
+//    compile 'com.squareup.okhttp3:okhttp:3.1.1'
+
+    androidTestCompile 'com.android.support.test:runner:0.4.1'
+    androidTestCompile 'com.android.support.test:rules:0.4.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestUiAutomatorCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+
+    compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
+    compile 'com.umeng.analytics:analytics:5.6.4'
+    compile 'com.qiniu:qiniu-android-sdk:7.1.2'
+    compile 'io.realm:realm-android:0.87.4'
+    compile 'com.umeng.analytics:analytics:5.6.1'
+
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.tojc.ormlite.android:ormlite-content-provider-library:1.0.4@aar'
+
+    // UI
+    compile 'com.soundcloud.android:android-crop:1.0.1@aar'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.slider:library:1.1.5@aar'
+    compile 'com.daimajia.easing:library:1.0.2@aar'
+    compile 'com.daimajia.androidanimations:library:1.1.3@aar'
+    compile 'com.daimajia.androidviewhover:library:1.0.4@aar'
+    compile 'nl.codesoup.cubicbezier:cubicbezier:1.0.0'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.6@aar') { transitive = true }
+    compile 'com.malinskiy:superrecyclerview:1.1.1'
+    compile 'org.solovyev.android.views:linear-layout-manager:0.5@aar'
+    compile 'me.toxz.circularprogressview:library:1.0.4'
+    compile 'com.github.clans:fab:1.6.2'
+
+    compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
+    compile 'com.googlecode.mp4parser:isoparser:1.1.17'
+    compile('com.github.worker8:tourguide:1.0.17-SNAPSHOT@aar') {
+        transitive = true
+    }
+}
+
+repositories {
+    maven {
+        url "http://dl.bintray.com/a642500/maven"
+    }
+}
+
+dependencies {
+//    compile 'co.yishun.library:momentcalendar:0.1.5'
+    compile 'co.yishun.library:datacenter:0.0.1'
+}
+
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
+dependencies {
+    compile 'com.jenzz:materialpreference:1.3'
+}
+
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+    compile('com.github.ozodrukh:CircularReveal:1.3.1@aar') {
+        transitive = true;
+    }
+}
+
+dependencies {
+    compile project(':play-library')
+    compile project(':transition-library')
+    compile project(':momentcalendar')
+}
+
+
+apply plugin: 'android-apt'
+
+dependencies {
+    apt "org.androidannotations:androidannotations:3.3.2"
+    compile "org.androidannotations:androidannotations-api:3.3.2"
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].processResources.manifestFile
+    }
+}
+
+// https://www.reddit.com/r/androiddev/comments/3dnibt/support_library_2221_released/
+configurations.all() {
+    // Currently espresso is dependent on support-annotations:22.2.0
+    resolutionStrategy.force "com.android.support:support-annotations:$SUPPORT_VERSION"
+}

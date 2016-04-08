@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_me_voted_format_text">Voted %s</string>
+    <string name="fragment_me_vote_format_text">Vote %s</string>
+    <string name="fragment_me_action_modify_info">Modify Information</string>
+</resources>

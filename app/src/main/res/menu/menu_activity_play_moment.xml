@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".ui.PlayMomentActivity">
+    <item
+        android:id="@+id/activity_play_moment_delete"
+        android:title="@string/activity_play_moment_action_delete"
+        app:showAsAction="never"/>
+</menu>

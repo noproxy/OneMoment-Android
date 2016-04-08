@@ -1,0 +1,153 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="Base" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="AppTheme" parent="Base">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorPrimaryInverse">@color/textColorPrimaryInverse</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:windowBackground">@drawable/bg_window</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity</item>
+        <item name="drawerArrowStyle">@style/AppTheme.Widget.DrawerArrowToggle</item>
+        <item name="colorControlNormal">?attr/colorAccent</item>
+        <item name="bottomSheetDialogTheme">
+            @style/Theme.Design.Light.BottomSheetDialog.NoDarkBackground
+        </item>
+    </style>
+
+    <style name="AppTheme.VideoVoteUpActivity">
+        <item name="android:textColorTertiary">@color/textColorPrimary</item>
+        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
+    </style>
+
+    <style name="TwoWayViewBase"></style>
+
+    <style name="AppTheme.Settings">
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="mp_colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.Discovery">
+        <item name="android:windowBackground">@drawable/bg_discovery</item>
+    </style>
+
+    <style name="TextAppearance.NickName" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">#000</item>
+    </style>
+
+    <!-- for toolbar menu and overflow color -->
+    <style name="AppTheme.MainActivity"></style>
+
+    <style name="AppTheme.SplashActivity">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme.EntryActivity">
+        <item name="android:windowBackground">@drawable/bg_window_login</item>
+    </style>
+
+    <style name="AppTheme.PhoneAccountActivity">
+        <item name="android:windowBackground">@drawable/bg_window_phone</item>
+    </style>
+
+    <style name="AppTheme.FitWindowsActivity"></style>
+
+    <style name="AppTheme.ShootActivity">
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme.TagActivity">
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.SearchActivity">
+        <item name="android:windowAnimationStyle">@style/AppTheme.Animation.Activity.NoIn</item>
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.PlayActivity">
+        <item name="android:textColorTertiary">@color/textColorPrimary</item>
+        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.ShareActivity">
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:textColorTertiary">#545454</item>
+        <item name="android:textColorTertiaryInverse">#b0b0b0</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="Theme.Design.Light.BottomSheetDialog.NoDarkBackground">
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="bottomSheetStyle">@style/Widget.Design.BottomSheet.Modal.HeightCustom</item>
+    </style>
+
+    <style name="Widget.Design.BottomSheet.Modal.HeightCustom">
+
+    </style>
+
+    <style name="TextAppearance.PlaySmall" parent="TextAppearance.AppCompat.Small" />
+
+    <style name="TextAppearance.PlaySmall.Inverse" parent="TextAppearance.AppCompat.Small.Inverse" />
+
+    <style name="AppTheme.MomentCreateActivity"></style>
+
+    <style name="AppTheme.TagCreateActivity"></style>
+
+    <style name="AppTheme.UserInfoActivity">
+        <item name="android:textColorTertiaryInverse">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.PlayMomentActivity"></style>
+
+    <style name="AppTheme.ShareOutputActivity"></style>
+
+    <style name="AppTheme.GuideActivity">
+        <item name="android:windowBackground">@drawable/bg_window_login</item>
+    </style>
+
+    <style name="AppTheme.WorldVideosActivity">
+        <item name="android:windowBackground">@color/colorWindowTransparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.Animation.Activity" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/window_fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_fade_out</item>
+    </style>
+
+    <style name="AppTheme.Animation.Activity.NoIn">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+    </style>
+
+    <style name="AppTheme.Widget.DrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">?attr/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.Widget.ImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/bg_btn_menu</item>
+    </style>
+
+
+    <style name="PhoneLoginLinearLayout">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.4</item>
+        <item name="android:paddingBottom">88dp</item>
+    </style>
+
+</resources>

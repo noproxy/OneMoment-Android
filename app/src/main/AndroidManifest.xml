@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="co.yishun.onemoment.app"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-sdk tools:overrideLibrary="com.github.hiteshsondhi88.libffmpeg"/>
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false"/>
+
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+
+    <!-- required by umeng -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+
+    <application
+        android:name=".OMApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.SplashActivity_"
+            android:theme="@style/AppTheme.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.MainActivity_"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.MainActivity"/>
+        <activity
+            android:name=".ui.VideoVotedUpActivity_"
+            android:label="@string/discovery_title"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.VideoVoteUpActivity"/>
+        <activity
+            android:name=".ui.SettingsActivity_"
+            android:label="@string/title_settings"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.Settings"/>
+
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.NoDisplay"/>
+        <activity
+            android:name=".wxapi.EntryActivity_"
+            android:theme="@style/AppTheme.EntryActivity"/>
+        <activity
+            android:name=".ui.AccountActivity_"
+            android:parentActivityName=".wxapi.EntryActivity_"
+            android:theme="@style/AppTheme.PhoneAccountActivity"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name="com.soundcloud.android.crop.CropImageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.FitWindowsActivity"/>
+        <activity
+            android:name=".ui.EspressoTestActivity"
+            android:label="@string/title_activity_espresso_test"/>
+        <activity android:name=".ui.UIAutomatorTestActivity"/>
+
+        <service
+            android:name=".account.sync.AuthenticatorService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator"/>
+        </service>
+        <service
+            android:name=".account.sync.SyncService"
+            android:exported="true"
+            android:process=":sync">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter"/>
+        </service>
+
+        <provider
+            android:name=".data.compat.MomentProvider"
+            android:authorities="co.yishun.onemoment.app"
+            android:exported="false"
+            android:syncable="true"/>
+
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="tencent1104574591"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:theme="@style/AppTheme.FitWindowsActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".ui.TagActivity_"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.TagActivity"/>
+        <activity
+            android:name=".ui.ShootActivity_"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.ShootActivity"
+            />
+        <activity
+            android:name=".ui.SearchActivity_"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.SearchActivity"/>
+        <activity
+            android:name=".ui.PlayActivity_"
+            android:theme="@style/AppTheme.PlayActivity">
+        </activity>
+        <activity
+            android:name=".ui.TagCreateActivity_"
+            android:theme="@style/AppTheme.TagCreateActivity"/>
+        <activity
+            android:name=".ui.UserInfoActivity_"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.UserInfoActivity"
+            />
+        <activity
+            android:name=".ui.PlayMomentActivity_"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.PlayMomentActivity"/>
+        <activity
+            android:name=".ui.ShareExportActivity_"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.ShareOutputActivity"/>
+        <activity
+            android:name=".ui.ShareActivity_"
+            android:theme="@style/AppTheme.ShareActivity">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.GuideActivity_"
+            android:theme="@style/AppTheme.GuideActivity">
+        </activity>
+
+        <!--Don't add parentActivityName for hybrid activities.
+        They will be started according url instead of certain activities.-->
+        <activity android:name=".ui.hybrd.CommonWebActivity_">
+
+        </activity>
+        <activity android:name=".ui.hybrd.EmptyWebActivity_">
+
+        </activity>
+        <activity android:name=".ui.PersonalWorldActivity_">
+
+        </activity>
+        <activity android:name=".ui.CreateWorldActivity_">
+
+        </activity>
+        <activity android:name=".ui.BadgeActivity_">
+
+        </activity>
+        <activity android:name=".ui.HomeContainerActivity_">
+
+        </activity>
+        <activity
+            android:name=".ui.WorldVideosActivity_"
+            android:parentActivityName=".ui.MainActivity_"
+            android:theme="@style/AppTheme.WorldVideosActivity"/>
+
+        <service android:name=".account.remind.ReminderService">
+        </service>
+
+        <receiver android:name=".account.remind.ReminderReceiver">
+            <intent-filter>
+                <action android:name="co.yishun.onemoment.app.remind.update"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- baidu location service -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
+        </service>
+
+        <!-- umeng message -->
+        <receiver
+            android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
+            android:exported="false">
+        </receiver>
+        <receiver
+            android:name="com.umeng.message.SystemReceiver"
+            android:process=":push">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.umeng.message.MessageReceiver"
+            android:exported="false"
+            android:process=":push">
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.RECEIVE"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.umeng.message.ElectionReceiver"
+            android:process=":push">
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.ELECTION_RESULT_V4"/>
+
+                <category android:name="umeng"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.umeng.message.RegistrationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="co.yishun.onemoment.app.intent.action.COMMAND"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.umeng.message.UmengMessageBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.umeng.message.UmengService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":push">
+            <intent-filter>
+                <action android:name="co.yishun.onemoment.app.intent.action.START"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="co.yishun.onemoment.app.intent.action.COCKROACH"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.PING_V4"/>
+
+                <category android:name="umeng"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.umeng.message.UmengIntentService"
+            android:process=":push"/>
+        <service
+            android:name="com.umeng.message.UmengMessageIntentReceiverService"
+            android:exported="true"
+            android:process=":push">
+            <intent-filter>
+                <action android:name="org.android.agoo.client.MessageReceiverService"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.android.agoo.client.ElectionReceiverService"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.umeng.message.UmengMessageCallbackHandlerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.umeng.messge.registercallback.action"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.umeng.message.unregistercallback.action"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.umeng.message.message.handler.action"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.umeng.message.autoupdate.handler.action"/>
+            </intent-filter>
+        </service>
+        <service android:name="com.umeng.message.UmengDownloadResourceService"/>
+        <service
+            android:name="com.umeng.message.local.UmengLocalNotificationService"
+            android:exported="false"/>
+
+        <!--Umeng Update-->
+        <service
+            android:name="com.umeng.update.net.DownloadingService"
+            android:process=":DownloadingService">
+        </service>
+        <activity
+            android:name="com.umeng.update.UpdateDialogActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="kCbiUVqj0L2QAo3vHgMefShZ"/>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="549e2c80fd98c5e4cf000f64"/>
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="0ab4a4441bd8f962c624b88af1e0b5ef"/>
+    </application>
+
+</manifest>

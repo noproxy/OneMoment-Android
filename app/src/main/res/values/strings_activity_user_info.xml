@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_user_info_title">User Profile</string>
+    <string name="activity_user_info_avatar">Avatar</string>
+    <string name="activity_user_info_username">Username</string>
+    <string name="activity_user_info_weibo_id">Weibo ID</string>
+    <string name="activity_user_info_weibo_id_unbound">unbound</string>
+    <string name="activity_user_info_weibo_id_unbind_ok">Unbound</string>
+    <string name="activity_user_info_weibo_id_unbind_cancel">Cancel</string>
+    <string name="activity_user_info_weibo_id_unbind_msg">Are you sure unbind with %s?</string>
+    <string name="activity_user_info_weibo_id_unbind_forbid">Can\'t unbind</string>
+    <string name="activity_user_info_gender">Gender</string>
+    <string name="activity_user_info_gender_unknown">unknown</string>
+    <string name="activity_user_info_location">Location</string>
+
+    <string name="activity_user_info_dialog_positive">OK</string>
+    <string name="activity_user_info_sign_out">Sign Out</string>
+    <string name="activity_user_info_sign_out_dialog_title">Sign Out</string>
+    <string name="activity_user_info_sign_out_dialog_cancel">Cancel</string>
+    <string name="activity_user_info_sign_out_dialog_ok">Sign Out</string>
+    <string name="activity_user_info_sign_out_dialog_content">Are you sure to sign out?</string>
+</resources>

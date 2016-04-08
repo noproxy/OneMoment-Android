@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RadioCornerImageView">
+        <attr name="rc_widthRadio" format="integer"/>
+        <attr name="rc_heightRadio" format="integer"/>
+        <attr name="rc_corner" format="dimension"/>
+        <attr name="rc_cornerRadio" format="float"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:bottom="32dp">
+        <bitmap
+            android:gravity="bottom|center_horizontal"
+            android:src="@drawable/bg_splash_xiaomi" />
+    </item>
+    <item>
+        <bitmap
+            android:gravity="bottom|center_horizontal"
+            android:src="@drawable/pic_splash_copyright" />
+    </item>
+    <item android:bottom="64dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/pic_splash_foreground" />
+    </item>
+</layer-list>
