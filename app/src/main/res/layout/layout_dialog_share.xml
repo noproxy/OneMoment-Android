@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/shareWeChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_btn_white"
+        android:drawableLeft="@drawable/ic_share_wechat"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_share_wechat"
+        android:gravity="start|center_vertical"
+        android:padding="16dp"
+        android:text="@string/activity_share_we_chat"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/shareWXCircle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_btn_white"
+        android:drawableLeft="@drawable/ic_share_wxcircle"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_share_wxcircle"
+        android:gravity="start|center_vertical"
+        android:padding="16dp"
+        android:text="@string/activity_share_wx_circle"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/shareWeibo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_btn_white"
+        android:drawableLeft="@drawable/ic_share_weibo"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_share_weibo"
+        android:gravity="start|center_vertical"
+        android:padding="16dp"
+        android:text="@string/activity_share_weibo"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/shareQQ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_btn_white"
+        android:drawableLeft="@drawable/ic_share_qq"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_share_qq"
+        android:gravity="start|center_vertical"
+        android:padding="16dp"
+        android:text="@string/activity_share_qq"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/shareQzone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_btn_white"
+        android:drawableLeft="@drawable/ic_share_qzone"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_share_qzone"
+        android:gravity="start|center_vertical"
+        android:padding="16dp"
+        android:text="@string/activity_share_qzone"
+        android:textAllCaps="false" />
+</LinearLayout>

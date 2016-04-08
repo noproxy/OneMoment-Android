@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_integrate_info_nickname_hint">Nickname</string>
+    <string name="fragment_integrate_info_sign_up_progress">Signing up, please wait…</string>
+    <string name="fragment_integrate_info_sign_up_success">Sign up success.</string>
+    <string name="fragment_integrate_info_sign_up_success_but_avatar_upload_failed">Sign up success. But upload avatar failed, you can update it later.</string>
+
+    <string name="fragment_integrate_info_error_gender_empty">Please select your gender!</string>
+    <string name="fragment_integrate_info_error_location_empty">Please select your location!</string>
+    <string name="fragment_integrate_info_error_nickname_empty">Please input your nickname!</string>
+    <string name="fragment_integrate_info_error_nickname_invalid">You nickname is invalid, please try another one.</string>
+    <string name="fragment_integrate_info_error_nickname_exist">This nickname is used, please try another one.</string>
+    <string name="fragment_integrate_info_error_nickname_long">You nickname is too long, please try another one.</string>
+    <string name="fragment_integrate_info_error_avatar_upload_failed">Upload avatar failed. Please retry.</string>
+
+</resources>

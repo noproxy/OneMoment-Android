@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<co.yishun.onemoment.app.ui.view.SquareFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/videoImageView"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:src="@drawable/pic_more_discovery"/>
+</co.yishun.onemoment.app.ui.view.SquareFrameLayout>

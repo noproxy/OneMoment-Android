@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_user_info_title">个人资料</string>
+    <string name="activity_user_info_avatar">头像</string>
+    <string name="activity_user_info_username">名字</string>
+    <string name="activity_user_info_weibo_id">微博ID</string>
+    <string name="activity_user_info_weibo_id_unbound">未绑定</string>
+    <string name="activity_user_info_weibo_id_unbind_msg">确定取消绑定“%s”?</string>
+    <string name="activity_user_info_weibo_id_bind_forbid">此微博账号已注册一瞬，不能绑定</string>
+    <string name="activity_user_info_weibo_id_unbind_forbid">不能解绑</string>
+    <string name="activity_user_info_gender">性别</string>
+    <string name="activity_user_info_gender_unknown">未知</string>
+    <string name="activity_user_info_location">地区</string>
+
+    <string name="activity_user_info_dialog_positive">确定</string>
+    <string name="activity_user_info_sign_out">退出登录</string>
+    <string name="activity_user_info_sign_out_dialog_title">退出登录</string>
+    <string name="activity_user_info_sign_out_dialog_cancel">取消</string>
+    <string name="activity_user_info_sign_out_dialog_ok">退出登录</string>
+    <string name="activity_user_info_sign_out_dialog_content">确定退出登录?</string>
+</resources>

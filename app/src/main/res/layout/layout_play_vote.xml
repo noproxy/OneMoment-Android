@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    android:id="@+id/voteCountTextView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="108dp"
+    android:layout_height="56dp"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/bg_worldplay_like"
+    android:drawableLeft="@drawable/ic_world_play_like_gray"
+    android:drawablePadding="12dp"
+    android:drawableStart="@drawable/ic_world_play_like_gray"
+    android:gravity="center"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:text=""
+    android:textAppearance="@style/TextAppearance.AppCompat.Small"/>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".wxapi.EntryActivity">
+
+    <!--<include layout="@layout/layout_toolbar"/>-->
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="co.yishun.onemoment.app.ui.account.ProductTourFragment_"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4">
+
+    </fragment>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/bg_login_divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingTop="12dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
+                android:id="@+id/loginByWeChat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="loginByWeChatClicked"
+                android:padding="4dp"
+                android:src="@drawable/pic_login_wechat"
+                android:text="@string/login_by_wechat" />
+
+            <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
+                android:id="@+id/loginByQQ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="loginByQQClicked"
+                android:padding="4dp"
+                android:src="@drawable/pic_login_qq"
+                android:text="@string/login_by_qq" />
+
+            <co.yishun.onemoment.app.ui.view.CompoundTextButtonView
+                android:id="@+id/loginByWeibo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="loginByWeiBoClicked"
+                android:padding="4dp"
+                android:src="@drawable/pic_login_weibo"
+                android:text="@string/login_by_weibo" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/loginByPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/pic_login_number"
+            android:onClick="loginByPhoneClicked"
+            android:textColor="@color/colorAccent" />
+
+    </LinearLayout>
+
+</LinearLayout>

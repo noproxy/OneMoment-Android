@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_play_moment_not_found">加载一瞬失败</string>
+    <string name="fragment_play_world_video_null">此世界还没有视频</string>
+    <string name="fragment_play_world_video_load_error">视屏加载出错</string>
+</resources>

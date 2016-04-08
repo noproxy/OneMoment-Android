@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+
+// Version Information
+def versionMajor = 1
+def versionMinor = 6
+def versionPatch = 0
+def versionBuild = 10
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 22
+        versionCode versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        consumerProguardFiles 'consumer-proguard-rules.pro'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="view_location_spinner_title">位置</string>
+    <string name="view_location_spinner_positive_btn">确定</string>
+    <string name="view_location_spinner_default">位置</string>
+</resources>

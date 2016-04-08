@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#f7f7f7</color>
+    <color name="colorPrimaryDark">#c6c6c6</color>
+    <color name="colorAccent">#ffa84a</color>
+    <color name="colorAccentDark">#ffc07c</color>
+    <color name="colorSecondary">#17d79f</color>
+
+    <color name="textColorPrimary">#8b8b8b</color>
+    <color name="textColorPrimaryDark">#545454</color>
+    <color name="textColorPrimaryInverse">#ffffff</color>
+
+    <color name="colorBackground">#f7f7f7</color>
+
+    <color name="colorPressed">#22b5b5b5</color>
+    <color name="colorProfileImageBorder">#ffffff</color>
+
+    <color name="colorWindowTransparent">#00000000</color>
+    <color name="colorWindowTranslucent">#f0f7f7f7</color>
+    <color name="colorWindowTranslucentBlack">#a0000000</color>
+    <color name="colorWindowShareActivity">#90000000</color>
+
+    <color name="colorDivider">#dcdcdc</color>
+
+    <color name="colorGuideEnter">#363636</color>
+
+    <color name="colorVideoTypeGray">#e9e9e9</color>
+    <color name="colorVideoTypeGrayDark">#b0b0b0</color>
+</resources>

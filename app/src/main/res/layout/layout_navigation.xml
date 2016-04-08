@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.NavigationView
+    android:id="@+id/navigationView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="?android:colorBackground"
+    android:elevation="@dimen/navigation_elevation"
+    app:itemBackground="@drawable/bg_nav_item"
+    app:itemIconTint="@color/nav_item_color_selector"
+    app:itemTextColor="@color/nav_item_color_selector"
+    app:menu="@menu/menu_nav"
+    tools:showIn="@layout/activity_main"
+    />
+    <!--
+            views in NavigationView cannot be found from NavigationView or Activity since support 23.1.0
+            see: http://stackoverflow.com/questions/33199764/android-api-23-change-navigation-view-headerlayout-textview
+            so, remove:
+                app:headerLayout="@layout/layout_nav_header"
+            and set it in Java code
+    -->

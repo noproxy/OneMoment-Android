@@ -1,0 +1,58 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    tools:showIn="@layout/fragment_me"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/content_des_profile_image"
+        android:src="@drawable/pic_profile_default"
+        app:civ_border_color="@color/colorProfileImageBorder"
+        app:civ_border_width="2dp"
+        />
+
+    <TextView
+        android:id="@+id/nickNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileImageView"
+        android:layout_centerHorizontal="true"
+        android:lines="1"
+        android:text="CC Juice"
+        android:textAppearance="@style/TextAppearance.NickName"
+        tools:text="CC Juice"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp"
+        android:paddingTop="8dp"
+        >
+        
+        <TextView
+            android:id="@+id/voteCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="start"
+            android:paddingLeft="8dp"
+            android:text="Vote 3"
+            tools:text="Vote 3"
+            />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,94 @@
+group = PROJ_GROUP
+version = PROJ_VERSION
+archivesBaseName = PROJ_ARTIFACTID
+
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+//androidJar = new File(System.getenv('ANDROID_HOME'), '/platforms/android-22/android.jar')
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += configurations.compile
+}
+//'opt/android-sdk/platforms/android-22/android.jar'
+
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+javadoc {
+    classpath = configurations.compile
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/8/docs/api"
+    }
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name PROJ_NAME
+            description PROJ_DESCRIPTION
+            url 'https://github.com/a642500/MomentCalendar'
+            inceptionYear '2016'
+
+            packaging 'aar'
+            groupId PROJ_GROUP
+            artifactId PROJ_ARTIFACTID
+            archivesBaseName = PROJ_ARTIFACTID
+            version PROJ_VERSION
+
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection PROJ_VCSURL
+                url 'https://github.com/a642500/MomentCalendar'
+
+            }
+            developers {
+                developer {
+                    name 'Carlos'
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = BINTRAY_USER
+    key = BINTRAY_API_KEY
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = PROJ_NAME
+        userOrg = user
+        licenses = ['Apache-2.0']
+        vcsUrl = PROJ_VCSURL
+        version {
+            name = PROJ_VERSION
+            desc = PROJ_DESCRIPTION
+            vcsTag = PROJ_VERSION
+        }
+    }
+}

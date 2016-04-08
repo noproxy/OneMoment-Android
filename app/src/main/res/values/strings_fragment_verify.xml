@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_phone_verify_verify_progress">Verifying, please wait…</string>
+    <string name="fragment_phone_verify_verify_verification_code_empty">Please input verification code.</string>
+
+    <string name="fragment_phone_verify_verify_error_verify_fail">Sorry, verification code is not incorrect!</string>
+    <string name="fragment_phone_verify_verify_error_expire">Verification code expired, please resent.</string>
+    <string name="fragment_phone_verify_verify_error_network">Network error, please try later.</string>
+    <string name="fragment_phone_verify_verify_success">Verify success!</string>
+
+    <string name="fragment_phone_verify_layout_hint_verification_code">Verification Code</string>
+    <string name="fragment_phone_verify_layout_text_click_send_again">Click to send verification code</string>
+    <string name="fragment_phone_verify_layout_text_send_again_later">second later, send verification code again</string>
+    <string name="fragment_phone_verify_sms_success">Send Success.</string>
+    <string name="fragment_phone_verify_sms_sending">Sending…</string>
+    <string name="fragment_phone_verify_sms_fail">Send fail, please retry.</string>
+    <string name="fragment_phone_verify_sms_fail_account_exist">Send fail! Account exist, please login directly.</string>
+
+    <string name="fragment_phone_verify_reset_password_success">Password Reset</string>
+</resources>

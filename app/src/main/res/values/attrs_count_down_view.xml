@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="CountDownView">
+        <attr name="startNumber"
+              format="integer"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.TagActivity">
+
+    <FrameLayout
+        android:id="@+id/transitionFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <co.yishun.onemoment.app.ui.view.RadioCornerImageView
+            android:id="@+id/transImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            tools:src="@drawable/pic_more_discovery" />
+
+    </FrameLayout>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="@dimen/app_bar_elevation"
+        android:fitsSystemWindows="true">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
+
+            <RelativeLayout
+                android:id="@+id/videoFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax">
+
+                <co.yishun.onemoment.app.ui.view.RadioCornerImageView
+                    android:id="@+id/videoImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/pic_more_discovery"
+                    app:rc_heightRadio="3"
+                    app:rc_widthRadio="5" />
+
+                <View
+                    android:id="@+id/videoMask"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/videoImageView"
+                    android:layout_alignTop="@id/videoImageView"
+                    android:background="@drawable/bg_tag_activity_image" />
+            </RelativeLayout>
+
+            <include layout="@layout/layout_toolbar_play_activity" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <com.malinskiy.superrecyclerview.SuperRecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_empty="@layout/layout_empty"
+        app:layout_progress="@layout/layout_progress" />
+</android.support.design.widget.CoordinatorLayout>
