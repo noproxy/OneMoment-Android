@@ -22,6 +22,8 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
     private int centerPagePosition = middleInt;
     private MomentCalendar momentCalendar;
     private Context context;
+    private MomentMonthView currentMonthView;
+
 
     public CalendarAdapter(Context context, MomentCalendar momentCalendar, MomentMonthView.MonthAdapter adapter) {
         this.context = context;
@@ -92,4 +94,9 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
     public void destroyItem(ViewGroup container, int position, Object obj) {
         // ignored
     }
+
+    public MomentMonthView getCurrentMonthView(){
+        return currentMonthView;
+    }
+
 }

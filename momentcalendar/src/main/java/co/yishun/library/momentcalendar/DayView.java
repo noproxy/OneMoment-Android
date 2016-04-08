@@ -240,15 +240,20 @@ public class DayView extends ImageView implements View.OnClickListener {
         invalidate();
     }
 
+    /*
+      change the sequence of mMomentSelectedListener and MultiSelcetion
+       */
     @Override
     public void onClick(View v) {
-        if (mMomentSelectedListener != null) {
-            mMomentSelectedListener.onSelected(this);
-        }
         if (mMultiSelection)
             setSelected(!isSelected());
         else
             setSelected(true);
+
+        if (mMomentSelectedListener != null) {
+            mMomentSelectedListener.onSelected(this);
+        }
+
     }
 
     public enum TimeStatus {

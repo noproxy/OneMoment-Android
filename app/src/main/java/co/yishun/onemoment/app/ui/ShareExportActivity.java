@@ -296,6 +296,35 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         }
     }
 
+
+    /**
+     * @param select the dayview state that will be changed
+     * @param begin  the begin dayview number
+     * @param end    the end dayview number
+     */
+    void setSomeSelectClicked(boolean select, int begin, int end) {
+        if (begin > end) {
+            int tem = end;
+            end = begin;
+            begin = tem;
+        }
+        MomentMonthView monthView = momentCalendar.getCurrentMonthView();
+
+        if (select == true) {
+            for (int dayIndex = begin + 1; dayIndex < end; dayIndex++) {
+                if (monthView.getChildAt(dayIndex) instanceof DayView) {
+                    DayView dayView = (DayView) monthView.getChildAt(dayIndex);
+                    selectedMoments.add((Moment) dayView.getTag());
+                    LogUtil.d("ShareExportActivity", "isEnabled=" + "monthIndex 0" + dayIndex + dayView.isEnabled());
+                    if (dayView.isEnabled())
+                        dayView.setSelected(true);
+                }
+            }
+        }
+    }
+
+
+
     void updateSelectedText() {
         String content = String.format(getResources().getString(R.string.activity_share_export_selected), selectedMoments.size(), allMoments.size());
         SpannableString ss = new SpannableString(content);
