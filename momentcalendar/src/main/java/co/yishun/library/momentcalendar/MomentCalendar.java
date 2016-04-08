@@ -91,7 +91,10 @@ public class MomentCalendar extends AnimationViewPager {
 
     public void setAdapter(MomentMonthView.MonthAdapter adapter) {
         mAdapter = new CalendarAdapter(getContext(), this, adapter);
+<<<<<<< HEAD
 
+=======
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
     }
 
     /**
@@ -110,7 +113,15 @@ public class MomentCalendar extends AnimationViewPager {
             Log.e(TAG, "You cannot set adapter yourself!");
     }
 
+<<<<<<< HEAD
     public MomentMonthView getCurrentMonthView(){
         return mAdapter.getCurrentMonthView();
     }
+=======
+
+    public MomentMonthView getCurrentMonthView(){
+        return mAdapter.getCurrentMonthView();
+    }
+
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
 }

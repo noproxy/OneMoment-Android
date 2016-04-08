@@ -12,7 +12,10 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+<<<<<<< HEAD
 import android.util.Log;
+=======
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -289,17 +292,26 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 for (int dayIndex = 0; dayIndex < monthView.getChildCount(); dayIndex++) {
                     if (monthView.getChildAt(dayIndex) instanceof DayView) {
                         DayView dayView = (DayView) monthView.getChildAt(dayIndex);
+<<<<<<< HEAD
                         if (dayView.isEnabled()){
                             dayView.setSelected(select);
                             Log.d("ShareDay",""+dayIndex);
                         }
 
+=======
+                        if (dayView.isEnabled())
+                            dayView.setSelected(select);
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
                     }
                 }
             }
         }
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
     /**
      *
      * @param select the dayview state that will be changed
@@ -325,6 +337,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 }
             }
         }
+<<<<<<< HEAD
 
 
         if (select == false){
@@ -342,6 +355,11 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
 
         updateSelectedText();
     }
+=======
+    }
+
+
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
 
     void updateSelectedText() {
         String content = String.format(getResources().getString(R.string.activity_share_export_selected), selectedMoments.size(), allMoments.size());
@@ -385,6 +403,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         }
     }
 
+<<<<<<< HEAD
     /**
      * change the logic to implemente the sequence select
      */
@@ -438,6 +457,19 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
 
 
 
+=======
+    @Override
+    public void onSelected(DayView dayView) {
+        Moment moment = (Moment) dayView.getTag();
+        if (moment != null) {
+            if (selectedMoments.contains(moment)) {
+                selectedMoments.remove(moment);
+            } else {
+                selectedMoments.add(moment);
+            }
+            updateSelectedText();
+        }
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
     }
 
     void concatSelectedVideos() {

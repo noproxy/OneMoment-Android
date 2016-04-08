@@ -24,6 +24,10 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
     private Context context;
     private MomentMonthView currentMonthView;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
     public CalendarAdapter(Context context, MomentCalendar momentCalendar, MomentMonthView.MonthAdapter adapter) {
         this.context = context;
         this.momentCalendar = momentCalendar;
@@ -94,6 +98,7 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
         // ignored
     }
 
+<<<<<<< HEAD
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         currentMonthView = (MomentMonthView) object;
@@ -103,4 +108,10 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
     public MomentMonthView getCurrentMonthView(){
         return currentMonthView;
     }
+=======
+    public MomentMonthView getCurrentMonthView(){
+        return currentMonthView;
+    }
+
+>>>>>>> eeab9c6568d6bebc8ec933f30808cce421bb3be4
 }
