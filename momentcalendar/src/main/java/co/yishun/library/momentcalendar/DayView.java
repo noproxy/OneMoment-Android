@@ -239,6 +239,7 @@ public class DayView extends ImageView implements View.OnClickListener {
         this.mTimeStatus = time;
         invalidate();
     }
+
     /*
       change the sequence of mMomentSelectedListener and MultiSelcetion
        */
@@ -252,6 +253,7 @@ public class DayView extends ImageView implements View.OnClickListener {
         if (mMomentSelectedListener != null) {
             mMomentSelectedListener.onSelected(this);
         }
+
     }
 
     public enum TimeStatus {

@@ -296,6 +296,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         }
     }
 
+
     /**
      *
      * @param select the dayview state that will be changed

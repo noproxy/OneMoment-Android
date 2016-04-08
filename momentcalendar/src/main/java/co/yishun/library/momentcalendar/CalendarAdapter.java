@@ -24,6 +24,7 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
     private Context context;
     private MomentMonthView currentMonthView;
 
+
     public CalendarAdapter(Context context, MomentCalendar momentCalendar, MomentMonthView.MonthAdapter adapter) {
         this.context = context;
         this.momentCalendar = momentCalendar;
@@ -94,8 +95,8 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
         // ignored
     }
 
-
     public MomentMonthView getCurrentMonthView(){
         return currentMonthView;
     }
+
 }
