@@ -368,16 +368,55 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         }
     }
 
+    /**
+     * change the logic to implemente the sequence select
+     */
+    int clickNumber=1;
+    int srcDay,desDay;
     @Override
     public void onSelected(DayView dayView) {
-        Moment moment = (Moment) dayView.getTag();
-        if (moment != null) {
-            if (selectedMoments.contains(moment)) {
-                selectedMoments.remove(moment);
-            } else {
-                selectedMoments.add(moment);
-            }
-            updateSelectedText();
+
+        Moment moment = null;
+        LogUtil.d("ShareExportActivity", "ClickNumber=" + clickNumber);
+        switch (clickNumber) {
+            case 1:
+                clickNumber = 2;
+                srcDay = Integer.parseInt(dayView.getDay()) - 1;
+                LogUtil.d("ShareExportActivity", "srcDay=" + srcDay);
+                moment = (Moment) dayView.getTag();
+                if (moment != null) {
+                    if (selectedMoments.contains(moment)) {
+                        selectedMoments.remove(moment);
+                    } else {
+                        selectedMoments.add(moment);
+                    }
+                }
+                break;
+            case 2:
+
+                if (moment == (Moment) dayView.getTag()) {
+                    selectedMoments.remove(moment);
+                    updateSelectedText();
+                    break;
+                }
+                clickNumber = 3;
+                desDay = Integer.parseInt(dayView.getDay()) - 1;
+                LogUtil.d("ShareExportActivity", "desDay=" + desDay);
+                moment = (Moment) dayView.getTag();
+                if (moment != null) {
+                    if (selectedMoments.contains(moment)) {
+                        selectedMoments.remove(moment);
+                    } else {
+                        selectedMoments.add(moment);
+                    }
+                }
+                setSomeSelectClicked(true, srcDay, desDay);
+                break;
+            case 3:
+                clickNumber = 1;
+                setSomeSelectClicked(false, srcDay, desDay);
+                dayView.setSelected(false);
+                break;
         }
     }
 
