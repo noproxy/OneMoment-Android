@@ -45,6 +45,12 @@ public class MomentMonthView extends AdapterView<InternalMonthAdapter> {
         mWeekNum = mCalendar.getActualMaximum(Calendar.WEEK_OF_MONTH);
     }
 
+    public int getMonth(){
+        int month;
+        String monthString = mMonthTitle.substring(5,7);
+        return Integer.valueOf(monthString);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         //        int rw = MeasureSpec.getSize(widthMeasureSpec);

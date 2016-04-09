@@ -18,6 +18,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
+
 import android.view.View;
 import android.widget.ImageView;
 
@@ -241,8 +242,10 @@ public class DayView extends ImageView implements View.OnClickListener {
     }
 
     /*
-      change the sequence of mMomentSelectedListener and MultiSelcetion
-       */
+    change the sequence of mMomentSelectedListener and MultiSelcetion
+     */
+
+
     @Override
     public void onClick(View v) {
         if (mMultiSelection)

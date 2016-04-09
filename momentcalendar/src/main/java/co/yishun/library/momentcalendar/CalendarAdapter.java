@@ -59,6 +59,7 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
     public Object instantiateItem(ViewGroup parent, final int position) {
         int index = (((position - centerPagePosition + centerPageHolderIndex) % cacheSize) + cacheSize) % cacheSize;
         MomentMonthView currView = monthViews[index];
+
         parent.removeView(currView);
         parent.addView(currView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         currView.setCalendar(getCalendarAt(position));
@@ -94,6 +95,15 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
     public void destroyItem(ViewGroup container, int position, Object obj) {
         // ignored
     }
+
+
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        currentMonthView = (MomentMonthView) object;
+        super.setPrimaryItem(container, position, object);
+    }
+
 
     public MomentMonthView getCurrentMonthView(){
         return currentMonthView;
