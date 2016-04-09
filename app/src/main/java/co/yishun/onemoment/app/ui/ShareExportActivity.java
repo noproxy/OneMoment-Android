@@ -463,6 +463,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                         selectedMoments.add(moment);
                     }
                 }
+                updateSelectedText();
                 break;
             case 2:
                 MomentMonthView desMonthView = momentCalendar.getCurrentMonthView();
