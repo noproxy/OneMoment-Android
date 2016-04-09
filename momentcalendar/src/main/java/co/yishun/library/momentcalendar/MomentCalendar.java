@@ -115,4 +115,13 @@ public class MomentCalendar extends AnimationViewPager {
         return mAdapter.getCurrentMonthView();
     }
 
+    public MomentMonthView getChildAtMonth(int month){
+        for (int index=0;index<this.getChildCount();index++){
+            MomentMonthView monthView = (MomentMonthView) getChildAt(index);
+            if (month == monthView.getMonth())
+                return monthView;
+        }
+        return null;
+    }
+
 }

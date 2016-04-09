@@ -12,9 +12,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-
 import android.util.Log;
-
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -302,46 +300,95 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
     }
 
 
-    /**
-     *
-     * @param select the dayview state that will be changed
-     * @param begin  the begin dayview number
-     * @param end    the end dayview number
-     */
-    void setSomeSelectClicked(boolean select,int begin,int end){
-        if (begin>end){
-            int tem = end;
-            end = begin;
-            begin = tem;
-        }
-        MomentMonthView monthView = momentCalendar.getCurrentMonthView();
 
-        if(select == true){
-            for (int dayIndex = begin+1; dayIndex < end; dayIndex++) {
-                if (monthView.getChildAt(dayIndex) instanceof DayView) {
-                    DayView dayView = (DayView) monthView.getChildAt(dayIndex);
-                    selectedMoments.add((Moment) dayView.getTag());
-                    LogUtil.d("ShareExportActivity", "isEnabled=" + "monthIndex 0" + dayIndex + dayView.isEnabled());
-                    if (dayView.isEnabled())
-                        dayView.setSelected(true);
-                }
+    void setSomeSelectClicked(boolean select,int monthBegin,int dayBegin,int monthEnd,int dayEnd){
+        LogUtil.d("ShareExportActivity","select = " + select +"  monthBegin = "+ monthBegin + " dayBegin = " + dayBegin+" monthEnd " +monthEnd+" dayEnd"+dayEnd);
+        boolean isSameMonth = false;
+        if (monthBegin == monthEnd) isSameMonth = true;
+
+        if (isSameMonth) {
+            if (dayBegin > dayEnd){
+                int tem = dayEnd;
+                dayEnd = dayBegin;
+                dayBegin = tem;
+            }
+
+            if(select == true){
+                setSomeSameMonthDaySelected(dayBegin,dayEnd,monthBegin);
+            }
+
+            if (select == false){
+                setSomeSameMonthDayUnSelect(dayBegin,dayEnd,monthBegin);
             }
         }
 
-        if (select == false){
-            for (int dayIndex = begin; dayIndex <= end; dayIndex++){
-                if (monthView.getChildAt(dayIndex) instanceof DayView){
-                    DayView dayView = (DayView) monthView.getChildAt(dayIndex);
-                    dayView.setMultiSelection(false);
-                    if (dayView.isEnabled())
-                        dayView.setSelected(false);
-                    dayView.setMultiSelection(true);
-                }
+        if (!isSameMonth){
+            if (monthBegin > monthEnd){
+                int temMonth = monthBegin;
+                monthBegin = monthEnd;
+                monthEnd = temMonth;
+
+                int temDay = dayBegin;
+                dayBegin = dayEnd;
+                dayEnd = temDay;
             }
-            selectedMoments.clear();
+
+            if (select == true){
+                MomentMonthView monthView;
+                monthView = momentCalendar.getChildAtMonth(monthBegin);
+                setSomeSameMonthDaySelected(dayBegin,monthView.getChildCount()-1,monthBegin);
+                for (int monthIndex = monthBegin+1; monthIndex<monthEnd; monthIndex++){
+                    monthView = momentCalendar.getChildAtMonth(monthIndex);
+                    setSomeSameMonthDaySelected(0-1,monthView.getChildCount(),monthIndex);
+                }
+                setSomeSameMonthDaySelected(0,dayEnd-1,monthEnd);
+            }
+
+            if (select == false){
+                MomentMonthView monthView;
+                monthView =  momentCalendar.getChildAtMonth(monthBegin);
+                setSomeSameMonthDayUnSelect(dayBegin,monthView.getChildCount()-1,monthBegin);
+                for (int monthIndex = monthBegin +1; monthIndex<monthEnd; monthIndex++){
+                    monthView =  momentCalendar.getChildAtMonth(monthIndex);
+                    setSomeSameMonthDayUnSelect(0,monthView.getChildCount(),monthIndex);
+                }
+                setSomeSameMonthDayUnSelect(0,dayEnd,monthEnd);
+            }
+
         }
+
 
         updateSelectedText();
+    }
+
+
+    void setSomeSameMonthDaySelected(int begin,int end,int month){
+        MomentMonthView monthView = momentCalendar.getChildAtMonth(month);
+        for (int dayIndex = begin+1; dayIndex < end; dayIndex++) {
+            if (monthView.getChildAt(dayIndex) instanceof DayView) {
+                DayView dayView = (DayView) monthView.getChildAt(dayIndex);
+                LogUtil.d("ShareExportActivity", "isEnabled=" + "monthIndex 0" + dayIndex + dayView.isEnabled());
+                if (dayView.isEnabled()){
+                    selectedMoments.add((Moment) dayView.getTag());
+                    dayView.setSelected(true);
+                }
+
+            }
+        }
+    }
+
+    void setSomeSameMonthDayUnSelect(int begin,int end,int month){
+        MomentMonthView monthView = momentCalendar.getChildAtMonth(month);
+        for(int dayIndex = begin; dayIndex <= end; dayIndex++){
+            if (monthView.getChildAt(dayIndex) instanceof DayView){
+                DayView dayView = (DayView) monthView.getChildAt(dayIndex);
+                dayView.setMultiSelection(false);
+                if (dayView.isEnabled())
+                    dayView.setSelected(false);
+                dayView.setMultiSelection(true);
+            }
+        }
+        selectedMoments.clear();
     }
 
 
@@ -394,6 +441,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
      */
     int clickNumber=1;
     int srcDay,desDay;
+    int srcMonth,desMonth;
     @Override
     public void onSelected(DayView dayView) {
 
@@ -401,6 +449,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         LogUtil.d("ShareExportActivity", "ClickNumber=" + clickNumber);
         switch (clickNumber) {
             case 1:
+                MomentMonthView srcMonthView= momentCalendar.getCurrentMonthView();
+                srcMonth = srcMonthView.getMonth();
                 clickNumber = 2;
                 srcDay = Integer.parseInt(dayView.getDay()) - 1;
                 LogUtil.d("ShareExportActivity", "srcDay=" + srcDay);
@@ -414,7 +464,8 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 }
                 break;
             case 2:
-
+                MomentMonthView desMonthView = momentCalendar.getCurrentMonthView();
+                desMonth = desMonthView.getMonth();
                 if (moment == (Moment) dayView.getTag()) {
                     selectedMoments.remove(moment);
                     updateSelectedText();
@@ -431,11 +482,11 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                         selectedMoments.add(moment);
                     }
                 }
-                setSomeSelectClicked(true, srcDay, desDay);
+                setSomeSelectClicked(true,srcMonth,srcDay,desMonth,desDay);
                 break;
             case 3:
                 clickNumber = 1;
-                setSomeSelectClicked(false, srcDay, desDay);
+                setSomeSelectClicked(false,srcMonth,srcDay,desMonth,desDay);
                 dayView.setSelected(false);
                 break;
         }
@@ -632,4 +683,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         mIsPage = true;
         mPageName = "ShareExportActivity";
     }
+
+
+
 }
