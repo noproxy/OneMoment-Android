@@ -95,6 +95,13 @@ public class CalendarAdapter extends PagerAdapter implements ViewPager.OnPageCha
         // ignored
     }
 
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        currentMonthView = (MomentMonthView) object;
+        super.setPrimaryItem(container, position, object);
+    }
+
     public MomentMonthView getCurrentMonthView(){
         return currentMonthView;
     }

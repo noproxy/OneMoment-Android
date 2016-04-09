@@ -12,7 +12,9 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+
 import android.util.Log;
+
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -289,8 +291,10 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 for (int dayIndex = 0; dayIndex < monthView.getChildCount(); dayIndex++) {
                     if (monthView.getChildAt(dayIndex) instanceof DayView) {
                         DayView dayView = (DayView) monthView.getChildAt(dayIndex);
+
                         if (dayView.isEnabled())
                             dayView.setSelected(select);
+
                     }
                 }
             }
@@ -323,6 +327,21 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 }
             }
         }
+
+        if (select == false){
+            for (int dayIndex = begin; dayIndex <= end; dayIndex++){
+                if (monthView.getChildAt(dayIndex) instanceof DayView){
+                    DayView dayView = (DayView) monthView.getChildAt(dayIndex);
+                    dayView.setMultiSelection(false);
+                    if (dayView.isEnabled())
+                        dayView.setSelected(false);
+                    dayView.setMultiSelection(true);
+                }
+            }
+            selectedMoments.clear();
+        }
+
+        updateSelectedText();
     }
 
 
@@ -369,6 +388,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         }
     }
 
+
     /**
      * change the logic to implemente the sequence select
      */
@@ -378,12 +398,12 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
     public void onSelected(DayView dayView) {
 
         Moment moment = null;
-        Log.d("ShareExportActivity", "ClickNumber=" + clickNumber);
+        LogUtil.d("ShareExportActivity", "ClickNumber=" + clickNumber);
         switch (clickNumber) {
             case 1:
                 clickNumber = 2;
                 srcDay = Integer.parseInt(dayView.getDay()) - 1;
-                Log.d("ShareExportActivity", "srcDay=" + srcDay);
+                LogUtil.d("ShareExportActivity", "srcDay=" + srcDay);
                 moment = (Moment) dayView.getTag();
                 if (moment != null) {
                     if (selectedMoments.contains(moment)) {
@@ -402,7 +422,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 }
                 clickNumber = 3;
                 desDay = Integer.parseInt(dayView.getDay()) - 1;
-                Log.d("ShareExportActivity", "desDay=" + desDay);
+                LogUtil.d("ShareExportActivity", "desDay=" + desDay);
                 moment = (Moment) dayView.getTag();
                 if (moment != null) {
                     if (selectedMoments.contains(moment)) {
@@ -420,6 +440,11 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 break;
         }
     }
+
+
+
+
+
 
     void concatSelectedVideos() {
         if (canceled) return;

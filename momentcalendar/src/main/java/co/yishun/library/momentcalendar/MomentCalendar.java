@@ -91,6 +91,7 @@ public class MomentCalendar extends AnimationViewPager {
 
     public void setAdapter(MomentMonthView.MonthAdapter adapter) {
         mAdapter = new CalendarAdapter(getContext(), this, adapter);
+
     }
 
     /**
