@@ -12,6 +12,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -377,12 +378,12 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
     public void onSelected(DayView dayView) {
 
         Moment moment = null;
-        LogUtil.d("ShareExportActivity", "ClickNumber=" + clickNumber);
+        Log.d("ShareExportActivity", "ClickNumber=" + clickNumber);
         switch (clickNumber) {
             case 1:
                 clickNumber = 2;
                 srcDay = Integer.parseInt(dayView.getDay()) - 1;
-                LogUtil.d("ShareExportActivity", "srcDay=" + srcDay);
+                Log.d("ShareExportActivity", "srcDay=" + srcDay);
                 moment = (Moment) dayView.getTag();
                 if (moment != null) {
                     if (selectedMoments.contains(moment)) {
@@ -401,7 +402,7 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
                 }
                 clickNumber = 3;
                 desDay = Integer.parseInt(dayView.getDay()) - 1;
-                LogUtil.d("ShareExportActivity", "desDay=" + desDay);
+                Log.d("ShareExportActivity", "desDay=" + desDay);
                 moment = (Moment) dayView.getTag();
                 if (moment != null) {
                     if (selectedMoments.contains(moment)) {
