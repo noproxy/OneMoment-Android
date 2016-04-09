@@ -1,9 +1,9 @@
 package co.yishun.onemoment.app.api;
 
-import com.google.gson.annotations.SerializedName;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.google.gson.annotations.SerializedName;
 
 import co.yishun.onemoment.app.api.model.ApiModel;
 import co.yishun.onemoment.app.api.model.ApiMoment;

@@ -1,8 +1,8 @@
 package co.yishun.onemoment.app.api.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import android.support.annotation.StringDef;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Carlos on 2015/8/8.

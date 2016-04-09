@@ -1,11 +1,11 @@
 package co.yishun.onemoment.app.api.authentication;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import android.text.TextUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;

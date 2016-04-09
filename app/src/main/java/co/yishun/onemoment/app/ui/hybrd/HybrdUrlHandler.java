@@ -1,12 +1,12 @@
 package co.yishun.onemoment.app.ui.hybrd;
 
+import android.content.Context;
+import android.text.TextUtils;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import android.content.Context;
-import android.text.TextUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

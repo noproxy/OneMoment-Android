@@ -1,3 +1,4 @@
+
 package co.yishun.onemoment.app.ui;
 
 import android.content.ContentValues;
@@ -12,7 +13,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
+
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -687,3 +688,5 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
 
 
 }
+
+
