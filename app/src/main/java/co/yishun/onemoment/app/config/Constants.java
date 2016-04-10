@@ -6,7 +6,7 @@ package co.yishun.onemoment.app.config;
 public class Constants {
     public static final boolean LOG_ENABLE = false;
     public static final boolean SANDBOX = false;
-    public static final boolean FORCE_SHOW_GUIDE = true;
+    public static final boolean FORCE_SHOW_GUIDE = false;
     public static final String API_KEY = "";
     public static final String API_V3_URL;
     public static final String API_V4_URL;
