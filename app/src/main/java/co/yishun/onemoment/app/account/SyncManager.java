@@ -20,6 +20,7 @@ public class SyncManager {
 
     public static final String SYNC_BROADCAST_ACTION_LOCAL_UPDATE = "co.yishun.onemoment.app.sync.action.localupdate";
     public static final String SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP = "extra_update_timestamp";
+    public static final String SYNC_BROADCAST_ACTION_UPDATA_FAIL = "co.yishun.onemoment.app.sync.action.updatafail";
 
     public static final String SYNC_BROADCAST_ACTION_START = "co.yishun.onemoment.app.sync.action.start";
     public static final String SYNC_BROADCAST_EXTRA_START_TASK_NUM = "extra_start_task_num";

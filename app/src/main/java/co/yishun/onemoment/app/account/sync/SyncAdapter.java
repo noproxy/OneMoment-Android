@@ -77,7 +77,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void onSyncStart() {
         LogUtil.i(TAG, "sync start");
-        Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_START);
+        Intent intent = new Intent();
         getContext().sendBroadcast(intent);
     }
 }
