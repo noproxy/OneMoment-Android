@@ -123,8 +123,11 @@ public class WorldVideosController extends RecyclerController<Integer, SuperRecy
         if (list == null || !list.isSuccess()) {
             onLoadError();
             getRecyclerView().hideMoreProgress();
-        } else {
+        } else if (list.size() > 0) {
             ((WorldVideoAdapter) getAdapter()).addItems(list, getOffset());
+        } else {
+            getRecyclerView().removeMoreListener();
+            getRecyclerView().hideMoreProgress();
         }
         getRecyclerView().getSwipeToRefresh().setRefreshing(false);
     }
