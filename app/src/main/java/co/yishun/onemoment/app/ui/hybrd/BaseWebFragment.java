@@ -194,6 +194,9 @@ public abstract class BaseWebFragment extends BaseFragment {
     }
 
     private void webLog(List<String> args) {
+        if (Constants.WEB_LOG_BLOCK) {
+            return;
+        }
         LogUtil.i(TAG, "js log : " + args.get(0));
     }
 
