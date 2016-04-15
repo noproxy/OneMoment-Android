@@ -24,7 +24,7 @@ import co.yishun.onemoment.app.ui.SettingsActivity_;
 import co.yishun.onemoment.app.ui.ShareActivity;
 import co.yishun.onemoment.app.ui.ShootActivity_;
 import co.yishun.onemoment.app.ui.UserInfoActivity_;
-import co.yishun.onemoment.app.ui.WorldVideosActivity_;
+import co.yishun.onemoment.app.ui.VideosGridActivity_;
 
 /**
  * Created by Jinge on 2016/1/23.
@@ -132,7 +132,7 @@ public abstract class HybrdUrlHandler {
             world.videosNum = Integer.parseInt(args.get(2));
             world._id = args.get(3);
             world.thumbnail = args.get(4);
-            WorldVideosActivity_.intent(context).world(world).forWorld(true).start();
+            VideosGridActivity_.intent(context).world(world).forWorld(true).start();
         } else if (TextUtils.equals(des, "badge")) {
             BadgeActivity_.intent(context).badgeDetail(args.get(1)).start();
         } else if (TextUtils.equals(des, "world")

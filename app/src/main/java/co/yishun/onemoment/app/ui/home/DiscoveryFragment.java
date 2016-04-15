@@ -23,7 +23,7 @@ import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.api.modelv4.World;
 import co.yishun.onemoment.app.config.Constants;
-import co.yishun.onemoment.app.ui.WorldVideosActivity_;
+import co.yishun.onemoment.app.ui.VideosGridActivity_;
 import co.yishun.onemoment.app.ui.adapter.AbstractRecyclerViewAdapter;
 import co.yishun.onemoment.app.ui.adapter.BannerHeaderProvider;
 import co.yishun.onemoment.app.ui.common.ToolbarFragment;
@@ -106,7 +106,7 @@ public class DiscoveryFragment extends ToolbarFragment implements AbstractRecycl
         view.getLocationOnScreen(location);
         Rect rect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
         LogUtil.d(TAG, rect.toString());
-        WorldVideosActivity_.intent(this).world(item).forWorld(false)
+        VideosGridActivity_.intent(this).world(item).forWorld(false)
                 .imageRect(rect).today(true).imageCorner(12).flags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 .start();
     }
