@@ -56,7 +56,7 @@ public class VideoTaskManager {
 
     public void executeTask(LoaderTask task, VideoProvider... params) {
         asyncTaskList.add(task);
-        LogUtil.d(TAG, asyncTaskList.size() + "");
+        LogUtil.d(TAG, "Task list: " + asyncTaskList.size() + "");
 
         if (poolQueue.size() >= 96) {
             LogUtil.d(TAG, "pool size over");
