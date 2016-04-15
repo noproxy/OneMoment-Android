@@ -38,12 +38,14 @@ import co.yishun.onemoment.app.data.FileUtil;
 @EFragment(R.layout.fragment_play_world)
 public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.VideoPlayViewListener,
         VideoTask.OnVideoListener {
+
     private static final String TAG = "PlayWorldFragment";
     private final Object OffsetLock = new Object();
     @FragmentArg
     WorldProvider world;
+    @PlayType
     @FragmentArg
-    boolean forWorld;
+    int playType;
     @ViewById
     TextView voteCountTextView;
     @ViewById
@@ -53,7 +55,6 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
     //    private int order;
     private Integer offset = 0;
     private boolean mReady = false;
-
     private boolean moreAsking = true;
     private int playViewRequestIndex = 0;
     private boolean avatarAdded = false;
@@ -63,7 +64,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
         synchronized (OffsetLock) {
             LogUtil.d(TAG, "offset lock");
             // not background to ensure offset access only by one thread
-            WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
+            WorldVideoListWithErrorV4<WorldVideo> videos = playType == PlayType.TYPE_WORLD ?
                     mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, offset, 6) :
                     mApiV4.getTodayVideos(world.getName(), offset, 6);
             if (videos.size() == 0) {
@@ -112,7 +113,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
         LogUtil.d(TAG, "submit a video task: " + video);
         new VideoTask(mContext, video, VideoTask.TYPE_VIDEO)
                 .setVideoListener(this).start();
-        if (!forWorld || !avatarAdded) {
+        if (playType != PlayType.TYPE_WORLD || !avatarAdded) {
             videoPlayView.addAvatarUrl(video.getAvatarUrl());
             avatarAdded = true;
         }
@@ -129,19 +130,6 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
         playViewRequestIndex = -1;
     }
 
-//    @Click(R.id.voteCountTextView)
-//    @Background void voteClick() {
-//        voteIndex = videoPlayView.getCurrentIndex();
-//        videoProviders.get(voteIndex).liked = !videoProviders.get(voteIndex).liked;
-//        videoProviders.get(voteIndex).likeNum += videoProviders.get(voteIndex).liked ? 1 : -1;
-//        refreshUserInfo(videoPlayView.getCurrentIndex());
-//        if (videoProviders.get(voteIndex).liked) {
-//            mApiV4.likeVideo(videoProviders.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
-//        } else {
-//            mApiV4.unlikeVideo(videoProviders.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
-//        }
-//    }
-
     @UiThread
     void refreshUserInfo(int index) {
 //        if (videoProviders.get(index).liked) {
@@ -155,6 +143,18 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
         usernameTextView.setText(videoProviders.get(index).getNickname());
     }
 
+//    @Click(R.id.voteCountTextView)
+//    @Background void voteClick() {
+//        voteIndex = videoPlayView.getCurrentIndex();
+//        videoProviders.get(voteIndex).liked = !videoProviders.get(voteIndex).liked;
+//        videoProviders.get(voteIndex).likeNum += videoProviders.get(voteIndex).liked ? 1 : -1;
+//        refreshUserInfo(videoPlayView.getCurrentIndex());
+//        if (videoProviders.get(voteIndex).liked) {
+//            mApiV4.likeVideo(videoProviders.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
+//        } else {
+//            mApiV4.unlikeVideo(videoProviders.get(voteIndex)._id, AccountManager.getUserInfo(mContext)._id);
+//        }
+//    }
 
     @Override
     public void setPageInfo() {
@@ -187,5 +187,6 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
             return true;
         }
     }
+
 
 }

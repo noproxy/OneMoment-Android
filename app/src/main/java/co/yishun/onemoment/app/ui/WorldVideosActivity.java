@@ -61,6 +61,10 @@ import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 import co.yishun.onemoment.app.ui.view.GridSpacingItemDecoration;
 import co.yishun.onemoment.app.ui.view.RadioCornerImageView;
 
+import static co.yishun.onemoment.app.ui.play.PlayType.TYPE_SINGLE;
+import static co.yishun.onemoment.app.ui.play.PlayType.TYPE_TODAY;
+import static co.yishun.onemoment.app.ui.play.PlayType.TYPE_WORLD;
+
 /**
  * Created by Jinge on 2016/1/25.
  * TODO fix the status bar and animation
@@ -306,12 +310,14 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 
     @Click(R.id.videoImageView)
     void videoImageClick(View v) {
-        PlayActivity_.intent(this).world(world).forWorld(forWorld).today(today).type(PlayActivity.TYPE_WORLD).start();
+        int type = TYPE_WORLD;
+        if (today) type = TYPE_TODAY;
+        PlayActivity_.intent(this).world(world).playType(type).start();
     }
 
     @Override
     public void onClick(View view, WorldVideo item) {
-        PlayActivity_.intent(this).world(world).video(item).today(today).type(PlayActivity.TYPE_VIDEO).start();
+        PlayActivity_.intent(this).world(world).video(item).playType(TYPE_SINGLE).start();
     }
 
     @Override
