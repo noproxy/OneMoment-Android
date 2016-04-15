@@ -1,8 +1,8 @@
 package co.yishun.onemoment.app.api.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import android.support.annotation.StringDef;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -49,6 +49,17 @@ public class Video extends ApiModel implements VideoProvider {
     @Override
     public String getNickname() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Video{" +
+                "fileName='" + fileName + '\'' +
+                ", accountId='" + accountId + '\'' +
+                ", type='" + type + '\'' +
+                ", tags=" + tags +
+                ", domain=" + domain +
+                '}';
     }
 
     @StringDef({"public", "private"})

@@ -49,4 +49,21 @@ public class WorldVideo extends ApiModel implements VideoProvider {
     public String getKey() {
         return filename;
     }
+
+    @Override
+    public String toString() {
+        return "WorldVideo{" +
+                "_id='" + _id + '\'' +
+                ", accountId='" + accountId + '\'' +
+                ", createTime=" + createTime +
+                ", worldId='" + worldId + '\'' +
+                ", order=" + order +
+                ", available=" + available +
+                ", tags=" + tags +
+                ", downloadUrl='" + downloadUrl + '\'' +
+                ", filename='" + filename + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", nickname='" + nickname + '\'' +
+                '}';
+    }
 }
