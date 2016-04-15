@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
+import android.util.Log;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -57,8 +58,21 @@ public class SyncManager {
         b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         b.putBoolean(SYNC_IGNORE_NETWORK, ignoreNetwork);
+//        cancelPendingSync(account,Contract.AUTHORITY);
         ContentResolver.requestSync(account, Contract.AUTHORITY, b);
     }
+
+//    /**
+//     * call the method to ensure the SyncAdapter's onPerform is called
+//     * @param account
+//     * @param authority
+//     */
+//    private static void cancelPendingSync(Account account,String authority){
+//        if (ContentResolver.isSyncPending(account,Contract.AUTHORITY) || ContentResolver.isSyncActive(account,Contract.AUTHORITY)){
+//            Log.d(TAG,"SyncPending, canceling");
+//            ContentResolver.cancelSync(account,authority);
+//        }
+//    }
 
     public static void notifySyncSettingsChange(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);

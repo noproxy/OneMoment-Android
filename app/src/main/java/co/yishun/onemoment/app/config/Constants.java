@@ -4,7 +4,7 @@ package co.yishun.onemoment.app.config;
  * Constants configures. <p> Created by Carlos on 2015/8/5.
  */
 public class Constants {
-    public static final boolean LOG_ENABLE = false;
+    public static final boolean LOG_ENABLE = true;
     public static final boolean SANDBOX = false;
     public static final boolean FORCE_SHOW_GUIDE = false;
     public static final String API_KEY = "";
