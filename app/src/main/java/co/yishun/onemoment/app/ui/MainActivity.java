@@ -409,14 +409,6 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
         return mDrawerToggle.onOptionsItemSelected(item);
     }
 
-    public void onEspressoBtnClick(View view) {
-        startActivity(new Intent(this, EspressoTestActivity.class));
-    }
-
-    public void onUIAutomatorBtnClick(View view) {
-        startActivity(new Intent(this, UIAutomatorTestActivity.class));
-    }
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
