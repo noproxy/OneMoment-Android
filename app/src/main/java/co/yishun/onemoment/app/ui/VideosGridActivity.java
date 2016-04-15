@@ -69,9 +69,9 @@ import static co.yishun.onemoment.app.ui.play.PlayType.TYPE_WORLD;
  * Created by Jinge on 2016/1/25.
  * TODO fix the status bar and animation
  */
-@EActivity(R.layout.activity_world_videos)
-public class WorldVideosActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldVideo> {
-    private static final String TAG = "WorldVideosActivity";
+@EActivity(R.layout.activity_videos_grid)
+public class VideosGridActivity extends BaseActivity implements AbstractRecyclerViewAdapter.OnItemClickListener<WorldVideo> {
+    private static final String TAG = "VideosGridActivity";
     private static boolean mWorldUpdated = true;
     @Extra
     WorldProvider world;
@@ -124,7 +124,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     void setupTransition() {
         ViewGroup sceneRoot = transitionFrameLayout;
         LogUtil.d(TAG, imageRect.toString());
-        Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_world_videos_end, this);
+        Scene scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_videos_grid_end, this);
 
         TransitionSet set = (TransitionSet) TransitionInflater.from(this)
                 .inflateTransition(R.transition.activity_world_videos_transition);
@@ -239,7 +239,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (forWorld) {
-            getMenuInflater().inflate(R.menu.menu_activity_world_videos, menu);
+            getMenuInflater().inflate(R.menu.menu_activity_videos_grid, menu);
             return true;
         }
         return super.onCreateOptionsMenu(menu);
@@ -322,7 +322,7 @@ public class WorldVideosActivity extends BaseActivity implements AbstractRecycle
 
     @Override
     public void setPageInfo() {
-        mPageName = "WorldVideosActivity";
+        mPageName = "VideosGridActivity";
     }
 
     void changeTitleColor(float fraction) {
