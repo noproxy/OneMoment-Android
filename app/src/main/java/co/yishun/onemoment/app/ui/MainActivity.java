@@ -58,8 +58,11 @@ import co.yishun.onemoment.app.data.realm.RealmHelper;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.home.DiaryFragment;
 import co.yishun.onemoment.app.ui.home.DiaryFragment_;
+import co.yishun.onemoment.app.ui.home.DiscoveryFragment;
 import co.yishun.onemoment.app.ui.home.DiscoveryFragment_;
+import co.yishun.onemoment.app.ui.home.MeFragment;
 import co.yishun.onemoment.app.ui.home.MeFragment_;
+import co.yishun.onemoment.app.ui.home.WorldFragment;
 import co.yishun.onemoment.app.ui.home.WorldFragment_;
 
 import static co.yishun.onemoment.app.ui.MainActivity.Navigation.Diary;
@@ -67,6 +70,14 @@ import static co.yishun.onemoment.app.ui.MainActivity.Navigation.World;
 import static co.yishun.onemoment.app.ui.MainActivity.Navigation.from;
 import static org.android.agoo.client.BaseRegistrar.getRegistrationId;
 
+/**
+ * Main Activity for the users logged on. This activity implements navigation drawer navigating
+ * with fragments, including:
+ * <li>{@link DiaryFragment}</li>
+ * <li>{@link MeFragment}</li>
+ * <li>{@link WorldFragment}</li>
+ * <li>{@link DiscoveryFragment}</li>
+ */
 @EActivity
 public class MainActivity extends BaseActivity implements AccountManager.OnUserInfoChangeListener {
     public static final int PERMISSIONS_REQUEST_RECORD_MOMENT = 4;
