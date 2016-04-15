@@ -61,6 +61,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
     @Background
     void getData() {
         synchronized (OffsetLock) {
+            LogUtil.d(TAG, "offset lock");
             // not background to ensure offset access only by one thread
             WorldVideoListWithErrorV4<WorldVideo> videos = forWorld ?
                     mApiV4.getWorldVideos(world.getId(), AccountManager.getUserInfo(mContext)._id, offset, 6) :
@@ -71,6 +72,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
                 }
                 return;//TODO will OOM if this world contains so many many videos
             }
+            LogUtil.d(TAG, "offset add: " + videos.size());
             offset += videos.size();
 
             for (VideoProvider oneVideo : videos) {
@@ -107,6 +109,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
     @UiThread
     void addVideo(VideoProvider video) {
         videoProviders.add(video);
+        LogUtil.d(TAG, "submit a video task: " + video);
         new VideoTask(mContext, video, VideoTask.TYPE_VIDEO)
                 .setVideoListener(this).start();
         if (!forWorld || !avatarAdded) {
@@ -116,6 +119,7 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
     }
 
     void cacheVideoToPlayView(VideoProvider video, File videoFile) {
+        LogUtil.d(TAG, "cacheVideoToPlayView: " + video + ", " + videoFile);
         List<VideoTag> tags = new LinkedList<>();
         for (int i = 0; i < video.getTags().size(); i++) {
             tags.add(new BaseVideoTag(video.getTags().get(i).name, video.getTags().get(i).x, video.getTags().get(i).y));
