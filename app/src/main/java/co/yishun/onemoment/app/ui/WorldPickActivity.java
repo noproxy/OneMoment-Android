@@ -16,10 +16,10 @@ import co.yishun.onemoment.app.ui.hybrd.BaseWebActivity;
 import co.yishun.onemoment.app.ui.hybrd.BaseWebFragment;
 
 /**
- * Created by Jinge on 2016/1/22.
+ * Activity to list all worlds of the user, and pick a world for {@link TagCreateActivity}.
  */
 @EActivity(R.layout.activity_tool_fragment)
-public class PersonalWorldActivity extends BaseWebActivity {
+public class WorldPickActivity extends BaseWebActivity {
 
     public static final String KEY_ID = "world_id";
     public static final String KEY_NAME = "world_name";
@@ -57,6 +57,6 @@ public class PersonalWorldActivity extends BaseWebActivity {
 
     @Override
     public void setPageInfo() {
-        mPageName = "PersonalWorldActivity";
+        mPageName = "WorldPickActivity";
     }
 }

@@ -40,8 +40,8 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.data.compat.MomentDatabaseHelper;
 import co.yishun.onemoment.app.data.model.Moment;
-import co.yishun.onemoment.app.ui.PersonalWorldActivity;
 import co.yishun.onemoment.app.ui.SplashActivity;
+import co.yishun.onemoment.app.ui.WorldPickActivity;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.common.BaseFragment;
 import co.yishun.onemoment.app.util.GsonFactory;
@@ -221,10 +221,10 @@ public abstract class BaseWebFragment extends BaseFragment {
         String type = args.get(0);
         if (TextUtils.equals(type, "preview")) {
             Intent intent = new Intent();
-            intent.putExtra(PersonalWorldActivity.KEY_NAME, args.get(1));
-            intent.putExtra(PersonalWorldActivity.KEY_ID, args.get(2));
+            intent.putExtra(WorldPickActivity.KEY_NAME, args.get(1));
+            intent.putExtra(WorldPickActivity.KEY_ID, args.get(2));
             if (mActivity != null)
-                mActivity.setResult(PersonalWorldActivity.RESULT_OK, intent);
+                mActivity.setResult(WorldPickActivity.RESULT_OK, intent);
         } else {
             LogUtil.e(TAG, "unhandled finish type");
         }

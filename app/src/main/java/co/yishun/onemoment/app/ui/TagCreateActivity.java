@@ -291,7 +291,7 @@ public class TagCreateActivity extends BaseActivity
 
     @Click(R.id.worldTextView)
     void selectWorld() {
-        PersonalWorldActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
+        WorldPickActivity_.intent(this).startForResult(REQUEST_SELECT_WORLD);
     }
 
     @Click(R.id.todayTextView)
@@ -375,8 +375,8 @@ public class TagCreateActivity extends BaseActivity
     void onSelectWorld(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             forWorld = true;
-            world.setId(data.getStringExtra(PersonalWorldActivity.KEY_ID));
-            world.setName(data.getStringExtra(PersonalWorldActivity.KEY_NAME));
+            world.setId(data.getStringExtra(WorldPickActivity.KEY_ID));
+            world.setName(data.getStringExtra(WorldPickActivity.KEY_NAME));
             videoTypeView.setWorldCheck(true, world.getName());
         }
         nextBtn.setEnabled(forDiary || forWorld || forToday);
