@@ -63,4 +63,13 @@ public class NetworkVideo implements VideoResource {
     public List<VideoTag> getVideoTags() {
         return mTags;
     }
+
+    @Override
+    public String toString() {
+        return "NetworkVideo{" +
+                "mUrl='" + mUrl + '\'' +
+                ", mPath='" + mPath + '\'' +
+                ", mTags=" + mTags +
+                '}';
+    }
 }
