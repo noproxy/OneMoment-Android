@@ -41,6 +41,7 @@ import co.yishun.onemoment.app.api.modelv4.WorldVideo;
 import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
+import co.yishun.onemoment.app.ui.play.PlayType;
 import co.yishun.onemoment.app.ui.play.PlayWorldFragment;
 import co.yishun.onemoment.app.ui.play.PlayWorldFragment_;
 
@@ -49,20 +50,16 @@ import co.yishun.onemoment.app.ui.play.PlayWorldFragment_;
  */
 @EActivity(R.layout.activity_play)
 public class PlayActivity extends BaseActivity {
-    public static final int TYPE_VIDEO = 1;
-    public static final int TYPE_WORLD = 2;
     private static final String TAG = "PlayActivity";
 
-    @Extra
-    int type;
     @Extra
     VideoProvider video;
     @Extra
     WorldProvider world;
+
     @Extra
-    boolean forWorld;
-    @Extra
-    boolean today = false;
+    @PlayType
+    int playType;
 
     @ViewById
     Toolbar toolbar;
@@ -79,18 +76,21 @@ public class PlayActivity extends BaseActivity {
         fragmentManager = getSupportFragmentManager();
         setupToolbar(this, toolbar);
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        if (!forWorld && !TextUtils.equals(today, world.getName()))
+        if (playType != PlayType.TYPE_TODAY && !TextUtils.equals(today, world.getName()))
             findViewById(R.id.worldAdd).setVisibility(View.GONE);
 
-        switch (type) {
-            case TYPE_VIDEO:
-                PlayTagVideoFragment playTagVideoFragment = PlayTagVideoFragment_.builder().video(video).build();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, playTagVideoFragment).commit();
-                break;
-            case TYPE_WORLD:
-                PlayWorldFragment playWorldFragment = PlayWorldFragment_.builder().world(world).forWorld(forWorld).build();
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, playWorldFragment).commit();
-                break;
+        if (playType == PlayType.TYPE_SINGLE) {
+            PlayTagVideoFragment playTagVideoFragment = PlayTagVideoFragment_.builder().video(video)
+                    .build();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, playTagVideoFragment)
+                    .commit();
+
+        } else {
+            PlayWorldFragment playWorldFragment = PlayWorldFragment_.builder().
+                    world(world).playType(playType).build();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, playWorldFragment)
+                    .commit();
+
         }
     }
 
@@ -107,25 +107,30 @@ public class PlayActivity extends BaseActivity {
         ab.setTitle(world.getName());
         String num = String.valueOf(world.getVideosNum());
         SpannableString ss = new SpannableString(String.format(getString(R.string.fragment_world_suffix_people_count), world.getVideosNum()));
-        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0,
+                num.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setSubtitle(ss);
         LogUtil.i("setupToolbar", "set home as up true");
         return ab;
     }
 
     @Click(R.id.worldAdd)
-    void addVideo(View view) {
+    void shootForWorld(View view) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         ShootActivity_.intent(this).transitionX(location[0] + view.getWidth() / 2)
-                .transitionY(location[1] + view.getHeight() / 2).forWorld(forWorld).forToday(!forWorld).world(world).start();
+                .transitionY(location[1] + view.getHeight() / 2).
+                forWorld(playType == PlayType.TYPE_WORLD).
+                forToday(playType != PlayType.TYPE_WORLD).
+                world(world).start();
     }
 
     @Click(R.id.worldShare)
     @Background
     void shareWorld(View view) {
         APIV4 apiv4 = OneMomentV4.createAdapter().create(APIV4.class);
-        ShareInfo shareInfo = forWorld ? apiv4.shareWorld(world.getName(), AccountManager.getUserInfo(this)._id) :
+        ShareInfo shareInfo = playType == PlayType.TYPE_WORLD ?
+                apiv4.shareWorld(world.getName(), AccountManager.getUserInfo(this)._id) :
                 apiv4.shareToday(world.getName(), AccountManager.getUserInfo(this)._id);
         share(shareInfo);
     }
@@ -151,8 +156,8 @@ public class PlayActivity extends BaseActivity {
                             .positiveText(R
                                     .string.activity_play_world_dialog_delete_negative).onNegative((dialog, which) -> dialog.dismiss())
                             .onPositive((dialog1, which1) -> {
-                        deleteWorldVideo(worldVideo);
-                    }).show();
+                                deleteWorldVideo(worldVideo);
+                            }).show();
                 }
                 return true;
             case R.id.activity_play_today_action_delete:
@@ -175,12 +180,14 @@ public class PlayActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (PlayActivity.TYPE_VIDEO == type && !today) {
+        if (playType == PlayType.TYPE_WORLD) {
             getMenuInflater().inflate(R.menu.menu_activity_play_world, menu);
             return true;
         }
 
-        if (today && video instanceof WorldVideo && ((WorldVideo) video).accountId.equals(AccountManager.getAccountId(this))) {
+        if (playType == PlayType.TYPE_TODAY
+                && video instanceof WorldVideo
+                && ((WorldVideo) video).accountId.equals(AccountManager.getAccountId(this))) {
             getMenuInflater().inflate(R.menu.menu_activity_play_today, menu);
             return true;
         }
