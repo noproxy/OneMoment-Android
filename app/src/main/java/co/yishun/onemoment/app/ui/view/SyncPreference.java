@@ -32,6 +32,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     private Paint mPaint;
     private Canvas mCanvas;
     private Bitmap mBitmap;
+    private BitmapDrawable mBitmapDrawable;
     SyncBroadcastReceiver mBroadcastReceiver;
 
 
@@ -60,11 +61,11 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     public void syncBackground(int allSyncTaskNum,int finishedSyncTaskNum){
         int oneTaskWidth = mlayoutWidth/allSyncTaskNum;
         int finishedTasksWidth = oneTaskWidth*finishedSyncTaskNum;
-
+        LogUtil.d("SyncPre","finishedTsk="+finishedSyncTaskNum);
 
         Rect rect = new Rect(finishedTasksWidth,0,finishedTasksWidth+oneTaskWidth,mlayoutHeight);
         mCanvas.drawRect(rect, mPaint);
-
+        mBitmapDrawable.draw(mCanvas);
 
         mLayout.invalidate();
     }
@@ -73,17 +74,21 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
         mlayoutWidth = mLayout.getWidth();
         mlayoutHeight = mLayout.getHeight();
         mPaint = new Paint();
+        mBitmap = Bitmap.createBitmap(mlayoutWidth, mlayoutHeight, Bitmap.Config.RGB_565);
+        mCanvas = new Canvas(mBitmap);
+        mBitmapDrawable = new BitmapDrawable(null,mBitmap);
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(0);
+        mPaint.setColor(getContext().getResources().getColor(R.color.colorWhite));
+        mCanvas.drawRect(0, 0, mlayoutWidth, mlayoutHeight, mPaint);
+
         mPaint.setColor(getContext().getResources().getColor(R.color.bgSelectedColor));
 
-        mBitmap = Bitmap.createBitmap(mlayoutWidth,mlayoutHeight, Bitmap.Config.RGB_565);
-        mCanvas = new Canvas(mBitmap);
-        BitmapDrawable bitmapDrawable = new BitmapDrawable(null,mBitmap);
 
+        mBitmapDrawable.draw(mCanvas);
 //        mLayout.setBackgroundColor(getContext().getResources().getColor(R.color.bgSelectedColor));
-        mLayout.setBackground(bitmapDrawable);
+        mLayout.setBackground(mBitmapDrawable);
     }
 
     private void endSyncBackground(){
@@ -139,7 +144,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
                     int allTask = bundle.getInt("allTask");
                     int finishedTask = bundle.getInt("finishedTask");
                     LogUtil.d("SyncPreference","allTask="+allTask+"  finishedTask="+finishedTask);
-                    syncBackground(allTask, finishedTask);
+                    syncBackground(allTask, finishedTask-1);
                     break;
                 case SyncManager.SYNC_BROADCAST_ACTION_UPDATA_FAIL:
                     LogUtil.d("SyncPreference","ACTION_FAIL");
