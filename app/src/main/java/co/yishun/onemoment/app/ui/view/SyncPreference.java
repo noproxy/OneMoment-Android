@@ -23,7 +23,7 @@ import co.yishun.onemoment.app.account.SyncManager;
  * Created by zuliangwang on 16/4/13.
  */
 public class SyncPreference extends com.jenzz.materialpreference.Preference {
-    private ViewGroup mLayout;
+    private View mLayout;
     private int mlayoutWidth;
     private int mlayoutHeight;
     private Paint mPaint;
@@ -70,6 +70,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(0);
         mPaint.setColor(getContext().getResources().getColor(R.color.bgSelectedColor));
+//        mLayout.setBackgroundColor(getContext().getResources().getColor(R.color.bgSelectedColor));
     }
 
     private void endSyncBackground(){
@@ -78,10 +79,15 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
 
     @Override
     protected View onCreateView(ViewGroup parent) {
-        LogUtil.d("SyncPreference","onCreateView");
+        LogUtil.d("SyncPreference", "onCreateView");
         registerBroadcastReceiver();
-        mLayout = parent;
         return super.onCreateView(parent);
+    }
+
+    @Override
+    protected void onBindView(View view) {
+        super.onBindView(view);
+        mLayout = view;
     }
 
     private void registerBroadcastReceiver(){
@@ -105,6 +111,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            LogUtil.d("SyncPreference","onReceive");
             String action = intent.getAction();
             switch (action){
                 case SyncManager.SYNC_BROADCAST_ACTION_START:
@@ -116,6 +123,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
                     Bundle bundle = intent.getExtras();
                     int allTask = bundle.getInt("allTask");
                     int finishedTask = bundle.getInt("finishedTask");
+                    LogUtil.d("SyncPreference","allTask="+allTask+"  finishedTask="+finishedTask);
                     syncBackground(allTask,finishedTask);
                     break;
                 case SyncManager.SYNC_BROADCAST_ACTION_UPDATA_FAIL:

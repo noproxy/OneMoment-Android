@@ -217,7 +217,7 @@ public class MomentSyncImpl extends MomentSync {
         allTask =  toDelete.size() + toFix.size() + toUpload.size();
         failTask = 0;
         successTask = 0;
-
+        LogUtil.d(TAG,"toUpload= "+toUpload.size()+" toDelete"+toDelete.size()+" toFix"+toFix.size());
 
         for (Moment moment : toUpload) {
             executor.submit(new MomentUploadTask(moment, this::onFail, this::onSuccess));
@@ -242,11 +242,13 @@ public class MomentSyncImpl extends MomentSync {
 
     private void onFail(Moment moment) {
         failTask++;
+        LogUtil.d(TAG,"onFail");
         onSyncMomentFail(moment);
     }
 
     private void onSuccess(Moment moment) {
         successTask++;
+        LogUtil.d(TAG,"onSuccess");
         onSyncMomentUpdate(moment);
     }
 
