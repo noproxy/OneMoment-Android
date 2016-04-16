@@ -4,14 +4,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.jenzz.materialpreference.Preference;
 
@@ -27,6 +30,8 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     private int mlayoutWidth;
     private int mlayoutHeight;
     private Paint mPaint;
+    private Canvas mCanvas;
+    private Bitmap mBitmap;
     SyncBroadcastReceiver mBroadcastReceiver;
 
 
@@ -55,11 +60,12 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     public void syncBackground(int allSyncTaskNum,int finishedSyncTaskNum){
         int oneTaskWidth = mlayoutWidth/allSyncTaskNum;
         int finishedTasksWidth = oneTaskWidth*finishedSyncTaskNum;
-        Drawable background = mLayout.getBackground();
-        Canvas canvas = new Canvas();
+
+
         Rect rect = new Rect(finishedTasksWidth,0,finishedTasksWidth+oneTaskWidth,mlayoutHeight);
-        canvas.drawRect(rect, mPaint);
-        background.draw(canvas);
+        mCanvas.drawRect(rect, mPaint);
+
+
         mLayout.invalidate();
     }
 
@@ -67,10 +73,17 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
         mlayoutWidth = mLayout.getWidth();
         mlayoutHeight = mLayout.getHeight();
         mPaint = new Paint();
+
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(0);
         mPaint.setColor(getContext().getResources().getColor(R.color.bgSelectedColor));
+
+        mBitmap = Bitmap.createBitmap(mlayoutWidth,mlayoutHeight, Bitmap.Config.RGB_565);
+        mCanvas = new Canvas(mBitmap);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(null,mBitmap);
+
 //        mLayout.setBackgroundColor(getContext().getResources().getColor(R.color.bgSelectedColor));
+        mLayout.setBackground(bitmapDrawable);
     }
 
     private void endSyncBackground(){
@@ -79,6 +92,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
 
     @Override
     protected View onCreateView(ViewGroup parent) {
+
         LogUtil.d("SyncPreference", "onCreateView");
         registerBroadcastReceiver();
         return super.onCreateView(parent);
@@ -88,6 +102,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     protected void onBindView(View view) {
         super.onBindView(view);
         mLayout = view;
+
     }
 
     private void registerBroadcastReceiver(){
@@ -124,7 +139,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
                     int allTask = bundle.getInt("allTask");
                     int finishedTask = bundle.getInt("finishedTask");
                     LogUtil.d("SyncPreference","allTask="+allTask+"  finishedTask="+finishedTask);
-                    syncBackground(allTask,finishedTask);
+                    syncBackground(allTask, finishedTask);
                     break;
                 case SyncManager.SYNC_BROADCAST_ACTION_UPDATA_FAIL:
                     LogUtil.d("SyncPreference","ACTION_FAIL");
