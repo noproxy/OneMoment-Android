@@ -92,7 +92,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     }
 
     private void endSyncBackground(){
-
+         getContext().unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        mLayout = view;
+        mView = view;
         setSummary("sync finished");
 
     }
