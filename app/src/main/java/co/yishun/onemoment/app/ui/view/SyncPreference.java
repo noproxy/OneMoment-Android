@@ -26,9 +26,9 @@ import co.yishun.onemoment.app.account.SyncManager;
  * Created by zuliangwang on 16/4/13.
  */
 public class SyncPreference extends com.jenzz.materialpreference.Preference {
-    private View mLayout;
-    private int mlayoutWidth;
-    private int mlayoutHeight;
+    private View mView;
+    private int mViewWidth;
+    private int mViewHeight;
     private Paint mPaint;
     private Canvas mCanvas;
     private Bitmap mBitmap;
@@ -59,36 +59,36 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     }
 
     public void syncBackground(int allSyncTaskNum,int finishedSyncTaskNum){
-        int oneTaskWidth = mlayoutWidth/allSyncTaskNum;
+        int oneTaskWidth = mViewWidth/allSyncTaskNum;
         int finishedTasksWidth = oneTaskWidth*finishedSyncTaskNum;
         LogUtil.d("SyncPre","finishedTsk="+finishedSyncTaskNum);
 
-        Rect rect = new Rect(finishedTasksWidth,0,finishedTasksWidth+oneTaskWidth,mlayoutHeight);
+        Rect rect = new Rect(finishedTasksWidth,0,finishedTasksWidth+oneTaskWidth,mViewHeight);
         mCanvas.drawRect(rect, mPaint);
         mBitmapDrawable.draw(mCanvas);
 
-        mLayout.invalidate();
+        mView.invalidate();
     }
 
     private void beginSyncBackground(){
-        mlayoutWidth = mLayout.getWidth();
-        mlayoutHeight = mLayout.getHeight();
+        mViewWidth = mView.getWidth();
+        mViewHeight = mView.getHeight();
         mPaint = new Paint();
-        mBitmap = Bitmap.createBitmap(mlayoutWidth, mlayoutHeight, Bitmap.Config.RGB_565);
+        mBitmap = Bitmap.createBitmap(mViewWidth, mViewHeight, Bitmap.Config.RGB_565);
         mCanvas = new Canvas(mBitmap);
         mBitmapDrawable = new BitmapDrawable(null,mBitmap);
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(0);
         mPaint.setColor(getContext().getResources().getColor(R.color.colorWhite));
-        mCanvas.drawRect(0, 0, mlayoutWidth, mlayoutHeight, mPaint);
+        mCanvas.drawRect(0, 0, mViewWidth, mViewHeight, mPaint);
 
         mPaint.setColor(getContext().getResources().getColor(R.color.bgSelectedColor));
 
 
         mBitmapDrawable.draw(mCanvas);
 //        mLayout.setBackgroundColor(getContext().getResources().getColor(R.color.bgSelectedColor));
-        mLayout.setBackground(mBitmapDrawable);
+        mView.setBackground(mBitmapDrawable);
     }
 
     private void endSyncBackground(){
@@ -107,6 +107,7 @@ public class SyncPreference extends com.jenzz.materialpreference.Preference {
     protected void onBindView(View view) {
         super.onBindView(view);
         mLayout = view;
+        setSummary("sync finished");
 
     }
 
