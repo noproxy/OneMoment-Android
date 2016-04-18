@@ -23,7 +23,7 @@ import co.yishun.library.resource.VideoResource;
 import co.yishun.library.tag.VideoTag;
 
 /**
- * OnemomentPlayerView
+ * One Moment PlayerView
  *
  * @author ZhihaoJun
  */
