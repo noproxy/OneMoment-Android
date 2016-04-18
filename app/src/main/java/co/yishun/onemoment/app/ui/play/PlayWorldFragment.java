@@ -105,6 +105,9 @@ public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.V
             onLoad();
             refreshUserInfo(0);
         }
+        if (index != playViewRequestIndex) {
+            LogUtil.e(TAG, "not equals index, wocao");
+        }
     }
 
     @UiThread
