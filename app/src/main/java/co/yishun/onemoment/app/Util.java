@@ -42,6 +42,9 @@ public class Util {
     }
 
     public static String joinString(@NonNull final String forNull, final @NonNull String divider, @NonNull String... values) {
+        if (values.length == 0) {
+            return "";
+        }
         StringBuilder buffer = new StringBuilder();
         buffer.append(values[0]);
         for (int i = 1; i < values.length; i++) {
