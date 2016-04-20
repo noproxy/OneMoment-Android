@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui;
 
 import android.support.annotation.CallSuper;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -42,8 +43,7 @@ import co.yishun.onemoment.app.ui.common.BaseActivity;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment;
 import co.yishun.onemoment.app.ui.play.PlayTagVideoFragment_;
 import co.yishun.onemoment.app.ui.play.PlayType;
-import co.yishun.onemoment.app.ui.play.PlayWorldFragment;
-import co.yishun.onemoment.app.ui.play.PlayWorldFragment_;
+import co.yishun.onemoment.app.ui.play.PlayVideosFragment_;
 
 /**
  * Created on 2015/10/26.
@@ -86,9 +86,13 @@ public class PlayActivity extends BaseActivity {
                     .commit();
 
         } else {
-            PlayWorldFragment playWorldFragment = PlayWorldFragment_.builder().
+//            PlayWorldFragment playWorldFragment = PlayWorldFragment_.builder().
+//                    world(world).playType(playType).build();
+//            fragmentManager.beginTransaction().replace(R.id.fragment_container, playWorldFragment)
+//                    .commit();
+            Fragment fragment = PlayVideosFragment_.builder().
                     world(world).playType(playType).build();
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, playWorldFragment)
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                     .commit();
 
         }

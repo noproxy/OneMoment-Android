@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <co.yishun.onemoment.app.ui.view.SquareFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <co.yishun.library.TagContainer
+            android:id="@+id/om_tags_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/playBtnContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true">
+
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:clickable="false"
+                android:indeterminate="true"
+                app:mpb_progressStyle="circular" />
+
+            <ImageView
+                android:id="@+id/playBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
+                android:clickable="false"
+                android:src="@drawable/ic_play"
+                android:visibility="invisible"
+                tools:visibility="visible" />
+        </RelativeLayout>
+
+    </co.yishun.onemoment.app.ui.view.SquareFrameLayout>
+
+    <co.yishun.library.AvatarRecyclerView
+        android:id="@+id/avatarView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/arv_selectSize"
+        android:layout_marginTop="8dp"
+        app:arv_normalSize="@dimen/arv_normalSize"
+        app:arv_selectSize="@dimen/arv_selectSize" />
+
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse" />
+
+    <!--<include layout="@layout/layout_play_vote"/>-->
+
+</LinearLayout>
