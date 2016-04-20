@@ -34,7 +34,10 @@ import co.yishun.onemoment.app.data.FileUtil;
 
 /**
  * Created on 2015/10/28.
+ *
+ * @Deprecated use {@link PlayVideosFragment} instead.
  */
+@Deprecated
 @EFragment(R.layout.fragment_play_world)
 public class PlayWorldFragment extends PlayFragment implements VideoPlayerView.VideoPlayViewListener,
         VideoTask.OnVideoListener {
