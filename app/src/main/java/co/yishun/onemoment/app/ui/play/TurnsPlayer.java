@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Created by Jinge on 2016/3/1.
+ * new player that play many videos in order.
  */
 @SuppressWarnings("unused")
 public class TurnsPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
