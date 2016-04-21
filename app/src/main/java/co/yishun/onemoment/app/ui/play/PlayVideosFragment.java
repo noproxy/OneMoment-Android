@@ -15,10 +15,15 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import co.yishun.library.AvatarRecyclerView;
+import co.yishun.library.TagContainer;
+import co.yishun.library.tag.BaseVideoTag;
+import co.yishun.library.tag.VideoTag;
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.account.AccountManager;
@@ -65,6 +70,9 @@ public class PlayVideosFragment extends BaseFragment implements Consumer<VideoPr
     AvatarRecyclerView avatarView;
     @ViewById
     View playBtn;
+    @ViewById
+    TagContainer tagsContainer;
+    List<VideoTag> tags = new LinkedList<>();
     private SerialExecutor mExecutor = new SerialExecutor();
     private APIV4 mApiV4 = OneMomentV4.createAdapter().create(APIV4.class);
     private BlockingQueue<VideoProvider> mQueue = new LinkedBlockingQueue<>();
@@ -121,6 +129,14 @@ public class PlayVideosFragment extends BaseFragment implements Consumer<VideoPr
             public void onOneStart(Uri uri) {
                 String name = mVideoMap.get(uri).getNickname();
                 updateUsername(name);
+
+                tags.clear();
+                VideoProvider video = mVideoMap.get(uri);
+                for (int i = 0; i < video.getTags().size(); i++) {
+                    tags.add(new BaseVideoTag(video.getTags().get(i).name,
+                            video.getTags().get(i).x, video.getTags().get(i).y));
+                }
+                tagsContainer.setVideoTags(tags);
             }
 
             @Override

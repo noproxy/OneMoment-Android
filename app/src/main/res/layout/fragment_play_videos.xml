@@ -17,7 +17,7 @@
             android:layout_height="match_parent" />
 
         <co.yishun.library.TagContainer
-            android:id="@+id/om_tags_container"
+            android:id="@+id/tagsContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
