@@ -136,6 +136,17 @@ public class ReminderService extends Service {
     class StartAppReceiver extends BroadcastReceiver {
         public static final String ACTION = "co.yishun.onemoment.app.remind.startApp";
 
+        /**
+         * Create a ActivityManager to get All the tasks running in the phone
+         * A task can be simply thought as a app
+         * if oneMoment is running , move it to front
+         * else start a new task
+         *
+         * note that:
+         * getRunningTask may lack some tasks
+         * @param context
+         * @param intent
+         */
         @Override
         public void onReceive(Context context, Intent intent) {
             final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

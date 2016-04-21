@@ -42,6 +42,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      */
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+
         LogUtil.i(TAG, "onPerformSync, account: " + account.name + ", Bundle: " + extras);
         if (!checkSyncOption(extras))
             return;

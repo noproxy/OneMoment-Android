@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
+import android.util.Log;
 
 import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
@@ -20,6 +21,7 @@ public class SyncManager {
 
     public static final String SYNC_BROADCAST_ACTION_LOCAL_UPDATE = "co.yishun.onemoment.app.sync.action.localupdate";
     public static final String SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP = "extra_update_timestamp";
+    public static final String SYNC_BROADCAST_ACTION_UPDATA_FAIL = "co.yishun.onemoment.app.sync.action.updatafail";
 
     public static final String SYNC_BROADCAST_ACTION_START = "co.yishun.onemoment.app.sync.action.start";
     public static final String SYNC_BROADCAST_EXTRA_START_TASK_NUM = "extra_start_task_num";
@@ -56,7 +58,20 @@ public class SyncManager {
         b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         b.putBoolean(SYNC_IGNORE_NETWORK, ignoreNetwork);
+        cancelPendingSync(account,Contract.AUTHORITY);
         ContentResolver.requestSync(account, Contract.AUTHORITY, b);
+    }
+
+    /**
+     * call the method to ensure the SyncAdapter's onPerform is called
+     * @param account
+     * @param authority
+     */
+    private static void cancelPendingSync(Account account,String authority){
+        if (ContentResolver.isSyncPending(account,Contract.AUTHORITY) || ContentResolver.isSyncActive(account,Contract.AUTHORITY)){
+            Log.d(TAG,"SyncPending, canceling");
+            ContentResolver.cancelSync(account,authority);
+        }
     }
 
     public static void notifySyncSettingsChange(Context context) {

@@ -282,7 +282,9 @@ public class ShareExportActivity extends BaseActivity implements MomentMonthView
         momentCalendar.getAdapter().notifyDataSetChanged();
         setAllSelect(false);
         updateSelectedText();
-        clickNumber = 1;
+
+        clickNumber=1;
+
     }
 
     /**

@@ -143,6 +143,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
             this.findPreference(getString(R.string.pref_key_sync_now)).setOnPreferenceClickListener(preference -> {
                 SyncManager.syncNow(getActivity());
                 ((SettingsActivity) getActivity()).showSnackMsg(R.string.activity_settings_sync_now);
+                LogUtil.d("SettingActivity","Sync Click");
                 return true;
             });
 
