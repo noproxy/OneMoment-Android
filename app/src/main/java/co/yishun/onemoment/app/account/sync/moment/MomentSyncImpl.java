@@ -214,10 +214,10 @@ public class MomentSyncImpl extends MomentSync {
 //        failTask = 0;
 //        successTask = 0;
 //        onSyncStart();
-        allTask =  toDelete.size() + toFix.size() + toUpload.size();
+        allTask = toDelete.size() + toFix.size() + toUpload.size();
         failTask = 0;
         successTask = 0;
-        LogUtil.d(TAG,"toUpload= "+toUpload.size()+" toDelete"+toDelete.size()+" toFix"+toFix.size());
+        LogUtil.d(TAG, "toUpload= " + toUpload.size() + " toDelete" + toDelete.size() + " toFix" + toFix.size());
 
         for (Moment moment : toUpload) {
             executor.submit(new MomentUploadTask(moment, this::onFail, this::onSuccess));
@@ -242,13 +242,13 @@ public class MomentSyncImpl extends MomentSync {
 
     private void onFail(Moment moment) {
         failTask++;
-        LogUtil.d(TAG,"onFail");
+        LogUtil.d(TAG, "onFail");
         onSyncMomentFail(moment);
     }
 
     private void onSuccess(Moment moment) {
         successTask++;
-        LogUtil.d(TAG,"onSuccess");
+        LogUtil.d(TAG, "onSuccess");
         onSyncMomentUpdate(moment);
     }
 
@@ -277,18 +277,18 @@ public class MomentSyncImpl extends MomentSync {
         String timestamp = moment.getUnixTimeStamp();
         Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_LOCAL_UPDATE);
         intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP, timestamp);
-        intent.putExtra("allTask",allTask);
-        intent.putExtra("finishedTask",successTask);
+        intent.putExtra("allTask", allTask);
+        intent.putExtra("finishedTask", successTask);
         LogUtil.i(TAG, "sync update local, send a broadcast. timestamp: " + timestamp);
         mContext.sendBroadcast(intent);
     }
 
-    private void onSyncMomentFail(Moment moment){
+    private void onSyncMomentFail(Moment moment) {
         String timestamp = moment.getUnixTimeStamp();
         Intent intent = new Intent(SyncManager.SYNC_BROADCAST_ACTION_UPDATA_FAIL);
         intent.putExtra(SyncManager.SYNC_BROADCAST_EXTRA_LOCAL_UPDATE_TIMESTAMP, timestamp);
-        intent.putExtra("failedTask",failTask);
-        LogUtil.i(TAG,"sync update fail,send a broadcast. timestamp: " + timestamp);
+        intent.putExtra("failedTask", failTask);
+        LogUtil.i(TAG, "sync update fail,send a broadcast. timestamp: " + timestamp);
         mContext.sendBroadcast(intent);
     }
 }

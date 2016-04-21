@@ -11,30 +11,24 @@ import android.preference.ListPreference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
-import co.yishun.onemoment.app.LogUtil;
-
 public class ListPreferenceCompat extends ListPreference {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ListPreferenceCompat(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        LogUtil.d("ListPreferenceCompat", "create");
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ListPreferenceCompat(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        LogUtil.d("ListPreferenceCompat", "create");
     }
 
     public ListPreferenceCompat(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LogUtil.d("ListPreferenceCompat", "create");
     }
 
     public ListPreferenceCompat(Context context) {
         super(context);
-        LogUtil.d("ListPreferenceCompat", "create");
     }
 
     // NOTE:

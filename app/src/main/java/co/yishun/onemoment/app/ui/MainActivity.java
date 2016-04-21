@@ -276,17 +276,17 @@ public class MainActivity extends BaseActivity implements AccountManager.OnUserI
     }
 
     /**
-     add pushAgent.onAppStart
-     it may cause some problem
-
-     4.2.2  统计应用启动数据
-     在所有的Activity 的onCreate 函数添加：
-     PushAgent.getInstance(context).onAppStart();
-     注意: 此方法与统计分析sdk中统计日活的方法无关！请务必调用此方法！
-     如果不调用此方法，不仅会导致按照"几天不活跃"条件来推送失效，还将导致广播发送不成功以及设备描述红色等问题发生。
-     可以只在应用的主Activity中调用此方法，但是由于SDK的日志发送策略，有可能由于主activity的日志没有发送成功，而导致未统计到日活数据。
-
-     http://dev.umeng.com/push/android/integration
+     * add pushAgent.onAppStart
+     * it may cause some problem
+     * <p>
+     * 4.2.2  统计应用启动数据
+     * 在所有的Activity 的onCreate 函数添加：
+     * PushAgent.getInstance(context).onAppStart();
+     * 注意: 此方法与统计分析sdk中统计日活的方法无关！请务必调用此方法！
+     * 如果不调用此方法，不仅会导致按照"几天不活跃"条件来推送失效，还将导致广播发送不成功以及设备描述红色等问题发生。
+     * 可以只在应用的主Activity中调用此方法，但是由于SDK的日志发送策略，有可能由于主activity的日志没有发送成功，而导致未统计到日活数据。
+     * <p>
+     * http://dev.umeng.com/push/android/integration
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

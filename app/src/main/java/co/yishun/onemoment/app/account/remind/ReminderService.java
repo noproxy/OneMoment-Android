@@ -141,11 +141,9 @@ public class ReminderService extends Service {
          * A task can be simply thought as a app
          * if oneMoment is running , move it to front
          * else start a new task
-         *
+         * <p>
          * note that:
          * getRunningTask may lack some tasks
-         * @param context
-         * @param intent
          */
         @Override
         public void onReceive(Context context, Intent intent) {
