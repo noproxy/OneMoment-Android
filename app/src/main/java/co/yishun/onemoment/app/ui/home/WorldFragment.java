@@ -20,6 +20,7 @@ import org.androidannotations.annotations.ViewById;
 import java.io.File;
 import java.lang.reflect.Field;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -44,6 +45,7 @@ public class WorldFragment extends ToolbarFragment {
         File hybrdFile = FileUtil.getInternalFile(getActivity(), Constants.HYBRD_UNZIP_DIR);
         String url = Constants.FILE_URL_PREFIX + new File(hybrdFile, "build/pages/world/world.html")
                 .getPath();
+        LogUtil.d("WorldFragment","url = " + url);
         worldWebFragment = CommonWebFragment_.builder().mUrl(url).build();
         getFragmentManager().beginTransaction()
                 .replace(R.id.containerFrameLayout, worldWebFragment, BaseWebFragment.TAG_WEB)

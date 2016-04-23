@@ -1,6 +1,7 @@
 package co.yishun.onemoment.app.ui.view.shoot;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
@@ -10,6 +11,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -23,6 +26,7 @@ import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
 import co.yishun.onemoment.app.function.Callback;
 import co.yishun.onemoment.app.function.Consumer;
+import co.yishun.onemoment.app.ui.MainActivity;
 import co.yishun.onemoment.app.ui.view.shoot.filter.FilterManager.FilterType;
 import co.yishun.onemoment.app.ui.view.shoot.video.EncoderConfig;
 
@@ -68,6 +72,7 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
 
     public CameraGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        requestShootPermissions();
         init();
     }
 
@@ -84,6 +89,20 @@ public class CameraGLSurfaceView extends SquareGLSurfaceView implements SurfaceT
         initFlashlightAndCamera();
         mMoveLimit = getResources().getDimension(R.dimen.camera_surface_view_move);
         mSlideLimit = getResources().getDimension(R.dimen.camera_surface_view_slide);
+    }
+
+    private void requestShootPermissions(){
+        List<String> request = new ArrayList<>(MainActivity.PERMISSION.length);
+        for (String permission: MainActivity.PERMISSION){
+            int status = ActivityCompat.checkSelfPermission(getContext(),permission);
+            if (status != PackageManager.PERMISSION_GRANTED){
+                request.add(permission);
+            }
+        }
+
+        if (request.size() > 0 ){
+            ActivityCompat.requestPermissions((Activity)getContext(),request.toArray(new String[request.size()]),4);
+        }
     }
 
     public void setFilterListener(OnFilterChangeListener listener) {

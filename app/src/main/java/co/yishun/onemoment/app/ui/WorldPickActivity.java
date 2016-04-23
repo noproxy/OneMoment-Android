@@ -9,6 +9,7 @@ import org.androidannotations.annotations.EActivity;
 
 import java.io.File;
 
+import co.yishun.onemoment.app.LogUtil;
 import co.yishun.onemoment.app.R;
 import co.yishun.onemoment.app.config.Constants;
 import co.yishun.onemoment.app.data.FileUtil;
@@ -29,6 +30,7 @@ public class WorldPickActivity extends BaseWebActivity {
         title = getString(R.string.activity_personal_world_title);
         File hybrdDir = FileUtil.getInternalFile(this, Constants.HYBRD_UNZIP_DIR);
         url = Constants.FILE_URL_PREFIX + new File(hybrdDir, "build/pages/add_to_world/add_to_world.html").getPath();
+        LogUtil.d("BaseWebActivity","url = " + url);
     }
 
     @AfterViews
