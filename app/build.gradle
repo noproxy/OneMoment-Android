@@ -14,20 +14,20 @@ retrolambda {
 
 android {
     useLibrary 'org.apache.http.legacy'
-    signingConfigs() {
-        debugSignature {
-            keyAlias = properties.getProperty("KEY_ALIAS_DEBUG")
-            keyPassword properties.getProperty("KEY_PASSWORD")
-            storeFile file(properties.getProperty("KEYSTORE_PATH"))
-            storePassword properties.getProperty("STORE_PASSWORD")
-        }
-        releaseSignature {
-            keyAlias properties.getProperty("KEY_ALIAS_RELEASE")
-            keyPassword properties.getProperty("KEY_PASSWORD")
-            storeFile file(properties.getProperty("KEYSTORE_PATH"))
-            storePassword properties.getProperty("STORE_PASSWORD")
-        }
-    }
+//    signingConfigs() {
+//        debugSignature {
+//            keyAlias = properties.getProperty("KEY_ALIAS_DEBUG")
+//            keyPassword properties.getProperty("KEY_PASSWORD")
+//            storeFile file(properties.getProperty("KEYSTORE_PATH"))
+//            storePassword properties.getProperty("STORE_PASSWORD")
+//        }
+//        releaseSignature {
+//            keyAlias properties.getProperty("KEY_ALIAS_RELEASE")
+//            keyPassword properties.getProperty("KEY_PASSWORD")
+//            storeFile file(properties.getProperty("KEYSTORE_PATH"))
+//            storePassword properties.getProperty("STORE_PASSWORD")
+//        }
+//    }
 
     splits {
         abi {
@@ -39,7 +39,7 @@ android {
     }
 
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "co.yishun.onemoment.app"
@@ -68,12 +68,12 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.releaseSignature
+            //signingConfig signingConfigs.releaseSignature
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debugSignature
+            //signingConfig signingConfigs.debugSignature
         }
     }
 

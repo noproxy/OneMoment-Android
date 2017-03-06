@@ -59,11 +59,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.MainActivity_"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.MainActivity"/>
+
         <activity
             android:name=".ui.VideoVotedUpActivity_"
             android:label="@string/discovery_title"
